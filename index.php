@@ -46,7 +46,7 @@
 
 				<br /><br />
 
-				<input type="text" name="password" autocomplete="off" maxlength="5">
+				<input type="text" name="password" autocomplete="off">
 
 				<br /><br />
 
