@@ -23,7 +23,7 @@
 			return "";
 
 		// On vérifie si le mot de passe d'utilisation est correct.
-		if ($password != "27412")
+		if ($password != PASSWORD)
 			return "Mot de passe incorrect.";
 
 		// On vérifie si le fichier a bien été téléchargé via la méthode POST HTTP.
