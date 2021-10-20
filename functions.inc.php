@@ -44,13 +44,11 @@
 		// On vérifie alors si les données ont été vérifiée avec succès.
 		if (is_bool($state))
 		{
-			$extension = explode("/", $type)[1];
-			$encoded_name = sha1_file($temp_name) . "." . $extension;
+			$url = "public/" . sha1_file($temp_name) . "." . explode("/", $type)[1];
 
-			if (move_uploaded_file($temp_name, "public/" . $encoded_name))
+			if (move_uploaded_file($temp_name, $url))
 			{
 				// On déplace enfin le fichier en indiquant ses informations.
-				$url = "https://files.florian-dev.fr/public/$encoded_name";
 				$size = formatSize($size);
 
 				return <<<RESULT
@@ -58,7 +56,7 @@
 						<li>Nom du fichier : $real_name</li>
 						<li>Taille du fichier : $size</li>
 						<li>Type du fichier : $type</li>
-						<li>URL final : <a href="$url">$url</a></li>
+						<li>URL final : <a href="$url" target="_blank">$_SERVER[HTTP_HOST]/$url</a></li>
 					</ul>
 				RESULT;
 			}
