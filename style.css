@@ -1,0 +1,72 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
+
+/* Corps de la page */
+html
+{
+	background: linear-gradient(to right, rgb(96, 108, 136), rgb(63, 76, 107));
+}
+
+body
+{
+	color: whitesmoke;
+	margin: 50px 100px 50px 100px;
+	font-family: "Roboto", sans-serif;
+}
+
+/* Pied de page */
+footer > p
+{
+	bottom: 5px;
+	position: relative;
+	background-color: #877C61;
+}
+
+/* Titres, paragraphes & listes */
+h1
+{
+	font-size: 40px;
+	text-align: center;
+	text-decoration: underline;
+}
+
+p, ul
+{
+	overflow: hidden;
+	text-align: center;
+	line-height: 30px;
+}
+
+/* Formulaires */
+form
+{
+	text-align: center;
+}
+
+/* Liens */
+a
+{
+	color: rgb(174, 184, 212);
+}
+
+/* Champs de saisies */
+input[type="text"]
+{
+	border: 3px solid rgb(211, 211, 211);
+	padding: 5px 15px;
+	outline: none;
+	transition: border 750ms;
+	box-sizing: border-box;
+}
+
+input[type="text"]:focus
+{
+	border: 3px solid rgb(36, 42, 59);
+	background-color: rgb(174, 184, 212);
+}
+
+/* Classes personnalisées */
+.result
+{
+	padding: 10px 10px 10px 10px;
+	border: 3px dashed rgb(174, 184, 212);
+}
