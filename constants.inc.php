@@ -2,6 +2,9 @@
 	// Unité de mesure pour la conversion vers lisible par l'homme.
 	const UNITS = array("B", "KB", "MB", "GB", "TB");
 
+	// Mot de passe pour utiliser le service.
+	const PASSWORD = "password";
+
 	// Taille maximale des fichiers.
 	// Note : ne doit pas dépasser le paramètre suivant : https://www.php.net/manual/fr/ini.core.php#ini.upload-max-filesize
 	const MAX_SIZE = 2097152;
