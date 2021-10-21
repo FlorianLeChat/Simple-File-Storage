@@ -65,7 +65,7 @@
 		</main>
 
 		<footer>
-			<p>Réalisé par <a href="https://github.com/FlorianLeChat">Florian</a> 🐈 !</p>
+			<p>Réalisé par <a href="https://github.com/FlorianLeChat/Simple-File-Storage">Florian</a> 🐈 !</p>
 		</footer>
 	</body>
 </html>
