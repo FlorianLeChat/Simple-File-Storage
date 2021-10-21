@@ -15,6 +15,47 @@
 		return number_format($size / pow(1024, $power), 2, ",", " ") . " " . UNITS[$power];
 	}
 
+	// Permet de demander tous les fichiers sauvegardés sur le serveur.
+	function requestAllFiles($password)
+	{
+		// On vérifie la validité du mot de passe.
+		if ($password != PASSWORD)
+			return "";
+
+		// Puis, on les récupère depuis le répertoire de stockage.
+		$html = "<ul>\n";
+		$files = array_diff(scandir("./public"), array("..", "."));
+
+		foreach ($files as $index => $name)
+		{
+			$html .= <<<FILE
+				<li>
+					<a href="public/{$name}" target="_blank">{$name}</a>
+
+					<input type="submit" value="Supprimer" />
+
+					<input type="hidden" name="password" value={$password} />
+					<input type="hidden" name="identifier" value={$name} />
+				</li>\n
+			FILE;
+		}
+
+		$html .= "</ul>\n";
+
+		return $html;
+	}
+
+	// Permet de demander la suppression d'un fichier hébergé précédemment.
+	function requestFileDeletion($password, $identifier)
+	{
+		// On vérifie la validité du mot de passe.
+		if ($password == PASSWORD)
+			unlink("./public/$identifier");
+
+		// On revient à la fin au point de départ.
+		return requestAllFiles($password);
+	}
+
 	// Permet de demander la sauvegarde d'un fichier depuis la page principal.
 	function requestSave($password, $file)
 	{
