@@ -18,7 +18,7 @@
 		<meta name="description" content="Site d'hébergement de fichiers en ligne." />
 		<meta name="keywords" lang="fr" content="storage, files, images" />
 		<meta name="robots" content="noindex" />
-		<title>Hébergement de fichiers</title>
+		<title>Hébergement de fichiers | Accueil</title>
 		<!-- JavaScript -->
 		<script defer src="script.js"></script>
 		<!-- CSS -->
