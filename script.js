@@ -5,15 +5,19 @@ function isEmpty( str )
 }
 
 // Permet de faire une première vérification du mot de passe.
-const form = document.querySelectorAll( "form" )[ 0 ];
-
-form.addEventListener( "submit", function ( event )
+// Note : ceci doit s'appliquer seulement sur la page principale.
+if ( document.URL == "https://files.florian-dev.fr/" )
 {
-	const password = document.getElementsByName( "password" )[ 0 ].value;
+	const form = document.querySelector( "form" );
 
-	if ( !isEmpty( password ) )
-		return;
+	form.addEventListener( "submit", function ( event )
+	{
+		const password = document.getElementsByName( "password" )[ 0 ].value;
 
-	alert( "Vous devez renseigner un mot de passe pour utiliser ce service !" );
-	event.preventDefault();
-}, true );
+		if ( !isEmpty( password ) )
+			return;
+
+		alert( "Vous devez renseigner un mot de passe pour utiliser ce service !" );
+		event.preventDefault();
+	}, true );
+}
