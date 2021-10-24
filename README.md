@@ -9,7 +9,7 @@ Obviously, since I work on this project for my studies, the comments and the con
 to all people knowing how to use these languages.
 
 It is not necessary to specify, you need a server (local or dedicated) to use this project and running **PHP 7 or higher**. The saved files are in a directory
-named *"public"* which **MUST** be created beforehand, otherwise no backup will be made.
+named *"public"* which can be modified at any time in the configuration.
 
 Here is the current result : (it may not be up to date now).
 
