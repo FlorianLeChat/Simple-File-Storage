@@ -23,23 +23,24 @@
 			return "Le mot de passe est manquant ou incorrect.";
 
 		// On vérifie si le répertoire de sauvegarde est manquant.
-		if (!is_dir("./public"))
-			return "Le répertoire de stockage « public » est manquant.";
+		if (!is_dir("./" . STORAGE_FOLDER))
+			return "Le répertoire de stockage « " . STORAGE_FOLDER . " » est manquant.";
 
 		// On vérifie ensuite si des fichiers sont présents dans le répertoire de stockage.
-		$files = array_diff(scandir("./public"), array("..", "."));
+		$files = array_diff(scandir("./" . STORAGE_FOLDER), array("..", "."));
 
 		if (count($files) == 0)
-			return "";
+			return "Le répertoire de stockage ne contient pas de fichiers.";
 
 		// Enfin, on les affiche si possible.
 		$html = "<ul>\n";
+		$folder = STORAGE_FOLDER;
 
 		foreach ($files as $index => $name)
 		{
 			$html .= <<<FILE
 				<li>
-					<a href="public/{$name}" target="_blank">{$name}</a>
+					<a href="{$folder}/{$name}" target="_blank">{$name}</a>
 
 					<input type="submit" value="Supprimer" />
 
@@ -58,8 +59,8 @@
 	function requestFileDeletion($password, $identifier)
 	{
 		// On vérifie la présence du répertoire de stockage et la validité du mot de passe.
-		if (is_dir("./public") && $password == PASSWORD)
-			unlink("./public/$identifier");
+		if (is_dir("./" . STORAGE_FOLDER) && $password == PASSWORD)
+			unlink("./" . STORAGE_FOLDER . "/$identifier");
 
 		// On revient à la fin au point de départ.
 		return requestAllFiles($password);
@@ -81,8 +82,8 @@
 			return "Le fichier sélectionné n'a pas été téléchargé par le serveur.";
 
 		// On vérifie si le répertoire de sauvegarde est manquant.
-		if (!is_dir("./public") && !mkdir("./public", 0755, true))
-			return "Le répertoire de stockage « public » est manquant.";
+		if (!is_dir("./" . STORAGE_FOLDER) && !mkdir("./" . STORAGE_FOLDER, 0755, true))
+			return "Le répertoire de stockage « " . STORAGE_FOLDER . " » est manquant.";
 
 		// On vérifie ensuite les données du fichier.
 		$real_name = $file["name"];							// Nom réel du fichier
@@ -98,7 +99,7 @@
 		// On vérifie alors si les données ont été vérifiée avec succès.
 		if (is_bool($state))
 		{
-			$url = "public/" . sha1_file($temp_name) . "." . explode("/", $type)[1];
+			$url = STORAGE_FOLDER . "/" . sha1_file($temp_name) . "." . explode("/", $type)[1];
 
 			if (move_uploaded_file($temp_name, $url))
 			{
