@@ -20,7 +20,7 @@
 	{
 		// On vérifie la validité du mot de passe.
 		if ($password != PASSWORD)
-			return "";
+			return "Le mot de passe est manquant ou incorrect.";
 
 		// On vérifie alors si des fichiers sont présents dans le répertoire de stockage.
 		$files = array_diff(scandir("./public"), array("..", "."));
@@ -66,15 +66,15 @@
 	{
 		// On vérifie si des données ont été télécharges.
 		if (empty($file))
-			return "";
+			return "Les données de téléchargement sont manquants.";
 
 		// On vérifie si le mot de passe d'utilisation est correct.
 		if ($password != PASSWORD)
-			return "Mot de passe incorrect.";
+			return "Le mot de passe est manquant ou incorrect.";
 
 		// On vérifie si le fichier a bien été téléchargé via la méthode POST HTTP.
 		if (!is_uploaded_file($file["tmp_name"]))
-			return "Aucun fichier sélectionné.";
+			return "Le fichier sélectionné n'a pas été téléchargé par le serveur.";
 
 		// On vérifie ensuite les données du fichier.
 		$real_name = $file["name"];							// Nom réel du fichier
@@ -109,7 +109,7 @@
 			else
 			{
 				// Dans le cas contraire, on affiche un message d'erreur.
-				return "Échec critique. Impossible de déplacer le fichier temporaire, veuillez recommencez.";
+				return "Il est impossible de déplacer le fichier temporaire.";
 			}
 		}
 
@@ -127,14 +127,14 @@
 		// On vérifie ensuite si le fichier ne dépasse par la limite imposée.
 		// Note : on évite d'utiliser la taille envoyée par le client (risque de manipulation).
 		if ($size == 0)
-			return "Votre fichier ne contient rien ou vide de tout contenu.";
+			return "Le fichier ne contient rien ou vide de tout contenu.";
 		else if ($size > MAX_SIZE)
-			return "Votre fichier dépasse la taille limite de " . formatSize(MAX_SIZE) . ".";
+			return "Le fichier dépasse la taille limite de " . formatSize(MAX_SIZE) . ".";
 
 		// On vérifie alors si l'extension du fichier est autorisée.
 		// Note : on évite d'utiliser l'extension/le type envoyé par le client (risque de manipulation).
 		if (!array_search($type, EXTENSIONS, true))
-			return "Cette extension n'est pas autorisée. Liste des extensions autorisées : " . implode(", ", array_keys(EXTENSIONS)) . ".";
+			return "L'extension du fichier n'est pas autorisée. Liste des extensions autorisées : " . implode(", ", array_keys(EXTENSIONS)) . ".";
 
 		// On indique enfin que les données sont valides.
 		return true;
