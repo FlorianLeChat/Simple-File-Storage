@@ -22,13 +22,17 @@
 		if ($password != PASSWORD)
 			return "Le mot de passe est manquant ou incorrect.";
 
-		// On vérifie alors si des fichiers sont présents dans le répertoire de stockage.
+		// On vérifie si le répertoire de sauvegarde est manquant.
+		if (!is_dir("./public"))
+			return "Le répertoire de stockage « public » est manquant.";
+
+		// On vérifie ensuite si des fichiers sont présents dans le répertoire de stockage.
 		$files = array_diff(scandir("./public"), array("..", "."));
 
 		if (count($files) == 0)
 			return "";
 
-		// Enfin, on les affiche si nécessaire.
+		// Enfin, on les affiche si possible.
 		$html = "<ul>\n";
 
 		foreach ($files as $index => $name)
@@ -53,8 +57,8 @@
 	// Permet de demander la suppression d'un fichier hébergé précédemment.
 	function requestFileDeletion($password, $identifier)
 	{
-		// On vérifie la validité du mot de passe.
-		if ($password == PASSWORD)
+		// On vérifie la présence du répertoire de stockage et la validité du mot de passe.
+		if (is_dir("./public") && $password == PASSWORD)
 			unlink("./public/$identifier");
 
 		// On revient à la fin au point de départ.
@@ -75,6 +79,10 @@
 		// On vérifie si le fichier a bien été téléchargé via la méthode POST HTTP.
 		if (!is_uploaded_file($file["tmp_name"]))
 			return "Le fichier sélectionné n'a pas été téléchargé par le serveur.";
+
+		// On vérifie si le répertoire de sauvegarde est manquant.
+		if (!is_dir("./public"))
+			return "Le répertoire de stockage « public » est manquant.";
 
 		// On vérifie ensuite les données du fichier.
 		$real_name = $file["name"];							// Nom réel du fichier
