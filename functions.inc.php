@@ -22,9 +22,14 @@
 		if ($password != PASSWORD)
 			return "";
 
-		// Puis, on les récupère depuis le répertoire de stockage.
-		$html = "<ul>\n";
+		// On vérifie alors si des fichiers sont présents dans le répertoire de stockage.
 		$files = array_diff(scandir("./public"), array("..", "."));
+
+		if (count($files) == 0)
+			return "";
+
+		// Enfin, on les affiche si nécessaire.
+		$html = "<ul>\n";
 
 		foreach ($files as $index => $name)
 		{
