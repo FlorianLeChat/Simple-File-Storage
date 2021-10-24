@@ -25,12 +25,13 @@
 		<!-- JavaScript -->
 		<script defer src="script.js"></script>
 		<!-- CSS -->
+		<link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css" />
 		<link rel="stylesheet" href="style.css" />
 		<link href="favicon.ico" rel="icon" type="image/x-icon" />
 	</head>
 	<body>
 		<header>
-			<h1>Administration</h1>
+			<h1>Administration des fichiers</h1>
 
 			<p>
 				Ceci est l'interface simplifiée pour l'administration des fichiers.<br />
