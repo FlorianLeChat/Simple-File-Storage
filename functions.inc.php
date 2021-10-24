@@ -81,7 +81,7 @@
 			return "Le fichier sélectionné n'a pas été téléchargé par le serveur.";
 
 		// On vérifie si le répertoire de sauvegarde est manquant.
-		if (!is_dir("./public"))
+		if (!is_dir("./public") && !mkdir("./public", 0755, true))
 			return "Le répertoire de stockage « public » est manquant.";
 
 		// On vérifie ensuite les données du fichier.
