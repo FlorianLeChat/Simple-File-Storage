@@ -96,7 +96,7 @@
 
 		$state = checkFile($size, $type, $file["error"]);
 
-		// On vérifie alors si les données ont été vérifiée avec succès.
+		// On vérifie alors si les données ont été validées avec succès.
 		if (is_bool($state))
 		{
 			$url = STORAGE_FOLDER . "/" . sha1_file($temp_name) . "." . explode("/", $type)[1];
