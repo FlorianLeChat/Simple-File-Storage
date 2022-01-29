@@ -47,7 +47,7 @@
 		<header class="p-4 fw-bold text-center">
 			<h1>
 				<i class="bi bi-shield-lock"></i>
-				Authentification
+				<span>Authentification</span>
 			</h1>
 
 			<p>Vous devez vous authentifier pour accéder à cette ressource.</p>
@@ -90,7 +90,7 @@
 
 					<p id="passwordHelp" class="form-text text-warning text-justify">
 						<i class="bi bi-exclamation-circle"></i>
-						Votre mot de passe doit comporter de 8 à 20 caractères, des lettres et des chiffres, et ne doit pas contenir d'espaces, de caractères spéciaux ou d'emoji.
+						<span>Votre mot de passe doit comporter de 8 à 20 caractères, des lettres et des chiffres, et ne doit pas contenir d'espaces, de caractères spéciaux ou d'emoji.</span>
 					</p>
 				</div>
 
