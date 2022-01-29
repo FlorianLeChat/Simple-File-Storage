@@ -10,7 +10,7 @@
 	$message = strlen($message) > 0 ? "<div class='result'>$message</div>" : "";
 ?>
 
-<html lang="fr">
+<html lang="fr" class="h-100">
 	<head>
 		<!-- Document metadata -->
 		<meta charset="utf-8" />
@@ -32,6 +32,7 @@
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" crossorigin="anonymous" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" crossorigin="anonymous" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" crossorigin="anonymous" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css@4.1.7/css/flag-icons.min.css" crossorigin="anonymous" />
 		<link rel="stylesheet" href="styles/main.css" media="screen" />
 
 		<!-- JavaScript scripts -->
@@ -39,48 +40,73 @@
 		<script src="scripts/main.js" defer></script>
 
 		<!-- Document icon (16x16) -->
-		<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+		<link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
 	</head>
-	<body>
-		<header>
-			<h1>Hébergement de fichiers</h1>
+	<body class="d-flex flex-column justify-content-center align-items-center text-light h-100 pt-4 pb-4 bg-dark">
+		<!-- Document header -->
+		<header class="p-4 fw-bold text-center">
+			<h1>
+				<i class="bi bi-shield-lock"></i>
+				Authentification
+			</h1>
 
-			<p>
-				Ce site vous permet d'héberger des fichiers de manière permanente.<br />
-				Chaque fichier ne doit pas dépasser une certaine limite de taille (2 MB) et son extension doit être autorisée.<br />
-				De plus, il est nécessaire d'indiquer un mot de passe pour utiliser ce service.
-			</p>
-
-			<hr>
-
-			<br />
+			<p>Vous devez vous authentifier pour accéder à cette ressource.</p>
 		</header>
 
-		<main>
-			<form action="" method="POST" enctype="multipart/form-data">
-				Mot de passe :
+		<main class="w-100 p-3">
+			<!-- Background video -->
+			<video class="position-fixed min-w-100 min-h-100" autoplay muted loop>
+				<source src="assets/videos/login.mp4" type="video/mp4" />
+			</video>
 
-				<br /><br />
+			<!-- Login form -->
+			<form class="needs-validation" method="POST" novalidate>
+				<!-- User name -->
+				<div class="form-floating mb-2">
+					<input type="text" class="form-control" id="login" name="login" placeholder="login" required />
+					<label for="login" class="text-body">Nom d'utilisateur</label>
 
-				<input type="text" name="password" autocomplete="off">
+					<p class="valid-feedback">
+						Votre nom d'utilisateur est valide.
+					</p>
 
-				<br /><br />
+					<p class="invalid-feedback">
+						Veuillez saisir un nom d'utilisateur valide.
+					</p>
+				</div>
 
-				<input type="file" name="upload" />
+				<!-- Password -->
+				<div class="form-floating">
+					<input type="password" class="form-control" id="password" name="password" placeholder="password" aria-describedby="passwordHelp" required />
+					<label for="password" class="text-body">Mot de passe</label>
 
-				<br /><br />
+					<p class="valid-feedback">
+						Votre nom d'utilisateur est valide.
+					</p>
 
-				<input type="submit" />
+					<p class="invalid-feedback">
+						Veuillez saisir un mot de passe valide.
+					</p>
 
-				<br /><br />
+					<p id="passwordHelp" class="form-text text-warning text-justify">
+						<i class="bi bi-exclamation-circle"></i>
+						Votre mot de passe doit comporter de 8 à 20 caractères, des lettres et des chiffres, et ne doit pas contenir d'espaces, de caractères spéciaux ou d'emoji.
+					</p>
+				</div>
 
-				<?php
-					echo($message);
-				?>
+				<!-- Login reminder -->
+				<div class="form-check mt-3 mb-3 text-center">
+					<input type="checkbox" class="form-check-input float-none" id="remember" name="remember" />
+					<label for="remember" class="form-check-label">Se rappeler de moi</label>
+				</div>
+
+				<!-- Validation button -->
+				<input type="submit" class="w-100 btn btn-lg btn-primary" value="Valider" />
 			</form>
 		</main>
 
-		<footer>
+		<!-- Document footer -->
+		<footer class="p-4 text-center">
 			<p>Réalisé par <a href="https://github.com/FlorianLeChat/Simple-File-Storage" target="_blank">Florian</a> 🐈 !</p>
 		</footer>
 	</body>
