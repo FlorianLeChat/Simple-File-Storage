@@ -36,7 +36,7 @@
 		<link rel="stylesheet" href="styles/main.css" media="screen" />
 
 		<!-- JavaScript scripts -->
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" crossorigin="anonymous" async></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous" async></script>
 		<script src="scripts/main.js" defer></script>
 
 		<!-- Document icon (16x16) -->
@@ -54,6 +54,36 @@
 		</header>
 
 		<main class="w-100 p-3">
+			<!-- Language selector -->
+			<nav class="dropdown">
+				<!-- Active language -->
+				<button class="btn btn-primary dropdown-toggle" type="button" id="language" data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="flag-icon flag-icon-gb"></i>
+					<span>Anglais</span>
+				</button>
+
+				<!-- Available language -->
+				<ul class="dropdown-menu dropdown-menu-right text-right" aria-labelledby="language">
+					<!-- French -->
+					<li class="dropdown-item">
+						<i class="flag-icon flag-icon-fr"></i>
+						<span>Français</span>
+					</li>
+
+					<!-- Italian -->
+					<li class="dropdown-item">
+						<i class="flag-icon flag-icon-it"></i>
+						<span>Italien</span>
+					</li>
+
+					<!-- Russian -->
+					<li class="dropdown-item">
+						<i class="flag-icon flag-icon-ru"></i>
+						<span>Russe</span>
+					</li>
+				</ul>
+			</nav>
+
 			<!-- Background video -->
 			<video class="position-fixed min-w-100 min-h-100" autoplay muted loop>
 				<source src="assets/videos/login.mp4" type="video/mp4" />
