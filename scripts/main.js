@@ -1,23 +1,27 @@
-// Permet de déterminer si une chaîne de caractères est valide.
-function isEmpty( str )
-{
-	return ( !str || str.trim().length === 0 );
-}
+//
+// Blocks the form submission if the checks have failed.
+//
+const forms = document.querySelectorAll( ".needs-validation" );
 
-// Permet de faire une première vérification du mot de passe.
-// Note : ceci doit s'appliquer seulement sur la page principale.
-if ( document.URL == "https://files.florian-dev.fr/" )
+for ( const form of forms.values() )
 {
-	const form = document.querySelector( "form" );
-
 	form.addEventListener( "submit", function ( event )
 	{
-		const password = document.getElementsByName( "password" )[ 0 ].value;
+		// Checks the validity of the HTML checks.
+		if ( !form.checkValidity() )
+		{
+			// Blocks the default behaviour and stops the execution
+			//	of other events with the same name.
+			event.preventDefault();
+			event.stopPropagation();
+		}
 
-		if ( !isEmpty( password ) )
-			return;
+		// Apply the Bootstrap style to form elements.
+		const inputs = document.querySelectorAll( ".form-floating" );
 
-		alert( "Vous devez renseigner un mot de passe pour utiliser ce service !" );
-		event.preventDefault();
-	}, true );
+		for ( const input of inputs.values() )
+		{
+			input.classList.add( "was-validated" );
+		}
+	}, false );
 }
