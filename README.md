@@ -1,4 +1,4 @@
-# Simple File Storage
+# 💾 Simple File Storage
 
 Here is one of my very first small project about web development. Having still limited knowledge on this subject, I simply wanted to discover the possibilities
 of the most popular languages, namely : [HTML 5](https://en.wikipedia.org/wiki/HTML5), [CSS 3](https://en.wikipedia.org/wiki/CSS),
