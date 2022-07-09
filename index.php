@@ -19,6 +19,7 @@
 		<meta name="keywords" lang="fr" content="storage, files, images" />
 		<meta name="robots" content="noindex" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#f2f2f2" />
 
 		<!-- Document title -->
 		<title>Hébergement de fichiers | Accueil</title>
@@ -47,6 +48,7 @@
 		<link rel="icon" type="image/png" sizes="512x512" href="assets/images/icons/favicon-512.png" />
 
 		<link rel="apple-touch-icon" href="assets/images/icons/favicon-180.png" />
+		<link rel="manifest" href="manifest.json" />
 	</head>
 	<body class="d-flex flex-column justify-content-center align-items-center text-light h-100 pt-4 pb-4 bg-dark">
 		<!-- Document header -->
