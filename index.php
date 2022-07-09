@@ -39,8 +39,14 @@
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous" async></script>
 		<script src="scripts/main.js" defer></script>
 
-		<!-- Document icon (16x16) -->
-		<link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+		<!-- Document icons and manifest -->
+		<link rel="icon" type="image/png" sizes="16x16" href="assets/images/icons/favicon-16.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="assets/images/icons/favicon-32.png" />
+		<link rel="icon" type="image/x-icon" sizes="48x48" href="assets/images/icons/favicon.ico" />
+		<link rel="icon" type="image/png" sizes="192x192" href="assets/images/icons/favicon-192.png" />
+		<link rel="icon" type="image/png" sizes="512x512" href="assets/images/icons/favicon-512.png" />
+
+		<link rel="apple-touch-icon" href="assets/images/icons/favicon-180.png" />
 	</head>
 	<body class="d-flex flex-column justify-content-center align-items-center text-light h-100 pt-4 pb-4 bg-dark">
 		<!-- Document header -->
