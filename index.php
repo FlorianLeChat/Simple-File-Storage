@@ -41,13 +41,13 @@
 		<script src="scripts/main.js" defer></script>
 
 		<!-- Document icons and manifest -->
-		<link rel="icon" type="image/png" sizes="16x16" href="assets/images/icons/favicon-16.png" />
-		<link rel="icon" type="image/png" sizes="32x32" href="assets/images/icons/favicon-32.png" />
-		<link rel="icon" type="image/x-icon" sizes="48x48" href="assets/images/icons/favicon.ico" />
-		<link rel="icon" type="image/png" sizes="192x192" href="assets/images/icons/favicon-192.png" />
-		<link rel="icon" type="image/png" sizes="512x512" href="assets/images/icons/favicon-512.png" />
+		<link rel="icon" type="image/webp" sizes="16x16" href="assets/favicons/16x16.webp" />
+		<link rel="icon" type="image/webp" sizes="32x32" href="assets/favicons/32x32.webp" />
+		<link rel="icon" type="image/webp" sizes="48x48" href="assets/favicons/48x48.webp" />
+		<link rel="icon" type="image/webp" sizes="192x192" href="assets/favicons/192x192.webp" />
+		<link rel="icon" type="image/webp" sizes="512x512" href="assets/favicons/512x512.webp" />
 
-		<link rel="apple-touch-icon" href="assets/images/icons/favicon-180.png" />
+		<link rel="apple-touch-icon" href="assets/favicons/180x180.webp" />
 		<link rel="manifest" href="manifest.json" />
 	</head>
 	<body class="d-flex flex-column justify-content-center align-items-center text-light h-100 pt-4 pb-4 bg-dark">
