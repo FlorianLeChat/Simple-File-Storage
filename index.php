@@ -25,12 +25,9 @@
 		<title>Hébergement de fichiers | Accueil</title>
 
 		<!-- Pre-connecting external resources -->
-		<link rel="preconnect" href="https://fonts.gstatic.com" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://maxcdn.bootstrapcdn.com" />
 
 		<!-- CSS fonts & stylesheets -->
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" crossorigin="anonymous" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" crossorigin="anonymous" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" crossorigin="anonymous" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icon-css@4.1.7/css/flag-icons.min.css" crossorigin="anonymous" />
