@@ -10,7 +10,7 @@
 	$message = strlen($message) > 0 ? "<div class='result'>$message</div>" : "";
 ?>
 
-<html lang="fr" class="h-100">
+<html lang="fr" dir="auto" class="h-100">
 	<head>
 		<!-- Document metadata -->
 		<meta charset="utf-8" />
@@ -18,7 +18,7 @@
 		<meta name="description" content="Site d'hébergement de fichiers en ligne." />
 		<meta name="keywords" lang="fr" content="storage, files, images" />
 		<meta name="robots" content="noindex" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 		<meta name="theme-color" content="#f2f2f2" />
 
 		<!-- Document title -->
