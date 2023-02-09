@@ -16,7 +16,7 @@
 		<meta charset="utf-8" />
 		<meta name="Author" content="Florian Trayon" />
 		<meta name="description" content="Site d'hébergement de fichiers en ligne." />
-		<meta name="keywords" lang="fr" content="storage, files, images" />
+		<meta name="keywords" content="storage, files, images" />
 		<meta name="robots" content="noindex" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 		<meta name="theme-color" content="#f2f2f2" />
