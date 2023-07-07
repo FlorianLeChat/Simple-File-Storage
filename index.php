@@ -10,7 +10,7 @@
 	$message = strlen($message) > 0 ? "<div class='result'>$message</div>" : "";
 ?>
 
-<html lang="fr" dir="auto" class="h-100">
+<html lang="fr" class="h-100">
 	<head>
 		<!-- Document metadata -->
 		<meta charset="utf-8" />
