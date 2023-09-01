@@ -1,15 +1,5 @@
 <!DOCTYPE html>
 
-<?php
-	include("functions.inc.php");
-
-	// Sauvegarde du fichier.
-	$message = requestSave($_POST["password"], $_FILES["upload"]);
-
-	// Formattage du message de sortie.
-	$message = strlen($message) > 0 ? "<div class='result'>$message</div>" : "";
-?>
-
 <html lang="fr" class="h-100">
 	<head>
 		<!-- Document metadata -->
