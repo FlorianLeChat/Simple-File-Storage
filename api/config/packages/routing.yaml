@@ -1,0 +1,4 @@
+when@prod:
+    framework:
+        router:
+            strict_requirements: null
