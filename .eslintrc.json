@@ -1,0 +1,38 @@
+{
+	"ignorePatterns": ["next-env.d.ts", "*.config.js"],
+	"parserOptions": {
+		"project": ["./tsconfig.json"]
+	},
+	"globals": {
+		"JSX": "readonly",
+		"NodeJS": "readonly"
+	},
+	"extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "plugin:@typescript-eslint/strict", "plugin:jsx-a11y/strict", "airbnb"],
+	"plugins": ["@typescript-eslint"],
+	"parser": "@typescript-eslint/parser",
+	"rules": {
+		"indent": ["error", "tab", { "SwitchCase": 1 }],
+		"quotes": ["error", "double"],
+		"max-len": ["warn", { "code": 125, "ignoreComments": true }],
+		"no-tabs": ["error", { "allowIndentationTabs": true }],
+		"eol-last": ["error", "never"],
+		"no-shadow": "off",
+		"no-plusplus": "off",
+		"brace-style": ["error", "allman"],
+		"comma-dangle": ["error", "never"],
+		"no-unused-vars": "off",
+		"linebreak-style": "off",
+		"space-in-parens": ["error", "always"],
+		"object-curly-newline": ["error", { "ObjectExpression": { "consistent": true } }],
+		"array-bracket-spacing": ["error", "always"],
+		"template-curly-spacing": ["error", "always"],
+		"computed-property-spacing": ["error", "always"],
+
+		"import/extensions": ["error", "never"],
+		"import/prefer-default-export": "off",
+		"import/no-extraneous-dependencies": "off",
+
+		"@typescript-eslint/no-shadow": "error",
+		"@typescript-eslint/no-unused-vars": "error"
+	}
+}
