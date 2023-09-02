@@ -1,0 +1,42 @@
+{
+  "name": "simple-file-storage",
+  "author": "Florian Trayon (https://github.com/FlorianLeChat)",
+  "license": "MIT",
+  "private": true,
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FlorianLeChat/Simple-File-Storage.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FlorianLeChat/Simple-File-Storage/issues"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "lint": "eslint . --config .eslintrc.json --ext .js,.jsx,.ts,.tsx --report-unused-disable-directives",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "~13.4"
+  },
+  "devDependencies": {
+    "@types/node": "~20.5",
+    "@types/react": "~18.2",
+    "typescript": "~5.2",
+    "eslint-config-next": "~13.4",
+    "eslint-config-airbnb": "~19.0",
+    "@total-typescript/ts-reset": "~0.5",
+    "@typescript-eslint/eslint-plugin": "~6.5"
+  },
+  "optionalDependencies": {
+    "sharp": "~0.32"
+  },
+  "engines": {
+    "node": ">=18.0",
+    "npm": ">=8.6"
+  },
+  "browserslist": [
+    "defaults"
+  ]
+}
