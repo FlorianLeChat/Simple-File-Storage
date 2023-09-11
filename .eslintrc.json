@@ -31,6 +31,11 @@
 		"import/no-extraneous-dependencies": "off",
 
 		"@typescript-eslint/no-shadow": "error",
-		"@typescript-eslint/no-unused-vars": "error"
+		"@typescript-eslint/no-unused-vars": "error",
+
+		"react/jsx-indent": ["error", "tab"],
+		"react/jsx-indent-props": ["error", "tab"],
+		"react/react-in-jsx-scope": "off",
+		"react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }]
 	}
 }
