@@ -4,7 +4,7 @@
     "compilerOptions": {
         "lib": ["dom", "dom.iterable", "esnext"],
         "jsx": "preserve",
-        "paths": {"@/*": ["./*"], "*": ["./node_modules/*"]},
+        "paths": {"@/*": ["./*"]},
         "noEmit": true,
         "strict": true,
         "target": "esnext",
@@ -23,7 +23,7 @@
         "isolatedModules": true,
         "esModuleInterop": true,
         "strictNullChecks": true,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "resolveJsonModule": true,
         "noImplicitOverride": true,
         "noUnusedParameters": true,
