@@ -12,7 +12,7 @@ import "@total-typescript/ts-reset";
 // Importation des dépendances.
 import { type ReactNode } from "react";
 
-export default async function RootLayout( { children }: { children: ReactNode } )
+export default function RootLayout( { children }: { children: ReactNode; } )
 {
 	// Affichage du rendu HTML de la page.
 	return (
