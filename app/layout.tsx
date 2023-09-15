@@ -10,13 +10,20 @@ import "./layout.css";
 import "@total-typescript/ts-reset";
 
 // Importation des dépendances.
+import { Inter } from "next/font/google";
 import { type ReactNode } from "react";
+
+// Création de la police de caractères Inter.
+const inter = Inter( {
+	subsets: [ "latin" ],
+	display: "swap"
+} );
 
 export default function RootLayout( { children }: { children: ReactNode; } )
 {
 	// Affichage du rendu HTML de la page.
 	return (
-		<html lang="fr">
+		<html lang="fr" className={`${ inter.className } dark`}>
 			<body>{children}</body>
 		</html>
 	);
