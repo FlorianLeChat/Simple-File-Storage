@@ -4,7 +4,7 @@
 //
 
 import Link from "next/link";
-import { cn } from "@/utilities/tailwind";
+import { merge } from "@/utilities/tailwind";
 import { UserAuthForm } from "./components/auth-form";
 import { buttonVariants } from "./components/ui/button";
 
@@ -13,32 +13,48 @@ export default function Page()
 {
 	// Affichage du rendu HTML de la page.
 	return (
-		<main className="h-screen items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-			<Link
-				href="/examples/authentication"
-				className={cn(
-					buttonVariants( { variant: "ghost" } ),
-					"absolute right-4 top-4 md:right-8 md:top-8"
-				)}
-			>
-				Connexion
-			</Link>
+		<>
+			<header>
+				{/* Titre du site */}
+				<h1 className="absolute left-4 top-4 text-xl font-semibold">
+					💾 Simple File Storage
+				</h1>
 
-			<video className="relative object-cover blur-sm hidden w-full h-full lg:flex" autoPlay muted loop>
-				<source src={`${ process.env.__NEXT_ROUTER_BASEPATH }/assets/videos/login.mp4`} type="video/mp4" />
+				{/* Redirection vers la connexion */}
+				<Link
+					href="/authentication"
+					className={merge(
+						buttonVariants( { variant: "outline" } ),
+						"absolute right-4 top-4 hover:bg-accent hover:text-accent-foreground"
+					)}
+				>
+					Connexion
+				</Link>
+			</header>
+
+			{/* Vidéo en arrère-plan */}
+			<video
+				className="absolute -z-10 h-full object-none opacity-10"
+				autoPlay
+				muted
+				loop
+			>
+				<source
+					src={`${ process.env.__NEXT_ROUTER_BASEPATH }/assets/videos/login.mp4`}
+					type="video/mp4"
+				/>
 			</video>
 
-			<div className="lg:p-8">
-				<div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-					<div className="flex flex-col space-y-2 text-center">
-						<h1 className="text-2xl font-semibold tracking-tight">
-							Créer un compte
-						</h1>
+			{/* Contenu de la page */}
+			<main className="flex h-screen items-center">
+				<section className="flex w-full flex-col justify-center space-y-6 text-center sm:mx-auto sm:w-[350px]">
+					<h2 className="text-2xl font-semibold tracking-tight">
+						Créer un compte
+					</h2>
 
-						<p className="text-sm text-muted-foreground">
-							Entrer votre adresse électronique pour créer un compte.
-						</p>
-					</div>
+					<p className="text-sm text-muted-foreground">
+						Entrer votre adresse électronique pour créer un compte.
+					</p>
 
 					<UserAuthForm />
 
@@ -49,7 +65,7 @@ export default function Page()
 							href="/terms"
 							className="underline underline-offset-4 hover:text-primary"
 						>
-							Conditions d&#39;utilisation
+							Conditions d&lsquo;utilisation
 						</Link>
 						{" "}
 						et notre
@@ -62,8 +78,19 @@ export default function Page()
 						</Link>
 						.
 					</p>
-				</div>
-			</div>
-		</main>
+				</section>
+			</main>
+
+			<blockquote className="absolute bottom-4 left-4">
+				<q className="text-md">
+					{" "}
+					A simple file storage system using HTML 5/CSS 3 and PHP 8
+					vanilla.
+					{" "}
+				</q>
+
+				<footer className="text-sm">FlorianLeChat</footer>
+			</blockquote>
+		</>
 	);
 }
