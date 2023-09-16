@@ -11,7 +11,12 @@ import "@total-typescript/ts-reset";
 
 // Importation des dépendances.
 import { Inter } from "next/font/google";
-import { type ReactNode } from "react";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import { Suspense, type ReactNode } from "react";
+
+// Modification de la configuration de Font Awesome.
+//  Source : https://fontawesome.com/docs/web/use-with/react/use-with
+config.autoAddCss = false;
 
 // Création de la police de caractères Inter.
 const inter = Inter( {
