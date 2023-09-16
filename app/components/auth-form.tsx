@@ -5,7 +5,10 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Icons } from "./icons";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
+
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
@@ -45,7 +48,11 @@ export function UserAuthForm()
 
 				<Button disabled={isLoading}>
 					{isLoading && (
-						<Icons.Spinner className="mr-2 h-4 w-4 animate-spin" />
+						<FontAwesomeIcon
+							spin
+							icon={faSpinner}
+							className="mr-2 h-4 w-4"
+						/>
 					)}
 
 					Connexion par courriel
@@ -66,19 +73,26 @@ export function UserAuthForm()
 
 			<Button variant="outline" type="button" disabled={isLoading}>
 				{isLoading ? (
-					<Icons.Spinner className="mr-2 h-4 w-4 animate-spin" />
+					<FontAwesomeIcon
+						spin
+						icon={faSpinner}
+						className="mr-2 h-4 w-4"
+					/>
 				) : (
-					<Icons.Google className="mr-2 h-4 w-4" />
+					<FontAwesomeIcon icon={faGoogle} className="mr-2 h-4 w-4" />
 				)}
-
 				Google
 			</Button>
 
 			<Button variant="outline" type="button" disabled={isLoading}>
 				{isLoading ? (
-					<Icons.Spinner className="mr-2 h-4 w-4 animate-spin" />
+					<FontAwesomeIcon
+						spin
+						icon={faSpinner}
+						className="mr-2 h-4 w-4"
+					/>
 				) : (
-					<Icons.GitHub className="mr-2 h-4 w-4" />
+					<FontAwesomeIcon icon={faGithub} className="mr-2 h-4 w-4" />
 				)}
 				GitHub
 			</Button>
