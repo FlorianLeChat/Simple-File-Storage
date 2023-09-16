@@ -54,21 +54,18 @@ export function UserAuthForm()
 							className="mr-2 h-4 w-4"
 						/>
 					)}
-
-					Connexion par courriel
+					Inscription par courriel
 				</Button>
 			</form>
 
-			<div className="relative">
+			<div className="relative text-center">
 				<div className="absolute inset-0 flex items-center">
 					<span className="w-full border-t" />
 				</div>
 
-				<div className="relative flex justify-center text-xs uppercase">
-					<span className="bg-background px-2 text-muted-foreground">
-						Ou continuer avec
-					</span>
-				</div>
+				<span className="relative bg-background px-2 text-xs uppercase text-muted-foreground">
+					Ou continuer avec
+				</span>
 			</div>
 
 			<Button variant="outline" type="button" disabled={isLoading}>

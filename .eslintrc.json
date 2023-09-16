@@ -15,14 +15,15 @@
 		"quotes": ["error", "double"],
 		"no-tabs": ["error", { "allowIndentationTabs": true }],
 		"eol-last": ["error", "never"],
-		"no-shadow": "off",
+		"no-shadow": "off", // -> @typescript-eslint/no-shadow
 		"no-plusplus": "off",
 		"brace-style": ["error", "allman"],
 		"comma-dangle": ["error", "never"],
-		"no-unused-vars": "off",
+		"no-unused-vars": "off", // -> @typescript-eslint/no-unused-vars
 		"linebreak-style": "off",
 		"space-in-parens": ["error", "always"],
 		"no-underscore-dangle": ["error", { "allow": ["__NEXT_ROUTER_BASEPATH"] }], // https://github.com/vercel/next.js/issues/52201#issuecomment-1620629437
+		"object-curly-newline": ["error", { "ImportDeclaration": { "minProperties": 0 }}],
 		"array-bracket-spacing": ["error", "always"],
 		"template-curly-spacing": ["error", "always"],
 		"computed-property-spacing": ["error", "always"],
@@ -36,7 +37,9 @@
 
 		"react/jsx-indent": ["error", "tab"],
 		"react/jsx-indent-props": ["error", "tab"],
-		"react/react-in-jsx-scope": "off",
-		"react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }]
+		"react/react-in-jsx-scope": "off", // https://stackoverflow.com/a/61160875
+		"react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
+		"react/jsx-props-no-spreading": ["error", { "html": "ignore", "exceptions": ["Comp", "LabelPrimitive.Root"] }],
+		"react/jsx-one-expression-per-line": "off"
 	}
 }
