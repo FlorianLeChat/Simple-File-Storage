@@ -14,6 +14,9 @@ import { Inter } from "next/font/google";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import { Suspense, type ReactNode } from "react";
 
+// Importation des composants.
+import Loading from "./loading";
+
 // Modification de la configuration de Font Awesome.
 //  Source : https://fontawesome.com/docs/web/use-with/react/use-with
 config.autoAddCss = false;
@@ -24,12 +27,16 @@ const inter = Inter( {
 	display: "swap"
 } );
 
-export default function RootLayout( { children }: { children: ReactNode; } )
+export default function Layout( { children }: { children: ReactNode } )
 {
 	// Affichage du rendu HTML de la page.
 	return (
 		<html lang="fr" className={`${ inter.className } dark`}>
-			<body>{children}</body>
+			<body>
+				<Suspense fallback={<Loading title="Simple File Storage" />}>
+					{children}
+				</Suspense>
+			</body>
 		</html>
 	);
 }
