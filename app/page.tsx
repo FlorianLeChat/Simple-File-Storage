@@ -3,10 +3,15 @@
 //  Source : https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts#pages
 //
 
+// Importation des dépendances.
 import Link from "next/link";
+import { lazy } from "react";
 import { merge } from "@/utilities/tailwind";
-import { UserAuthForm } from "./components/auth-form";
+
+// Importation des composants.
 import { buttonVariants } from "./components/ui/button";
+
+const AuthForm = lazy( () => import( "./components/auth-form" ) );
 
 // Affichage de la page.
 export default function Page()
@@ -32,7 +37,7 @@ export default function Page()
 				</Link>
 			</header>
 
-			{/* Vidéo en arrère-plan */}
+			{/* Vidéo en arrière-plan */}
 			<video
 				className="absolute -z-10 h-full object-none opacity-10"
 				autoPlay
@@ -47,46 +52,14 @@ export default function Page()
 
 			{/* Contenu de la page */}
 			<main className="flex h-screen items-center">
-				<section className="flex w-full flex-col justify-center space-y-6 text-center sm:mx-auto sm:w-[350px]">
-					<h2 className="text-2xl font-semibold tracking-tight">
-						Créer un compte
-					</h2>
-
-					<p className="text-sm text-muted-foreground">
-						Entrer votre adresse électronique pour créer un compte.
-					</p>
-
-					<UserAuthForm />
-
-					<p className="px-8 text-center text-sm text-muted-foreground">
-						En continuant, vous acceptez nos
-						{" "}
-						<Link
-							href="/terms"
-							className="underline underline-offset-4 hover:text-primary"
-						>
-							Conditions d&lsquo;utilisation
-						</Link>
-						{" "}
-						et notre
-						{" "}
-						<Link
-							href="/privacy"
-							className="underline underline-offset-4 hover:text-primary"
-						>
-							Politique de confidentialité
-						</Link>
-						.
-					</p>
-				</section>
+				<AuthForm />
 			</main>
 
 			<blockquote className="absolute bottom-4 left-4">
 				<q className="text-md">
 					{" "}
 					A simple file storage system using HTML 5/CSS 3 and PHP 8
-					vanilla.
-					{" "}
+					vanilla.{" "}
 				</q>
 
 				<footer className="text-sm">FlorianLeChat</footer>
