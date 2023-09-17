@@ -22,6 +22,7 @@
 		"no-unused-vars": "off", // -> @typescript-eslint/no-unused-vars
 		"linebreak-style": "off",
 		"space-in-parens": ["error", "always"],
+		"operator-linebreak": ["error", "before", { "overrides": { "=": "after" } }],
 		"no-underscore-dangle": ["error", { "allow": ["__NEXT_ROUTER_BASEPATH"] }], // https://github.com/vercel/next.js/issues/52201#issuecomment-1620629437
 		"object-curly-newline": ["error", { "ImportDeclaration": { "minProperties": 0 }}],
 		"array-bracket-spacing": ["error", "always"],
@@ -39,7 +40,7 @@
 		"react/jsx-indent-props": ["error", "tab"],
 		"react/react-in-jsx-scope": "off", // https://stackoverflow.com/a/61160875
 		"react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
-		"react/jsx-props-no-spreading": ["error", { "html": "ignore", "exceptions": ["Comp", "LabelPrimitive.Root"] }],
+		"react/jsx-props-no-spreading": "off",
 		"react/jsx-one-expression-per-line": "off"
 	}
 }
