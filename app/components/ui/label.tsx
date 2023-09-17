@@ -2,13 +2,12 @@
 // Composant générique des libellés.
 //  Source : https://ui.shadcn.com/docs/components/label
 //
+import { merge } from "@/utilities/tailwind";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { cva, type VariantProps } from "class-variance-authority";
 import { forwardRef,
 	type ElementRef,
 	type ComponentPropsWithoutRef } from "react";
-
-import { merge } from "@/utilities/tailwind";
 
 const labelVariants = cva(
 	"text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -22,7 +21,7 @@ const Label = forwardRef<
 	<LabelPrimitive.Root
 		ref={ref}
 		className={merge( labelVariants(), className )}
-		{...{ props }}
+		{...props}
 	/>
 ) );
 
