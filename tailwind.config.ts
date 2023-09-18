@@ -3,17 +3,8 @@
  */
 module.exports = {
 	darkMode: "media",
-	content: [
-		"./app/**/*.{ts,tsx}"
-	],
+	content: [ "./app/**/*.{ts,tsx}" ],
 	theme: {
-		container: {
-			center: true,
-			padding: "2rem",
-			screens: {
-				"2xl": "1400px"
-			}
-		},
 		extend: {
 			colors: {
 				border: "hsl(var(--border))",
@@ -50,24 +41,15 @@ module.exports = {
 					foreground: "hsl(var(--card-foreground))"
 				}
 			},
-			borderRadius: {
-				lg: "var(--radius)",
-				md: "calc(var(--radius) - 2px)",
-				sm: "calc(var(--radius) - 4px)"
-			},
 			keyframes: {
-				"accordion-down": {
-					to: { height: "var(--radix-accordion-content-height)" },
-					from: { height: 0 }
-				},
-				"accordion-up": {
-					to: { height: 0 },
-					from: { height: "var(--radix-accordion-content-height)" }
+				github: {
+					"0%, 100%": { transform: "rotate(0)" },
+					"20%, 60%": { transform: "rotate(-25deg)" },
+					"40%, 80%": { transform: "rotate(10deg)" }
 				}
 			},
 			animation: {
-				"accordion-down": "accordion-down 0.2s ease-out",
-				"accordion-up": "accordion-up 0.2s ease-out"
+				github: "github 560ms ease-in-out"
 			}
 		}
 	},
