@@ -68,7 +68,7 @@ export default function AuthForm()
 	// Affichage du rendu HTML du composant.
 	return (
 		<Tabs
-			className="flex w-full flex-col justify-center space-y-6 text-center sm:mx-auto sm:w-[350px]"
+			className="flex w-full flex-col justify-center space-y-6 px-4 text-center sm:mx-auto sm:w-[500px]"
 			defaultValue="account"
 		>
 			<TabsList className="grid w-full grid-cols-2">
@@ -125,7 +125,7 @@ export default function AuthForm()
 					/>
 
 					{/* Acceptation des conditions d'utilisation */}
-					<div className="my-3 flex items-center space-x-2">
+					<div className="my-3 flex items-center justify-center space-x-2">
 						<Checkbox id="terms" disabled={isLoading} required />
 
 						<Label htmlFor="terms">
@@ -147,6 +147,7 @@ export default function AuthForm()
 					</Button>
 				</form>
 			</TabsContent>
+
 			<TabsContent value="password" className="space-y-6">
 				{/* Titre et description du formulaire */}
 				<h2 className="text-2xl font-semibold tracking-tight">

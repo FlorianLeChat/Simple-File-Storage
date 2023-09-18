@@ -16,7 +16,7 @@ export default function Page()
 		<>
 			<header>
 				{/* Titre du site */}
-				<h1 className="absolute left-4 top-4 text-xl font-semibold">
+				<h1 className="absolute top-4 w-full text-center text-xl font-semibold sm:left-4 sm:w-auto sm:text-left">
 					💾 Simple File Storage
 				</h1>
 
@@ -26,7 +26,7 @@ export default function Page()
 					rel="noopener noreferrer"
 					href="https://github.com/FlorianLeChat/Simple-File-Storage"
 					target="_blank"
-					className="group fixed bottom-auto left-auto right-0 top-0 hidden sm:inline"
+					className="group fixed bottom-auto left-auto right-0 top-0 hidden [clip-path:polygon(0_0,100%_0,100%_100%)] sm:inline"
 				>
 					<svg
 						width="80"
@@ -37,7 +37,7 @@ export default function Page()
 						<path d="M0 0l115 115h15l12 27 108 108V0z" />
 						<path
 							d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16"
-							className="md:motion-safe:animate-github group-hover:md:motion-safe:animate-github origin-[130px_106px] fill-current"
+							className="sm:motion-safe:animate-github group-hover:sm:motion-safe:animate-github origin-[130px_106px] fill-current"
 						/>
 						<path
 							d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0
@@ -67,7 +67,7 @@ export default function Page()
 				<AuthForm />
 			</main>
 
-			<blockquote className="absolute bottom-4 left-4">
+			<blockquote className="absolute hidden sm:bottom-4 sm:block sm:max-lg:w-full sm:max-lg:text-center lg:left-4">
 				<q className="text-md">
 					{" "}
 					A simple file storage system using HTML 5/CSS 3 and PHP 8
