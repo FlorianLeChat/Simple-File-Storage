@@ -5,7 +5,10 @@
 "use client";
 
 import Link from "next/link";
+import * as z from "zod";
+import { useForm } from "react-hook-form";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { useState, type FormEvent } from "react";
@@ -15,7 +18,17 @@ import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { Switch } from "./ui/switch";
 import { Checkbox } from "./ui/checkbox";
+import { Form, FormItem, FormField, FormControl, FormMessage } from "./ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+
+const authSchema = z.object( {
+	email: z.string().min( 10 ).max( 100 ).email(),
+	password: z.string().min( 10 ).max( 60 ),
+	accepted: z.boolean().refine( ( value ) => value === true, {
+		message:
+			"Vous devez accepter les termes et conditions d&lsquo;utilisation."
+	} )
+} );
 
 export default function AuthForm()
 {
@@ -27,9 +40,9 @@ export default function AuthForm()
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Requête de création d'un compte utilisateur par courriel.
-	const createEmailAccount = ( event: FormEvent<HTMLFormElement> ) =>
+	const createEmailAccount = ( values: z.infer<typeof authSchema> ) =>
 	{
-		event.preventDefault();
+		console.log( values );
 		setIsLoading( true );
 
 		setTimeout( () =>
@@ -65,6 +78,27 @@ export default function AuthForm()
 		);
 	};
 
+	// Définition des formulaires.
+	const registerForm = useForm<z.infer<typeof authSchema>>( {
+		// Inscription.
+		resolver: zodResolver( authSchema ),
+		defaultValues: {
+			email: "",
+			password: generateRandomPassword(),
+			accepted: false
+		}
+	} );
+
+	const loginForm = useForm<z.infer<typeof authSchema>>( {
+		// Connexion.
+		resolver: zodResolver( authSchema ),
+		defaultValues: {
+			email: "",
+			password: "",
+			accepted: true
+		}
+	} );
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<Tabs
@@ -87,65 +121,96 @@ export default function AuthForm()
 					créer un nouveau compte.
 				</p>
 
-				<form className="grid gap-2" onSubmit={createEmailAccount}>
-					{/* Adresse électronique */}
-					<Label className="sr-only" htmlFor="email">
-						Adresse électronique
-					</Label>
+				<Form {...registerForm}>
+					<form
+						onSubmit={registerForm.handleSubmit( createEmailAccount )}
+						className="space-y-6"
+					>
+						{/* Adresse électronique */}
+						<FormField
+							name="email"
+							control={registerForm.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormControl>
+										<Input
+											{...field}
+											disabled={isLoading}
+											spellCheck="false"
+											placeholder="example@domain.com"
+											autoComplete="email"
+											autoCapitalize="off"
+										/>
+									</FormControl>
 
-					<Input
-						id="email"
-						type="email"
-						disabled={isLoading}
-						minLength={10}
-						maxLength={100}
-						spellCheck="false"
-						placeholder="example@domain.com"
-						autoComplete="email"
-						autoCapitalize="off"
-						required
-					/>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-					{/* Mot de passe */}
-					<Label className="sr-only" htmlFor="password">
-						Mot de passe
-					</Label>
+						{/* Mot de passe */}
+						<FormField
+							name="password"
+							control={registerForm.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormControl>
+										<Input
+											{...field}
+											disabled={isLoading}
+											spellCheck="false"
+											placeholder="password"
+											autoComplete="new-password"
+											autoCapitalize="off"
+										/>
+									</FormControl>
 
-					<Input
-						id="password"
-						type="password"
-						disabled={isLoading}
-						minLength={10}
-						maxLength={60}
-						spellCheck="false"
-						placeholder={generateRandomPassword()}
-						autoComplete="new-password"
-						autoCapitalize="off"
-						required
-					/>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-					{/* Acceptation des conditions d'utilisation */}
-					<div className="my-3 flex items-center justify-center space-x-2">
-						<Checkbox id="terms" disabled={isLoading} required />
+						{/* Acceptation des conditions d'utilisation */}
+						<FormField
+							name="accepted"
+							control={registerForm.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormControl>
+										<div className="flex items-center justify-center space-x-2">
+											<Checkbox
+												id="terms"
+												checked={field.value}
+												disabled={isLoading}
+												onCheckedChange={field.onChange}
+											/>
 
-						<Label htmlFor="terms">
-							Accepter les termes et conditions mentionnés
-							ci-dessous.
-						</Label>
-					</div>
+											<Label htmlFor="terms">
+												Accepter les termes et
+												conditions mentionnés
+												ci-dessous.
+											</Label>
+										</div>
+									</FormControl>
 
-					{/* Bouton de validation du formulaire. */}
-					<Button disabled={isLoading}>
-						{isLoading && (
-							<FontAwesomeIcon
-								spin
-								icon={faSpinner}
-								className="mr-2 h-4 w-4"
-							/>
-						)}
-						Inscription par courriel
-					</Button>
-				</form>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{/* Bouton de validation du formulaire. */}
+						<Button disabled={isLoading}>
+							{isLoading && (
+								<FontAwesomeIcon
+									spin
+									icon={faSpinner}
+									className="mr-2 h-4 w-4"
+								/>
+							)}
+							Inscription par courriel
+						</Button>
+					</form>
+				</Form>
 			</TabsContent>
 
 			<TabsContent value="password" className="space-y-6">
@@ -159,65 +224,90 @@ export default function AuthForm()
 					pour vous connecter à votre compte.
 				</p>
 
-				<form className="grid gap-2" onSubmit={createEmailAccount}>
-					{/* Adresse électronique */}
-					<Label className="sr-only" htmlFor="email">
-						Adresse électronique
-					</Label>
+				<Form {...loginForm}>
+					<form
+						onSubmit={loginForm.handleSubmit( createEmailAccount )}
+						className="space-y-6"
+					>
+						{/* Adresse électronique */}
+						<FormField
+							name="email"
+							control={loginForm.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormControl>
+										<Input
+											{...field}
+											disabled={isLoading}
+											spellCheck="false"
+											placeholder="example@domain.com"
+											autoComplete="email"
+											autoCapitalize="off"
+										/>
+									</FormControl>
 
-					<Input
-						id="email"
-						type="email"
-						disabled={isLoading}
-						minLength={10}
-						maxLength={100}
-						spellCheck="false"
-						placeholder="Adresse électronique"
-						autoComplete="email"
-						autoCapitalize="off"
-						required
-					/>
-
-					{/* Mot de passe */}
-					<Label className="sr-only" htmlFor="password">
-						Mot de passe
-					</Label>
-
-					<Input
-						id="password"
-						type="password"
-						disabled={isLoading}
-						minLength={10}
-						maxLength={60}
-						spellCheck="false"
-						placeholder="Mot de passe"
-						autoComplete="current-password"
-						autoCapitalize="off"
-						required
-					/>
-
-					{/* Se souvenir de moi */}
-					<div className="my-3 flex items-center justify-center space-x-2">
-						<Switch
-							id="remember-me"
-							disabled={isLoading}
-							required
+									<FormMessage />
+								</FormItem>
+							)}
 						/>
-						<Label htmlFor="remember-me">Se souvenir de moi</Label>
-					</div>
 
-					{/* Bouton de validation du formulaire. */}
-					<Button disabled={isLoading}>
-						{isLoading && (
-							<FontAwesomeIcon
-								spin
-								icon={faSpinner}
-								className="mr-2 h-4 w-4"
-							/>
-						)}
-						Connexion par courriel
-					</Button>
-				</form>
+						{/* Mot de passe */}
+						<FormField
+							name="password"
+							control={loginForm.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormControl>
+										<Input
+											{...field}
+											disabled={isLoading}
+											spellCheck="false"
+											placeholder="password"
+											autoComplete="new-password"
+											autoCapitalize="off"
+										/>
+									</FormControl>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{/* Se souvenir de moi */}
+						<FormField
+							name="accepted"
+							control={registerForm.control}
+							render={() => (
+								<FormItem>
+									<FormControl>
+										<div className="flex items-center justify-center space-x-2">
+											<Switch
+												id="remember-me"
+												disabled={isLoading}
+											/>
+
+											<Label htmlFor="remember-me">
+												Se souvenir de moi
+											</Label>
+										</div>
+									</FormControl>
+								</FormItem>
+							)}
+						/>
+
+						{/* Bouton de validation du formulaire. */}
+						<Button disabled={isLoading}>
+							{isLoading && (
+								<FontAwesomeIcon
+									spin
+									icon={faSpinner}
+									className="mr-2 h-4 w-4"
+								/>
+							)}
+							Connexion par courriel
+						</Button>
+					</form>
+				</Form>
 			</TabsContent>
 
 			{/* Séparateur entre l'authentification classique et par OAuth. */}
