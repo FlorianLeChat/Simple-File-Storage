@@ -6,10 +6,10 @@
 "use client";
 
 import { merge } from "@/utilities/tailwind";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { forwardRef,
 	type ElementRef,
 	type ComponentPropsWithoutRef } from "react";
-import * as TabsPrimitive from "@radix-ui/react-tabs";
 
 const Tabs = TabsPrimitive.Root;
 
