@@ -2,9 +2,6 @@
 // Composant générique des interrupteurs.
 //  Source : https://ui.shadcn.com/docs/components/switch
 //
-
-"use client";
-
 import { merge } from "@/utilities/tailwind";
 import * as SwitchPrimitives from "@radix-ui/react-switch";
 import { forwardRef,

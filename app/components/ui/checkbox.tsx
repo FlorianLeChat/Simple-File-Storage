@@ -2,9 +2,6 @@
 // Composant générique des cases à cocher.
 //  Source : https://ui.shadcn.com/docs/components/checkbox
 //
-
-"use client";
-
 import { Check } from "lucide-react";
 import { merge } from "@/utilities/tailwind";
 import { forwardRef,

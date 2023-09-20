@@ -2,9 +2,6 @@
 // Composant générique des onglets.
 //  Source : https://ui.shadcn.com/docs/components/tabs
 //
-
-"use client";
-
 import { merge } from "@/utilities/tailwind";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { forwardRef,
