@@ -7,32 +7,35 @@
 import Link from "next/link";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { useState, type FormEvent } from "react";
+import { Loader2, Mail, RefreshCw } from "lucide-react";
 
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { Switch } from "./ui/switch";
-import { Checkbox } from "./ui/checkbox";
-import { Form, FormItem, FormField, FormControl, FormMessage } from "./ui/form";
+import { useToast } from "./ui/use-toast";
+import { Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger } from "./ui/tooltip";
+import { ToastAction } from "./ui/toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Form, FormItem, FormField, FormControl, FormMessage } from "./ui/form";
 
 const authSchema = z.object( {
 	email: z.string().min( 10 ).max( 100 ).email(),
 	password: z.string().min( 10 ).max( 60 ),
-	accepted: z.boolean().refine( ( value ) => value === true, {
-		message:
-			"Vous devez accepter les termes et conditions d&lsquo;utilisation."
-	} )
+	remembered: z.boolean().optional()
 } );
 
 export default function AuthForm()
 {
 	// Déclaration des constantes.
+	const { toast } = useToast();
 	const characters =
 		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
 
@@ -42,11 +45,25 @@ export default function AuthForm()
 	// Requête de création d'un compte utilisateur par courriel.
 	const createEmailAccount = ( values: z.infer<typeof authSchema> ) =>
 	{
-		console.log( values );
 		setIsLoading( true );
 
 		setTimeout( () =>
 		{
+			toast( {
+				title: "Authentification échouée",
+				variant: "destructive",
+				description:
+					"Cette fonctionnalité est actuellement indisponible.",
+				action: (
+					<ToastAction
+						altText="Réessayer"
+						onClick={() => createEmailAccount( values )}
+					>
+						Réessayer
+					</ToastAction>
+				)
+			} );
+
 			setIsLoading( false );
 		}, 3000 );
 	};
@@ -59,6 +76,21 @@ export default function AuthForm()
 
 		setTimeout( () =>
 		{
+			toast( {
+				title: "Authentification échouée",
+				variant: "destructive",
+				description:
+					"Cette fonctionnalité est actuellement indisponible.",
+				action: (
+					<ToastAction
+						altText="Réessayer"
+						onClick={() => createOAuthAccount( event )}
+					>
+						Réessayer
+					</ToastAction>
+				)
+			} );
+
 			setIsLoading( false );
 		}, 3000 );
 	};
@@ -84,8 +116,7 @@ export default function AuthForm()
 		resolver: zodResolver( authSchema ),
 		defaultValues: {
 			email: "",
-			password: generateRandomPassword(),
-			accepted: false
+			password: generateRandomPassword()
 		}
 	} );
 
@@ -95,7 +126,7 @@ export default function AuthForm()
 		defaultValues: {
 			email: "",
 			password: "",
-			accepted: true
+			remembered: false
 		}
 	} );
 
@@ -155,41 +186,39 @@ export default function AuthForm()
 							render={( { field } ) => (
 								<FormItem>
 									<FormControl>
-										<Input
-											{...field}
-											disabled={isLoading}
-											spellCheck="false"
-											placeholder="password"
-											autoComplete="new-password"
-											autoCapitalize="off"
-										/>
-									</FormControl>
+										<div className="flex gap-2">
+											<TooltipProvider>
+												<Input
+													{...field}
+													disabled={isLoading}
+													spellCheck="false"
+													placeholder="password"
+													autoComplete="new-password"
+													autoCapitalize="off"
+												/>
 
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+												<Tooltip>
+													<TooltipTrigger asChild>
+														<Button
+															size="icon"
+															type="button"
+															variant="outline"
+															disabled={isLoading}
+															onClick={() => registerForm.setValue(
+																"password",
+																generateRandomPassword()
+															)}
+														>
+															<RefreshCw className="h-4 w-4" />
+														</Button>
+													</TooltipTrigger>
 
-						{/* Acceptation des conditions d'utilisation */}
-						<FormField
-							name="accepted"
-							control={registerForm.control}
-							render={( { field } ) => (
-								<FormItem>
-									<FormControl>
-										<div className="flex items-center justify-center space-x-2">
-											<Checkbox
-												id="terms"
-												checked={field.value}
-												disabled={isLoading}
-												onCheckedChange={field.onChange}
-											/>
-
-											<Label htmlFor="terms">
-												Accepter les termes et
-												conditions mentionnés
-												ci-dessous.
-											</Label>
+													<TooltipContent>
+														Générer un nouveau mot
+														de passe sécurisé
+													</TooltipContent>
+												</Tooltip>
+											</TooltipProvider>
 										</div>
 									</FormControl>
 
@@ -200,12 +229,10 @@ export default function AuthForm()
 
 						{/* Bouton de validation du formulaire. */}
 						<Button disabled={isLoading}>
-							{isLoading && (
-								<FontAwesomeIcon
-									spin
-									icon={faSpinner}
-									className="mr-2 h-4 w-4"
-								/>
+							{isLoading ? (
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							) : (
+								<Mail className="mr-2 h-4 w-4" />
 							)}
 							Inscription par courriel
 						</Button>
@@ -263,7 +290,7 @@ export default function AuthForm()
 											disabled={isLoading}
 											spellCheck="false"
 											placeholder="password"
-											autoComplete="new-password"
+											autoComplete="current-password"
 											autoCapitalize="off"
 										/>
 									</FormControl>
@@ -275,7 +302,7 @@ export default function AuthForm()
 
 						{/* Se souvenir de moi */}
 						<FormField
-							name="accepted"
+							name="remembered"
 							control={registerForm.control}
 							render={() => (
 								<FormItem>
@@ -297,12 +324,10 @@ export default function AuthForm()
 
 						{/* Bouton de validation du formulaire. */}
 						<Button disabled={isLoading}>
-							{isLoading && (
-								<FontAwesomeIcon
-									spin
-									icon={faSpinner}
-									className="mr-2 h-4 w-4"
-								/>
+							{isLoading ? (
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							) : (
+								<Mail className="mr-2 h-4 w-4" />
 							)}
 							Connexion par courriel
 						</Button>
@@ -329,11 +354,7 @@ export default function AuthForm()
 				disabled={isLoading}
 			>
 				{isLoading ? (
-					<FontAwesomeIcon
-						spin
-						icon={faSpinner}
-						className="mr-2 h-4 w-4"
-					/>
+					<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 				) : (
 					<FontAwesomeIcon icon={faGoogle} className="mr-2 h-4 w-4" />
 				)}
@@ -347,11 +368,7 @@ export default function AuthForm()
 				disabled={isLoading}
 			>
 				{isLoading ? (
-					<FontAwesomeIcon
-						spin
-						icon={faSpinner}
-						className="mr-2 h-4 w-4"
-					/>
+					<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 				) : (
 					<FontAwesomeIcon icon={faGithub} className="mr-2 h-4 w-4" />
 				)}
