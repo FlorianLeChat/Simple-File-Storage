@@ -6,6 +6,7 @@
 // Importation des dépendances.
 import { lazy } from "react";
 
+// Importation des composants.
 const AuthForm = lazy( () => import( "./components/auth-form" ) );
 
 // Affichage de la page.

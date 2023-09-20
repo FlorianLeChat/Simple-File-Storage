@@ -16,6 +16,7 @@ import { Suspense, type ReactNode } from "react";
 
 // Importation des composants.
 import Loading from "./loading";
+import { Toaster } from "./components/ui/toaster";
 
 // Modification de la configuration de Font Awesome.
 //  Source : https://fontawesome.com/docs/web/use-with/react/use-with
@@ -36,6 +37,8 @@ export default function Layout( { children }: { children: ReactNode } )
 				<Suspense fallback={<Loading title="Simple File Storage" />}>
 					{children}
 				</Suspense>
+
+				<Toaster />
 			</body>
 		</html>
 	);
