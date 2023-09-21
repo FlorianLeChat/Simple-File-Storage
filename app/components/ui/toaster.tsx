@@ -1,6 +1,6 @@
 //
 // Composant d'affichage des notifications.
-//  Source : https://ui.shadmerge.com/docs/components/toast
+//  Source : https://ui.shadcn.com/docs/components/toast
 //
 
 "use client";

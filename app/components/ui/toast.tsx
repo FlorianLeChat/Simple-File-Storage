@@ -1,6 +1,6 @@
 //
 // Composant générique des notifications.
-//  Source : https://ui.shadmerge.com/docs/components/toast
+//  Source : https://ui.shadcn.com/docs/components/toast
 //
 import { X } from "lucide-react";
 import { merge } from "@/utilities/tailwind";
