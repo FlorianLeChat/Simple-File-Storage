@@ -1,6 +1,6 @@
 //
 // Composant de fonctionnement des notifications.
-//  Source : https://ui.shadmerge.com/docs/components/toast
+//  Source : https://ui.shadcn.com/docs/components/toast
 //
 import { useState, useEffect, type ReactNode } from "react";
 import type { ToastActionElement, ToastProps } from "./toast";
