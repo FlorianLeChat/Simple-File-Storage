@@ -15,7 +15,6 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import { Suspense, type ReactNode } from "react";
 
 // Importation des composants.
-import Loading from "./loading";
 import { Toaster } from "./components/ui/toaster";
 
 // Modification de la configuration de Font Awesome.
@@ -34,10 +33,7 @@ export default function Layout( { children }: { children: ReactNode } )
 	return (
 		<html lang="fr" className={`${ inter.className } dark`}>
 			<body>
-				<Suspense fallback={<Loading title="Simple File Storage" />}>
-					{children}
-				</Suspense>
-
+				<Suspense>{children}</Suspense>
 				<Toaster />
 			</body>
 		</html>
