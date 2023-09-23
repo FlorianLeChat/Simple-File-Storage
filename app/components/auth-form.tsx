@@ -26,6 +26,7 @@ import { ToastAction } from "./ui/toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Form, FormItem, FormField, FormControl, FormMessage } from "./ui/form";
 
+// Déclaration du schéma de validation du formulaire.
 const authSchema = z.object( {
 	email: z.string().min( 10 ).max( 100 ).email(),
 	password: z.string().min( 10 ).max( 60 ),
@@ -203,8 +204,6 @@ export default function AuthForm()
 													autoCapitalize="off"
 												/>
 
-												{passwordType}
-
 												<Tooltip>
 													<TooltipTrigger asChild>
 														<Button
@@ -244,7 +243,7 @@ export default function AuthForm()
 							)}
 						/>
 
-						{/* Bouton de validation du formulaire. */}
+						{/* Bouton de validation du formulaire */}
 						<Button disabled={isLoading}>
 							{isLoading ? (
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -341,7 +340,7 @@ export default function AuthForm()
 							)}
 						/>
 
-						{/* Bouton de validation du formulaire. */}
+						{/* Bouton de validation du formulaire */}
 						<Button disabled={isLoading}>
 							{isLoading ? (
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -354,7 +353,7 @@ export default function AuthForm()
 				</Form>
 			</TabsContent>
 
-			{/* Séparateur entre l'authentification classique et par OAuth. */}
+			{/* Séparateur entre l'authentification classique et par OAuth */}
 			<div className="relative text-center">
 				<div className="absolute inset-0 flex items-center">
 					<span className="w-full border-t" />
@@ -365,7 +364,7 @@ export default function AuthForm()
 				</span>
 			</div>
 
-			{/* Services d'authentification OAuth. */}
+			{/* Services d'authentification OAuth */}
 			<Button
 				type="button"
 				variant="outline"

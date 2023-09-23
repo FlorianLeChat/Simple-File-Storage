@@ -27,6 +27,7 @@ import { Select,
 	SelectContent,
 	SelectTrigger } from "../../components/ui/select";
 
+// Déclaration du schéma de validation du formulaire.
 const profileForm = z.object( {
 	username: z.string().min( 10 ).max( 50 ),
 	email: z.string().min( 10 ).max( 100 ).email()
@@ -61,7 +62,6 @@ export default function Profile()
 
 	// Définition du formulaire.
 	const form = useForm<z.infer<typeof profileForm>>( {
-		mode: "onChange",
 		resolver: zodResolver( profileForm ),
 		defaultValues: {
 			email: "florian@gmail.com",
@@ -121,7 +121,7 @@ export default function Profile()
 							>
 								<FormControl>
 									<SelectTrigger>
-										<SelectValue placeholder="Sélectionnez une adresse électronique vérifiée à afficher" />
+										<SelectValue placeholder="Sélectionner une adresse électronique vérifiée à afficher" />
 									</SelectTrigger>
 								</FormControl>
 
@@ -150,6 +150,7 @@ export default function Profile()
 					)}
 				/>
 
+				{/* Bouton de validation du formulaire */}
 				<Button disabled={isLoading}>
 					{isLoading ? (
 						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
