@@ -10,8 +10,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { useState, type FormEvent } from "react";
 import { Loader2, Mail, RefreshCw } from "lucide-react";
+import { useState, type FormEvent } from "react";
 
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -41,6 +41,7 @@ export default function AuthForm()
 
 	// Déclaration des variables d'état.
 	const [ isLoading, setIsLoading ] = useState( false );
+	const [ passwordType, setPasswordType ] = useState( "text" );
 
 	// Requête de création d'un compte utilisateur par courriel.
 	const createEmailAccount = ( values: z.infer<typeof authSchema> ) =>
@@ -166,6 +167,7 @@ export default function AuthForm()
 									<FormControl>
 										<Input
 											{...field}
+											type="email"
 											disabled={isLoading}
 											spellCheck="false"
 											placeholder="example@domain.com"
@@ -190,12 +192,18 @@ export default function AuthForm()
 											<TooltipProvider>
 												<Input
 													{...field}
+													type={passwordType}
+													onInput={() => setPasswordType(
+														"password"
+													)}
 													disabled={isLoading}
 													spellCheck="false"
 													placeholder="password"
 													autoComplete="new-password"
 													autoCapitalize="off"
 												/>
+
+												{passwordType}
 
 												<Tooltip>
 													<TooltipTrigger asChild>
@@ -204,10 +212,19 @@ export default function AuthForm()
 															type="button"
 															variant="outline"
 															disabled={isLoading}
-															onClick={() => registerForm.setValue(
-																"password",
-																generateRandomPassword()
-															)}
+															onClick={() =>
+															{
+																// Génération d'un nouveau mot de passe.
+																registerForm.setValue(
+																	"password",
+																	generateRandomPassword()
+																);
+
+																// Affichage du mot de passe en clair.
+																setPasswordType(
+																	"text"
+																);
+															}}
 														>
 															<RefreshCw className="h-4 w-4" />
 														</Button>
@@ -265,6 +282,7 @@ export default function AuthForm()
 									<FormControl>
 										<Input
 											{...field}
+											type="email"
 											disabled={isLoading}
 											spellCheck="false"
 											placeholder="example@domain.com"
@@ -287,6 +305,7 @@ export default function AuthForm()
 									<FormControl>
 										<Input
 											{...field}
+											type={passwordType}
 											disabled={isLoading}
 											spellCheck="false"
 											placeholder="password"
