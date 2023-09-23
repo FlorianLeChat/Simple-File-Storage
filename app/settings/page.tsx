@@ -25,7 +25,7 @@ export default function Page()
 				</p>
 			</header>
 
-			{/* Barre verticale de séparation. */}
+			{/* Barre verticale de séparation */}
 			<Separator />
 
 			{/* Formulaire de modification du profil utilisateur */}
