@@ -9,7 +9,7 @@ import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowDownUp, Check } from "lucide-react";
+import { ArrowDownUp, Check, Loader2, RefreshCw } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { toast } from "../../components/ui/use-toast";
@@ -30,14 +30,17 @@ import { Form,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
 
+// Déclaration des langues disponibles.
 const languages = [
-	{ label: "English", value: "en" },
-	{ label: "French", value: "fr" }
+	{ label: "Anglais", value: "en" },
+	{ label: "Français", value: "fr" }
 ] as const;
 
+// Déclaration du schéma de validation du formulaire.
 const accountForm = z.object( {
-	name: z.string().min( 2 ).max( 30 ),
-	language: z.string()
+	realname: z.string().min( 10 ).max( 50 ),
+	language: z.enum( [ "en", "fr" ] ),
+	password: z.string().min( 10 ).max( 100 ).optional()
 } );
 
 export default function Account()
@@ -69,10 +72,9 @@ export default function Account()
 
 	// Définition du formulaire.
 	const form = useForm<z.infer<typeof accountForm>>( {
-		mode: "onChange",
 		resolver: zodResolver( accountForm ),
 		defaultValues: {
-			name: "Florian4016",
+			realname: "Florian4016",
 			language: "fr"
 		}
 	} );
@@ -86,19 +88,26 @@ export default function Account()
 			>
 				{/* Nom d'affichage */}
 				<FormField
-					name="name"
+					name="realname"
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel>Nom d&lsquo;affichage</FormLabel>
 
 							<FormControl>
-								<Input placeholder="Your name" {...field} />
+								<Input
+									{...field}
+									disabled={isLoading}
+									spellCheck="false"
+									placeholder="John Doe"
+									autoComplete="user"
+									autoCapitalize="off"
+								/>
 							</FormControl>
 
 							<FormDescription>
-								This is the name that will be displayed on your
-								profile and in emails.
+								Ceci est le nom qui sera affiché sur votre
+								profil et dans les courriels.
 							</FormDescription>
 
 							<FormMessage />
@@ -106,19 +115,20 @@ export default function Account()
 					)}
 				/>
 
+				{/* Langue préférée */}
 				<FormField
 					name="language"
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem className="flex flex-col">
-							<FormLabel>Langue</FormLabel>
+							<FormLabel>Langue préférée</FormLabel>
 
 							<Popover>
 								<PopoverTrigger asChild>
 									<FormControl>
 										<Button
-											variant="outline"
 											role="combobox"
+											variant="outline"
 											className={merge(
 												"w-[200px] justify-between",
 												!field.value
@@ -129,8 +139,9 @@ export default function Account()
 												? languages.find(
 													( language ) => language.value
 															=== field.value
-												  )?.label
-												: "Select language"}
+												)?.label
+												: "Sélectionnez une langue"}
+
 											<ArrowDownUp className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 										</Button>
 									</FormControl>
@@ -138,10 +149,10 @@ export default function Account()
 
 								<PopoverContent className="w-[200px] p-0">
 									<Command>
-										<CommandInput placeholder="Search language..." />
+										<CommandInput placeholder="Rechercher une langue..." />
 
 										<CommandEmpty>
-											No language found.
+											Aucun résultat.
 										</CommandEmpty>
 
 										<CommandGroup>
@@ -175,8 +186,8 @@ export default function Account()
 							</Popover>
 
 							<FormDescription>
-								This is the language that will be used in the
-								dashboard.
+								Ceci est la langue qui sera utilisée sur
+								l&lsquo;ensemble des pages du site.
 							</FormDescription>
 
 							<FormMessage />
@@ -184,7 +195,51 @@ export default function Account()
 					)}
 				/>
 
-				<Button type="submit">Update account</Button>
+				{/* Mot de passe */}
+				<FormField
+					name="password"
+					control={form.control}
+					render={( { field } ) => (
+						<FormItem>
+							<FormLabel>Mot de passe</FormLabel>
+
+							<FormControl>
+								<div className="flex gap-2">
+									<Input
+										{...field}
+										type="password"
+										disabled
+										spellCheck="false"
+										placeholder="password"
+										autoComplete="new-password"
+										autoCapitalize="off"
+									/>
+								</div>
+							</FormControl>
+
+							<FormDescription>
+								Ceci est le mot de passe qui sera utilisé pour
+								vous connecter à votre compte.{" "}
+								<em>
+									Ceci ne concerne pas les comptes utilisant
+									le protocole OAuth.
+								</em>
+							</FormDescription>
+
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+				{/* Bouton de validation du formulaire */}
+				<Button disabled={isLoading}>
+					{isLoading ? (
+						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+					) : (
+						<RefreshCw className="mr-2 h-4 w-4" />
+					)}
+					Mettre à jour
+				</Button>
 			</form>
 		</Form>
 	);
