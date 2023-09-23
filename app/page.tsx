@@ -5,9 +5,15 @@
 
 // Importation des dépendances.
 import { lazy } from "react";
+import type { Metadata } from "next";
 
 // Importation des composants.
 const AuthForm = lazy( () => import( "./components/auth-form" ) );
+
+// Déclaration des propriétés de la page.
+export const metadata: Metadata = {
+	title: "Authentification – Simple File Storage"
+};
 
 // Affichage de la page.
 export default function Page()
@@ -52,10 +58,10 @@ export default function Page()
 
 			{/* Vidéo en arrière-plan */}
 			<video
-				className="absolute -z-10 h-full object-none opacity-10"
-				autoPlay
-				muted
 				loop
+				muted
+				autoPlay
+				className="absolute -z-10 h-full object-none opacity-10"
 			>
 				<source
 					src={`${ process.env.__NEXT_ROUTER_BASEPATH }/assets/videos/login.mp4`}
