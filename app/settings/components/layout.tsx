@@ -125,9 +125,9 @@ export default function Layout()
 							<FormMessage />
 
 							<RadioGroup
-								onValueChange={field.onChange}
-								defaultValue={field.value}
 								className="grid max-w-md grid-cols-2 gap-8 pt-2"
+								defaultValue={field.value}
+								onValueChange={field.onChange}
 							>
 								<FormItem>
 									<FormLabel className="[&:has([data-state=checked])>div]:border-primary">

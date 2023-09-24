@@ -115,26 +115,26 @@ export default function Profile()
 						<FormItem>
 							<FormLabel>Adresse électronique</FormLabel>
 
-							<Select
-								defaultValue={field.value}
-								onValueChange={field.onChange}
-							>
-								<FormControl>
+							<FormControl>
+								<Select
+									defaultValue={field.value}
+									onValueChange={field.onChange}
+								>
 									<SelectTrigger>
 										<SelectValue placeholder="Sélectionner une adresse électronique vérifiée à afficher" />
 									</SelectTrigger>
-								</FormControl>
 
-								<SelectContent>
-									<SelectItem value="florian@gmail.com">
-										florian@gmail.com
-									</SelectItem>
+									<SelectContent>
+										<SelectItem value="florian@gmail.com">
+											florian@gmail.com
+										</SelectItem>
 
-									<SelectItem value="florian@hotmail.com">
-										florian@hotmail.com
-									</SelectItem>
-								</SelectContent>
-							</Select>
+										<SelectItem value="florian@hotmail.com">
+											florian@hotmail.com
+										</SelectItem>
+									</SelectContent>
+								</Select>
+							</FormControl>
 
 							<FormDescription>
 								Vous pouvez ajouter ou supprimer des adresses

@@ -9,7 +9,7 @@ import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowDownUp, Check, Loader2, RefreshCw } from "lucide-react";
+import { Languages, Check, Loader2, RefreshCw } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { toast } from "../../components/ui/use-toast";
@@ -100,7 +100,7 @@ export default function Account()
 									disabled={isLoading}
 									spellCheck="false"
 									placeholder="John Doe"
-									autoComplete="user"
+									autoComplete="name"
 									autoCapitalize="off"
 								/>
 							</FormControl>
@@ -123,9 +123,9 @@ export default function Account()
 						<FormItem className="flex flex-col">
 							<FormLabel>Langue préférée</FormLabel>
 
-							<Popover>
-								<PopoverTrigger asChild>
-									<FormControl>
+							<FormControl>
+								<Popover>
+									<PopoverTrigger asChild>
 										<Button
 											role="combobox"
 											variant="outline"
@@ -142,48 +142,48 @@ export default function Account()
 												)?.label
 												: "Sélectionnez une langue"}
 
-											<ArrowDownUp className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+											<Languages className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 										</Button>
-									</FormControl>
-								</PopoverTrigger>
+									</PopoverTrigger>
 
-								<PopoverContent className="w-[200px] p-0">
-									<Command>
-										<CommandInput placeholder="Rechercher une langue..." />
+									<PopoverContent className="w-[200px] p-0">
+										<Command>
+											<CommandInput placeholder="Rechercher..." />
 
-										<CommandEmpty>
-											Aucun résultat.
-										</CommandEmpty>
+											<CommandEmpty>
+												Aucun résultat
+											</CommandEmpty>
 
-										<CommandGroup>
-											{languages.map( ( language ) => (
-												<CommandItem
-													value={language.label}
-													key={language.value}
-													onSelect={() =>
-													{
-														form.setValue(
-															"language",
-															language.value
-														);
-													}}
-												>
-													<Check
-														className={merge(
-															"mr-2 h-4 w-4",
-															language.value
-																=== field.value
-																? "opacity-100"
-																: "opacity-0"
-														)}
-													/>
-													{language.label}
-												</CommandItem>
-											) )}
-										</CommandGroup>
-									</Command>
-								</PopoverContent>
-							</Popover>
+											<CommandGroup>
+												{languages.map( ( language ) => (
+													<CommandItem
+														value={language.label}
+														key={language.value}
+														onSelect={() =>
+														{
+															form.setValue(
+																"language",
+																language.value
+															);
+														}}
+													>
+														<Check
+															className={merge(
+																"mr-2 h-4 w-4",
+																language.value
+																	=== field.value
+																	? "opacity-100"
+																	: "opacity-0"
+															)}
+														/>
+														{language.label}
+													</CommandItem>
+												) )}
+											</CommandGroup>
+										</Command>
+									</PopoverContent>
+								</Popover>
+							</FormControl>
 
 							<FormDescription>
 								Ceci est la langue qui sera utilisée sur
@@ -204,17 +204,15 @@ export default function Account()
 							<FormLabel>Mot de passe</FormLabel>
 
 							<FormControl>
-								<div className="flex gap-2">
-									<Input
-										{...field}
-										type="password"
-										disabled
-										spellCheck="false"
-										placeholder="password"
-										autoComplete="new-password"
-										autoCapitalize="off"
-									/>
-								</div>
+								<Input
+									{...field}
+									type="password"
+									disabled
+									spellCheck="false"
+									placeholder="password"
+									autoComplete="new-password"
+									autoCapitalize="off"
+								/>
 							</FormControl>
 
 							<FormDescription>
