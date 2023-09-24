@@ -9,11 +9,23 @@ import { merge } from "@/utilities/tailwind";
 import { usePathname } from "next/navigation";
 import { buttonVariants } from "../../components/ui/button";
 
-export default function Navigation( {
-	routes
-}: {
-	routes: { href: string; title: string }[];
-} )
+// Déclaration des routes de paramétrage.
+const routes = [
+	{
+		title: "Profil utilisateur",
+		href: "/settings"
+	},
+	{
+		title: "Compte utilisateur",
+		href: "/settings/account"
+	},
+	{
+		title: "Apparence",
+		href: "/settings/layout"
+	}
+];
+
+export default function Navigation()
 {
 	// Déclaration des constantes.
 	const pathname = usePathname();
