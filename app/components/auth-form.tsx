@@ -22,9 +22,15 @@ import { Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger } from "./ui/tooltip";
+import { Form,
+	FormItem,
+	FormField,
+	FormLabel,
+	FormControl,
+	FormMessage,
+	FormDescription } from "./ui/form";
 import { ToastAction } from "./ui/toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Form, FormItem, FormField, FormControl, FormMessage } from "./ui/form";
 
 // Déclaration du schéma de validation du formulaire.
 const authSchema = z.object( {
@@ -165,6 +171,10 @@ export default function AuthForm()
 							control={registerForm.control}
 							render={( { field } ) => (
 								<FormItem>
+									<FormLabel className="sr-only">
+										Adresse électronique
+									</FormLabel>
+
 									<FormControl>
 										<Input
 											{...field}
@@ -177,6 +187,11 @@ export default function AuthForm()
 										/>
 									</FormControl>
 
+									<FormDescription className="sr-only">
+										L&lsquo;adresse électronique qui doit
+										être associée à votre compte.
+									</FormDescription>
+
 									<FormMessage />
 								</FormItem>
 							)}
@@ -188,6 +203,10 @@ export default function AuthForm()
 							control={registerForm.control}
 							render={( { field } ) => (
 								<FormItem>
+									<FormLabel className="sr-only">
+										Mot de passe
+									</FormLabel>
+
 									<FormControl>
 										<div className="flex gap-2">
 											<TooltipProvider>
@@ -238,6 +257,11 @@ export default function AuthForm()
 										</div>
 									</FormControl>
 
+									<FormDescription className="sr-only">
+										Le mot de passe qui sera utilisé pour
+										vous connecter à votre compte.
+									</FormDescription>
+
 									<FormMessage />
 								</FormItem>
 							)}
@@ -278,6 +302,10 @@ export default function AuthForm()
 							control={loginForm.control}
 							render={( { field } ) => (
 								<FormItem>
+									<FormLabel className="sr-only">
+										Adresse électronique
+									</FormLabel>
+
 									<FormControl>
 										<Input
 											{...field}
@@ -290,6 +318,11 @@ export default function AuthForm()
 										/>
 									</FormControl>
 
+									<FormDescription className="sr-only">
+										L&lsquo;adresse électronique associée à
+										votre compte.
+									</FormDescription>
+
 									<FormMessage />
 								</FormItem>
 							)}
@@ -301,6 +334,10 @@ export default function AuthForm()
 							control={loginForm.control}
 							render={( { field } ) => (
 								<FormItem>
+									<FormLabel className="sr-only">
+										Mot de passe
+									</FormLabel>
+
 									<FormControl>
 										<Input
 											{...field}
@@ -313,6 +350,11 @@ export default function AuthForm()
 										/>
 									</FormControl>
 
+									<FormDescription className="sr-only">
+										Le mot de passe utilisé pour vous
+										connecter à votre compte.
+									</FormDescription>
+
 									<FormMessage />
 								</FormItem>
 							)}
@@ -324,6 +366,10 @@ export default function AuthForm()
 							control={registerForm.control}
 							render={() => (
 								<FormItem>
+									<FormLabel className="sr-only">
+										Se souvenir de moi
+									</FormLabel>
+
 									<FormControl>
 										<div className="flex items-center justify-center space-x-2">
 											<Switch
@@ -336,6 +382,11 @@ export default function AuthForm()
 											</Label>
 										</div>
 									</FormControl>
+
+									<FormDescription className="sr-only">
+										Pour rester connecté à votre compte
+										lorsque vous revenez sur le site.
+									</FormDescription>
 								</FormItem>
 							)}
 						/>
