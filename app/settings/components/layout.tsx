@@ -8,6 +8,7 @@ import * as z from "zod";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown, Loader2, RefreshCw } from "lucide-react";
 
@@ -30,6 +31,9 @@ const layoutForm = z.object( {
 
 export default function Layout()
 {
+	// Déclaration des constantes.
+	const { theme, setTheme } = useTheme();
+
 	// Déclaration des variables d'état.
 	const [ isLoading, setIsLoading ] = useState( false );
 
@@ -37,6 +41,8 @@ export default function Layout()
 	const updateLayout = ( data: z.infer<typeof layoutForm> ) =>
 	{
 		setIsLoading( true );
+
+		setTheme( data.theme );
 
 		setTimeout( () =>
 		{
@@ -60,7 +66,7 @@ export default function Layout()
 		resolver: zodResolver( layoutForm ),
 		defaultValues: {
 			font: "inter",
-			theme: "light"
+			theme: theme === "light" ? "light" : "dark"
 		}
 	} );
 

@@ -16,6 +16,7 @@ import { Suspense, type ReactNode } from "react";
 
 // Importation des composants.
 import { Toaster } from "./components/ui/toaster";
+import { ThemeProvider } from "./components/theme-provider";
 
 // Modification de la configuration de Font Awesome.
 //  Source : https://fontawesome.com/docs/web/use-with/react/use-with
@@ -31,10 +32,22 @@ export default function Layout( { children }: { children: ReactNode } )
 {
 	// Affichage du rendu HTML de la page.
 	return (
-		<html lang="fr" className={`${ inter.className } dark`}>
+		<html lang="fr" className={inter.className}>
 			<body>
-				<Suspense>{children}</Suspense>
-				<Toaster />
+				<Suspense>
+					{/* Basculement entre les thèmes clair et sombre. */}
+					<ThemeProvider
+						attribute="class"
+						storageKey="NEXT_THEME"
+						disableTransitionOnChange
+					>
+						{/* Composant enfant */}
+						{children}
+
+						{/* Composant des notifications */}
+						<Toaster />
+					</ThemeProvider>
+				</Suspense>
 			</body>
 		</html>
 	);

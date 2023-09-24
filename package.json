@@ -22,6 +22,7 @@
     "zod": "~3.22",
     "cmdk": "~0.2",
     "next": "~13.4",
+    "next-themes": "~0.2",
     "react-hook-form": "~7.46",
     "@hookform/resolvers": "~3.3",
     "@fortawesome/react-fontawesome": "~0.2",

@@ -157,8 +157,8 @@ export default function Account()
 											<CommandGroup>
 												{languages.map( ( language ) => (
 													<CommandItem
-														value={language.label}
 														key={language.value}
+														value={language.label}
 														onSelect={() =>
 														{
 															form.setValue(
