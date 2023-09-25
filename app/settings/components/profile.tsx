@@ -9,7 +9,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2, RefreshCw, WholeWord, AtSign } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { toast } from "../../components/ui/use-toast";
@@ -82,7 +82,10 @@ export default function Profile()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel>Nom d&lsquo;utilisateur</FormLabel>
+							<FormLabel>
+								<WholeWord className="mr-2 inline h-6 w-6" />
+								Nom d&lsquo;utilisateur
+							</FormLabel>
 
 							<FormControl>
 								<Input
@@ -113,7 +116,10 @@ export default function Profile()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel>Adresse électronique</FormLabel>
+							<FormLabel>
+								<AtSign className="mr-2 inline h-6 w-6" />
+								Adresse électronique
+							</FormLabel>
 
 							<FormControl>
 								<Select

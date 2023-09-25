@@ -5,28 +5,39 @@
 "use client";
 
 import * as z from "zod";
-import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown, Loader2, RefreshCw } from "lucide-react";
 import { useState, useEffect } from "react";
+import { CaseUpper, Loader2, SunMoon, RefreshCw } from "lucide-react";
 
 import { toast } from "../../components/ui/use-toast";
-import { Form,
-	FormControl,
-	FormDescription,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage } from "../../components/ui/form";
-import { Button, buttonVariants } from "../../components/ui/button";
+import { Button } from "../../components/ui/button";
+import { Select,
+	SelectItem,
+	SelectValue,
+	SelectContent,
+	SelectTrigger } from "../../components/ui/select";
 import { Skeleton } from "../../components/ui/skeleton";
+import { Form,
+	FormItem,
+	FormField,
+	FormLabel,
+	FormControl,
+	FormMessage,
+	FormDescription } from "../../components/ui/form";
 import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
+
+// Déclaration des polices de caractères disponibles.
+const fonts = [
+	{ label: "Inter", value: "inter" },
+	{ label: "Poppins", value: "poppins" },
+	{ label: "Système", value: "system" }
+] as const;
 
 // Déclaration du schéma de validation du formulaire.
 const layoutForm = z.object( {
-	font: z.enum( [ "inter", "manrope", "system" ] ),
+	font: z.enum( [ "inter", "poppins", "system" ] ),
 	theme: z.enum( [ "light", "dark" ] )
 } );
 
@@ -91,27 +102,29 @@ export default function Layout()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel>Police de caractère</FormLabel>
+							<FormLabel>
+								<CaseUpper className="mr-2 inline h-6 w-6" />
+								Police de caractère
+							</FormLabel>
 
-							<div className="relative w-max">
-								<FormControl>
-									<select
-										className={merge(
-											buttonVariants( {
-												variant: "outline"
-											} ),
-											"w-[200px] appearance-none bg-transparent font-normal"
-										)}
-										{...field}
-									>
-										<option value="inter">Inter</option>
-										<option value="poppins">Poppins</option>
-										<option value="system">System</option>
-									</select>
-								</FormControl>
+							<FormControl>
+								<Select
+									defaultValue={field.value}
+									onValueChange={field.onChange}
+								>
+									<SelectTrigger>
+										<SelectValue placeholder="Sélectionner une police de caractère" />
+									</SelectTrigger>
 
-								<ChevronDown className="absolute right-3 top-2.5 h-4 w-4 opacity-50" />
-							</div>
+									<SelectContent>
+										{fonts.map( ( font ) => (
+											<SelectItem value={font.value}>
+												{font.label}
+											</SelectItem>
+										) )}
+									</SelectContent>
+								</Select>
+							</FormControl>
 
 							<FormDescription>
 								Définissez la police que vous souhaitez utiliser
@@ -129,7 +142,10 @@ export default function Layout()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem className="space-y-1">
-							<FormLabel>Thème</FormLabel>
+							<FormLabel>
+								<SunMoon className="mr-2 inline h-6 w-6" />
+								Thème
+							</FormLabel>
 
 							<FormDescription>
 								Définissez le thème que vous souhaitez utiliser
