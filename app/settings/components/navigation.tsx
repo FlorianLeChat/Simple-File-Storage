@@ -7,20 +7,36 @@
 import Link from "next/link";
 import { merge } from "@/utilities/tailwind";
 import { usePathname } from "next/navigation";
+import { User, KeyRound, Palette } from "lucide-react";
 import { buttonVariants } from "../../components/ui/button";
 
 // Déclaration des routes de paramétrage.
 const routes = [
 	{
-		title: "Profil utilisateur",
+		title: (
+			<>
+				<User className="mr-2 inline" />
+				Profil utilisateur
+			</>
+		),
 		href: "/settings"
 	},
 	{
-		title: "Compte utilisateur",
+		title: (
+			<>
+				<KeyRound className="mr-2 inline" />
+				Compte utilisateur
+			</>
+		),
 		href: "/settings/account"
 	},
 	{
-		title: "Apparence",
+		title: (
+			<>
+				<Palette className="mr-2 inline" />
+				Apparence
+			</>
+		),
 		href: "/settings/layout"
 	}
 ];

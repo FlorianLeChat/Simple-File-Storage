@@ -5,23 +5,19 @@
 "use client";
 
 import * as z from "zod";
-import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Languages, Check, Loader2, RefreshCw } from "lucide-react";
+import { Languages, Lock, Contact, Loader2, RefreshCw } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { toast } from "../../components/ui/use-toast";
 import { Button } from "../../components/ui/button";
-import { Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem } from "../../components/ui/command";
-import { Popover,
-	PopoverContent,
-	PopoverTrigger } from "../../components/ui/popover";
+import { Select,
+	SelectItem,
+	SelectValue,
+	SelectContent,
+	SelectTrigger } from "../../components/ui/select";
 import { Form,
 	FormItem,
 	FormField,
@@ -92,7 +88,10 @@ export default function Account()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel>Nom d&lsquo;affichage</FormLabel>
+							<FormLabel>
+								<Contact className="mr-2 inline h-6 w-6" />
+								Nom d&lsquo;affichage
+							</FormLabel>
 
 							<FormControl>
 								<Input
@@ -121,68 +120,28 @@ export default function Account()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem className="flex flex-col">
-							<FormLabel>Langue préférée</FormLabel>
+							<FormLabel>
+								<Languages className="mr-2 inline h-6 w-6" />
+								Langue préférée
+							</FormLabel>
 
 							<FormControl>
-								<Popover>
-									<PopoverTrigger asChild>
-										<Button
-											role="combobox"
-											variant="outline"
-											className={merge(
-												"w-[200px] justify-between",
-												!field.value
-													&& "text-muted-foreground"
-											)}
-										>
-											{field.value
-												? languages.find(
-													( language ) => language.value
-															=== field.value
-												)?.label
-												: "Sélectionnez une langue"}
+								<Select
+									defaultValue={field.value}
+									onValueChange={field.onChange}
+								>
+									<SelectTrigger>
+										<SelectValue placeholder="Sélectionner une langue" />
+									</SelectTrigger>
 
-											<Languages className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-										</Button>
-									</PopoverTrigger>
-
-									<PopoverContent className="w-[200px] p-0">
-										<Command>
-											<CommandInput placeholder="Rechercher..." />
-
-											<CommandEmpty>
-												Aucun résultat
-											</CommandEmpty>
-
-											<CommandGroup>
-												{languages.map( ( language ) => (
-													<CommandItem
-														key={language.value}
-														value={language.label}
-														onSelect={() =>
-														{
-															form.setValue(
-																"language",
-																language.value
-															);
-														}}
-													>
-														<Check
-															className={merge(
-																"mr-2 h-4 w-4",
-																language.value
-																	=== field.value
-																	? "opacity-100"
-																	: "opacity-0"
-															)}
-														/>
-														{language.label}
-													</CommandItem>
-												) )}
-											</CommandGroup>
-										</Command>
-									</PopoverContent>
-								</Popover>
+									<SelectContent>
+										{languages.map( ( language ) => (
+											<SelectItem value={language.value}>
+												{language.label}
+											</SelectItem>
+										) )}
+									</SelectContent>
+								</Select>
 							</FormControl>
 
 							<FormDescription>
@@ -201,7 +160,10 @@ export default function Account()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel>Mot de passe</FormLabel>
+							<FormLabel>
+								<Lock className="mr-2 inline h-6 w-6" />
+								Mot de passe
+							</FormLabel>
 
 							<FormControl>
 								<Input
