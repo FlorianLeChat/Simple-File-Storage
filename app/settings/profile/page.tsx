@@ -6,9 +6,9 @@
 import { lazy } from "react";
 
 // Importation des composants.
-import { Separator } from "../components/ui/separator";
+import { Separator } from "../../components/ui/separator";
 
-const Profile = lazy( () => import( "./components/profile" ) );
+const Profile = lazy( () => import( "../components/profile" ) );
 
 // Affichage de la page.
 export default function Page()
