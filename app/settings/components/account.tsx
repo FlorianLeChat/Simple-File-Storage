@@ -136,7 +136,10 @@ export default function Account()
 
 									<SelectContent>
 										{languages.map( ( language ) => (
-											<SelectItem value={language.value}>
+											<SelectItem
+												key={language.value}
+												value={language.value}
+											>
 												{language.label}
 											</SelectItem>
 										) )}
