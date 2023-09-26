@@ -19,7 +19,7 @@ const routes = [
 				Profil utilisateur
 			</>
 		),
-		href: "/settings"
+		href: "/settings/profile"
 	},
 	{
 		title: (
