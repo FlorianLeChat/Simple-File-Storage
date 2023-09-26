@@ -25,7 +25,7 @@ export default function Layout( { children }: { children: ReactNode } )
 		<>
 			<header className="flex h-16 items-center border-b px-4">
 				{/* Titre du site */}
-				<h1 className="text-xl font-semibold">
+				<h1 className="mr-4 text-xl font-semibold">
 					💾 Simple File Storage
 				</h1>
 
