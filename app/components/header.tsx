@@ -5,41 +5,80 @@
 "use client";
 
 import Link from "next/link";
-import { merge } from "@/utilities/tailwind";
-import { usePathname } from "next/navigation";
+import { NavigationMenu,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+	NavigationMenuContent,
+	NavigationMenuTrigger,
+	navigationMenuTriggerStyle } from "./ui/navigation-menu";
 
-// Déclaration des routes de navigation.
-const routes = [
+// Déclaration des routes de paramétrage.
+const routes: { title: string; href: string; description: string }[] = [
 	{
-		title: "Tableau de bord",
-		href: "/dashboard"
+		title: "Profil utilisateur",
+		href: "/settings/profile",
+		description: "Gestion des informations de votre profil utilisateur."
 	},
 	{
-		title: "Paramètres",
-		href: "/settings"
+		title: "Compte utilisateur",
+		href: "/settings/account",
+		description:
+			"Modification des informations de votre compte utilisateur."
+	},
+	{
+		title: "Apparence",
+		href: "/settings/layout",
+		description: "Personnalisation de l'apparence du site Internet."
 	}
 ];
 
 export default function Header()
 {
-	// Déclaration des constantes.
-	const pathname = usePathname();
-
 	// Affichage du rendu HTML du composant.
 	return (
-		<nav className="mx-6 flex items-center space-x-4 lg:space-x-6">
-			{routes.map( ( route ) => (
-				<Link
-					key={route.href}
-					href={route.href}
-					className={merge(
-						!pathname.startsWith( route.href ) && "text-muted-foreground",
-						"text-sm font-medium transition-colors hover:text-primary"
-					)}
-				>
-					{route.title}
-				</Link>
-			) )}
-		</nav>
+		<NavigationMenu>
+			<NavigationMenuList>
+				{/* Page d'accueil */}
+				<NavigationMenuItem>
+					<Link href="/docs" legacyBehavior passHref>
+						<NavigationMenuLink
+							className={navigationMenuTriggerStyle()}
+						>
+							Tableau de bord
+						</NavigationMenuLink>
+					</Link>
+				</NavigationMenuItem>
+
+				{/* Paramètres */}
+				<NavigationMenuItem>
+					<NavigationMenuTrigger>Paramètres</NavigationMenuTrigger>
+
+					<NavigationMenuContent>
+						<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+							{routes.map( ( route ) => (
+								<li key={route.href}>
+									<NavigationMenuLink asChild>
+										<Link
+											href={route.href}
+											title={route.title}
+											className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+										>
+											<h4 className="text-sm font-medium leading-none">
+												{route.title}
+											</h4>
+
+											<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+												{route.description}
+											</p>
+										</Link>
+									</NavigationMenuLink>
+								</li>
+							) )}
+						</ul>
+					</NavigationMenuContent>
+				</NavigationMenuItem>
+			</NavigationMenuList>
+		</NavigationMenu>
 	);
 }
