@@ -118,7 +118,10 @@ export default function Layout()
 
 									<SelectContent>
 										{fonts.map( ( font ) => (
-											<SelectItem value={font.value}>
+											<SelectItem
+												key={font.value}
+												value={font.value}
+											>
 												{font.label}
 											</SelectItem>
 										) )}
@@ -230,11 +233,16 @@ export default function Layout()
 								</RadioGroup>
 							) : (
 								// Squelette du composant en attendant le montage.
-								<div className="flex max-w-md flex-col items-center gap-1">
-									<Skeleton className="h-11 w-full rounded-md" />
-									<Skeleton className="h-11 w-full rounded-md" />
-									<Skeleton className="h-11 w-full rounded-md" />
-									<Skeleton className="h-11 w-full rounded-md" />
+								<div className="flex max-w-md items-center gap-8 pt-2">
+									<div className="w-full">
+										<Skeleton className="h-[146px] rounded-md" />
+										<Skeleton className="mt-2 h-[24px] rounded-md" />
+									</div>
+
+									<div className="w-full">
+										<Skeleton className="h-[146px] rounded-md" />
+										<Skeleton className="mt-2 h-[24px] rounded-md" />
+									</div>
 								</div>
 							)}
 						</FormItem>
