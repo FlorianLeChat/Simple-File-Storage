@@ -16,7 +16,7 @@ import { Suspense, type ReactNode } from "react";
 
 // Importation des composants.
 import { Toaster } from "./components/ui/toaster";
-import { ThemeProvider } from "./components/theme-provider";
+import ThemeProvider from "./components/theme-provider";
 
 // Modification de la configuration de Font Awesome.
 //  Source : https://fontawesome.com/docs/web/use-with/react/use-with
