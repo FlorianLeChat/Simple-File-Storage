@@ -15,7 +15,7 @@ export default function Page()
 {
 	// Affichage du rendu HTML de la page.
 	return (
-		<section className="space-y-6">
+		<>
 			{/* En-tête de la page */}
 			<header>
 				<h3 className="text-lg font-medium">Profil utilisateur</h3>
@@ -30,6 +30,6 @@ export default function Page()
 
 			{/* Formulaire de modification du profil utilisateur */}
 			<Profile />
-		</section>
+		</>
 	);
 }
