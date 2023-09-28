@@ -25,6 +25,7 @@
     "next-themes": "~0.2",
     "react-hook-form": "~7.46",
     "@hookform/resolvers": "~3.3",
+    "vanilla-cookieconsent": "3.0.0-rc.16",
     "@fortawesome/react-fontawesome": "~0.2",
     "@fortawesome/fontawesome-svg-core": "~6.4",
     "@fortawesome/free-solid-svg-icons": "~6.4",

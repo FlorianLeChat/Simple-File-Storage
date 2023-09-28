@@ -7,8 +7,8 @@
 import Link from "next/link";
 import { merge } from "@/utilities/tailwind";
 import { usePathname } from "next/navigation";
-import { User, KeyRound, Palette } from "lucide-react";
-import { buttonVariants } from "../../components/ui/button";
+import { Cookie, User, KeyRound, Palette } from "lucide-react";
+import { Button, buttonVariants } from "../../components/ui/button";
 
 // Déclaration des routes de paramétrage.
 const routes = [
@@ -49,6 +49,7 @@ export default function Navigation()
 	// Affichage du rendu HTML du composant.
 	return (
 		<nav className="-mx-4 flex space-x-2 lg:w-1/5 lg:flex-col lg:space-x-0 lg:space-y-1">
+			{/* Listes des routes */}
 			{routes.map( ( route ) => (
 				<Link
 					key={route.href}
@@ -64,6 +65,17 @@ export default function Navigation()
 					{route.title}
 				</Link>
 			) )}
+
+			{/* Gestion des cookies */}
+			<Button
+				type="button"
+				variant="ghost"
+				data-cc="show-preferencesModal"
+				className="justify-start"
+			>
+				<Cookie className="mr-2" />
+				Cookies
+			</Button>
 		</nav>
 	);
 }

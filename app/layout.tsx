@@ -12,11 +12,13 @@ import "@total-typescript/ts-reset";
 // Importation des dépendances.
 import { Inter } from "next/font/google";
 import { config } from "@fortawesome/fontawesome-svg-core";
-import { Suspense, type ReactNode } from "react";
+import { Suspense, lazy, type ReactNode } from "react";
 
 // Importation des composants.
 import { Toaster } from "./components/ui/toaster";
 import ThemeProvider from "./components/theme-provider";
+
+const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
 
 // Modification de la configuration de Font Awesome.
 //  Source : https://fontawesome.com/docs/web/use-with/react/use-with
@@ -43,6 +45,9 @@ export default function Layout( { children }: { children: ReactNode } )
 					>
 						{/* Composant enfant */}
 						{children}
+
+						{/* Consentement des cookies */}
+						<CookieConsent />
 
 						{/* Composant des notifications */}
 						<Toaster />
