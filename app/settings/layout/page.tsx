@@ -15,7 +15,7 @@ export default function Page()
 {
 	// Affichage du rendu HTML de la page.
 	return (
-		<div className="space-y-6">
+		<>
 			{/* En-tête de la page */}
 			<header>
 				<h3 className="text-lg font-medium">Apparence</h3>
@@ -32,6 +32,6 @@ export default function Page()
 
 			{/* Formulaire de modification de l'apparence */}
 			<Layout />
-		</div>
+		</>
 	);
 }
