@@ -56,7 +56,9 @@ export default function Layout( { children }: { children: ReactNode } )
 					<Navigation />
 
 					{/* Contenu principal */}
-					<div className="flex-1 lg:max-w-2xl">{children}</div>
+					<section className="flex-1 space-y-6 lg:max-w-2xl">
+						{children}
+					</section>
 				</main>
 			</div>
 		</>
