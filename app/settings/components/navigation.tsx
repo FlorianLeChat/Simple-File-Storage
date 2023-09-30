@@ -80,7 +80,7 @@ export default function Navigation()
 				type="button"
 				variant="ghost"
 				data-cc="show-preferencesModal"
-				className="h-auto min-h-[2.5rem] justify-start"
+				className="h-auto min-h-[2.5rem] justify-start xl:h-12"
 			>
 				<Cookie className="mr-2" />
 
