@@ -120,7 +120,7 @@ export default function Account()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem className="flex flex-col">
-							<FormLabel>
+							<FormLabel htmlFor="language">
 								<Languages className="mr-2 inline h-6 w-6" />
 								Langue préférée
 							</FormLabel>
@@ -130,7 +130,7 @@ export default function Account()
 									defaultValue={field.value}
 									onValueChange={field.onChange}
 								>
-									<SelectTrigger>
+									<SelectTrigger id="language" aria-controls="language">
 										<SelectValue placeholder="Sélectionner une langue" />
 									</SelectTrigger>
 

@@ -43,10 +43,8 @@ const layoutForm = z.object( {
 
 export default function Layout()
 {
-	// Déclaration des constantes.
-	const { theme, setTheme } = useTheme();
-
 	// Déclaration des variables d'état.
+	const { theme, setTheme } = useTheme();
 	const [ mounted, setMounted ] = useState( false );
 	const [ isLoading, setIsLoading ] = useState( false );
 
@@ -102,7 +100,7 @@ export default function Layout()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel>
+							<FormLabel htmlFor="font">
 								<CaseUpper className="mr-2 inline h-6 w-6" />
 								Police de caractère
 							</FormLabel>
@@ -112,7 +110,7 @@ export default function Layout()
 									defaultValue={field.value}
 									onValueChange={field.onChange}
 								>
-									<SelectTrigger>
+									<SelectTrigger id="font" aria-controls="font">
 										<SelectValue placeholder="Sélectionner une police de caractère" />
 									</SelectTrigger>
 
@@ -145,7 +143,7 @@ export default function Layout()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem className="space-y-1">
-							<FormLabel>
+							<FormLabel htmlFor="theme">
 								<SunMoon className="mr-2 inline h-6 w-6" />
 								Thème
 							</FormLabel>
@@ -159,6 +157,7 @@ export default function Layout()
 
 							{mounted ? (
 								<RadioGroup
+									id="theme"
 									value={field.value ? field.value : theme}
 									className="grid max-w-md grid-cols-2 gap-8 pt-2"
 									onValueChange={field.onChange}

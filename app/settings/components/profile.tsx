@@ -116,7 +116,7 @@ export default function Profile()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel>
+							<FormLabel htmlFor="email">
 								<AtSign className="mr-2 inline h-6 w-6" />
 								Adresse électronique
 							</FormLabel>
@@ -126,7 +126,7 @@ export default function Profile()
 									defaultValue={field.value}
 									onValueChange={field.onChange}
 								>
-									<SelectTrigger>
+									<SelectTrigger id="email" aria-controls="email">
 										<SelectValue placeholder="Sélectionner une adresse électronique vérifiée à afficher" />
 									</SelectTrigger>
 
