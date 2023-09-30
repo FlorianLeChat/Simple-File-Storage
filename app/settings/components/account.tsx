@@ -33,10 +33,10 @@ const languages = [
 ] as const;
 
 // Déclaration du schéma de validation du formulaire.
-const accountForm = z.object( {
+const schema = z.object( {
 	realname: z.string().min( 10 ).max( 50 ),
 	language: z.enum( [ "en", "fr" ] ),
-	password: z.string().min( 10 ).max( 100 ).optional()
+	password: z.string().min( 10 ).max( 100 )
 } );
 
 export default function Account()
@@ -45,7 +45,7 @@ export default function Account()
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Mise à jour des informations.
-	const updateAccount = ( data: z.infer<typeof accountForm> ) =>
+	const updateAccount = ( data: z.infer<typeof schema> ) =>
 	{
 		setIsLoading( true );
 
@@ -67,8 +67,8 @@ export default function Account()
 	};
 
 	// Définition du formulaire.
-	const form = useForm<z.infer<typeof accountForm>>( {
-		resolver: zodResolver( accountForm ),
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema ),
 		defaultValues: {
 			realname: "Florian4016",
 			language: "fr"
@@ -97,6 +97,14 @@ export default function Account()
 								<Input
 									{...field}
 									disabled={isLoading}
+									minLength={
+										schema.shape.realname
+											.minLength as number
+									}
+									maxLength={
+										schema.shape.realname
+											.maxLength as number
+									}
 									spellCheck="false"
 									placeholder="John Doe"
 									autoComplete="name"
@@ -130,7 +138,10 @@ export default function Account()
 									defaultValue={field.value}
 									onValueChange={field.onChange}
 								>
-									<SelectTrigger id="language" aria-controls="language">
+									<SelectTrigger
+										id="language"
+										aria-controls="language"
+									>
 										<SelectValue placeholder="Sélectionner une langue" />
 									</SelectTrigger>
 
@@ -173,6 +184,14 @@ export default function Account()
 									{...field}
 									type="password"
 									disabled
+									minLength={
+										schema.shape.password
+											.minLength as number
+									}
+									maxLength={
+										schema.shape.password
+											.maxLength as number
+									}
 									spellCheck="false"
 									placeholder="password"
 									autoComplete="new-password"

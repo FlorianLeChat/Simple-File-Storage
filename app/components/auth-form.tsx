@@ -181,6 +181,14 @@ export default function AuthForm()
 											{...field}
 											type="email"
 											disabled={isLoading}
+											minLength={
+												authSchema.shape.email
+													.minLength as number
+											}
+											maxLength={
+												authSchema.shape.email
+													.maxLength as number
+											}
 											spellCheck="false"
 											placeholder="example@domain.com"
 											autoComplete="email"
@@ -218,6 +226,16 @@ export default function AuthForm()
 													{...field}
 													id="password"
 													type={passwordType}
+													minLength={
+														authSchema.shape
+															.password
+															.minLength as number
+													}
+													maxLength={
+														authSchema.shape
+															.password
+															.maxLength as number
+													}
 													onInput={() => setPasswordType(
 														"password"
 													)}
@@ -316,6 +334,14 @@ export default function AuthForm()
 											{...field}
 											type="email"
 											disabled={isLoading}
+											minLength={
+												authSchema.shape.email
+													.minLength as number
+											}
+											maxLength={
+												authSchema.shape.email
+													.maxLength as number
+											}
 											spellCheck="false"
 											placeholder="example@domain.com"
 											autoComplete="email"
@@ -348,6 +374,14 @@ export default function AuthForm()
 											{...field}
 											type={passwordType}
 											disabled={isLoading}
+											minLength={
+												authSchema.shape.password
+													.minLength as number
+											}
+											maxLength={
+												authSchema.shape.password
+													.maxLength as number
+											}
 											spellCheck="false"
 											placeholder="password"
 											autoComplete="current-password"
