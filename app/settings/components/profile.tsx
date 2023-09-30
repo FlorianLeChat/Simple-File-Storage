@@ -28,7 +28,7 @@ import { Select,
 	SelectTrigger } from "../../components/ui/select";
 
 // Déclaration du schéma de validation du formulaire.
-const profileForm = z.object( {
+const schema = z.object( {
 	username: z.string().min( 10 ).max( 50 ),
 	email: z.string().min( 10 ).max( 100 ).email()
 } );
@@ -39,7 +39,7 @@ export default function Profile()
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Mise à jour des informations.
-	const updateProfile = ( data: z.infer<typeof profileForm> ) =>
+	const updateProfile = ( data: z.infer<typeof schema> ) =>
 	{
 		setIsLoading( true );
 
@@ -61,8 +61,8 @@ export default function Profile()
 	};
 
 	// Définition du formulaire.
-	const form = useForm<z.infer<typeof profileForm>>( {
-		resolver: zodResolver( profileForm ),
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema ),
 		defaultValues: {
 			email: "florian@gmail.com",
 			username: "florian4016"
@@ -91,6 +91,14 @@ export default function Profile()
 								<Input
 									{...field}
 									disabled={isLoading}
+									minLength={
+										schema.shape.username
+											.minLength as number
+									}
+									maxLength={
+										schema.shape.username
+											.maxLength as number
+									}
 									spellCheck="false"
 									placeholder="john-doe"
 									autoComplete="username"
@@ -126,7 +134,10 @@ export default function Profile()
 									defaultValue={field.value}
 									onValueChange={field.onChange}
 								>
-									<SelectTrigger id="email" aria-controls="email">
+									<SelectTrigger
+										id="email"
+										aria-controls="email"
+									>
 										<SelectValue placeholder="Sélectionner une adresse électronique vérifiée à afficher" />
 									</SelectTrigger>
 
