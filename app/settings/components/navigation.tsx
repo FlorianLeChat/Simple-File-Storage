@@ -7,7 +7,7 @@
 import Link from "next/link";
 import { merge } from "@/utilities/tailwind";
 import { usePathname } from "next/navigation";
-import { Cookie, User, KeyRound, Palette } from "lucide-react";
+import { Cookie, User, KeyRound, Palette, Bug } from "lucide-react";
 import { Button, buttonVariants } from "../../components/ui/button";
 
 // Déclaration des routes de paramétrage.
@@ -38,6 +38,15 @@ const routes = [
 			</>
 		),
 		href: "/settings/layout"
+	},
+	{
+		title: (
+			<>
+				<Bug className="mr-2 inline" />
+				Bogues
+			</>
+		),
+		href: "/settings/issue"
 	}
 ];
 
