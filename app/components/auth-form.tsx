@@ -204,7 +204,10 @@ export default function AuthForm()
 							control={registerForm.control}
 							render={( { field } ) => (
 								<FormItem>
-									<FormLabel className="sr-only">
+									<FormLabel
+										htmlFor="password"
+										className="sr-only"
+									>
 										Mot de passe
 									</FormLabel>
 
@@ -213,6 +216,7 @@ export default function AuthForm()
 											<TooltipProvider>
 												<Input
 													{...field}
+													id="password"
 													type={passwordType}
 													onInput={() => setPasswordType(
 														"password"

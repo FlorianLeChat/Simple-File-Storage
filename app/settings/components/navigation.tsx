@@ -71,10 +71,16 @@ export default function Navigation()
 				type="button"
 				variant="ghost"
 				data-cc="show-preferencesModal"
-				className="justify-start"
+				className="h-12 justify-start"
 			>
 				<Cookie className="mr-2" />
-				Cookies
+
+				<span className="text-left">
+					Cookies
+					<small className="inline-block">
+						Service fourni par <u>Cookie Consent</u>
+					</small>
+				</span>
 			</Button>
 		</nav>
 	);
