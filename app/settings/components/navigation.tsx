@@ -57,7 +57,7 @@ export default function Navigation()
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<nav className="-mx-4 flex space-x-2 lg:w-1/5 lg:flex-col lg:space-x-0 lg:space-y-1">
+		<nav className="flex flex-col md:-mx-4 md:flex-row md:space-x-2 lg:w-1/5 lg:flex-col lg:space-x-0 lg:space-y-1">
 			{/* Listes des routes */}
 			{routes.map( ( route ) => (
 				<Link
@@ -68,7 +68,7 @@ export default function Navigation()
 						pathname === route.href
 							? "bg-muted hover:bg-muted"
 							: "hover:bg-transparent hover:underline",
-						"justify-start"
+						"h-auto min-h-[2.5rem] justify-start"
 					)}
 				>
 					{route.title}
@@ -80,13 +80,13 @@ export default function Navigation()
 				type="button"
 				variant="ghost"
 				data-cc="show-preferencesModal"
-				className="h-12 justify-start"
+				className="h-auto min-h-[2.5rem] justify-start"
 			>
 				<Cookie className="mr-2" />
 
 				<span className="text-left">
 					Cookies
-					<small className="inline-block">
+					<small className="hidden lg:block">
 						Service fourni par <u>Cookie Consent</u>
 					</small>
 				</span>

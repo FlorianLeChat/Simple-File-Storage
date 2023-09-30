@@ -4,6 +4,7 @@
 
 // Importation des dépendances.
 import { lazy } from "react";
+import type { Metadata } from "next";
 import { PlusCircleIcon } from "lucide-react";
 import { type File, columns } from "./components/columns";
 
@@ -13,6 +14,11 @@ import { Button } from "../components/ui/button";
 const Header = lazy( () => import( "../components/header" ) );
 const UserMenu = lazy( () => import( "../components/user-menu" ) );
 const DataTable = lazy( () => import( "./components/data-table" ) );
+
+// Déclaration des propriétés de la page.
+export const metadata: Metadata = {
+	title: "Tableau de bord – Simple File Storage"
+};
 
 // Récupération des données depuis l'API.
 async function getData(): Promise<File[]>
@@ -54,14 +60,16 @@ export default async function Dashboard()
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			<header className="flex h-16 items-center border-b px-4">
-				{/* Titre du site */}
-				<h1 className="mr-4 text-xl font-semibold">
-					💾 Simple File Storage
-				</h1>
+			<header className="flex min-h-[4rem] justify-center gap-4 border-b sm:px-4">
+				<div className="align-center flex flex-col items-center gap-2 pb-3 pt-4 sm:flex-row sm:py-0">
+					{/* Titre du site */}
+					<h1 className="text-xl font-semibold">
+						💾 Simple File Storage
+					</h1>
 
-				{/* Éléments de navigation */}
-				<Header />
+					{/* Éléments de navigation */}
+					<Header />
+				</div>
 
 				{/* Menu utilisateur */}
 				<UserMenu />

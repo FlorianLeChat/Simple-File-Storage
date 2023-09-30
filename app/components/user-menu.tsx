@@ -16,7 +16,7 @@ export default function UserMenu()
 {
 	// Affichage du rendu HTML du composant.
 	return (
-		<nav className="ml-auto flex items-center space-x-4">
+		<nav className="flex items-center space-x-4 sm:ml-auto">
 			<DropdownMenu>
 				{/* Bouton d'apparition */}
 				<DropdownMenuTrigger asChild>
