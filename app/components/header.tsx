@@ -29,6 +29,11 @@ const routes: { title: string; href: string; description: string }[] = [
 		title: "Apparence",
 		href: "/settings/layout",
 		description: "Personnalisation de l'apparence du site Internet."
+	},
+	{
+		title: "Signalement d'un bogue",
+		href: "/settings/issue",
+		description: "Signalement d'un bogue rencontré sur le site Internet."
 	}
 ];
 
