@@ -444,11 +444,15 @@ export default function AuthForm()
 			</TabsContent>
 
 			{/* Barre verticale de séparation */}
-			<Separator className="relative !mb-2 !mt-8">
-				<span className="absolute left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%] bg-background px-2 text-xs uppercase text-muted-foreground">
+			<div className="flex items-center space-x-2">
+				<Separator className="w-auto flex-grow" />
+
+				<span className="text-xs uppercase text-muted-foreground">
 					Ou continuer avec
 				</span>
-			</Separator>
+
+				<Separator className="w-auto flex-grow" />
+			</div>
 
 			{/* Services d'authentification OAuth */}
 			<Button
