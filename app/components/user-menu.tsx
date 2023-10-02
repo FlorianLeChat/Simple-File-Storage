@@ -55,7 +55,7 @@ export default function UserMenu()
 
 					case "l":
 						// Accès à la page d'authentification.
-						router.push( "/" );
+						router.push( "/authentication" );
 						break;
 
 					default:
@@ -75,9 +75,9 @@ export default function UserMenu()
 
 		// On précharge ensuite les trois routes concernées pour éviter
 		//  un temps de chargement trop long.
-		router.prefetch( "/" );
 		router.prefetch( "/dashboard" );
 		router.prefetch( "/settings" );
+		router.prefetch( "/authentication" );
 
 		// On supprime enfin l'écouteur d'événement au démontage du composant.
 		return () => window.removeEventListener( "keydown", handleShortcuts );

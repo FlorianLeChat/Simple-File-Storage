@@ -489,14 +489,14 @@ export default function AuthForm()
 					href="/terms"
 					className="underline underline-offset-4 hover:text-primary"
 				>
-					Conditions d&lsquo;utilisation
+					conditions d&lsquo;utilisation
 				</Link>{" "}
 				et notre{" "}
 				<Link
 					href="/privacy"
 					className="underline underline-offset-4 hover:text-primary"
 				>
-					Politique de confidentialité
+					politique de confidentialité
 				</Link>
 				.
 			</p>

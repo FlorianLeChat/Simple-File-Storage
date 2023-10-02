@@ -1,5 +1,5 @@
 //
-// Page du tableau de bord du site.
+// Route vers la page du tableau de bord du site.
 //
 
 // Importation des dépendances.
