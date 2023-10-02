@@ -24,7 +24,7 @@ export default function Layout( { children }: { children: ReactNode } )
 	return (
 		<>
 			<header className="flex min-h-[4rem] justify-center gap-4 border-b sm:px-4">
-				<div className="align-center flex flex-col items-center gap-2 pb-3 pt-4 sm:flex-row sm:py-0">
+				<div className="align-center flex flex-col items-center gap-2 pb-3 pt-4 sm:flex-row sm:gap-4 sm:py-0">
 					{/* Titre du site */}
 					<h1 className="text-xl font-semibold">
 						💾 Simple File Storage
