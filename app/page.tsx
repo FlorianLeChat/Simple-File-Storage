@@ -70,19 +70,6 @@ export default function Page()
 			</video>
 
 			{/* Contenu de la page */}
-			<main className="flex h-screen items-center">
-				<AuthForm />
-			</main>
-
-			<blockquote className="absolute hidden sm:bottom-4 sm:block sm:max-lg:w-full sm:max-lg:text-center lg:left-4">
-				<q className="text-md">
-					{" "}
-					A simple file storage system using HTML 5/CSS 3 and PHP 8
-					vanilla.{" "}
-				</q>
-
-				<footer className="text-sm">FlorianLeChat</footer>
-			</blockquote>
 		</>
 	);
 }
