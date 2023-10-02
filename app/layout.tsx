@@ -14,9 +14,11 @@ import { Inter } from "next/font/google";
 import { Suspense, lazy, type ReactNode } from "react";
 
 // Importation des composants.
+import Footer from "./components/footer";
 import { Toaster } from "./components/ui/toaster";
 import ThemeProvider from "./components/theme-provider";
 
+const Analytics = lazy( () => import( "./components/analytics" ) );
 const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
 
 // Création de la police de caractères Inter.
@@ -30,7 +32,7 @@ export default function Layout( { children }: { children: ReactNode } )
 	// Affichage du rendu HTML de la page.
 	return (
 		<html lang="fr" className={inter.className}>
-			<body>
+			<body className="flex min-h-screen flex-col">
 				<Suspense>
 					{/* Basculement entre les thèmes clair et sombre. */}
 					<ThemeProvider
@@ -44,8 +46,14 @@ export default function Layout( { children }: { children: ReactNode } )
 						{/* Consentement des cookies */}
 						<CookieConsent />
 
+						{/* Google Analytics */}
+						<Analytics />
+
 						{/* Composant des notifications */}
 						<Toaster />
+
+						{/* Pied de page */}
+						<Footer />
 					</ThemeProvider>
 				</Suspense>
 			</body>
