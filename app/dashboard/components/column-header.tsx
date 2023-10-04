@@ -2,11 +2,12 @@
 // Composant des en-têtes de colonnes d'un tableau de données.
 //  Source : https://ui.shadcn.com/docs/components/data-table#column-header
 //
+import { merge } from "@/utilities/tailwind";
 import { Column } from "@tanstack/react-table";
 import { type HTMLAttributes } from "react";
 import { EyeOff, ArrowUp, ArrowDown, ArrowDownUp } from "lucide-react";
 
-import { Button } from "../../components/ui/button";
+import { buttonVariants } from "../../components/ui/button";
 import { DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
@@ -35,22 +36,22 @@ export default function ColumnHeader<TData, TValue>( {
 		<div className="flex items-center space-x-2">
 			<DropdownMenu>
 				{/* Icon de tri */}
-				<DropdownMenuTrigger asChild>
-					<Button
-						size="sm"
-						variant="ghost"
-						className="-ml-3 h-8 data-[state=open]:bg-accent"
-					>
-						<span>{title}</span>
-						{( column.getIsSorted() === "desc" && (
-							<ArrowDown className="ml-2 h-4 w-4" />
-						) )
-							|| ( column.getIsSorted() === "asc" ? (
-								<ArrowUp className="ml-2 h-4 w-4" />
-							) : (
-								<ArrowDownUp className="ml-2 h-4 w-4" />
-							) )}
-					</Button>
+				<DropdownMenuTrigger
+					className={merge(
+						buttonVariants( { size: "sm", variant: "ghost" } ),
+						"-ml-3 h-8 data-[state=open]:bg-accent"
+					)}
+				>
+					<span>{title}</span>
+
+					{( column.getIsSorted() === "desc" && (
+						<ArrowDown className="ml-2 h-4 w-4" />
+					) )
+						|| ( column.getIsSorted() === "asc" ? (
+							<ArrowUp className="ml-2 h-4 w-4" />
+						) : (
+							<ArrowDownUp className="ml-2 h-4 w-4" />
+						) )}
 				</DropdownMenuTrigger>
 
 				{/* Options de tri disponibles */}
