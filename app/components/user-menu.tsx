@@ -4,6 +4,7 @@
 
 "use client";
 
+import Link from "next/link";
 import { merge } from "@/utilities/tailwind";
 import { useRouter } from "next/navigation";
 import { useEffect, useCallback, useState } from "react";
@@ -118,28 +119,36 @@ export default function UserMenu()
 
 					{/* Options disponibles */}
 					<DropdownMenuGroup>
-						<DropdownMenuItem>
-							Tableau de bord
-							<DropdownMenuShortcut>
-								ALT/⌥ + D
-							</DropdownMenuShortcut>
-						</DropdownMenuItem>
+						<Link href="/dashboard">
+							<DropdownMenuItem>
+								Tableau de bord
+								<DropdownMenuShortcut>
+									ALT/⌥ + D
+								</DropdownMenuShortcut>
+							</DropdownMenuItem>
+						</Link>
 
-						<DropdownMenuItem>
-							Paramètres
-							<DropdownMenuShortcut>
-								ALT/⌥ + S
-							</DropdownMenuShortcut>
-						</DropdownMenuItem>
+						<Link href="/settings">
+							<DropdownMenuItem>
+								Paramètres
+								<DropdownMenuShortcut>
+									ALT/⌥ + S
+								</DropdownMenuShortcut>
+							</DropdownMenuItem>
+						</Link>
 					</DropdownMenuGroup>
 
 					<DropdownMenuSeparator />
 
 					{/* Déconnexion du compte */}
-					<DropdownMenuItem>
-						Déconnexion
-						<DropdownMenuShortcut>ALT/⌥ + L</DropdownMenuShortcut>
-					</DropdownMenuItem>
+					<Link href="/authentication">
+						<DropdownMenuItem>
+							Déconnexion
+							<DropdownMenuShortcut>
+								ALT/⌥ + L
+							</DropdownMenuShortcut>
+						</DropdownMenuItem>
+					</Link>
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</nav>
