@@ -14,10 +14,12 @@ export default function Footer()
 
 			{/* Informations sur le site */}
 			<p className="block p-4 text-sm">
-				© 2023 💾 Simple File Storage. Tous droits réservés.
+				© {new Date().getFullYear()} 💾 Simple File Storage. Tous
+				droits réservés.
+
 				{/* Avertissement de Google reCAPTCHA */}
 				{process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true" && (
-					<small className="block text-xs">
+					<small className="mt-1 block text-xs sm:mt-auto">
 						Ce site est protégé par reCAPTCHA sur lequel
 						s&lsquo;appliquent les{" "}
 						<Link

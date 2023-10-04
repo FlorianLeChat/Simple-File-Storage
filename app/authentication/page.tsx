@@ -22,7 +22,7 @@ export default function Page()
 		<>
 			<header className="mb-auto">
 				{/* Titre du site */}
-				<h1 className="w-full p-4 text-center text-xl font-semibold sm:w-auto sm:text-left">
+				<h1 className="text-2xl font-semibold">
 					💾 Simple File Storage
 				</h1>
 
