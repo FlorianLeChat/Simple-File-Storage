@@ -32,11 +32,12 @@ export default function ColumnToggle<TData>( {
 			<DropdownMenuTrigger
 				className={merge(
 					buttonVariants( { size: "sm", variant: "outline" } ),
-					"ml-2 mr-auto h-10"
+					"h-10 sm:mr-auto"
 				)}
 			>
-				<SlidersHorizontal className="mr-2 inline h-4 w-4" />
-				Voir
+				<SlidersHorizontal className="inline h-4 w-4 sm:mr-2" />
+
+				<span className="hidden sm:inline">Voir</span>
 			</DropdownMenuTrigger>
 
 			{/* Menu de sélection des colonnes */}
