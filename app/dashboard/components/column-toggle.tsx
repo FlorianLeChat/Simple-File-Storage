@@ -5,11 +5,12 @@
 
 "use client";
 
+import { merge } from "@/utilities/tailwind";
 import { Table } from "@tanstack/react-table";
 import { SlidersHorizontal } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 
-import { Button } from "../../components/ui/button";
+import { buttonVariants } from "../../components/ui/button";
 import { DropdownMenu,
 	DropdownMenuLabel,
 	DropdownMenuContent,
@@ -28,15 +29,14 @@ export default function ColumnToggle<TData>( {
 	return (
 		<DropdownMenu>
 			{/* Bouton d'ouverture du menu */}
-			<DropdownMenuTrigger asChild>
-				<Button
-					size="sm"
-					variant="outline"
-					className="ml-auto hidden h-8 lg:flex"
-				>
-					<SlidersHorizontal className="mr-2 h-4 w-4" />
-					Voir
-				</Button>
+			<DropdownMenuTrigger
+				className={merge(
+					buttonVariants( { size: "sm", variant: "outline" } ),
+					"ml-2 mr-auto h-10"
+				)}
+			>
+				<SlidersHorizontal className="mr-2 inline h-4 w-4" />
+				Voir
 			</DropdownMenuTrigger>
 
 			{/* Menu de sélection des colonnes */}
