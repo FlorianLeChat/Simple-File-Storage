@@ -40,7 +40,7 @@ export default function Layout( { children }: { children: ReactNode } )
 
 			<div className="space-y-6 p-4 pb-12 md:p-10">
 				{/* En-tête de la page */}
-				<header className="space-y-0.5">
+				<header>
 					<h2 className="text-2xl font-bold tracking-tight">
 						Paramètres générales
 					</h2>

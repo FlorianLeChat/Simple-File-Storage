@@ -68,7 +68,7 @@ export default function DataTable( {
 	return (
 		<>
 			{/* Filtrage et tri des données */}
-			<search className="flex items-center py-4">
+			<search className="flex items-center gap-2 py-4">
 				{/* Filtrage par nom */}
 				<Input
 					value={
@@ -90,9 +90,9 @@ export default function DataTable( {
 			<Table className="rounded-md border">
 				{/* Éléments de l'en-tête */}
 				<TableHeader>
-					{table.getHeaderGroups().map( ( headerGroup ) => (
-						<TableRow key={headerGroup.id}>
-							{headerGroup.headers.map( ( header ) => (
+					{table.getHeaderGroups().map( ( group ) => (
+						<TableRow key={group.id}>
+							{group.headers.map( ( header ) => (
 								<TableHead key={header.id}>
 									{header.isPlaceholder
 										? null
@@ -139,7 +139,7 @@ export default function DataTable( {
 			</Table>
 
 			{/* Contrôles de pagination */}
-			<aside className="flex items-center justify-end space-x-2 py-4">
+			<aside className="flex flex-col items-center justify-end gap-2 py-4 sm:flex-row sm:gap-4 lg:gap-8">
 				<Pagination table={table} />
 			</aside>
 		</>
