@@ -10,8 +10,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { Loader2, Mail, RefreshCw } from "lucide-react";
 import { useState, type FormEvent } from "react";
+import { Loader2, Mail, RefreshCw } from "lucide-react";
 
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -152,7 +152,7 @@ export default function AuthForm()
 
 			<TabsContent value="account" className="space-y-6">
 				{/* Titre et description du formulaire */}
-				<h2 className="text-2xl font-semibold tracking-tight">
+				<h2 className="text-xl font-semibold tracking-tight">
 					Création d&lsquo;un compte
 				</h2>
 
@@ -305,7 +305,7 @@ export default function AuthForm()
 
 			<TabsContent value="password" className="space-y-6">
 				{/* Titre et description du formulaire */}
-				<h2 className="text-2xl font-semibold tracking-tight">
+				<h2 className="text-xl font-semibold tracking-tight">
 					Connexion à un compte
 				</h2>
 
