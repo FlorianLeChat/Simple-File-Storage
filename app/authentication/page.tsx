@@ -55,19 +55,6 @@ export default function Page()
 				</a>
 			</header>
 
-			{/* Vidéo en arrière-plan */}
-			<video
-				loop
-				muted
-				autoPlay
-				className="absolute -z-10 hidden h-full object-none opacity-10 dark:block"
-			>
-				<source
-					src={`${ process.env.__NEXT_ROUTER_BASEPATH }/assets/videos/login.mp4`}
-					type="video/mp4"
-				/>
-			</video>
-
 			{/* Contenu de la page */}
 			<main>
 				<AuthForm />

@@ -34,6 +34,19 @@ export default function Layout( { children }: { children: ReactNode } )
 		<html lang="fr" className={inter.className}>
 			<body className="flex min-h-screen flex-col">
 				<Suspense>
+					{/* Vidéo en arrière-plan */}
+					<video
+						loop
+						muted
+						autoPlay
+						className="absolute -z-10 hidden h-full object-none opacity-[0.05] dark:block"
+					>
+						<source
+							src={`${ process.env.__NEXT_ROUTER_BASEPATH }/assets/videos/background.mp4`}
+							type="video/mp4"
+						/>
+					</video>
+
 					{/* Basculement entre les thèmes clair et sombre. */}
 					<ThemeProvider
 						attribute="class"
