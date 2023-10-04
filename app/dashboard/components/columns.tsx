@@ -5,12 +5,13 @@
 
 "use client";
 
+import { merge } from "@/utilities/tailwind";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
-import { Button } from "../../components/ui/button";
 import { Checkbox } from "../../components/ui/checkbox";
 import ColumnHeader from "./column-header";
+import { buttonVariants } from "../../components/ui/button";
 import { DropdownMenu,
 	DropdownMenuItem,
 	DropdownMenuLabel,
@@ -103,12 +104,15 @@ export const columns: ColumnDef<File>[] = [
 		cell: () => (
 			<DropdownMenu>
 				{/* Bouton d'ouverture du menu */}
-				<DropdownMenuTrigger asChild>
-					<Button variant="ghost" className="h-8 w-8 p-0">
-						<span className="sr-only">Ouvrir le menu</span>
+				<DropdownMenuTrigger
+					className={merge(
+						buttonVariants( { variant: "ghost" } ),
+						"h-8 w-8 p-0"
+					)}
+				>
+					<span className="sr-only">Ouvrir le menu</span>
 
-						<MoreHorizontal className="h-4 w-4" />
-					</Button>
+					<MoreHorizontal className="h-4 w-4" />
 				</DropdownMenuTrigger>
 
 				{/* Actions disponibles */}

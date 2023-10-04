@@ -15,7 +15,6 @@ import { Loader2, Mail, RefreshCw } from "lucide-react";
 
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Button } from "./ui/button";
 import { Switch } from "./ui/switch";
 import { useToast } from "./ui/use-toast";
 import { Tooltip,
@@ -31,6 +30,7 @@ import { Form,
 	FormMessage,
 	FormDescription } from "./ui/form";
 import { ToastAction } from "./ui/toast";
+import { Button, buttonVariants } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 // Déclaration du schéma de validation du formulaire.
@@ -247,28 +247,31 @@ export default function AuthForm()
 												/>
 
 												<Tooltip>
-													<TooltipTrigger asChild>
-														<Button
-															size="icon"
-															type="button"
-															variant="outline"
-															disabled={isLoading}
-															onClick={() =>
+													<TooltipTrigger
+														type="button"
+														disabled={isLoading}
+														className={buttonVariants(
 															{
-																// Génération d'un nouveau mot de passe.
-																registerForm.setValue(
-																	"password",
-																	generateRandomPassword()
-																);
+																size: "icon",
+																variant:
+																	"outline"
+															}
+														)}
+														onClick={() =>
+														{
+															// Génération d'un nouveau mot de passe.
+															registerForm.setValue(
+																"password",
+																generateRandomPassword()
+															);
 
-																// Affichage du mot de passe en clair.
-																setPasswordType(
-																	"text"
-																);
-															}}
-														>
-															<RefreshCw className="h-4 w-4" />
-														</Button>
+															// Affichage du mot de passe en clair.
+															setPasswordType(
+																"text"
+															);
+														}}
+													>
+														<RefreshCw className="h-4 w-4" />
 													</TooltipTrigger>
 
 													<TooltipContent>
