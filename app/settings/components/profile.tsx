@@ -9,7 +9,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, RefreshCw, WholeWord, AtSign } from "lucide-react";
+import { Loader2, RefreshCw, WholeWord, AtSign, FileImage } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { toast } from "../../components/ui/use-toast";
@@ -30,7 +30,8 @@ import { Select,
 // Déclaration du schéma de validation du formulaire.
 const schema = z.object( {
 	username: z.string().min( 10 ).max( 50 ),
-	email: z.string().min( 10 ).max( 100 ).email()
+	email: z.string().min( 10 ).max( 100 ).email(),
+	avatar: z.any().optional()
 } );
 
 export default function Profile()
@@ -160,6 +161,40 @@ export default function Profile()
 									paramètres de compte utilisateur
 								</Link>
 								.
+							</FormDescription>
+
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+				{/* Avatar */}
+				<FormField
+					name="avatar"
+					control={form.control}
+					render={( { field } ) => (
+						<FormItem>
+							<FormLabel htmlFor="email">
+								<FileImage className="mr-2 inline h-6 w-6" />
+								Avatar
+							</FormLabel>
+
+							<FormControl>
+								<Input
+									{...field}
+									type="file"
+									accept="image/*"
+									disabled={isLoading}
+								/>
+							</FormControl>
+
+							<FormDescription>
+								Vous pouvez mettre à jour l&lsquo;avatar utilisé
+								pour votre compte utilisateur.{" "}
+								<strong>
+									Les avatars ne doivent pas dépasser 2 Mo et
+									doivent être au format PNG ou JPEG.
+								</strong>
 							</FormDescription>
 
 							<FormMessage />
