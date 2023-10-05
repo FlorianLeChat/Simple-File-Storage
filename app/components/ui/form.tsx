@@ -113,7 +113,11 @@ const FormLabel = forwardRef<
 		<Label
 			ref={ref}
 			htmlFor={formItemId}
-			className={merge( error && "text-destructive", className )}
+			className={merge(
+				error && "text-destructive",
+				className,
+				"inline-block"
+			)}
 			{...props}
 		/>
 	);
