@@ -72,8 +72,8 @@ export default function Page()
 			</header>
 
 			{/* Contenu de la page */}
-			<section className="container m-4 mx-auto text-center">
-				<h2 className="bg-gradient-to-r bg-clip-text text-3xl font-bold tracking-tighter dark:from-white dark:to-gray-500 dark:text-transparent sm:text-5xl xl:text-6xl/none">
+			<section className="container mx-auto p-4 text-center">
+				<h2 className="bg-gradient-to-r bg-clip-text text-4xl font-bold tracking-tighter dark:from-white dark:to-gray-500 dark:text-transparent sm:text-5xl xl:text-6xl/none">
 					Découvrez nos fonctionnalités
 				</h2>
 
@@ -82,7 +82,7 @@ export default function Page()
 					confidentialité et protéger vos données.
 				</p>
 
-				<div className="mt-8 grid grid-cols-3 items-center gap-8 space-y-4">
+				<div className="mt-8 grid items-center gap-8 space-y-4 md:grid-cols-3">
 					<article className="space-y-2 p-4">
 						<Lock className="mx-auto mb-2 h-6 w-6" />
 
