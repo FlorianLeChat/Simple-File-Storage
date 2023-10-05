@@ -110,7 +110,10 @@ export default function Layout()
 									defaultValue={field.value}
 									onValueChange={field.onChange}
 								>
-									<SelectTrigger id="font" aria-controls="font">
+									<SelectTrigger
+										id="font"
+										aria-controls="font"
+									>
 										<SelectValue placeholder="Sélectionner une police de caractère" />
 									</SelectTrigger>
 
@@ -163,7 +166,7 @@ export default function Layout()
 									onValueChange={field.onChange}
 								>
 									<FormItem>
-										<FormLabel className="[&:has([data-state=checked])>div]:border-primary">
+										<FormLabel className="!inline [&:has([data-state=checked])>div]:border-primary">
 											<FormControl>
 												<RadioGroupItem
 													value="light"
@@ -197,7 +200,7 @@ export default function Layout()
 									</FormItem>
 
 									<FormItem>
-										<FormLabel className="[&:has([data-state=checked])>div]:border-primary">
+										<FormLabel className="!inline [&:has([data-state=checked])>div]:border-primary">
 											<FormControl>
 												<RadioGroupItem
 													value="dark"
