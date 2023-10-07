@@ -114,7 +114,7 @@ export default function Layout()
 										id="font"
 										aria-controls="font"
 									>
-										<SelectValue placeholder="Sélectionner une police de caractère" />
+										<SelectValue />
 									</SelectTrigger>
 
 									<SelectContent>

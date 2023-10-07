@@ -139,7 +139,7 @@ export default function Profile()
 										id="email"
 										aria-controls="email"
 									>
-										<SelectValue placeholder="Sélectionner une adresse électronique vérifiée à afficher" />
+										<SelectValue />
 									</SelectTrigger>
 
 									<SelectContent>
