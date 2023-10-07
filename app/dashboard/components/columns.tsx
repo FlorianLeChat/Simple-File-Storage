@@ -7,11 +7,32 @@
 
 import { merge } from "@/utilities/tailwind";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { Trash,
+	UserX,
+	Share2,
+	ArrowUpRight,
+	ClipboardCopy,
+	MoreHorizontal } from "lucide-react";
 
 import { Checkbox } from "../../components/ui/checkbox";
 import ColumnHeader from "./column-header";
+import ShareManager from "./share-manager";
+import { Dialog,
+	DialogTitle,
+	DialogHeader,
+	DialogTrigger,
+	DialogContent,
+	DialogDescription } from "../../components/ui/dialog";
 import { buttonVariants } from "../../components/ui/button";
+import { AlertDialog,
+	AlertDialogTitle,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTrigger,
+	AlertDialogDescription } from "../../components/ui/alert-dialog";
 import { DropdownMenu,
 	DropdownMenuItem,
 	DropdownMenuLabel,
@@ -121,23 +142,122 @@ export const columns: ColumnDef<File>[] = [
 						Actions sur le fichier
 					</DropdownMenuLabel>
 
-					{/* Partages */}
-					<DropdownMenuItem>Autoriser le partage</DropdownMenuItem>
-					<DropdownMenuItem>Restreindre le partage</DropdownMenuItem>
-					<DropdownMenuItem>
-						Supprimer tous les partages
-					</DropdownMenuItem>
+					{/* Gestion des partages */}
+					<Dialog>
+						<DialogTrigger asChild>
+							<DropdownMenuItem
+								// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+								onSelect={( event ) => event.preventDefault()}
+							>
+								<Share2 className="mr-2 h-4 w-4" />
+								Gérer les partages
+							</DropdownMenuItem>
+						</DialogTrigger>
+
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>Partage du fichier</DialogTitle>
+
+								<DialogDescription>
+									Copier et partager le lien d&lsquo;accès aux
+									utilisateurs de votre choix.
+								</DialogDescription>
+							</DialogHeader>
+
+							<ShareManager />
+						</DialogContent>
+					</Dialog>
+
+					<AlertDialog>
+						<AlertDialogTrigger asChild>
+							<DropdownMenuItem
+								// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+								onSelect={( event ) => event.preventDefault()}
+							>
+								<UserX className="mr-2 h-4 w-4" />
+								Supprimer tous les partages
+							</DropdownMenuItem>
+						</AlertDialogTrigger>
+
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>
+									Êtes-vous sûr de vouloir supprimer tous les
+									partages du fichier ?
+								</AlertDialogTitle>
+
+								<AlertDialogDescription>
+									<strong>
+										Cette action est irréversible.
+									</strong>{" "}
+									Elle supprimera tous les partages du fichier
+									et rendra le fichier privé.
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+
+							<AlertDialogFooter>
+								<AlertDialogCancel>Annuler</AlertDialogCancel>
+								<AlertDialogAction>Confirmer</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
 
 					<DropdownMenuSeparator />
 
-					{/* Accès et gestion */}
-					<DropdownMenuItem>Accéder</DropdownMenuItem>
+					{/* Accès et suppression */}
+					<a
+						rel="noopener noreferrer"
+						href="https://www.google.fr/"
+						target="_blank"
+					>
+						<DropdownMenuItem>
+							<ArrowUpRight className="mr-2 h-4 w-4" />
+							Accéder
+						</DropdownMenuItem>
+					</a>
+
+					<DropdownMenuSeparator />
+
 					<DropdownMenuItem>
+						<ClipboardCopy className="mr-2 h-4 w-4" />
 						Copier le lien d&lsquo;accès
 					</DropdownMenuItem>
-					<DropdownMenuItem>
-						Supprimer définitivement
-					</DropdownMenuItem>
+
+					<AlertDialog>
+						<AlertDialogTrigger asChild>
+							<DropdownMenuItem
+								// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+								onSelect={( event ) => event.preventDefault()}
+								className="text-red-600"
+							>
+								<Trash className="mr-2 h-4 w-4" />
+
+								<strong>Supprimer définitivement</strong>
+							</DropdownMenuItem>
+						</AlertDialogTrigger>
+
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>
+									Êtes-vous sûr de vouloir supprimer ce
+									fichier ?
+								</AlertDialogTitle>
+
+								<AlertDialogDescription>
+									<strong>
+										Cette action est irréversible.
+									</strong>{" "}
+									Elle supprimera définitivement le fichier de
+									votre espace de stockage.
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+
+							<AlertDialogFooter>
+								<AlertDialogCancel>Annuler</AlertDialogCancel>
+								<AlertDialogAction>Confirmer</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
 				</DropdownMenuContent>
 			</DropdownMenu>
 		)
