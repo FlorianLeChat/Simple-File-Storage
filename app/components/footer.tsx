@@ -1,7 +1,6 @@
 //
 // Composant de navigation du pied de page.
 //
-import Link from "next/link";
 import { Separator } from "./ui/separator";
 
 export default function Footer()
@@ -22,19 +21,23 @@ export default function Footer()
 					<small className="mt-1 block text-xs sm:mt-auto">
 						Ce site est protégé par reCAPTCHA sur lequel
 						s&lsquo;appliquent les{" "}
-						<Link
+						<a
+							rel="noopener noreferrer"
 							href="https://policies.google.com/privacy"
+							target="_blank"
 							className="underline underline-offset-4 hover:text-primary"
 						>
 							politiques de confidentialité
-						</Link>{" "}
+						</a>{" "}
 						et les{" "}
-						<Link
+						<a
+							rel="noopener noreferrer"
 							href="https://policies.google.com/terms"
+							target="_blank"
 							className="underline underline-offset-4 hover:text-primary"
 						>
 							conditions d&lsquo;utilisation
-						</Link>{" "}
+						</a>{" "}
 						de Google.
 					</small>
 				)}
