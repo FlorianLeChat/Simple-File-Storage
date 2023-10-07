@@ -205,11 +205,16 @@ export default function Profile()
 				{/* Bouton de validation du formulaire */}
 				<Button disabled={isLoading}>
 					{isLoading ? (
-						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+						<>
+							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							Mise à jour...
+						</>
 					) : (
-						<RefreshCw className="mr-2 h-4 w-4" />
+						<>
+							<RefreshCw className="mr-2 h-4 w-4" />
+							Mettre à jour
+						</>
 					)}
-					Mettre à jour
 				</Button>
 			</form>
 		</Form>
