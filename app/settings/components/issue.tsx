@@ -266,11 +266,16 @@ export default function Account()
 				{/* Bouton de validation du formulaire */}
 				<Button disabled={isLoading}>
 					{isLoading ? (
-						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+						<>
+							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							Envoi...
+						</>
 					) : (
-						<Send className="mr-2 h-4 w-4" />
+						<>
+							<Send className="mr-2 h-4 w-4" />
+							Envoyer
+						</>
 					)}
-					Envoyer
 				</Button>
 			</form>
 		</Form>

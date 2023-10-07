@@ -296,11 +296,16 @@ export default function AuthForm()
 						{/* Bouton de validation du formulaire */}
 						<Button disabled={isLoading}>
 							{isLoading ? (
-								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+								<>
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									Traitement...
+								</>
 							) : (
-								<Mail className="mr-2 h-4 w-4" />
+								<>
+									<Mail className="mr-2 h-4 w-4" />
+									Inscription par courriel
+								</>
 							)}
-							Inscription par courriel
 						</Button>
 					</form>
 				</Form>
@@ -436,11 +441,16 @@ export default function AuthForm()
 						{/* Bouton de validation du formulaire */}
 						<Button disabled={isLoading}>
 							{isLoading ? (
-								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+								<>
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									Traitement...
+								</>
 							) : (
-								<Mail className="mr-2 h-4 w-4" />
+								<>
+									<Mail className="mr-2 h-4 w-4" />
+									Connexion par courriel
+								</>
 							)}
-							Connexion par courriel
 						</Button>
 					</form>
 				</Form>
