@@ -101,7 +101,7 @@ export default function Account()
 											id="area"
 											aria-controls="area"
 										>
-											<SelectValue placeholder="Select" />
+											<SelectValue />
 										</SelectTrigger>
 
 										<SelectContent>
@@ -157,7 +157,7 @@ export default function Account()
 											className="line-clamp-1 w-[160px] truncate"
 											aria-controls="level"
 										>
-											<SelectValue placeholder="Sélectionner un niveau de sévérité" />
+											<SelectValue />
 										</SelectTrigger>
 
 										<SelectContent>
