@@ -142,7 +142,7 @@ export default function Account()
 										id="language"
 										aria-controls="language"
 									>
-										<SelectValue placeholder="Sélectionner une langue" />
+										<SelectValue />
 									</SelectTrigger>
 
 									<SelectContent>
