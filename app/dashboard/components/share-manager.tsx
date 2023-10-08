@@ -7,11 +7,7 @@
 
 import { merge } from "@/utilities/tailwind";
 import { useState } from "react";
-import { Share2,
-	ClipboardCopy,
-	CalendarDays,
-	Loader2,
-	Trash } from "lucide-react";
+import { Trash, Loader2, CalendarDays, ClipboardCopy } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { Select,

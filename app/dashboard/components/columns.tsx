@@ -10,11 +10,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Trash,
 	UserX,
 	Share2,
+	History,
 	ArrowUpRight,
 	ClipboardCopy,
 	MoreHorizontal } from "lucide-react";
 
 import { Badge } from "../../components/ui/badge";
+import FileHistory from "./file-history";
 import { Checkbox } from "../../components/ui/checkbox";
 import ColumnHeader from "./column-header";
 import ShareManager from "./share-manager";
@@ -183,7 +185,13 @@ export const columns: ColumnDef<File>[] = [
 
 						<DialogContent>
 							<DialogHeader>
-								<DialogTitle>Partage du fichier</DialogTitle>
+								<DialogTitle>
+									<Share2 className="mr-2 inline h-5 w-5" />
+
+									<span className="align-middle">
+										Partage du fichier
+									</span>
+								</DialogTitle>
 
 								<DialogDescription>
 									Copier et partager le lien d&lsquo;accès aux
@@ -209,8 +217,12 @@ export const columns: ColumnDef<File>[] = [
 						<AlertDialogContent>
 							<AlertDialogHeader>
 								<AlertDialogTitle>
-									Êtes-vous sûr de vouloir supprimer tous les
-									partages du fichier ?
+									<UserX className="mr-2 inline h-5 w-5" />
+
+									<span className="align-middle">
+										Êtes-vous sûr de vouloir supprimer tous
+										les partages du fichier ?
+									</span>
 								</AlertDialogTitle>
 
 								<AlertDialogDescription>
@@ -239,11 +251,42 @@ export const columns: ColumnDef<File>[] = [
 					>
 						<DropdownMenuItem>
 							<ArrowUpRight className="mr-2 h-4 w-4" />
-							Accéder
+							Accéder à la ressource
 						</DropdownMenuItem>
 					</a>
 
 					<DropdownMenuSeparator />
+
+					<Dialog>
+						<DialogTrigger asChild>
+							<DropdownMenuItem
+								// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+								onSelect={( event ) => event.preventDefault()}
+							>
+								<History className="mr-2 h-4 w-4" />
+								Voir les révisions
+							</DropdownMenuItem>
+						</DialogTrigger>
+
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>
+									<History className="mr-2 inline h-5 w-5" />
+
+									<span className="align-middle">
+										Révisions disponibles
+									</span>
+								</DialogTitle>
+
+								<DialogDescription>
+									Accéder et restaurer une version antérieure
+									du fichier.
+								</DialogDescription>
+							</DialogHeader>
+
+							<FileHistory />
+						</DialogContent>
+					</Dialog>
 
 					<DropdownMenuItem>
 						<ClipboardCopy className="mr-2 h-4 w-4" />
@@ -266,8 +309,12 @@ export const columns: ColumnDef<File>[] = [
 						<AlertDialogContent>
 							<AlertDialogHeader>
 								<AlertDialogTitle>
-									Êtes-vous sûr de vouloir supprimer ce
-									fichier ?
+									<Trash className="mr-2 inline h-5 w-5" />
+
+									<span className="align-middle">
+										Êtes-vous sûr de vouloir supprimer ce
+										fichier ?
+									</span>
 								</AlertDialogTitle>
 
 								<AlertDialogDescription>
