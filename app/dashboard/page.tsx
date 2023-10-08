@@ -5,11 +5,10 @@
 // Importation des dépendances.
 import { lazy } from "react";
 import type { Metadata } from "next";
-import { PlusCircleIcon } from "lucide-react";
 import { type File, columns } from "./components/columns";
 
 // Importation des composants.
-import { Button } from "../components/ui/button";
+import { Separator } from "../components/ui/separator";
 
 const Header = lazy( () => import( "../components/header" ) );
 const UserMenu = lazy( () => import( "../components/user-menu" ) );
@@ -75,23 +74,22 @@ export default async function Dashboard()
 				<UserMenu />
 			</header>
 
-			<main className="flex-1 space-y-4 p-8 pt-6">
-				{/* En-tête de la page */}
-				<section className="flex items-center justify-between space-y-2">
-					<h2 className="text-3xl font-bold tracking-tight">
-						Tableau de bord
-					</h2>
+			<main className="p-4 md:p-10">
+				{/* Titre et description de la page */}
+				<h2 className="text-2xl font-bold tracking-tight">
+					Tableau de bord
+				</h2>
 
-					<Button className="flex items-center space-x-2">
-						<PlusCircleIcon className="mr-2 h-4 w-4" />
-						Ajouter un fichier
-					</Button>
-				</section>
+				<p className="text-muted-foreground">
+					Téléverser et partager vos fichiers à partir de votre
+					ordinateur.
+				</p>
 
-				{/* Contenu général de la page */}
-				<div className="container mx-auto py-10">
-					<DataTable columns={columns} data={data} />
-				</div>
+				{/* Barre verticale de séparation */}
+				<Separator className="my-6" />
+
+				{/* Tableau des fichiers téléversés */}
+				<DataTable columns={columns} data={data} />
 			</main>
 		</>
 	);
