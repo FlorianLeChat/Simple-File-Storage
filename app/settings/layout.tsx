@@ -42,7 +42,7 @@ export default function Layout( { children }: { children: ReactNode } )
 				{/* En-tête de la page */}
 				<header>
 					<h2 className="text-2xl font-bold tracking-tight">
-						Paramètres générales
+						Paramètres généraux
 					</h2>
 
 					<p className="text-muted-foreground">
