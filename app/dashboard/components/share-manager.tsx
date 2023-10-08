@@ -5,11 +5,15 @@
 
 "use client";
 
+import { merge } from "@/utilities/tailwind";
 import { useState } from "react";
-import { ClipboardCopy, Loader2 } from "lucide-react";
+import { Share2,
+	ClipboardCopy,
+	CalendarDays,
+	Loader2,
+	Trash } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
-import { Button } from "../../components/ui/button";
 import { Select,
 	SelectItem,
 	SelectValue,
@@ -20,6 +24,10 @@ import { Avatar,
 	AvatarImage,
 	AvatarFallback } from "../../components/ui/avatar";
 import { Separator } from "../../components/ui/separator";
+import { HoverCard,
+	HoverCardContent,
+	HoverCardTrigger } from "../../components/ui/hover-card";
+import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function ShareManager()
 {
@@ -58,7 +66,7 @@ export default function ShareManager()
 			<div className="flex space-x-2">
 				<Input value="http://example.com/link/to/document" readOnly />
 
-				<Button variant="secondary" className="shrink-0">
+				<Button variant="secondary">
 					<ClipboardCopy className="mr-2 h-4 w-4" />
 					Copier
 				</Button>
@@ -67,34 +75,67 @@ export default function ShareManager()
 			{/* Séparateur horizontal */}
 			<Separator className="my-2" />
 
-			<div>
-				{/* Liste des utilisateurs partagés */}
-				<h4 className="text-sm font-medium">Utilisateurs partagés</h4>
+			{/* Liste des utilisateurs partagés */}
+			<section>
+				<h4 className="text-center text-sm font-medium sm:text-left">
+					Utilisateurs partagés
+				</h4>
 
-				<div className="mt-4 grid gap-6">
-					<div className="flex items-center justify-between space-x-4">
-						{/* Informations de l'utilisateur */}
-						<div className="flex items-center space-x-4">
-							<Avatar>
-								<AvatarImage src="/avatars/03.png" />
-								<AvatarFallback>OM</AvatarFallback>
-							</Avatar>
+				<div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:justify-normal">
+					{/* Avatar de l'utilisateur */}
+					<Avatar>
+						<AvatarImage src="/avatars/03.png" />
+						<AvatarFallback>OM</AvatarFallback>
+					</Avatar>
 
-							<div>
-								<p className="text-sm font-medium leading-none">
-									Olivia Martin
-								</p>
+					<div>
+						{/* Informations complètes de l'utilisateur */}
+						<HoverCard>
+							<HoverCardTrigger
+								className={merge(
+									buttonVariants( { variant: "link" } ),
+									"h-auto p-0 text-secondary-foreground"
+								)}
+							>
+								Olivia Martin
+							</HoverCardTrigger>
 
-								<p className="text-sm text-muted-foreground">
-									m@example.com
-								</p>
-							</div>
-						</div>
+							<HoverCardContent className="flex justify-between space-x-4">
+								<Avatar>
+									<AvatarImage src="https://github.com/vercel.png" />
+									<AvatarFallback>VC</AvatarFallback>
+								</Avatar>
 
+								<div className="space-y-1">
+									<h4 className="text-sm font-medium leading-none">
+										@olivia2033
+									</h4>
+
+									<p className="text-sm text-muted-foreground">
+										olivia@example.com
+									</p>
+
+									<div className="flex items-center pt-1">
+										<CalendarDays className="mr-2" />
+
+										<span className="text-xs text-muted-foreground">
+											Inscription le 4 décembre 2023
+										</span>
+									</div>
+								</div>
+							</HoverCardContent>
+						</HoverCard>
+
+						<p className="text-sm text-muted-foreground">
+							olivia@example.com
+						</p>
+					</div>
+
+					<div className="flex gap-3 sm:ml-auto">
 						{/* Autorisations accordées */}
 						<Select
 							disabled={isLoading}
-							defaultValue="edit"
+							defaultValue="write"
 							onValueChange={updateSharing}
 						>
 							<SelectTrigger className="ml-auto w-auto">
@@ -102,120 +143,131 @@ export default function ShareManager()
 							</SelectTrigger>
 
 							<SelectContent>
-								<SelectItem value="edit">
+								<SelectItem value="write">
 									{isLoading && (
 										<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
 									)}
 
-									<span className="mr-2">Éditer</span>
+									<span className="mr-2">Écriture</span>
 								</SelectItem>
 
-								<SelectItem value="view">
+								<SelectItem value="read">
 									{isLoading && (
 										<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
 									)}
 
-									<span className="mr-2">Voir</span>
-								</SelectItem>
-							</SelectContent>
-						</Select>
-					</div>
-
-					<div className="flex items-center justify-between space-x-4">
-						<div className="flex items-center space-x-4">
-							<Avatar>
-								<AvatarImage src="/avatars/05.png" />
-								<AvatarFallback>IN</AvatarFallback>
-							</Avatar>
-
-							<div>
-								<p className="text-sm font-medium leading-none">
-									Isabella Nguyen
-								</p>
-
-								<p className="text-sm text-muted-foreground">
-									b@example.com
-								</p>
-							</div>
-						</div>
-
-						<Select
-							disabled={isLoading}
-							defaultValue="view"
-							onValueChange={updateSharing}
-						>
-							<SelectTrigger className="ml-auto w-auto">
-								<SelectValue />
-							</SelectTrigger>
-
-							<SelectContent>
-								<SelectItem value="edit">
-									{isLoading && (
-										<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
-									)}
-
-									<span className="mr-2">Éditer</span>
+									<span className="mr-2">Lecture</span>
 								</SelectItem>
 
-								<SelectItem value="view">
+								<SelectItem value="admin">
 									{isLoading && (
 										<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
 									)}
 
-									<span className="mr-2">Voir</span>
+									<span className="mr-2">Gestion</span>
 								</SelectItem>
 							</SelectContent>
 						</Select>
-					</div>
 
-					<div className="flex items-center justify-between space-x-4">
-						<div className="flex items-center space-x-4">
-							<Avatar>
-								<AvatarImage src="/avatars/01.png" />
-								<AvatarFallback>SD</AvatarFallback>
-							</Avatar>
-
-							<div>
-								<p className="text-sm font-medium leading-none">
-									Sofia Davis
-								</p>
-
-								<p className="text-sm text-muted-foreground">
-									p@example.com
-								</p>
-							</div>
-						</div>
-
-						<Select
-							disabled={isLoading}
-							defaultValue="view"
-							onValueChange={updateSharing}
-						>
-							<SelectTrigger className="ml-auto w-auto">
-								<SelectValue />
-							</SelectTrigger>
-
-							<SelectContent>
-								<SelectItem value="edit">
-									{isLoading && (
-										<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
-									)}
-
-									<span className="mr-2">Éditer</span>
-								</SelectItem>
-
-								<SelectItem value="view">
-									{isLoading && (
-										<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
-									)}
-
-									<span className="mr-2">Voir</span>
-								</SelectItem>
-							</SelectContent>
-						</Select>
+						<Button variant="destructive">
+							<Trash className="h-4 w-4" />
+						</Button>
 					</div>
 				</div>
-			</div>
+
+				<div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:justify-normal">
+					{/* Avatar de l'utilisateur */}
+					<Avatar>
+						<AvatarImage src="/avatars/05.png" />
+						<AvatarFallback>IN</AvatarFallback>
+					</Avatar>
+
+					{/* Informations complètes de l'utilisateur */}
+					<div>
+						<HoverCard>
+							<HoverCardTrigger
+								className={merge(
+									buttonVariants( { variant: "link" } ),
+									"h-auto p-0 text-secondary-foreground"
+								)}
+							>
+								Isabella Nguyen
+							</HoverCardTrigger>
+
+							<HoverCardContent className="flex justify-between space-x-4">
+								<Avatar>
+									<AvatarImage src="https://github.com/vercel.png" />
+									<AvatarFallback>IN</AvatarFallback>
+								</Avatar>
+
+								<div className="space-y-1">
+									<h4 className="text-sm font-medium leading-none">
+										@isabella4542
+									</h4>
+
+									<p className="text-sm text-muted-foreground">
+										isa@example.com
+									</p>
+
+									<div className="flex items-center pt-1">
+										<CalendarDays className="mr-2" />
+
+										<span className="text-xs text-muted-foreground">
+											Inscription le 23 janvier 2021
+										</span>
+									</div>
+								</div>
+							</HoverCardContent>
+						</HoverCard>
+
+						<p className="text-sm text-muted-foreground">
+							isa@example.com
+						</p>
+					</div>
+
+					<div className="flex gap-3 sm:ml-auto">
+						<Select
+							disabled={isLoading}
+							defaultValue="read"
+							onValueChange={updateSharing}
+						>
+							<SelectTrigger className="ml-auto w-auto">
+								<SelectValue />
+							</SelectTrigger>
+
+							<SelectContent>
+								<SelectItem value="write">
+									{isLoading && (
+										<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
+									)}
+
+									<span className="mr-2">Écriture</span>
+								</SelectItem>
+
+								<SelectItem value="read">
+									{isLoading && (
+										<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
+									)}
+
+									<span className="mr-2">Lecture</span>
+								</SelectItem>
+
+								<SelectItem value="admin">
+									{isLoading && (
+										<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
+									)}
+
+									<span className="mr-2">Gestion</span>
+								</SelectItem>
+							</SelectContent>
+						</Select>
+
+						<Button variant="destructive">
+							<Trash className="h-4 w-4" />
+						</Button>
+					</div>
+				</div>
+			</section>
 		</>
 	);
 }
