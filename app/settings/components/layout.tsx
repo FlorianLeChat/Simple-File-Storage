@@ -18,7 +18,6 @@ import { Select,
 	SelectValue,
 	SelectContent,
 	SelectTrigger } from "../../components/ui/select";
-import { Skeleton } from "../../components/ui/skeleton";
 import { Form,
 	FormItem,
 	FormField,
@@ -83,8 +82,7 @@ export default function Layout()
 	const form = useForm<z.infer<typeof layoutForm>>( {
 		resolver: zodResolver( layoutForm ),
 		defaultValues: {
-			font: "inter",
-			theme: mounted && theme === "light" ? "light" : "dark"
+			font: "inter"
 		}
 	} );
 
@@ -159,95 +157,83 @@ export default function Layout()
 
 							<FormMessage />
 
-							{mounted ? (
-								<RadioGroup
-									id="theme"
-									value={field.value ? field.value : theme}
-									className="grid max-w-md grid-cols-2 gap-8 pt-2"
-									onValueChange={field.onChange}
-								>
-									<FormItem>
-										<FormLabel className="!inline [&:has([data-state=checked])>div]:border-primary">
-											<FormControl>
-												<RadioGroupItem
-													value="light"
-													className="sr-only"
-												/>
-											</FormControl>
+							<RadioGroup
+								id="theme"
+								value={
+									( field.value && field.value )
+									|| ( mounted ? theme : "light" )
+								}
+								className="grid max-w-md grid-cols-2 gap-8 pt-2"
+								onValueChange={field.onChange}
+							>
+								<FormItem>
+									<FormLabel className="!inline [&:has([data-state=checked])>div]:border-primary">
+										<FormControl>
+											<RadioGroupItem
+												value="light"
+												className="sr-only"
+											/>
+										</FormControl>
 
-											<div className="items-center rounded-md border-2 border-muted p-1 hover:border-accent">
-												<div className="space-y-2 rounded-sm bg-[#ecedef] p-2">
-													<div className="space-y-2 rounded-md bg-white p-2 shadow-sm">
-														<div className="h-2 w-[80px] rounded-lg bg-[#ecedef]" />
-														<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
-													</div>
+										<div className="items-center rounded-md border-2 border-muted p-1 hover:border-accent">
+											<div className="space-y-2 rounded-sm bg-[#ecedef] p-2">
+												<div className="space-y-2 rounded-md bg-white p-2 shadow-sm">
+													<div className="h-2 w-[80px] rounded-lg bg-[#ecedef]" />
+													<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
+												</div>
 
-													<div className="flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm">
-														<div className="h-4 w-4 rounded-full bg-[#ecedef]" />
-														<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
-													</div>
+												<div className="flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm">
+													<div className="h-4 w-4 rounded-full bg-[#ecedef]" />
+													<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
+												</div>
 
-													<div className="flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm">
-														<div className="h-4 w-4 rounded-full bg-[#ecedef]" />
-														<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
-													</div>
+												<div className="flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm">
+													<div className="h-4 w-4 rounded-full bg-[#ecedef]" />
+													<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
 												</div>
 											</div>
+										</div>
 
-											<span className="block w-full p-2 text-center font-normal">
-												Clair
-											</span>
-										</FormLabel>
-									</FormItem>
+										<span className="block w-full p-2 text-center font-normal">
+											Clair
+										</span>
+									</FormLabel>
+								</FormItem>
 
-									<FormItem>
-										<FormLabel className="!inline [&:has([data-state=checked])>div]:border-primary">
-											<FormControl>
-												<RadioGroupItem
-													value="dark"
-													className="sr-only"
-												/>
-											</FormControl>
+								<FormItem>
+									<FormLabel className="!inline [&:has([data-state=checked])>div]:border-primary">
+										<FormControl>
+											<RadioGroupItem
+												value="dark"
+												className="sr-only"
+											/>
+										</FormControl>
 
-											<div className="items-center rounded-md border-2 border-muted bg-popover p-1 hover:bg-accent hover:text-accent-foreground">
-												<div className="space-y-2 rounded-sm bg-slate-950 p-2">
-													<div className="space-y-2 rounded-md bg-slate-800 p-2 shadow-sm">
-														<div className="h-2 w-[80px] rounded-lg bg-slate-400" />
-														<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
-													</div>
+										<div className="items-center rounded-md border-2 border-muted bg-popover p-1 hover:bg-accent hover:text-accent-foreground">
+											<div className="space-y-2 rounded-sm bg-slate-950 p-2">
+												<div className="space-y-2 rounded-md bg-slate-800 p-2 shadow-sm">
+													<div className="h-2 w-[80px] rounded-lg bg-slate-400" />
+													<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
+												</div>
 
-													<div className="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm">
-														<div className="h-4 w-4 rounded-full bg-slate-400" />
-														<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
-													</div>
+												<div className="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm">
+													<div className="h-4 w-4 rounded-full bg-slate-400" />
+													<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
+												</div>
 
-													<div className="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm">
-														<div className="h-4 w-4 rounded-full bg-slate-400" />
-														<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
-													</div>
+												<div className="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm">
+													<div className="h-4 w-4 rounded-full bg-slate-400" />
+													<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
 												</div>
 											</div>
+										</div>
 
-											<span className="block w-full p-2 text-center font-normal">
-												Sombre
-											</span>
-										</FormLabel>
-									</FormItem>
-								</RadioGroup>
-							) : (
-								// Squelette du composant en attendant le montage.
-								<div className="flex max-w-md items-center gap-8 pt-2">
-									<div className="w-full">
-										<Skeleton className="h-[146px] rounded-md" />
-										<Skeleton className="mt-2 h-[24px] rounded-md" />
-									</div>
-
-									<div className="w-full">
-										<Skeleton className="h-[146px] rounded-md" />
-										<Skeleton className="mt-2 h-[24px] rounded-md" />
-									</div>
-								</div>
-							)}
+										<span className="block w-full p-2 text-center font-normal">
+											Sombre
+										</span>
+									</FormLabel>
+								</FormItem>
+							</RadioGroup>
 						</FormItem>
 					)}
 				/>
