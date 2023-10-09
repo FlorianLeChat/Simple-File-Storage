@@ -7,7 +7,7 @@
 import Link from "next/link";
 import { merge } from "@/utilities/tailwind";
 import { usePathname } from "next/navigation";
-import { Cookie, User, KeyRound, Palette, Bug } from "lucide-react";
+import { Bell, Cookie, User, KeyRound, Palette, Bug } from "lucide-react";
 import { Button, buttonVariants } from "../../components/ui/button";
 
 // Déclaration des routes de paramétrage.
@@ -29,6 +29,15 @@ const routes = [
 			</>
 		),
 		href: "/settings/account"
+	},
+	{
+		title: (
+			<>
+				<Bell className="mr-2 inline" />
+				Notifications
+			</>
+		),
+		href: "/settings/notifications"
 	},
 	{
 		title: (

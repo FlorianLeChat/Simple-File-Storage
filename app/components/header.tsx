@@ -27,6 +27,12 @@ const routes: { title: string; href: string; description: string }[] = [
 			"Modification des informations de votre compte utilisateur."
 	},
 	{
+		title: "Notifications",
+		href: "/settings/notifications",
+		description:
+			"Ajustement des notifications reçues par courriel ou sur le site Internet."
+	},
+	{
 		title: "Apparence",
 		href: "/settings/layout",
 		description: "Personnalisation de l'apparence du site Internet."
