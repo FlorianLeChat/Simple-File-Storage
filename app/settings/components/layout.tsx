@@ -166,72 +166,98 @@ export default function Layout()
 								className="grid max-w-md grid-cols-2 gap-8 pt-2"
 								onValueChange={field.onChange}
 							>
-								<FormItem>
-									<FormLabel className="!inline [&:has([data-state=checked])>div]:border-primary">
+								<FormItem className="relative !inline [&:has([data-state=checked])>div]:border-primary [&:hover>div:first-child]:bg-accent [&:hover>div:first-child]:text-accent-foreground">
+									<div className="items-center rounded-md border-2 border-muted bg-popover p-1">
+										<ul className="space-y-2 rounded-sm bg-[#ecedef] p-2">
+											<li className="space-y-2 rounded-md bg-white p-2 shadow-sm">
+												<div className="h-2 w-[80px] rounded-lg bg-[#ecedef]" />
+												<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
+											</li>
+
+											<li className="flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm">
+												<div className="h-4 w-4 rounded-full bg-[#ecedef]" />
+												<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
+											</li>
+
+											<li className="flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm">
+												<div className="h-4 w-4 rounded-full bg-[#ecedef]" />
+												<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
+											</li>
+										</ul>
+									</div>
+
+									<div className="!mt-2 flex items-center justify-center gap-2">
 										<FormControl>
 											<RadioGroupItem
+												id="light"
 												value="light"
-												className="sr-only"
+												disabled={isLoading}
 											/>
 										</FormControl>
 
-										<div className="items-center rounded-md border-2 border-muted p-1 hover:border-accent">
-											<div className="space-y-2 rounded-sm bg-[#ecedef] p-2">
-												<div className="space-y-2 rounded-md bg-white p-2 shadow-sm">
-													<div className="h-2 w-[80px] rounded-lg bg-[#ecedef]" />
-													<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
-												</div>
-
-												<div className="flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm">
-													<div className="h-4 w-4 rounded-full bg-[#ecedef]" />
-													<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
-												</div>
-
-												<div className="flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm">
-													<div className="h-4 w-4 rounded-full bg-[#ecedef]" />
-													<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
-												</div>
-											</div>
-										</div>
-
-										<span className="block w-full p-2 text-center font-normal">
+										<span className="text-sm font-normal">
 											Clair
 										</span>
+									</div>
+
+									<FormLabel
+										htmlFor="light"
+										className="sr-only left-0 top-0 h-full w-full text-transparent [clip:unset]"
+									>
+										Clair
 									</FormLabel>
+
+									<FormDescription className="sr-only">
+										Le thème clair adapté à la lecture en
+										milieu lumineux.
+									</FormDescription>
 								</FormItem>
 
-								<FormItem>
-									<FormLabel className="!inline [&:has([data-state=checked])>div]:border-primary">
+								<FormItem className="relative !inline [&:has([data-state=checked])>div]:border-primary [&:hover>div:first-child]:bg-accent [&:hover>div:first-child]:text-accent-foreground">
+									<div className="items-center rounded-md border-2 border-muted bg-popover p-1 hover:bg-accent hover:text-accent-foreground">
+										<ul className="space-y-2 rounded-sm bg-slate-950 p-2">
+											<li className="space-y-2 rounded-md bg-slate-800 p-2 shadow-sm">
+												<div className="h-2 w-[80px] rounded-lg bg-slate-400" />
+												<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
+											</li>
+
+											<li className="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm">
+												<div className="h-4 w-4 rounded-full bg-slate-400" />
+												<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
+											</li>
+
+											<li className="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm">
+												<div className="h-4 w-4 rounded-full bg-slate-400" />
+												<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
+											</li>
+										</ul>
+									</div>
+
+									<div className="!mt-2 flex items-center justify-center gap-2">
 										<FormControl>
 											<RadioGroupItem
+												id="dark"
 												value="dark"
-												className="sr-only"
+												disabled={isLoading}
 											/>
 										</FormControl>
 
-										<div className="items-center rounded-md border-2 border-muted bg-popover p-1 hover:bg-accent hover:text-accent-foreground">
-											<div className="space-y-2 rounded-sm bg-slate-950 p-2">
-												<div className="space-y-2 rounded-md bg-slate-800 p-2 shadow-sm">
-													<div className="h-2 w-[80px] rounded-lg bg-slate-400" />
-													<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
-												</div>
-
-												<div className="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm">
-													<div className="h-4 w-4 rounded-full bg-slate-400" />
-													<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
-												</div>
-
-												<div className="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm">
-													<div className="h-4 w-4 rounded-full bg-slate-400" />
-													<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
-												</div>
-											</div>
-										</div>
-
-										<span className="block w-full p-2 text-center font-normal">
+										<span className="text-sm font-normal">
 											Sombre
 										</span>
+									</div>
+
+									<FormLabel
+										htmlFor="dark"
+										className="sr-only left-0 top-0 h-full w-full text-transparent [clip:unset]"
+									>
+										Sombre
 									</FormLabel>
+
+									<FormDescription className="sr-only">
+										Le thème sombre adapté à la lecture en
+										milieu sombre.
+									</FormDescription>
 								</FormItem>
 							</RadioGroup>
 						</FormItem>
