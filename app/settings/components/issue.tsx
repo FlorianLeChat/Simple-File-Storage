@@ -128,7 +128,7 @@ export default function Account()
 								</FormControl>
 
 								<FormDescription className="sr-only">
-									Test
+									Indiquez le domaine concerné par le bogue.
 								</FormDescription>
 
 								<FormMessage />
@@ -181,7 +181,7 @@ export default function Account()
 								</FormControl>
 
 								<FormDescription className="sr-only">
-									Test
+									Indiquez la sévérité (selon vous) du bogue.
 								</FormDescription>
 
 								<FormMessage />
@@ -217,7 +217,7 @@ export default function Account()
 							</FormControl>
 
 							<FormDescription className="sr-only">
-								Test
+								Écrivez un sujet court pour décrire le bogue.
 							</FormDescription>
 
 							<FormMessage />
@@ -255,7 +255,8 @@ export default function Account()
 							</FormControl>
 
 							<FormDescription className="sr-only">
-								Test
+								Expliquez en détail le bogue que vous avez
+								rencontré et comment le reproduire.
 							</FormDescription>
 
 							<FormMessage />
