@@ -9,8 +9,10 @@ import { merge } from "@/utilities/tailwind";
 import { ColumnDef } from "@tanstack/react-table";
 import { Trash,
 	UserX,
+	Globe,
 	Share2,
 	History,
+	FolderLock,
 	ArrowUpRight,
 	ClipboardCopy,
 	MoreHorizontal } from "lucide-react";
@@ -170,6 +172,91 @@ export const columns: ColumnDef<File>[] = [
 					<DropdownMenuLabel>
 						Actions sur le fichier
 					</DropdownMenuLabel>
+
+					{/* Restriction d'accès */}
+					<AlertDialog>
+						<AlertDialogTrigger asChild>
+							<DropdownMenuItem
+								// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+								onSelect={( event ) => event.preventDefault()}
+							>
+								<Globe className="mr-2 h-4 w-4" />
+								Rendre public
+							</DropdownMenuItem>
+						</AlertDialogTrigger>
+
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>
+									<Globe className="mr-2 inline h-5 w-5" />
+
+									<span className="align-middle">
+										Êtes-vous sûr de vouloir rendre public
+										ce fichier ?
+									</span>
+								</AlertDialogTitle>
+
+								<AlertDialogDescription>
+									En rendant ce fichier public, il sera
+									accessible à tout le monde, même aux
+									utilisateurs en dehors du site Internet.{" "}
+									<strong>
+										Les restrictions de partage seront
+										réinitialisées et désactivées.
+									</strong>
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+
+							<AlertDialogFooter>
+								<AlertDialogCancel>Annuler</AlertDialogCancel>
+								<AlertDialogAction>Confirmer</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
+
+					<AlertDialog>
+						<AlertDialogTrigger asChild>
+							<DropdownMenuItem
+								// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+								onSelect={( event ) => event.preventDefault()}
+							>
+								<FolderLock className="mr-2 h-4 w-4" />
+								Rendre privé
+							</DropdownMenuItem>
+						</AlertDialogTrigger>
+
+						<AlertDialogContent>
+							<AlertDialogHeader>
+								<AlertDialogTitle>
+									<FolderLock className="mr-2 inline h-5 w-5" />
+
+									<span className="align-middle">
+										Êtes-vous sûr de vouloir rendre privé ce
+										fichier ?
+									</span>
+								</AlertDialogTitle>
+
+								<AlertDialogDescription>
+									En rendant ce fichier privé, il ne sera plus
+									accessible aux utilisateurs en dehors du
+									site Internet, ni aux utilisateurs non
+									autorisés via les options de partage.{" "}
+									<strong>
+										Le fichier peut encore être accessible
+										si celui-ci a été mis en cache par un
+										tiers.
+									</strong>
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+
+							<AlertDialogFooter>
+								<AlertDialogCancel>Annuler</AlertDialogCancel>
+								<AlertDialogAction>Confirmer</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
+
+					<DropdownMenuSeparator />
 
 					{/* Gestion des partages */}
 					<Dialog>
