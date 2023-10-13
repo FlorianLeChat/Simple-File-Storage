@@ -90,7 +90,7 @@ export default function Page()
 							Sécurisé de bout en bout
 						</h2>
 
-						<p>
+						<p className="text-muted-foreground">
 							Toutes les données sont chiffrées et stockées sur
 							des serveurs sécurisés et à l&lsquo;abri des regards
 							indiscrets.
@@ -104,7 +104,7 @@ export default function Page()
 							Simple d&lsquo;utilisation
 						</h2>
 
-						<p>
+						<p className="text-muted-foreground">
 							L&lsquo;interface est conçue pour être simple et
 							ergonomique pour tous les utilisateurs, même pour
 							vos grands-parents.
@@ -118,7 +118,7 @@ export default function Page()
 							Respect de la vie privée
 						</h2>
 
-						<p>
+						<p className="text-muted-foreground">
 							Vos données sont stockées sur des serveurs basés en
 							Europe conforme au RGPD pour garantir une intégrité
 							et une confidentialité totale.
@@ -130,7 +130,7 @@ export default function Page()
 
 						<h2 className="text-xl font-bold">Haute performance</h2>
 
-						<p>
+						<p className="text-muted-foreground">
 							Nos serveurs sont prévus pour garantir une
 							performance optimale et une disponibilité maximale.
 						</p>
@@ -141,7 +141,7 @@ export default function Page()
 
 						<h2 className="text-xl font-bold">Outils efficaces</h2>
 
-						<p>
+						<p className="text-muted-foreground">
 							Nos outils sont peu nombreux mais efficaces pour
 							l&lsquo;enregistrement et le partage de vos fichiers
 							avec d&lsquo;autres utilisateurs.
@@ -155,7 +155,7 @@ export default function Page()
 							Espace de stockage partagé
 						</h2>
 
-						<p>
+						<p className="text-muted-foreground">
 							Nous ne pouvons pas vous garantir un espace de
 							stockage illimité, mais il permet de stocker
 							suffisamment de fichiers pour vos besoins
