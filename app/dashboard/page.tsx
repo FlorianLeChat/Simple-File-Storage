@@ -59,8 +59,8 @@ export default async function Dashboard()
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			<header className="flex min-h-[4rem] justify-center gap-4 border-b sm:px-4">
-				<div className="align-center flex flex-col items-center gap-2 pb-3 pt-4 sm:flex-row sm:gap-4 sm:py-0">
+			<header className="flex min-h-[4rem] justify-center gap-2 border-b p-4 max-md:flex-col">
+				<div className="align-center flex items-center gap-2 max-md:flex-col md:gap-4">
 					{/* Titre du site */}
 					<h1 className="text-xl font-semibold">
 						💾 Simple File Storage
