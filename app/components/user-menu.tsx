@@ -30,19 +30,16 @@ import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
 const notifications = [
 	{
-		id: 1,
 		type: "success",
 		title: "Nouveau fichier téléversé",
 		description: "Votre fichier a bien été téléversé."
 	},
 	{
-		id: 2,
 		type: "warning",
 		title: "Collaborateur supprimé",
 		description: "Donald a été supprimé de votre espace de travail."
 	},
 	{
-		id: 3,
 		type: "error",
 		title: "Espace de stockage saturé",
 		description: "Vous avez atteint 90% de votre espace de stockage."
@@ -143,7 +140,7 @@ export default function UserMenu()
 					<ul className="my-2 flex flex-col gap-4">
 						{notifications.map( ( notification ) => (
 							<li
-								key={notification.id}
+								key={notification.title}
 								className="grid grid-cols-[25px_1fr]"
 							>
 								<span className="h-2 w-2 translate-y-1 rounded-full bg-primary" />
