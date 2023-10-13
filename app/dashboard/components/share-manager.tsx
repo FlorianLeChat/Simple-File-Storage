@@ -73,11 +73,11 @@ export default function ShareManager()
 
 			{/* Liste des utilisateurs partagés */}
 			<section>
-				<h4 className="text-center text-sm font-medium sm:text-left">
+				<h4 className="text-sm font-medium max-sm:text-center">
 					Utilisateurs partagés
 				</h4>
 
-				<div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:justify-normal">
+				<div className="mt-6 flex flex-wrap items-center gap-3 max-sm:justify-center">
 					{/* Avatar de l'utilisateur */}
 					<Avatar>
 						<AvatarImage src="/avatars/03.png" />
@@ -171,7 +171,7 @@ export default function ShareManager()
 					</div>
 				</div>
 
-				<div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:justify-normal">
+				<div className="mt-6 flex flex-wrap items-center gap-3 max-sm:justify-center">
 					{/* Avatar de l'utilisateur */}
 					<Avatar>
 						<AvatarImage src="/avatars/05.png" />

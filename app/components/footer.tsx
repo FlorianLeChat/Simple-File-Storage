@@ -18,7 +18,7 @@ export default function Footer()
 
 				{/* Avertissement de Google reCAPTCHA */}
 				{process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true" && (
-					<small className="mt-1 block text-xs sm:mt-auto">
+					<small className="block text-xs max-sm:mt-1">
 						Ce site est protégé par reCAPTCHA sur lequel
 						s&lsquo;appliquent les{" "}
 						<a

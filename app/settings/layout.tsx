@@ -23,7 +23,7 @@ export default function Layout( { children }: { children: ReactNode } )
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			<header className="flex min-h-[4rem] justify-center gap-2 border-b p-4 max-md:flex-col">
+			<header className="flex min-h-[4rem] flex-wrap justify-center gap-2 border-b p-4 max-md:flex-col">
 				<div className="align-center flex items-center gap-2 max-md:flex-col md:gap-4">
 					{/* Titre du site */}
 					<h1 className="text-xl font-semibold">

@@ -68,7 +68,7 @@ export default function DataTable( {
 	return (
 		<>
 			{/* Filtrage et tri des données */}
-			<search className="flex items-center gap-2 py-4">
+			<div className="flex items-center gap-2 py-4">
 				{/* Filtrage par nom */}
 				<Input
 					value={
@@ -139,7 +139,7 @@ export default function DataTable( {
 			</Table>
 
 			{/* Contrôles de pagination */}
-			<aside className="flex flex-col items-center justify-end gap-2 py-4 sm:flex-row sm:gap-4 lg:gap-8">
+			<aside className="flex items-center justify-end gap-2 py-4 max-sm:flex-col sm:gap-4 lg:gap-8">
 				<Pagination table={table} />
 			</aside>
 		</>

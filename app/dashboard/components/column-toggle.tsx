@@ -37,7 +37,7 @@ export default function ColumnToggle<TData>( {
 			>
 				<SlidersHorizontal className="inline h-4 w-4 sm:mr-2" />
 
-				<span className="hidden sm:inline">Voir</span>
+				<span className="max-sm:hidden">Voir</span>
 			</DropdownMenuTrigger>
 
 			{/* Menu de sélection des colonnes */}

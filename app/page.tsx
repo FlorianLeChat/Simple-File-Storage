@@ -25,7 +25,7 @@ export default function Page()
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			<header className="mb-auto flex flex-col items-center justify-between gap-2 p-4 sm:flex-row">
+			<header className="mb-auto flex items-center justify-between gap-2 p-4 max-sm:flex-col">
 				{/* Titre du site */}
 				<h1 className="text-2xl font-semibold">
 					💾 Simple File Storage
@@ -48,7 +48,7 @@ export default function Page()
 					rel="noopener noreferrer"
 					href="https://github.com/FlorianLeChat/Simple-File-Storage"
 					target="_blank"
-					className="group fixed bottom-auto left-auto right-0 top-0 hidden [clip-path:polygon(0_0,100%_0,100%_100%)] sm:inline"
+					className="group fixed bottom-auto left-auto right-0 top-0 [clip-path:polygon(0_0,100%_0,100%_100%)] max-sm:hidden"
 				>
 					<svg
 						width="80"
