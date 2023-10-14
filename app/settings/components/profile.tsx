@@ -183,8 +183,12 @@ export default function Profile()
 								<Input
 									{...field}
 									type="file"
-									accept="image/*"
+									accept=".png, .jpg, .jpeg"
 									disabled={isLoading}
+									onChange={( event ) => field.onChange(
+										event.target.files
+												&& event.target.files[ 0 ]
+									)}
 								/>
 							</FormControl>
 
