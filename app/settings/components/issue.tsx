@@ -205,13 +205,13 @@ export default function Account()
 								<Input
 									{...field}
 									id="subject"
+									disabled={isLoading}
 									minLength={
 										schema.shape.subject.minLength as number
 									}
 									maxLength={
 										schema.shape.subject.maxLength as number
 									}
-									disabled={isLoading}
 									placeholder="Il y a un problème avec..."
 								/>
 							</FormControl>
