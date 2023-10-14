@@ -2,9 +2,6 @@
 // Composant générique du menu déroulant.
 //  Source : https://ui.shadcn.com/docs/components/dropdown-menu
 //
-
-"use client";
-
 import { merge } from "@/utilities/tailwind";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { forwardRef,

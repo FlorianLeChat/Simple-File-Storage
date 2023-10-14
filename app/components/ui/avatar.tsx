@@ -2,9 +2,6 @@
 // Composant générique de l'avatar.
 //  Source : https://ui.shadcn.com/docs/components/avatar
 //
-
-"use client";
-
 import { merge } from "@/utilities/tailwind";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { forwardRef,

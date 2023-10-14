@@ -2,9 +2,6 @@
 // Composant de contrôle de l'affichage des colonnes d'un tableau de données.
 //  Source : https://ui.shadcn.com/docs/components/data-table#column-toggle
 //
-
-"use client";
-
 import { merge } from "@/utilities/tailwind";
 import { Table } from "@tanstack/react-table";
 import { SlidersHorizontal } from "lucide-react";
