@@ -7,7 +7,13 @@
 
 import { merge } from "@/utilities/tailwind";
 import { useState } from "react";
-import { Trash, Loader2, CalendarDays, ClipboardCopy } from "lucide-react";
+import { Trash,
+	Users,
+	Loader2,
+	UserCog,
+	UserPlus,
+	CalendarDays,
+	ClipboardCopy } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { Select,
@@ -20,10 +26,34 @@ import { Avatar,
 	AvatarImage,
 	AvatarFallback } from "../../components/ui/avatar";
 import { Separator } from "../../components/ui/separator";
+import { ScrollArea } from "../../components/ui/scroll-area";
 import { HoverCard,
 	HoverCardContent,
 	HoverCardTrigger } from "../../components/ui/hover-card";
 import { Button, buttonVariants } from "../../components/ui/button";
+
+const users = [
+	{
+		public_name: "John Doe",
+		user_name: "johndoe245",
+		email: "johndoe@gmail.com"
+	},
+	{
+		public_name: "Jane Doe",
+		user_name: "janedoe015",
+		email: "janedoe@gmail.com"
+	},
+	{
+		public_name: "Monroe Johnson",
+		user_name: "monroejohn453",
+		email: "monjohn@gmail.com"
+	},
+	{
+		public_name: "William Smith",
+		user_name: "willsmith963",
+		email: "wsmith@gmail.com"
+	}
+];
 
 export default function ShareManager()
 {
@@ -31,9 +61,10 @@ export default function ShareManager()
 	const { toast } = useToast();
 
 	// Déclaration des variables d'état.
+	const [ search, setSearch ] = useState( "" );
 	const [ isLoading, setIsLoading ] = useState( false );
 
-	// Requête de connexion d'un compte utilisateur par protocole OAuth.
+	// Met à jour les informations de partage d'un utilisateur.
 	const updateSharing = ( value: string ) =>
 	{
 		setIsLoading( true );
@@ -69,28 +100,30 @@ export default function ShareManager()
 			</div>
 
 			{/* Séparateur horizontal */}
-			<Separator className="my-2" />
+			<Separator />
 
 			{/* Liste des utilisateurs partagés */}
 			<section>
 				<h4 className="text-sm font-medium max-sm:text-center">
-					Utilisateurs partagés
+					<Users className="mr-2 inline h-4 w-4" />
+
+					<span className="align-middle">Utilisateurs partagés</span>
 				</h4>
 
-				<div className="mt-6 flex flex-wrap items-center gap-3 max-sm:justify-center">
+				<div className="mt-3 flex flex-wrap items-center gap-3 max-sm:justify-center">
 					{/* Avatar de l'utilisateur */}
 					<Avatar>
 						<AvatarImage src="/avatars/03.png" />
 						<AvatarFallback>OM</AvatarFallback>
 					</Avatar>
 
+					{/* Informations complètes de l'utilisateur */}
 					<div>
-						{/* Informations complètes de l'utilisateur */}
 						<HoverCard>
 							<HoverCardTrigger
 								className={merge(
 									buttonVariants( { variant: "link" } ),
-									"h-auto p-0 text-secondary-foreground"
+									"h-auto cursor-pointer p-0 text-secondary-foreground"
 								)}
 							>
 								Olivia Martin
@@ -127,8 +160,8 @@ export default function ShareManager()
 						</p>
 					</div>
 
+					{/* Autorisations accordées */}
 					<div className="flex gap-3 sm:ml-auto">
-						{/* Autorisations accordées */}
 						<Select
 							disabled={isLoading}
 							defaultValue="write"
@@ -165,7 +198,7 @@ export default function ShareManager()
 							</SelectContent>
 						</Select>
 
-						<Button variant="destructive">
+						<Button variant="destructive" disabled={isLoading}>
 							<Trash className="h-4 w-4" />
 						</Button>
 					</div>
@@ -184,7 +217,7 @@ export default function ShareManager()
 							<HoverCardTrigger
 								className={merge(
 									buttonVariants( { variant: "link" } ),
-									"h-auto p-0 text-secondary-foreground"
+									"h-auto cursor-pointer p-0 text-secondary-foreground"
 								)}
 							>
 								Isabella Nguyen
@@ -221,6 +254,7 @@ export default function ShareManager()
 						</p>
 					</div>
 
+					{/* Autorisations accordées */}
 					<div className="flex gap-3 sm:ml-auto">
 						<Select
 							disabled={isLoading}
@@ -258,11 +292,123 @@ export default function ShareManager()
 							</SelectContent>
 						</Select>
 
-						<Button variant="destructive">
+						<Button variant="destructive" disabled={isLoading}>
 							<Trash className="h-4 w-4" />
 						</Button>
 					</div>
 				</div>
+			</section>
+
+			{/* Séparateur horizontal */}
+			<Separator />
+
+			{/* Ajout de nouveaux utilisateurs */}
+			<section>
+				<h4 className="text-sm font-medium max-sm:text-center">
+					<UserCog className="mr-2 inline h-4 w-4" />
+
+					<span className="align-middle">
+						Recherche d&lsquo;utilisateurs
+					</span>
+				</h4>
+
+				<Input
+					type="text"
+					value={search}
+					onChange={( event ) => setSearch( event.target.value )}
+					disabled={isLoading}
+					minLength={1}
+					maxLength={50}
+					className="mt-3"
+					spellCheck="false"
+					placeholder="Rechercher..."
+					autoComplete="off"
+					autoCapitalize="off"
+				/>
+
+				<span className="my-4 ml-1 inline-block text-sm text-muted-foreground">
+					{users.length} résultat(s) trouvés dans la base de données.
+				</span>
+
+				{/* Résultats de la recherche */}
+				<ScrollArea className="h-24">
+					<ul>
+						{users.map( ( user, index ) => (
+							<li
+								key={user.user_name}
+								className="flex flex-wrap items-center gap-3 max-sm:justify-center"
+							>
+								{/* Avatar de l'utilisateur */}
+								<Avatar>
+									<AvatarImage src="/avatars/05.png" />
+									<AvatarFallback>IN</AvatarFallback>
+								</Avatar>
+
+								{/* Informations complètes de l'utilisateur */}
+								<div>
+									<HoverCard>
+										<HoverCardTrigger
+											className={merge(
+												buttonVariants( {
+													variant: "link"
+												} ),
+												"h-auto cursor-pointer p-0 text-secondary-foreground"
+											)}
+										>
+											{user.public_name}
+										</HoverCardTrigger>
+
+										<HoverCardContent className="flex justify-between space-x-4">
+											<Avatar>
+												<AvatarImage src="https://github.com/vercel.png" />
+												<AvatarFallback>
+													IN
+												</AvatarFallback>
+											</Avatar>
+
+											<div className="space-y-1">
+												<h4 className="text-sm font-medium leading-none">
+													{user.user_name}
+												</h4>
+
+												<p className="text-sm text-muted-foreground">
+													{user.email}
+												</p>
+
+												<div className="flex items-center pt-1">
+													<CalendarDays className="mr-2" />
+
+													<span className="text-xs text-muted-foreground">
+														Inscription le 23
+														janvier 2021
+													</span>
+												</div>
+											</div>
+										</HoverCardContent>
+									</HoverCard>
+
+									<p className="text-sm text-muted-foreground">
+										{user.email}
+									</p>
+								</div>
+
+								{/* Bouton d'ajout de l'utilisateur */}
+								<Button
+									disabled={isLoading}
+									className="mr-4 sm:ml-auto"
+								>
+									<UserPlus className="mr-2 h-4 w-4" />
+									Ajouter
+								</Button>
+
+								{/* Séparateur horizontal */}
+								{index !== users.length - 1 && (
+									<Separator className="mb-3 mt-1" />
+								)}
+							</li>
+						) )}
+					</ul>
+				</ScrollArea>
 			</section>
 		</>
 	);
