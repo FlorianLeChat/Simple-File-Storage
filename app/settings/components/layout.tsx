@@ -6,7 +6,6 @@
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { useTheme } from "next-themes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import { CaseUpper, Loader2, SunMoon, RefreshCw } from "lucide-react";
@@ -18,6 +17,7 @@ import { Select,
 	SelectValue,
 	SelectContent,
 	SelectTrigger } from "../../components/ui/select";
+import { useTheme } from "../../components/theme-provider";
 import { Form,
 	FormItem,
 	FormField,

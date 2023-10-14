@@ -36,9 +36,11 @@
 		"@typescript-eslint/no-shadow": "error",
 		"@typescript-eslint/no-unused-vars": "error",
 
+		"react/no-danger": "off", // https://github.com/pacocoursey/next-themes/blob/cd67bfa20ef6ea78a814d65625c530baae4075ef/packages/next-themes/src/index.tsx#L267
 		"react/jsx-indent": ["error", "tab"],
 		"react/jsx-indent-props": ["error", "tab"],
 		"react/react-in-jsx-scope": "off", // https://stackoverflow.com/a/61160875
+		"react/require-default-props": ["error", { "functions": "defaultArguments" }], // https://github.com/jsx-eslint/eslint-plugin-react/issues/2396
 		"react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
 		"react/jsx-props-no-spreading": "off",
 		"react/jsx-one-expression-per-line": "off"

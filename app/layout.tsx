@@ -16,7 +16,7 @@ import { Suspense, lazy, type ReactNode } from "react";
 // Importation des composants.
 import Footer from "./components/footer";
 import { Toaster } from "./components/ui/toaster";
-import ThemeProvider from "./components/theme-provider";
+import { ThemeProvider } from "./components/theme-provider";
 
 const Analytics = lazy( () => import( "./components/analytics" ) );
 const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
@@ -47,12 +47,8 @@ export default function Layout( { children }: { children: ReactNode } )
 						/>
 					</video>
 
-					{/* Basculement entre les thèmes clair et sombre. */}
-					<ThemeProvider
-						attribute="class"
-						storageKey="NEXT_THEME"
-						disableTransitionOnChange
-					>
+					{/* Basculement entre les thèmes */}
+					<ThemeProvider>
 						{/* Composant enfant */}
 						{children}
 
