@@ -11,14 +11,12 @@ import { useMemo,
 	useContext,
 	useCallback,
 	createContext,
-	type Dispatch,
-	type ReactNode,
-	type SetStateAction } from "react";
+	type ReactNode } from "react";
 
 // Déclaration des types.
 interface UseThemeProps {
 	theme?: string;
-	setTheme: Dispatch<SetStateAction<string>>;
+	setTheme: ( value: string ) => void;
 }
 
 interface ThemeProviderProps {
@@ -27,10 +25,10 @@ interface ThemeProviderProps {
 
 // Déclaration des constantes globales.
 const storageKey = "NEXT_THEME";
-const defaultTheme = "system";
 const ThemeContext = createContext<UseThemeProps | undefined>( undefined );
-const defaultContext: UseThemeProps = { setTheme: () =>
-{} };
+const defaultContext: UseThemeProps = { theme: "light",
+	setTheme: () =>
+	{} };
 
 // Définition du fonctionnement du composant.
 function Theme( { children = null }: ThemeProviderProps )
@@ -41,19 +39,19 @@ function Theme( { children = null }: ThemeProviderProps )
 		if ( typeof window === "undefined" )
 		{
 			// Valeur par défaut pour le serveur.
-			return defaultTheme;
+			return "light";
 		}
 
-		return sessionStorage.getItem( key ) ?? defaultTheme;
+		return sessionStorage.getItem( key ) ?? "light";
 	};
 
-	// Récupération du thème du système d'exploitation.
+	// Récupération du thème du navigateur.
 	const getSystemTheme = ( event?: MediaQueryList | MediaQueryListEvent ) =>
 	{
 		if ( typeof window === "undefined" )
 		{
 			// Valeur par défaut pour le serveur.
-			return defaultTheme;
+			return "light";
 		}
 
 		// Détermination du thème par défaut.
@@ -65,132 +63,106 @@ function Theme( { children = null }: ThemeProviderProps )
 	};
 
 	// Déclaration des variables d'état.
-	const [ theme, setCurrentTheme ] = useState( () => getCurrentTheme( storageKey ) );
-	const [ resolvedTheme, setResolvedTheme ] = useState( () => getCurrentTheme( storageKey ) );
+	const [ theme, setTheme ] = useState( () => getCurrentTheme( storageKey ) );
 
-	// Application du thème choisi par l'utilisateur sur le DOM.
-	const applyTheme = useCallback(
-		( value: string ) =>
-		{
-			// On récupère d'abord le thème résolu précédemment
-			//  avant de l'appliquer dans les classes du DOM.
-			const resolved = value === defaultTheme ? resolvedTheme : value;
-			const element = document.documentElement;
-			element.classList.remove( "light", "dark" );
-			element.classList.add( resolved );
-			element.style.colorScheme = resolved;
-
-			// On insère après des règles CSS temporaires
-			//  pour désactiver les transitions.
-			const style = document.createElement( "style" );
-			style.appendChild(
-				document.createTextNode(
-					"*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}"
-				)
-			);
-
-			document.head.appendChild( style );
-
-			// On marque enfin un délai de 1 milliseconde
-			//  avant de supprimer les règles CSS temporaires.
-			setTimeout( () =>
-			{
-				document.head.removeChild( style );
-			}, 1 );
-		},
-		[ resolvedTheme ]
-	);
-
-	// Définition et sauvegarde du thème choisi par l'utilisateur.
-	const setTheme = useCallback( ( value: string ) =>
+	// Application du nouveau thème.
+	const applyTheme = useCallback( ( value: string ) =>
 	{
 		// On vérifie d'abord si la valeur choisie est valide.
-		if ( value !== "light" && value !== "dark" && value !== defaultTheme )
+		if ( value !== "light" && value !== "dark" )
 		{
 			return;
 		}
 
-		// On définit enfin cette même valeur avant de
-		//  la sauvegarder dans le stockage local.
-		setCurrentTheme( value );
+		// On définit ensuite cette même valeur avant de
+		//  la sauvegarder dans le stockage de session.
+		setTheme( value );
 
 		sessionStorage.setItem( storageKey, value );
+
+		// On applique après les classes CSS correspondantes
+		//  sur le DOM.
+		const element = document.documentElement;
+		element.classList.remove( "light", "dark", "cc--darkmode" );
+		element.classList.add( value );
+		element.style.colorScheme = value;
+
+		if ( value === "dark" )
+		{
+			// Support pour le thème sombre pour les fenêtres
+			//  de consentement des cookies.
+			element.classList.add( "cc--darkmode" );
+		}
+
+		// On insère des règles CSS temporaires afin de
+		//  désactiver les transitions.
+		const style = document.createElement( "style" );
+		style.appendChild(
+			document.createTextNode(
+				"*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}"
+			)
+		);
+
+		document.head.appendChild( style );
+
+		// On marque enfin un délai de 1 milliseconde
+		//  avant de supprimer les règles CSS temporaires.
+		setTimeout( () =>
+		{
+			document.head.removeChild( style );
+		}, 1 );
 	}, [] );
 
-	// Basculement entre les thèmes clair et sombre
-	//  en fonction du système d'exploitation.
-	const handleMedia = useCallback(
+	// Application du nouveau thème détecté précédemment.
+	const detectMedia = useCallback(
 		( event: MediaQueryListEvent | MediaQueryList ) =>
 		{
-			// On détermine d'abord le thème du système
-			//  d'exploitation ou du navigateur.
-			const resolved = getSystemTheme( event );
-
-			// On définit enfin le thème résolu avant de
-			//  l'appliquer si celui-ci n'est pas clairement
-			//  défini par l'utilisateur.
-			setResolvedTheme( resolved );
-
-			if ( theme === defaultTheme )
-			{
-				applyTheme( theme );
-			}
+			applyTheme( getSystemTheme( event ) );
 		},
-		[ theme, applyTheme ]
+		[ applyTheme ]
 	);
 
-	// Détection des changements du thème du système
-	//  d'exploitation ou du navigateur.
-	useEffect( () =>
-	{
-		// On récupère d'abord le thème par défaut.
-		const media = window.matchMedia( "(prefers-color-scheme: dark)" );
-
-		// On exécute une première fois la fonction
-		//  pour récupérer le thème par défaut.
-		handleMedia( media );
-
-		// On exécute enfin la fonction à chaque
-		//  changement du thème par défaut.
-		media.addEventListener( "change", handleMedia );
-
-		return () => media.removeEventListener( "change", handleMedia );
-	}, [ handleMedia ] );
-
-	// Détection des changements du thème choisi par
-	//  l'utilisateur dans le stockage local.
-	useEffect( () =>
-	{
-		// On vérifie puis on récupère d'abord la valeur
-		//  modifiée dans le stockage local.
-		const handleStorage = ( event: StorageEvent ) =>
+	// Application du nouveau thème modifié précédemment.
+	const detectStorage = useCallback(
+		( event: StorageEvent ) =>
 		{
 			if ( event.key !== storageKey )
 			{
 				return;
 			}
 
-			setTheme( event.newValue || defaultTheme );
-		};
+			applyTheme( event.newValue ?? theme );
+		},
+		[ applyTheme, theme ]
+	);
 
-		// On écoute enfin les changements du stockage local
-		//  afin de répercuter les changements sur le DOM.
-		window.addEventListener( "storage", handleStorage );
-
-		return () => window.removeEventListener( "storage", handleStorage );
-	}, [ setTheme ] );
-
-	// Mise à jour automatique du thème en cas de
-	//  changement par l'utilisateur.
+	// Détection et mise à jour du thème préférée par
+	//  le navigateur.
 	useEffect( () =>
 	{
-		applyTheme( theme );
-	}, [ theme, applyTheme ] );
+		// On récupère d'abord le thème par défaut.
+		const media = window.matchMedia( "(prefers-color-scheme: dark)" );
+
+		// On exécute enfin la fonction à chaque
+		//  changement du thème par défaut.
+		media.addEventListener( "change", detectMedia );
+
+		return () => media.removeEventListener( "change", detectMedia );
+	}, [ detectMedia ] );
+
+	// Détection des modifications du stockage de session
+	//  pour le thème choisi par l'utilisateur.
+	useEffect( () =>
+	{
+		window.addEventListener( "storage", detectStorage );
+
+		return () => window.removeEventListener( "storage", detectStorage );
+	}, [ detectStorage ] );
 
 	// Affichage du rendu HTML du composant.
 	const value = useMemo(
-		() => ( { theme, setTheme: setCurrentTheme } ),
-		[ theme, setCurrentTheme ]
+		() => ( { theme, setTheme: applyTheme } ),
+		[ theme, applyTheme ]
 	);
 
 	return (
@@ -198,35 +170,29 @@ function Theme( { children = null }: ThemeProviderProps )
 			<script
 				dangerouslySetInnerHTML={{
 					__html: `
-						// Récupération du thème choisi par l'utilisateur
-						//  précédemment sauvegardé dans le stockage local.
 						const theme = sessionStorage.getItem("${ storageKey }");
 						const element = document.documentElement;
 						const classes = element.classList;
 
 						classes.remove("light", "dark");
 
-						if (theme)
+						if (theme === "light" || theme === "dark")
 						{
-							// Ajout de la classe du thème choisi par l'utilisateur.
+							// Application du thème choisi par l'utilisateur.
 							classes.add(theme)
+
+							element.style.colorScheme = theme;
 						}
-						else if (!theme || theme === defaultTheme)
+						else
 						{
-							// Récupération du thème du système d'exploitation
-							//  avant application sur le DOM.
+							// Application du thème préféré par le navigateur.
 							const target = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 
 							classes.add(target);
 
 							element.style.colorScheme = target;
-						}
 
-						if (theme === "light" || theme === "dark")
-						{
-							// Indication du thème choisi par l'utilisateur
-							//  sur le DOM.
-							element.style.colorScheme = theme;
+							sessionStorage.setItem("${ storageKey }", target);
 						}
 					`
 				}}
