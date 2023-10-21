@@ -22,6 +22,8 @@
     "zod": "~3.22",
     "cmdk": "~0.2",
     "next": "~13.5",
+    "deepmerge": "~4.3",
+    "next-intl": "3.0.0-rc.6",
     "@sentry/nextjs": "~7.74",
     "react-hook-form": "~7.46",
     "@hookform/resolvers": "~3.3",
