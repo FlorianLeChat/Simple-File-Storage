@@ -4,13 +4,13 @@
 	"tsx": true,
 	"style": "default",
 	"tailwind": {
-		"css": "app/layout.css",
+		"css": "app/[locale]/layout.css",
 		"config": "tailwind.config.ts",
 		"baseColor": "slate",
 		"cssVariables": true
 	},
 	"aliases": {
 		"utils": "utilities/tailwind.ts",
-		"components": "app/components/ui"
+		"components": "app/[locale]/components/ui"
 	}
 }
