@@ -5,13 +5,13 @@
 
 "use client";
 
-import { useToast } from "@/app/components/ui/use-toast";
+import { useToast } from "./use-toast";
 import { Toast,
 	ToastClose,
 	ToastTitle,
 	ToastViewport,
 	ToastProvider,
-	ToastDescription } from "@/app/components/ui/toast";
+	ToastDescription } from "./toast";
 
 export function Toaster()
 {
