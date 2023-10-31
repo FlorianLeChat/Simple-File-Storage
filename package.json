@@ -74,8 +74,8 @@
     "sharp": "~0.32"
   },
   "engines": {
-    "node": ">=18.0",
-    "npm": ">=8.6"
+    "node": ">=20.5",
+    "npm": ">=10.1"
   },
   "browserslist": [
     "defaults"
