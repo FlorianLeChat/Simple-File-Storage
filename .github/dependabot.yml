@@ -13,6 +13,21 @@ updates:
         patterns:
           - "*"
 
+  # Maintain dependencies for Composer
+  - package-ecosystem: "composer"
+    directory: "/api"
+    schedule:
+      # Check for updates managed by Composer once a month
+      interval: "monthly"
+    groups:
+      # Group together all dependencies in a single pull request
+      dependencies:
+        patterns:
+          - "*"
+    ignore:
+      # https://github.com/symfony/symfony/issues/49069
+      - dependency-name: "phpunit/phpunit"
+
   # Maintain dependencies for npm
   - package-ecosystem: "npm"
     directory: "/"
