@@ -19,7 +19,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
 
-		"symfony/flex": "2.3.*",
+		"symfony/flex": "2.4.*",
 		"symfony/yaml": "6.3.*",
         "symfony/dotenv": "6.3.*",
         "symfony/console": "6.3.*",
