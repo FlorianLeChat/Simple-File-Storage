@@ -65,7 +65,7 @@ export default function ShareManager()
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Met à jour les informations de partage d'un utilisateur.
-	const updateSharing = ( value: string ) =>
+	const updateSharing = ( data: string ) =>
 	{
 		setIsLoading( true );
 
@@ -76,7 +76,7 @@ export default function ShareManager()
 				description: (
 					<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
 						<code className="text-white">
-							{JSON.stringify( value, null, 4 )}
+							{JSON.stringify( data, null, 4 )}
 						</code>
 					</pre>
 				)
