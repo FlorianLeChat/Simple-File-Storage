@@ -23,6 +23,7 @@ const actionTypes = {
 } as const;
 
 let count = 0;
+let addToRemoveQueue: ( toastId: string ) => void;
 
 function genId()
 {
@@ -36,19 +37,19 @@ type Action =
 	| {
 			type: ActionType["ADD_TOAST"];
 			toast: ToasterToast;
-	  }
+	}
 	| {
 			type: ActionType["UPDATE_TOAST"];
 			toast: Partial<ToasterToast>;
-	  }
+	}
 	| {
 			type: ActionType["DISMISS_TOAST"];
 			toastId?: ToasterToast["id"];
-	  }
+	}
 	| {
 			type: ActionType["REMOVE_TOAST"];
 			toastId?: ToasterToast["id"];
-	  };
+	};
 
 interface State {
 	toasts: ToasterToast[];
@@ -67,7 +68,8 @@ export const reducer = ( state: State, action: Action ): State =>
 		case "UPDATE_TOAST":
 			return {
 				...state,
-				toasts: state.toasts.map( ( t ) => ( t.id === action.toast.id ? { ...t, ...action.toast } : t ) )
+				toasts: state.toasts.map( ( t ) => (
+					t.id === action.toast.id ? { ...t, ...action.toast } : t ) )
 			};
 
 		case "DISMISS_TOAST": {
@@ -81,9 +83,9 @@ export const reducer = ( state: State, action: Action ): State =>
 			}
 			else
 			{
-				state.toasts.forEach( ( toast ) =>
+				state.toasts.forEach( ( element ) =>
 				{
-					addToRemoveQueue( toast.id );
+					addToRemoveQueue( element.id );
 				} );
 			}
 
@@ -93,7 +95,7 @@ export const reducer = ( state: State, action: Action ): State =>
 					? {
 						...t,
 						open: false
-						  }
+					}
 					: t ) )
 			};
 		}
@@ -162,7 +164,7 @@ function toast( { ...props }: Toast )
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
-const addToRemoveQueue = ( toastId: string ) =>
+addToRemoveQueue = ( toastId: string ) =>
 {
 	if ( toastTimeouts.has( toastId ) )
 	{
