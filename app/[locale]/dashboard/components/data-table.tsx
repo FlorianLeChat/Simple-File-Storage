@@ -16,6 +16,7 @@ import { ColumnDef,
 	ColumnFiltersState,
 	getFilteredRowModel,
 	getPaginationRowModel } from "@tanstack/react-table";
+import { PlusCircleIcon, X } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { Table,
@@ -47,6 +48,12 @@ export default function DataTable( {
 	// Définition des tableaux.
 	const table = useReactTable( {
 		data,
+		state: {
+			sorting,
+			rowSelection,
+			columnFilters,
+			columnVisibility
+		},
 		columns,
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
@@ -55,13 +62,7 @@ export default function DataTable( {
 		onRowSelectionChange: setRowSelection,
 		onColumnFiltersChange: setColumnFilters,
 		getPaginationRowModel: getPaginationRowModel(),
-		onColumnVisibilityChange: setColumnVisibility,
-		state: {
-			sorting,
-			rowSelection,
-			columnFilters,
-			columnVisibility
-		}
+		onColumnVisibilityChange: setColumnVisibility
 	} );
 
 	// Affichage du rendu HTML du composant.
@@ -81,6 +82,19 @@ export default function DataTable( {
 					className="max-w-sm"
 					placeholder="Filtrer par nom"
 				/>
+
+				{/* Réinitialisation du filtrage */}
+				{table.getState().columnFilters.length > 0 && (
+					<Button
+						variant="ghost"
+						onClick={() => table.resetColumnFilters()}
+						className="px-3"
+					>
+						<X className="inline h-4 w-4 sm:mr-2" />
+
+						<span className="max-sm:hidden">Réinitialiser</span>
+					</Button>
+				)}
 
 				{/* Sélection des colonnes à afficher */}
 				<ColumnToggle table={table} />
