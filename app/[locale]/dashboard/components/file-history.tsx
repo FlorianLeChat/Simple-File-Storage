@@ -16,8 +16,8 @@ import { AlertDialog,
 	AlertDialogTrigger,
 	AlertDialogDescription } from "../../components/ui/alert-dialog";
 
-const tags = Array.from( { length: 10 } ).map(
-	( _, i, a ) => `Version du ${ a.length - i }/08/2023 - ${ i + 1 }h${ i + 1 }`
+const tags = Array.from( { length: 9 } ).map(
+	( _, i, a ) => `Version du ${ a.length - i }/08/2023 - ${ i + 1 }0h${ i + 1 }0`
 );
 
 export default function FileHistory()
@@ -30,8 +30,22 @@ export default function FileHistory()
 				{tags.map( ( tag ) => (
 					<li key={tag} className="text-sm">
 						{/* Nom de la révision */}
-						{tag}
+						<h3>{tag}</h3>
 
+						{/* Taille et différence de la révision */}
+						<p className="inline-block text-sm text-muted-foreground">
+							{Math.floor( Math.random() * 500 )} Mo
+						</p>
+
+						<p className="ml-2 inline-block text-sm font-extrabold text-primary">
+							-{Math.floor( Math.random() * 100 )} Ko
+						</p>
+
+						<p className="ml-2 inline-block text-sm font-extrabold text-destructive">
+							+{Math.floor( Math.random() * 100 )} Ko
+						</p>
+
+						{/* Actions sur la révision */}
 						<div className="my-2 flex items-center gap-2">
 							<a
 								rel="noreferrer noopener"
