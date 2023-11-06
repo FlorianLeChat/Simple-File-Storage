@@ -5,6 +5,7 @@
 
 "use client";
 
+import { X } from "lucide-react";
 import { useState } from "react";
 import { ColumnDef,
 	flexRender,
@@ -16,16 +17,18 @@ import { ColumnDef,
 	ColumnFiltersState,
 	getFilteredRowModel,
 	getPaginationRowModel } from "@tanstack/react-table";
-import { PlusCircleIcon, X } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
 import { Table,
 	TableRow,
 	TableBody,
 	TableCell,
 	TableHead,
 	TableHeader } from "../../components/ui/table";
+
 import Pagination from "./pagination";
+import FileUpload from "./file-upload";
 import ColumnToggle from "./column-toggle";
 import type { File } from "./columns";
 
@@ -98,7 +101,10 @@ export default function DataTable( {
 
 				{/* Sélection des colonnes à afficher */}
 				<ColumnToggle table={table} />
-			</search>
+
+				{/* Ajout d'une nouvelle entrée */}
+				<FileUpload />
+			</div>
 
 			{/* Affichage des données dans le tableau */}
 			<Table className="rounded-md border">
