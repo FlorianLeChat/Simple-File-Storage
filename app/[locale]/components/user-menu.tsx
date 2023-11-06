@@ -117,10 +117,11 @@ export default function UserMenu()
 			<Dialog>
 				<DialogTrigger
 					className={buttonVariants( { variant: "secondary" } )}
+					aria-controls="notifications"
 				>
 					<BellRing className="inline h-5 w-5 md:mr-2" />
 
-					<span className="hidden md:inline">
+					<span id="notifications" className="hidden md:inline">
 						Nouvelles notifications
 					</span>
 				</DialogTrigger>
@@ -146,9 +147,9 @@ export default function UserMenu()
 								<span className="h-2 w-2 translate-y-1 rounded-full bg-primary" />
 
 								<div className="space-y-1">
-									<p className="text-sm font-medium leading-none">
+									<h3 className="text-sm font-medium leading-none">
 										{notification.title}
-									</p>
+									</h3>
 
 									<p className="text-sm text-muted-foreground">
 										{notification.description}
