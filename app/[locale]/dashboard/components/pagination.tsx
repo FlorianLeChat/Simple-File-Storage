@@ -42,13 +42,17 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 						table.setPageSize( Number( value ) );
 					}}
 				>
-					<SelectTrigger className="h-8 w-[70px]">
+					<SelectTrigger
+						className="h-8 w-[70px]"
+						aria-controls="page-size"
+					>
 						<SelectValue
+							id="page-size"
 							placeholder={table.getState().pagination.pageSize}
 						/>
 					</SelectTrigger>
 
-					<SelectContent side="top">
+					<SelectContent side="top" id="page-size">
 						{[ 10, 20, 30, 40, 50 ].map( ( pageSize ) => (
 							<SelectItem key={pageSize} value={`${ pageSize }`}>
 								{pageSize}
