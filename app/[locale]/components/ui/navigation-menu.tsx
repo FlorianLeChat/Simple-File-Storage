@@ -10,6 +10,27 @@ import { forwardRef,
 	type ElementRef,
 	type ComponentPropsWithoutRef } from "react";
 
+const NavigationMenuLink = NavigationMenuPrimitive.Link;
+
+const NavigationMenuViewport = forwardRef<
+	ElementRef<typeof NavigationMenuPrimitive.Viewport>,
+	ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Viewport>
+>( ( { className, ...props }, ref ) => (
+	<div className={merge( "absolute left-0 top-full flex justify-center" )}>
+		<NavigationMenuPrimitive.Viewport
+			className={merge(
+				"origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 md:w-[var(--radix-navigation-menu-viewport-width)]",
+				className
+			)}
+			ref={ref}
+			{...props}
+		/>
+	</div>
+) );
+
+NavigationMenuViewport.displayName =
+	NavigationMenuPrimitive.Viewport.displayName;
+
 const NavigationMenu = forwardRef<
 	ElementRef<typeof NavigationMenuPrimitive.Root>,
 	ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Root>
@@ -84,27 +105,6 @@ const NavigationMenuContent = forwardRef<
 ) );
 
 NavigationMenuContent.displayName = NavigationMenuPrimitive.Content.displayName;
-
-const NavigationMenuLink = NavigationMenuPrimitive.Link;
-
-const NavigationMenuViewport = forwardRef<
-	ElementRef<typeof NavigationMenuPrimitive.Viewport>,
-	ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Viewport>
->( ( { className, ...props }, ref ) => (
-	<div className={merge( "absolute left-0 top-full flex justify-center" )}>
-		<NavigationMenuPrimitive.Viewport
-			className={merge(
-				"origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 md:w-[var(--radix-navigation-menu-viewport-width)]",
-				className
-			)}
-			ref={ref}
-			{...props}
-		/>
-	</div>
-) );
-
-NavigationMenuViewport.displayName =
-	NavigationMenuPrimitive.Viewport.displayName;
 
 const NavigationMenuIndicator = forwardRef<
 	ElementRef<typeof NavigationMenuPrimitive.Indicator>,
