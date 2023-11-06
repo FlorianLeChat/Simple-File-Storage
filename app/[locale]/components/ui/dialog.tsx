@@ -12,16 +12,8 @@ import { forwardRef,
 
 const Dialog = DialogPrimitive.Root;
 const DialogTrigger = DialogPrimitive.Trigger;
-
-function DialogPortal( {
-	className,
-	...props
-}: DialogPrimitive.DialogPortalProps )
-{
-	return <DialogPrimitive.Portal className={merge( className )} {...props} />;
-}
-
-DialogPortal.displayName = DialogPrimitive.Portal.displayName;
+const DialogPortal = DialogPrimitive.Portal;
+const DialogClose = DialogPrimitive.Close;
 
 const DialogOverlay = forwardRef<
 	ElementRef<typeof DialogPrimitive.Overlay>,
@@ -126,6 +118,9 @@ DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
 export {
 	Dialog,
+	DialogPortal,
+	DialogOverlay,
+	DialogClose,
 	DialogTrigger,
 	DialogContent,
 	DialogHeader,
