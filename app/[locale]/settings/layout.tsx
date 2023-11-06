@@ -5,6 +5,7 @@
 // Importation des dépendances.
 import type { Metadata } from "next";
 import { lazy, type ReactNode } from "react";
+import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des composants.
 import { Separator } from "../components/ui/separator";
@@ -18,8 +19,17 @@ export const metadata: Metadata = {
 	title: "Paramètres – Simple File Storage"
 };
 
-export default function Layout( { children }: { children: ReactNode } )
+export default function Layout( {
+	children,
+	params: { locale }
+}: {
+	children: ReactNode;
+	params: { locale: string };
+} )
 {
+	// Définition de la langue de la page.
+	unstable_setRequestLocale( locale );
+
 	// Affichage du rendu HTML de la page.
 	return (
 		<>

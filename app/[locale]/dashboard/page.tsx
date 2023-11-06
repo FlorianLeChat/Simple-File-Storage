@@ -5,6 +5,7 @@
 // Importation des dépendances.
 import { lazy } from "react";
 import type { Metadata } from "next";
+import { unstable_setRequestLocale } from "next-intl/server";
 import { type File, columns } from "./components/columns";
 
 // Importation des composants.
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 // Récupération des données depuis l'API.
-async function getData(): Promise<File[]>
+function getData(): File[]
 {
 	return [
 		{
@@ -51,10 +52,17 @@ async function getData(): Promise<File[]>
 }
 
 // Affichage de la page.
-export default async function Dashboard()
+export default function Page( {
+	params: { locale }
+}: {
+	params: { locale: string };
+} )
 {
+	// Définition de la langue de la page.
+	unstable_setRequestLocale( locale );
+
 	// Déclaration des constantes.
-	const data = await getData();
+	const data = getData();
 
 	// Affichage du rendu HTML de la page.
 	return (
