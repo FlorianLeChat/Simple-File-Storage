@@ -5,6 +5,7 @@
 // Importation des dépendances.
 import { lazy } from "react";
 import type { Metadata } from "next";
+import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des composants.
 const AuthForm = lazy( () => import( "../components/auth-form" ) );
@@ -15,8 +16,15 @@ export const metadata: Metadata = {
 };
 
 // Affichage de la page.
-export default function Page()
+export default function Page( {
+	params: { locale }
+}: {
+	params: { locale: string };
+} )
 {
+	// Définition de la langue de la page.
+	unstable_setRequestLocale( locale );
+
 	// Affichage du rendu HTML de la page.
 	return (
 		<>

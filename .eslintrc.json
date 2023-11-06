@@ -16,6 +16,7 @@
 		"no-tabs": ["error", { "allowIndentationTabs": true }],
 		"eol-last": ["error", "never"],
 		"no-shadow": "off", // -> @typescript-eslint/no-shadow
+		"camelcase": ["error", { "properties": "never", "ignoreImports": true, "ignoreDestructuring": false }],
 		"no-plusplus": "off",
 		"brace-style": ["error", "allman"],
 		"comma-dangle": ["error", "never"],

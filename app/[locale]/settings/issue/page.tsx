@@ -4,6 +4,7 @@
 
 // Importation des dépendances.
 import { lazy } from "react";
+import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
@@ -11,8 +12,15 @@ import { Separator } from "../../components/ui/separator";
 const Issue = lazy( () => import( "../components/issue" ) );
 
 // Affichage de la page.
-export default function Page()
+export default function Page( {
+	params: { locale }
+}: {
+	params: { locale: string };
+} )
 {
+	// Définition de la langue de la page.
+	unstable_setRequestLocale( locale );
+
 	// Affichage du rendu HTML de la page.
 	return (
 		<>

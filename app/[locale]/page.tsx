@@ -6,6 +6,7 @@
 // Importation des dépendances.
 import Link from "next/link";
 import type { Metadata } from "next";
+import { unstable_setRequestLocale } from "next-intl/server";
 import { Lock, Smile, Eye, Zap, PocketKnife, Share2 } from "lucide-react";
 
 // Importation des fonctions utilitaires.
@@ -20,8 +21,15 @@ export const metadata: Metadata = {
 };
 
 // Affichage de la page.
-export default function Page()
+export default function Page( {
+	params: { locale }
+}: {
+	params: { locale: string };
+} )
 {
+	// Définition de la langue de la page.
+	unstable_setRequestLocale( locale );
+
 	// Affichage du rendu HTML de la page.
 	return (
 		<>

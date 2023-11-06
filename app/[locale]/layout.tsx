@@ -11,6 +11,7 @@ import "@total-typescript/ts-reset";
 
 // Importation des dépendances.
 import { Inter } from "next/font/google";
+import { unstable_setRequestLocale } from "next-intl/server";
 import { Suspense, lazy, type ReactNode } from "react";
 
 // Importation des composants.
@@ -21,14 +22,29 @@ import { ThemeProvider } from "./components/theme-provider";
 const Analytics = lazy( () => import( "./components/analytics" ) );
 const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
 
+// Génération des paramètres pour les pages statiques.
+export function generateStaticParams()
+{
+	return [ "en", "fr" ].map( ( locale ) => ( { locale } ) );
+}
+
 // Création de la police de caractères Inter.
 const inter = Inter( {
 	subsets: [ "latin" ],
 	display: "swap"
 } );
 
-export default function Layout( { children }: { children: ReactNode } )
+export default function Layout( {
+	children,
+	params: { locale }
+}: {
+	children: ReactNode;
+	params: { locale: string };
+} )
 {
+	// Définition de la langue de la page.
+	unstable_setRequestLocale( locale );
+
 	// Affichage du rendu HTML de la page.
 	return (
 		<html lang="fr" className={inter.className}>
