@@ -8,7 +8,7 @@ export default function Loading()
 {
 	// Affichage du rendu HTML du composant.
 	return (
-		<div className="flex h-screen flex-col items-center justify-center gap-4 text-4xl font-bold uppercase">
+		<div className="m-2 flex h-[calc(100vh-1rem)] flex-col items-center justify-center gap-4 text-center text-4xl font-bold uppercase leading-normal">
 			💾 Simple File Storage
 			<Loader2 className="h-14 w-14 animate-spin" />
 		</div>
