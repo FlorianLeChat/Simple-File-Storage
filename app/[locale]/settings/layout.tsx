@@ -48,7 +48,7 @@ export default function Layout( {
 				<UserMenu />
 			</header>
 
-			<div className="space-y-6 p-4 pb-12 md:p-10">
+			<div className="space-y-6 px-4 pb-12 pt-6 md:p-10">
 				{/* En-tête de la page */}
 				<header>
 					<h2 className="text-2xl font-bold tracking-tight">

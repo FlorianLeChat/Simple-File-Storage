@@ -163,7 +163,7 @@ export default function Layout()
 									( field.value && field.value )
 									|| ( mounted ? theme : "light" )
 								}
-								className="grid max-w-md grid-cols-2 gap-8 pt-2"
+								className="grid grid-cols-1 gap-8 pt-2 sm:max-w-md sm:grid-cols-2"
 								onValueChange={field.onChange}
 							>
 								<FormItem className="relative !inline [&:has([data-state=checked])>div]:border-primary [&:hover>div:first-child]:bg-accent [&:hover>div:first-child]:text-accent-foreground">
@@ -265,7 +265,7 @@ export default function Layout()
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading}>
+				<Button disabled={isLoading} className="max-sm:w-full">
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />

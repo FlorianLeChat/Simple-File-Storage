@@ -80,7 +80,7 @@ export default function Account()
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit( openIssue )} className="space-y-8">
-				<div className="flex gap-4">
+				<div className="flex gap-4 max-sm:flex-col">
 					{/* Domaine touché */}
 					<FormField
 						name="area"
@@ -99,6 +99,7 @@ export default function Account()
 									>
 										<SelectTrigger
 											id="area"
+											className="h-auto"
 											aria-controls="area"
 										>
 											<SelectValue />
@@ -141,7 +142,7 @@ export default function Account()
 						name="severity"
 						control={form.control}
 						render={( { field } ) => (
-							<FormItem>
+							<FormItem className="max-sm:mt-4">
 								<FormLabel htmlFor="level">
 									<ShieldAlert className="mr-2 inline h-6 w-6" />
 									Sévérité
@@ -154,7 +155,7 @@ export default function Account()
 									>
 										<SelectTrigger
 											id="level"
-											className="line-clamp-1 w-[160px] truncate"
+											className="line-clamp-1 w-full truncate sm:w-[160px]"
 											aria-controls="level"
 										>
 											<SelectValue />
@@ -265,7 +266,7 @@ export default function Account()
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading}>
+				<Button disabled={isLoading} className="max-sm:w-full">
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
