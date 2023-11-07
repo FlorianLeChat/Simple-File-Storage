@@ -2,10 +2,11 @@
 // Composant de téléversement des fichiers.
 //
 import * as z from "zod";
+import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, PlusCircleIcon, UploadCloud } from "lucide-react";
+import { Ban, Loader2, PlusCircleIcon, UploadCloud } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { Progress } from "../../components/ui/progress";
@@ -18,6 +19,7 @@ import { Form,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
 import { Dialog,
+	DialogClose,
 	DialogTitle,
 	DialogHeader,
 	DialogTrigger,
@@ -144,7 +146,10 @@ export default function FileUpload()
 						/>
 
 						{/* Bouton de validation du formulaire */}
-						<Button disabled={isLoading}>
+						<Button
+							disabled={isLoading}
+							className="float-right ml-1 max-sm:w-[calc(50%-0.25rem)] sm:ml-2"
+						>
 							{isLoading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -157,6 +162,21 @@ export default function FileUpload()
 								</>
 							)}
 						</Button>
+
+						{/* Bouton de fermeture du formulaire */}
+						<DialogClose
+							onClick={() => uploadForm.reset()}
+							disabled={isLoading}
+							className={merge(
+								buttonVariants( {
+									variant: "outline"
+								} ),
+								"float-right max-sm:mr-1 max-sm:w-[calc(50%-0.25rem)]"
+							)}
+						>
+							<Ban className="mr-2 h-4 w-4" />
+							Annuler
+						</DialogClose>
 					</form>
 				</Form>
 			</DialogContent>
