@@ -67,7 +67,7 @@ export default function Page( {
 						<path d="M0 0l115 115h15l12 27 108 108V0z" />
 						<path
 							d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16"
-							className="origin-[130px_106px] fill-current motion-safe:animate-github motion-safe:group-hover:animate-github"
+							className="origin-[130px_106px] fill-current max-md:motion-safe:animate-github md:motion-safe:group-hover:animate-github"
 						/>
 						<path
 							d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0
