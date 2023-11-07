@@ -124,7 +124,7 @@ export default function Notifications()
 										<Bell className="h-9 w-auto max-sm:hidden" />
 
 										<div>
-											<h4 className="mb-1 text-sm font-medium leading-none">
+											<h4 className="mb-2 text-sm font-medium leading-none sm:mb-1">
 												Toutes les notifications
 											</h4>
 
@@ -153,7 +153,7 @@ export default function Notifications()
 										<User2 className="max-sm:hidden" />
 
 										<div>
-											<h4 className="mb-1 text-sm font-medium leading-none">
+											<h4 className="mb-2 text-sm font-medium leading-none sm:mb-1">
 												Seulement les notifications
 												nécessaires
 											</h4>
@@ -182,7 +182,7 @@ export default function Notifications()
 										<EyeOff className="max-sm:hidden" />
 
 										<div>
-											<h4 className="mb-1 text-sm font-medium leading-none">
+											<h4 className="mb-2 text-sm font-medium leading-none sm:mb-1">
 												Aucune notification
 											</h4>
 
@@ -202,7 +202,7 @@ export default function Notifications()
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading}>
+				<Button disabled={isLoading} className="max-sm:w-full">
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
