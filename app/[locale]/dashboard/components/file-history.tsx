@@ -1,7 +1,7 @@
 //
 // Composant de restauration des versions précédentes d'un fichier.
 //
-import { History, ArrowUpRight } from "lucide-react";
+import { Ban, Check, History, ArrowUpRight } from "lucide-react";
 
 import { Separator } from "../../components/ui/separator";
 import { ScrollArea } from "../../components/ui/scroll-area";
@@ -90,10 +90,12 @@ export default function FileHistory()
 
 									<AlertDialogFooter>
 										<AlertDialogCancel>
+											<Ban className="mr-2 h-4 w-4" />
 											Annuler
 										</AlertDialogCancel>
 
 										<AlertDialogAction>
+											<Check className="mr-2 h-4 w-4" />
 											Confirmer
 										</AlertDialogAction>
 									</AlertDialogFooter>

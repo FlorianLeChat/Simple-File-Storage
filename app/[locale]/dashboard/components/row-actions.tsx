@@ -3,7 +3,9 @@
 //  Source : https://ui.shadcn.com/docs/components/data-table
 //
 import { merge } from "@/utilities/tailwind";
-import { Trash,
+import { Ban,
+	Check,
+	Trash,
 	UserX,
 	Globe,
 	Share2,
@@ -95,8 +97,15 @@ export default function RowActions()
 						</AlertDialogHeader>
 
 						<AlertDialogFooter>
-							<AlertDialogCancel>Annuler</AlertDialogCancel>
-							<AlertDialogAction>Confirmer</AlertDialogAction>
+							<AlertDialogCancel>
+								<Ban className="mr-2 h-4 w-4" />
+								Annuler
+							</AlertDialogCancel>
+
+							<AlertDialogAction>
+								<Check className="mr-2 h-4 w-4" />
+								Confirmer
+							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
 				</AlertDialog>
@@ -136,8 +145,15 @@ export default function RowActions()
 						</AlertDialogHeader>
 
 						<AlertDialogFooter>
-							<AlertDialogCancel>Annuler</AlertDialogCancel>
-							<AlertDialogAction>Confirmer</AlertDialogAction>
+							<AlertDialogCancel>
+								<Ban className="mr-2 h-4 w-4" />
+								Annuler
+							</AlertDialogCancel>
+
+							<AlertDialogAction>
+								<Check className="mr-2 h-4 w-4" />
+								Confirmer
+							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
 				</AlertDialog>
@@ -206,8 +222,15 @@ export default function RowActions()
 						</AlertDialogHeader>
 
 						<AlertDialogFooter>
-							<AlertDialogCancel>Annuler</AlertDialogCancel>
-							<AlertDialogAction>Confirmer</AlertDialogAction>
+							<AlertDialogCancel>
+								<Ban className="mr-2 h-4 w-4" />
+								Annuler
+							</AlertDialogCancel>
+
+							<AlertDialogAction>
+								<Check className="mr-2 h-4 w-4" />
+								Confirmer
+							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
 				</AlertDialog>
@@ -296,8 +319,15 @@ export default function RowActions()
 						</AlertDialogHeader>
 
 						<AlertDialogFooter>
-							<AlertDialogCancel>Annuler</AlertDialogCancel>
-							<AlertDialogAction>Confirmer</AlertDialogAction>
+							<AlertDialogCancel>
+								<Ban className="mr-2 h-4 w-4" />
+								Annuler
+							</AlertDialogCancel>
+
+							<AlertDialogAction>
+								<Check className="mr-2 h-4 w-4" />
+								Confirmer
+							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
 				</AlertDialog>
