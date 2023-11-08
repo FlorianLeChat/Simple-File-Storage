@@ -18,9 +18,9 @@ import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { useToast } from "./ui/use-toast";
 import { Tooltip,
+	TooltipTrigger,
 	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger } from "./ui/tooltip";
+	TooltipProvider } from "./ui/tooltip";
 import { Separator } from "./ui/separator";
 import { Form,
 	FormItem,

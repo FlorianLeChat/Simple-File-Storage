@@ -15,8 +15,12 @@ import { useMemo,
 
 // Déclaration des types.
 interface UseThemeProps {
-	theme?: string;
+	theme: string;
+	color: string;
+	themes: string[];
+	colors: string[];
 	setTheme: ( value: string ) => void;
+	setColor: ( value: string ) => void;
 }
 
 interface ThemeProviderProps {
@@ -24,11 +28,33 @@ interface ThemeProviderProps {
 }
 
 // Déclaration des constantes globales.
+const themes = [ "light", "dark" ];
+const colors = [
+	"zinc",
+	"slate",
+	"stone",
+	"gray",
+	"neutral",
+	"red",
+	"rose",
+	"orange",
+	"green",
+	"blue",
+	"yellow",
+	"violet"
+];
 const storageKey = "NEXT_THEME";
 const ThemeContext = createContext<UseThemeProps | undefined>( undefined );
-const defaultContext: UseThemeProps = { theme: "light",
+const defaultContext: UseThemeProps = {
+	theme: "light",
+	color: "blue",
+	themes,
+	colors,
 	setTheme: () =>
-	{} };
+	{},
+	setColor: () =>
+	{}
+};
 
 // Définition du fonctionnement du composant.
 function Theme( { children = null }: ThemeProviderProps )
@@ -42,7 +68,19 @@ function Theme( { children = null }: ThemeProviderProps )
 			return "light";
 		}
 
-		return sessionStorage.getItem( key ) ?? "light";
+		return sessionStorage.getItem( key )?.split( ";" )[ 0 ] ?? "light";
+	};
+
+	// Récupération de la couleur choisie par l'utilisateur.
+	const getCurrentColor = ( key: string ) =>
+	{
+		if ( typeof window === "undefined" )
+		{
+			// Valeur par défaut pour le serveur.
+			return "blue";
+		}
+
+		return sessionStorage.getItem( key )?.split( ";" )[ 1 ] ?? "blue";
 	};
 
 	// Récupération du thème du navigateur.
@@ -64,54 +102,84 @@ function Theme( { children = null }: ThemeProviderProps )
 
 	// Déclaration des variables d'état.
 	const [ theme, setTheme ] = useState( () => getCurrentTheme( storageKey ) );
+	const [ color, setColor ] = useState( () => getCurrentColor( storageKey ) );
 
 	// Application du nouveau thème.
-	const applyTheme = useCallback( ( value: string ) =>
-	{
-		// On vérifie d'abord si la valeur choisie est valide.
-		if ( value !== "light" && value !== "dark" )
+	const applyTheme = useCallback(
+		( value: string ) =>
 		{
-			return;
-		}
+			// On vérifie d'abord si la valeur choisie est valide.
+			if ( !themes.includes( value ) )
+			{
+				return;
+			}
 
-		// On définit ensuite cette même valeur avant de
-		//  la sauvegarder dans le stockage de session.
-		setTheme( value );
+			// On applique ensuite les classes CSS correspondantes
+			//  sur le DOM.
+			const element = document.documentElement;
+			element.classList.replace( theme, value );
+			element.classList.remove( "cc--darkmode" );
+			element.classList.add( value );
+			element.style.colorScheme = value;
 
-		sessionStorage.setItem( storageKey, value );
+			if ( value === "dark" )
+			{
+				// Support pour le thème sombre pour les fenêtres
+				//  de consentement des cookies.
+				element.classList.add( "cc--darkmode" );
+			}
 
-		// On applique après les classes CSS correspondantes
-		//  sur le DOM.
-		const element = document.documentElement;
-		element.classList.remove( "light", "dark", "cc--darkmode" );
-		element.classList.add( value );
-		element.style.colorScheme = value;
+			// On définit après cette même valeur avant de
+			//  la sauvegarder dans le stockage de session.
+			setTheme( value );
 
-		if ( value === "dark" )
+			sessionStorage.setItem( storageKey, `${ value };${ color }` );
+
+			// On insère des règles CSS temporaires afin de
+			//  désactiver les transitions.
+			const style = document.createElement( "style" );
+			style.appendChild(
+				document.createTextNode(
+					"*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}"
+				)
+			);
+
+			document.head.appendChild( style );
+
+			// On marque enfin un délai de 1 milliseconde
+			//  avant de supprimer les règles CSS temporaires.
+			setTimeout( () =>
+			{
+				document.head.removeChild( style );
+			}, 1 );
+		},
+		[ theme, color ]
+	);
+
+	// Application de la nouvelle couleur.
+	const applyColor = useCallback(
+		( value: string ) =>
 		{
-			// Support pour le thème sombre pour les fenêtres
-			//  de consentement des cookies.
-			element.classList.add( "cc--darkmode" );
-		}
+			// On vérifie d'abord si la valeur choisie est valide.
+			if ( !colors.includes( value ) )
+			{
+				return;
+			}
 
-		// On insère des règles CSS temporaires afin de
-		//  désactiver les transitions.
-		const style = document.createElement( "style" );
-		style.appendChild(
-			document.createTextNode(
-				"*,*::before,*::after{-webkit-transition:none!important;-moz-transition:none!important;-o-transition:none!important;-ms-transition:none!important;transition:none!important}"
-			)
-		);
+			// On applique ensuite les classes CSS correspondantes
+			//  sur le DOM.
+			const element = document.documentElement;
+			element.classList.replace( color, value );
+			element.classList.add( value );
 
-		document.head.appendChild( style );
+			// On définit enfin cette même valeur avant de
+			//  la sauvegarder dans le stockage de session.
+			setColor( value );
 
-		// On marque enfin un délai de 1 milliseconde
-		//  avant de supprimer les règles CSS temporaires.
-		setTimeout( () =>
-		{
-			document.head.removeChild( style );
-		}, 1 );
-	}, [] );
+			sessionStorage.setItem( storageKey, `${ theme };${ value }` );
+		},
+		[ theme, color ]
+	);
 
 	// Application du nouveau thème détecté précédemment.
 	const detectMedia = useCallback(
@@ -161,8 +229,15 @@ function Theme( { children = null }: ThemeProviderProps )
 
 	// Affichage du rendu HTML du composant.
 	const value = useMemo(
-		() => ( { theme, setTheme: applyTheme } ),
-		[ theme, applyTheme ]
+		() => ( {
+			theme,
+			color,
+			themes,
+			colors,
+			setTheme: applyTheme,
+			setColor: applyColor
+		} ),
+		[ theme, color, applyTheme, applyColor ]
 	);
 
 	return (
@@ -170,13 +245,16 @@ function Theme( { children = null }: ThemeProviderProps )
 			<script
 				dangerouslySetInnerHTML={{
 					__html: `
-						const theme = sessionStorage.getItem("${ storageKey }");
 						const element = document.documentElement;
 						const classes = element.classList;
+						const [theme, color] = sessionStorage.getItem("${ storageKey }")?.split(";") ?? [];
+
+						let newTheme = theme;
+						let newColor = color;
 
 						classes.remove("light", "dark");
 
-						if (theme === "light" || theme === "dark")
+						if ([${ themes.map( ( name ) => `"${ name }"` ) }].includes(theme))
 						{
 							// Application du thème choisi par l'utilisateur.
 							classes.add(theme)
@@ -188,12 +266,27 @@ function Theme( { children = null }: ThemeProviderProps )
 							// Application du thème préféré par le navigateur.
 							const target = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 
+							newTheme = target;
+
 							classes.add(target);
 
 							element.style.colorScheme = target;
-
-							sessionStorage.setItem("${ storageKey }", target);
 						}
+
+						if ([${ colors.map( ( name ) => `"${ name }"` ) }].includes(color))
+						{
+							// Application de la couleur choisie par l'utilisateur.
+							classes.add(color)
+						}
+						else
+						{
+							// Application de la couleur par défaut.
+							newColor = "blue";
+
+							classes.add("blue");
+						}
+
+						sessionStorage.setItem("${ storageKey }", newTheme + ";" + newColor);
 					`
 				}}
 			/>
