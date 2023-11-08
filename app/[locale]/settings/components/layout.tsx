@@ -5,10 +5,16 @@
 "use client";
 
 import * as z from "zod";
+import { Check,
+	SunMoon,
+	Loader2,
+	CaseUpper,
+	RefreshCw,
+	Paintbrush } from "lucide-react";
+import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useEffect } from "react";
-import { CaseUpper, Loader2, SunMoon, RefreshCw } from "lucide-react";
+import { useState, useEffect, type CSSProperties } from "react";
 
 import { toast } from "../../components/ui/use-toast";
 import { Button } from "../../components/ui/button";
@@ -18,6 +24,10 @@ import { Select,
 	SelectContent,
 	SelectTrigger } from "../../components/ui/select";
 import { useTheme } from "../../components/theme-provider";
+import { Tooltip,
+	TooltipTrigger,
+	TooltipContent,
+	TooltipProvider } from "../../components/ui/tooltip";
 import { Form,
 	FormItem,
 	FormField,
@@ -34,18 +44,95 @@ const fonts = [
 	{ label: "Système", value: "system" }
 ] as const;
 
+// Déclaration des couleurs disponibles.
+const colors = [
+	{
+		name: "zinc",
+		light: "240 5.9% 10%",
+		dark: "240 5.2% 33.9%"
+	},
+	{
+		name: "slate",
+		light: "215.4 16.3% 46.9%",
+		dark: "215.3 19.3% 34.5%"
+	},
+	{
+		name: "stone",
+		light: "25 5.3% 44.7%",
+		dark: "33.3 5.5% 32.4%"
+	},
+	{
+		name: "gray",
+		light: "220 8.9% 46.1%",
+		dark: "215 13.8% 34.1%"
+	},
+	{
+		name: "neutral",
+		light: "0 0% 45.1%",
+		dark: "0 0% 32.2%"
+	},
+	{
+		name: "red",
+		light: "0 72.2% 50.6%",
+		dark: "0 72.2% 50.6%"
+	},
+	{
+		name: "rose",
+		light: "346.8 77.2% 49.8%",
+		dark: "346.8 77.2% 49.8%"
+	},
+	{
+		name: "orange",
+		light: "24.6 95% 53.1%",
+		dark: "20.5 90.2% 48.2%"
+	},
+	{
+		name: "green",
+		light: "142.1 76.2% 36.3%",
+		dark: "142.1 70.6% 45.3%"
+	},
+	{
+		name: "blue",
+		light: "221.2 83.2% 53.3%",
+		dark: "217.2 91.2% 59.8%"
+	},
+	{
+		name: "yellow",
+		light: "47.9 95.8% 53.1%",
+		dark: "47.9 95.8% 53.1%"
+	},
+	{
+		name: "violet",
+		light: "262.1 83.3% 57.8%",
+		dark: "263.4 70% 50.4%"
+	}
+] as const;
+
 // Déclaration du schéma de validation du formulaire.
 const layoutForm = z.object( {
 	font: z.enum( [ "inter", "poppins", "system" ] ),
+	color: z.enum( [
+		"zinc",
+		"slate",
+		"stone",
+		"gray",
+		"neutral",
+		"red",
+		"rose",
+		"orange",
+		"green",
+		"blue",
+		"yellow",
+		"violet"
+	] ),
 	theme: z.enum( [ "light", "dark" ] )
 } );
 
 export default function Layout()
 {
 	// Déclaration des variables d'état.
-	const { theme, setTheme } = useTheme();
-	const [ mounted, setMounted ] = useState( false );
 	const [ isLoading, setIsLoading ] = useState( false );
+	const { theme, color, setTheme, setColor } = useTheme();
 
 	// Mise à jour des informations.
 	const updateLayout = ( data: z.infer<typeof layoutForm> ) =>
@@ -53,6 +140,7 @@ export default function Layout()
 		setIsLoading( true );
 
 		setTheme( data.theme );
+		setColor( data.color );
 
 		setTimeout( () =>
 		{
@@ -71,20 +159,23 @@ export default function Layout()
 		}, 3000 );
 	};
 
-	// Mise à jour de l'état de montage du composant.
-	//  Source : https://www.npmjs.com/package/next-themes#avoid-hydration-mismatch
-	useEffect( () =>
-	{
-		setMounted( true );
-	}, [] );
-
 	// Définition du formulaire.
 	const form = useForm<z.infer<typeof layoutForm>>( {
 		resolver: zodResolver( layoutForm ),
 		defaultValues: {
-			font: "inter"
+			font: "inter",
+			color: "blue",
+			theme: "light"
 		}
 	} );
+
+	// Mise à jour de l'état de montage du composant.
+	//  Source : https://www.npmjs.com/package/next-themes#avoid-hydration-mismatch
+	useEffect( () =>
+	{
+		form.setValue( "color", color as "blue" );
+		form.setValue( "theme", theme as "light" );
+	}, [ form, color, theme ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -139,6 +230,85 @@ export default function Layout()
 					)}
 				/>
 
+				{/* Couleurs */}
+				<FormField
+					name="color"
+					control={form.control}
+					render={( { field } ) => (
+						<FormItem>
+							<FormLabel className="!block">
+								<Paintbrush className="mr-2 inline h-6 w-6" />
+								Couleurs
+							</FormLabel>
+
+							<FormControl>
+								<TooltipProvider>
+									{colors.map( ( value ) => (
+										<Tooltip key={value.name}>
+											<TooltipTrigger
+												{...field}
+												type="button"
+												style={
+													{
+														"--theme-primary": `hsl(${ value.dark })`
+													} as CSSProperties
+												}
+												onClick={() =>
+												{
+													field.onChange( value.name );
+
+													form.handleSubmit(
+														updateLayout
+													);
+												}}
+												disabled={isLoading}
+												className={merge(
+													"relative inline-flex h-9 w-9 flex-col items-center justify-center rounded-full border-2 text-xs",
+													field.value === value.name
+														? "relative bottom-1 border-[--theme-primary]"
+														: "border-transparent"
+												)}
+											>
+												<span className="flex h-6 w-6 items-center justify-center rounded-full bg-[--theme-primary]">
+													{field.value
+														=== value.name && (
+														<Check className="h-4 w-4 text-white" />
+													)}
+												</span>
+
+												<span className="sr-only">
+													{value.name
+														.charAt( 0 )
+														.toUpperCase()
+														+ value.name.slice( 1 )}
+												</span>
+											</TooltipTrigger>
+
+											<TooltipContent
+												align="center"
+												className="rounded-[0.5rem] bg-zinc-900 text-zinc-50"
+											>
+												{value.name
+													.charAt( 0 )
+													.toUpperCase()
+													+ value.name.slice( 1 )}
+											</TooltipContent>
+										</Tooltip>
+									) )}
+								</TooltipProvider>
+							</FormControl>
+
+							<FormDescription>
+								Définissez la couleur que vous souhaitez
+								utiliser sur l&lsquo;ensemble des éléments du
+								site.
+							</FormDescription>
+
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
 				{/* Thème */}
 				<FormField
 					name="theme"
@@ -158,11 +328,7 @@ export default function Layout()
 							<FormMessage />
 
 							<RadioGroup
-								id="theme"
-								value={
-									( field.value && field.value )
-									|| ( mounted ? theme : "light" )
-								}
+								value={field.value}
 								className="grid grid-cols-1 gap-8 pt-2 sm:max-w-md sm:grid-cols-2"
 								onValueChange={field.onChange}
 							>
@@ -191,6 +357,14 @@ export default function Layout()
 											<RadioGroupItem
 												id="light"
 												value="light"
+												onClick={() =>
+												{
+													field.onChange( "light" );
+
+													form.handleSubmit(
+														updateLayout
+													);
+												}}
 												disabled={isLoading}
 											/>
 										</FormControl>
@@ -238,6 +412,14 @@ export default function Layout()
 											<RadioGroupItem
 												id="dark"
 												value="dark"
+												onClick={() =>
+												{
+													field.onChange( "dark" );
+
+													form.handleSubmit(
+														updateLayout
+													);
+												}}
 												disabled={isLoading}
 											/>
 										</FormControl>
