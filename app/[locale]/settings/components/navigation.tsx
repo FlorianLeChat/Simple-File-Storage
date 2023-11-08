@@ -89,7 +89,7 @@ export default function Navigation()
 				type="button"
 				variant="ghost"
 				data-cc="show-preferencesModal"
-				className="h-auto min-h-[2.5rem] justify-start xl:h-12"
+				className="h-auto min-h-[2.5rem] justify-center"
 			>
 				<Cookie className="mr-2" />
 
