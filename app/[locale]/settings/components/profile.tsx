@@ -183,12 +183,13 @@ export default function Profile()
 								<Input
 									{...field}
 									type="file"
-									accept=".png, .jpg, .jpeg"
+									accept=".png,.jpg,.jpeg"
 									disabled={isLoading}
 									onChange={( event ) => field.onChange(
 										event.target.files
 												&& event.target.files[ 0 ]
 									)}
+									className="file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
 								/>
 							</FormControl>
 
