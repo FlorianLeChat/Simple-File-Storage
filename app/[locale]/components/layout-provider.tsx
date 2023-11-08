@@ -1,5 +1,5 @@
 //
-// Composant de basculement entre les thèmes clair et sombre.
+// Composant de modification de l'apparence du site.
 //  Source : https://github.com/pacocoursey/next-themes/blob/cd67bfa20ef6ea78a814d65625c530baae4075ef/packages/next-themes/src/index.tsx
 //
 
@@ -14,20 +14,24 @@ import { useMemo,
 	type ReactNode } from "react";
 
 // Déclaration des types.
-interface UseThemeProps {
+interface UseLayoutProps {
+	font: string;
 	theme: string;
 	color: string;
+	fonts: string[];
 	themes: string[];
 	colors: string[];
+	setFont: ( value: string ) => void;
 	setTheme: ( value: string ) => void;
 	setColor: ( value: string ) => void;
 }
 
-interface ThemeProviderProps {
+interface LayoutProviderProps {
 	children?: ReactNode;
 }
 
 // Déclaration des constantes globales.
+const fonts = [ "inter", "poppins", "roboto" ];
 const themes = [ "light", "dark" ];
 const colors = [
 	"zinc",
@@ -43,13 +47,17 @@ const colors = [
 	"yellow",
 	"violet"
 ];
-const storageKey = "NEXT_THEME";
-const ThemeContext = createContext<UseThemeProps | undefined>( undefined );
-const defaultContext: UseThemeProps = {
+const storageKey = "NEXT_LAYOUT";
+const LayoutContext = createContext<UseLayoutProps | undefined>( undefined );
+const defaultContext: UseLayoutProps = {
+	font: "inter",
 	theme: "light",
 	color: "blue",
+	fonts,
 	themes,
 	colors,
+	setFont: () =>
+	{},
 	setTheme: () =>
 	{},
 	setColor: () =>
@@ -57,9 +65,21 @@ const defaultContext: UseThemeProps = {
 };
 
 // Définition du fonctionnement du composant.
-function Theme( { children = null }: ThemeProviderProps )
+function Layout( { children = null }: LayoutProviderProps )
 {
-	// Récupération du thème choisi par l'utilisateur.
+	// Récupération de la police de caractères actuellement utilisée.
+	const getCurrentFont = ( key: string ) =>
+	{
+		if ( typeof window === "undefined" )
+		{
+			// Valeur par défaut pour le serveur.
+			return "inter";
+		}
+
+		return sessionStorage.getItem( key )?.split( ";" )[ 0 ] ?? "inter";
+	};
+
+	// Récupération du thème actuellement utilisé.
 	const getCurrentTheme = ( key: string ) =>
 	{
 		if ( typeof window === "undefined" )
@@ -68,10 +88,10 @@ function Theme( { children = null }: ThemeProviderProps )
 			return "light";
 		}
 
-		return sessionStorage.getItem( key )?.split( ";" )[ 0 ] ?? "light";
+		return sessionStorage.getItem( key )?.split( ";" )[ 1 ] ?? "light";
 	};
 
-	// Récupération de la couleur choisie par l'utilisateur.
+	// Récupération de la couleur actuellement utilisée.
 	const getCurrentColor = ( key: string ) =>
 	{
 		if ( typeof window === "undefined" )
@@ -80,7 +100,7 @@ function Theme( { children = null }: ThemeProviderProps )
 			return "blue";
 		}
 
-		return sessionStorage.getItem( key )?.split( ";" )[ 1 ] ?? "blue";
+		return sessionStorage.getItem( key )?.split( ";" )[ 2 ] ?? "blue";
 	};
 
 	// Récupération du thème du navigateur.
@@ -101,8 +121,38 @@ function Theme( { children = null }: ThemeProviderProps )
 	};
 
 	// Déclaration des variables d'état.
+	const [ font, setFont ] = useState( () => getCurrentFont( storageKey ) );
 	const [ theme, setTheme ] = useState( () => getCurrentTheme( storageKey ) );
 	const [ color, setColor ] = useState( () => getCurrentColor( storageKey ) );
+
+	// Application de la nouvelle police de caractères.
+	const applyFont = useCallback(
+		( value: string ) =>
+		{
+			// On vérifie d'abord si la valeur choisie est valide.
+			if ( !fonts.includes( value ) )
+			{
+				return;
+			}
+
+			// On applique ensuite les classes CSS correspondantes
+			//  sur le DOM.
+			const element = document.documentElement;
+			element.classList.replace( font, value );
+
+			// On définit enfin cette même valeur avant de
+			//  la sauvegarder dans le stockage de session.
+			const cache = sessionStorage.getItem( storageKey )?.split( ";" ) ?? [];
+
+			setFont( value );
+
+			sessionStorage.setItem(
+				storageKey,
+				`${ value };${ cache[ 1 ] ?? theme };${ cache[ 2 ] ?? color }`
+			);
+		},
+		[ font, theme, color ]
+	);
 
 	// Application du nouveau thème.
 	const applyTheme = useCallback(
@@ -119,7 +169,6 @@ function Theme( { children = null }: ThemeProviderProps )
 			const element = document.documentElement;
 			element.classList.replace( theme, value );
 			element.classList.remove( "cc--darkmode" );
-			element.classList.add( value );
 			element.style.colorScheme = value;
 
 			if ( value === "dark" )
@@ -131,9 +180,14 @@ function Theme( { children = null }: ThemeProviderProps )
 
 			// On définit après cette même valeur avant de
 			//  la sauvegarder dans le stockage de session.
+			const cache = sessionStorage.getItem( storageKey )?.split( ";" ) ?? [];
+
 			setTheme( value );
 
-			sessionStorage.setItem( storageKey, `${ value };${ color }` );
+			sessionStorage.setItem(
+				storageKey,
+				`${ cache[ 0 ] ?? font };${ value };${ cache[ 2 ] ?? color }`
+			);
 
 			// On insère des règles CSS temporaires afin de
 			//  désactiver les transitions.
@@ -153,7 +207,7 @@ function Theme( { children = null }: ThemeProviderProps )
 				document.head.removeChild( style );
 			}, 1 );
 		},
-		[ theme, color ]
+		[ font, theme, color ]
 	);
 
 	// Application de la nouvelle couleur.
@@ -170,15 +224,19 @@ function Theme( { children = null }: ThemeProviderProps )
 			//  sur le DOM.
 			const element = document.documentElement;
 			element.classList.replace( color, value );
-			element.classList.add( value );
 
 			// On définit enfin cette même valeur avant de
 			//  la sauvegarder dans le stockage de session.
+			const cache = sessionStorage.getItem( storageKey )?.split( ";" ) ?? [];
+
 			setColor( value );
 
-			sessionStorage.setItem( storageKey, `${ theme };${ value }` );
+			sessionStorage.setItem(
+				storageKey,
+				`${ cache[ 0 ] ?? font };${ cache[ 1 ] ?? theme };${ value }`
+			);
 		},
-		[ theme, color ]
+		[ font, theme, color ]
 	);
 
 	// Application du nouveau thème détecté précédemment.
@@ -230,29 +288,31 @@ function Theme( { children = null }: ThemeProviderProps )
 	// Affichage du rendu HTML du composant.
 	const value = useMemo(
 		() => ( {
+			font,
 			theme,
 			color,
+			fonts,
 			themes,
 			colors,
+			setFont: applyFont,
 			setTheme: applyTheme,
 			setColor: applyColor
 		} ),
-		[ theme, color, applyTheme, applyColor ]
+		[ font, theme, color, applyFont, applyTheme, applyColor ]
 	);
 
 	return (
-		<ThemeContext.Provider value={value}>
+		<LayoutContext.Provider value={value}>
 			<script
 				dangerouslySetInnerHTML={{
 					__html: `
 						const element = document.documentElement;
 						const classes = element.classList;
-						const [theme, color] = sessionStorage.getItem("${ storageKey }")?.split(";") ?? [];
+						const [font, theme, color] = sessionStorage.getItem("${ storageKey }")?.split(";") ?? [];
 
+						let newFont = font;
 						let newTheme = theme;
 						let newColor = color;
-
-						classes.remove("light", "dark");
 
 						if ([${ themes.map( ( name ) => `"${ name }"` ) }].includes(theme))
 						{
@@ -273,6 +333,12 @@ function Theme( { children = null }: ThemeProviderProps )
 							element.style.colorScheme = target;
 						}
 
+						if (theme === "dark" || newTheme === "dark")
+						{
+							// Application du thème sombre pour les fenêtres de consentement des cookies.
+							classes.add("cc--darkmode");
+						}
+
 						if ([${ colors.map( ( name ) => `"${ name }"` ) }].includes(color))
 						{
 							// Application de la couleur choisie par l'utilisateur.
@@ -286,21 +352,34 @@ function Theme( { children = null }: ThemeProviderProps )
 							classes.add("blue");
 						}
 
-						sessionStorage.setItem("${ storageKey }", newTheme + ";" + newColor);
+						if ([${ fonts.map( ( name ) => `"${ name }"` ) }].includes(font))
+						{
+							// Application de la police de caractères choisie par l'utilisateur.
+							classes.add(font)
+						}
+						else
+						{
+							// Application de la police de caractères par défaut.
+							newFont = "inter";
+
+							classes.add("inter");
+						}
+
+						sessionStorage.setItem("${ storageKey }", newFont + ";" + newTheme + ";" + newColor);
 					`
 				}}
 			/>
 
 			{children}
-		</ThemeContext.Provider>
+		</LayoutContext.Provider>
 	);
 }
 
 // Exportation du context du composant.
-export const useTheme = () => useContext( ThemeContext ) ?? defaultContext;
+export const useLayout = () => useContext( LayoutContext ) ?? defaultContext;
 
 // Exportation du composant.
-export function ThemeProvider( { children = null }: ThemeProviderProps )
+export function LayoutProvider( { children = null }: LayoutProviderProps )
 {
-	return <Theme>{children}</Theme>;
+	return <Layout>{children}</Layout>;
 }
