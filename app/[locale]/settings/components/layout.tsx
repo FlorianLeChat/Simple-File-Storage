@@ -23,7 +23,7 @@ import { Select,
 	SelectValue,
 	SelectContent,
 	SelectTrigger } from "../../components/ui/select";
-import { useTheme } from "../../components/theme-provider";
+import { useLayout } from "../../components/layout-provider";
 import { Tooltip,
 	TooltipTrigger,
 	TooltipContent,
@@ -41,7 +41,7 @@ import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 const fonts = [
 	{ label: "Inter", value: "inter" },
 	{ label: "Poppins", value: "poppins" },
-	{ label: "Système", value: "system" }
+	{ label: "Roboto", value: "roboto" }
 ] as const;
 
 // Déclaration des couleurs disponibles.
@@ -110,7 +110,8 @@ const colors = [
 
 // Déclaration du schéma de validation du formulaire.
 const layoutForm = z.object( {
-	font: z.enum( [ "inter", "poppins", "system" ] ),
+	font: z.enum( [ "inter", "poppins", "roboto" ] ),
+	theme: z.enum( [ "light", "dark" ] ),
 	color: z.enum( [
 		"zinc",
 		"slate",
@@ -124,21 +125,21 @@ const layoutForm = z.object( {
 		"blue",
 		"yellow",
 		"violet"
-	] ),
-	theme: z.enum( [ "light", "dark" ] )
+	] )
 } );
 
 export default function Layout()
 {
 	// Déclaration des variables d'état.
 	const [ isLoading, setIsLoading ] = useState( false );
-	const { theme, color, setTheme, setColor } = useTheme();
+	const { font, theme, color, setFont, setTheme, setColor } = useLayout();
 
 	// Mise à jour des informations.
 	const updateLayout = ( data: z.infer<typeof layoutForm> ) =>
 	{
 		setIsLoading( true );
 
+		setFont( data.font );
 		setTheme( data.theme );
 		setColor( data.color );
 
@@ -173,9 +174,10 @@ export default function Layout()
 	//  Source : https://www.npmjs.com/package/next-themes#avoid-hydration-mismatch
 	useEffect( () =>
 	{
-		form.setValue( "color", color as "blue" );
+		form.setValue( "font", font as "inter" );
 		form.setValue( "theme", theme as "light" );
-	}, [ form, color, theme ] );
+		form.setValue( "color", color as "blue" );
+	}, [ form, font, theme, color ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -192,12 +194,12 @@ export default function Layout()
 						<FormItem>
 							<FormLabel htmlFor="font">
 								<CaseUpper className="mr-2 inline h-6 w-6" />
-								Police de caractère
+								Police de caractères
 							</FormLabel>
 
 							<FormControl>
 								<Select
-									defaultValue={field.value}
+									value={field.value}
 									onValueChange={field.onChange}
 								>
 									<SelectTrigger
@@ -208,12 +210,12 @@ export default function Layout()
 									</SelectTrigger>
 
 									<SelectContent>
-										{fonts.map( ( font ) => (
+										{fonts.map( ( value ) => (
 											<SelectItem
-												key={font.value}
-												value={font.value}
+												key={value.value}
+												value={value.value}
 											>
-												{font.label}
+												{value.label}
 											</SelectItem>
 										) )}
 									</SelectContent>

@@ -8,6 +8,23 @@
 
 @layer base
 {
+	/* Polices de caractères */
+	.inter
+	{
+		font-family: var(--inter-font);
+	}
+
+	.poppins
+	{
+		font-family: var(--poppins-font);
+	}
+
+	.roboto
+	{
+		font-family: var(--roboto-font);
+	}
+
+	/* Couleurs des thèmes */
 	.zinc
 	{
 		--background: 0 0% 100%;

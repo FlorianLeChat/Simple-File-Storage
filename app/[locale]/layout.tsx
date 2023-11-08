@@ -10,14 +10,14 @@ import "./layout.css";
 import "@total-typescript/ts-reset";
 
 // Importation des dépendances.
-import { Inter } from "next/font/google";
+import { Inter, Poppins, Roboto } from "next/font/google";
 import { unstable_setRequestLocale } from "next-intl/server";
-import { Suspense, lazy, type ReactNode } from "react";
+import { Suspense, lazy, type ReactNode, type CSSProperties } from "react";
 
 // Importation des composants.
 import Footer from "./components/footer";
 import { Toaster } from "./components/ui/toaster";
-import { ThemeProvider } from "./components/theme-provider";
+import { LayoutProvider } from "./components/layout-provider";
 
 const Analytics = lazy( () => import( "./components/analytics" ) );
 const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
@@ -30,6 +30,18 @@ export function generateStaticParams()
 
 // Création de la police de caractères Inter.
 const inter = Inter( {
+	subsets: [ "latin" ],
+	display: "swap"
+} );
+
+const poppins = Poppins( {
+	weight: [ "100", "200", "300", "400", "500", "600", "700", "800", "900" ],
+	subsets: [ "latin" ],
+	display: "swap"
+} );
+
+const roboto = Roboto( {
+	weight: [ "100", "300", "400", "500", "700", "900" ],
 	subsets: [ "latin" ],
 	display: "swap"
 } );
@@ -47,7 +59,16 @@ export default function Layout( {
 
 	// Affichage du rendu HTML de la page.
 	return (
-		<html lang="fr" className={inter.className}>
+		<html
+			lang={locale}
+			style={
+				{
+					"--inter-font": inter.style.fontFamily,
+					"--poppins-font": poppins.style.fontFamily,
+					"--roboto-font": roboto.style.fontFamily
+				} as CSSProperties
+			}
+		>
 			<body className="flex min-h-screen flex-col">
 				<Suspense>
 					{/* Vidéo en arrière-plan */}
@@ -64,7 +85,7 @@ export default function Layout( {
 					</video>
 
 					{/* Basculement entre les thèmes */}
-					<ThemeProvider>
+					<LayoutProvider>
 						{/* Composant enfant */}
 						{children}
 
@@ -79,7 +100,7 @@ export default function Layout( {
 
 						{/* Pied de page */}
 						<Footer />
-					</ThemeProvider>
+					</LayoutProvider>
 				</Suspense>
 			</body>
 		</html>
