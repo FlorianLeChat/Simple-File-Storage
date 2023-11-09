@@ -19,7 +19,6 @@ import Footer from "./components/footer";
 import { Toaster } from "./components/ui/toaster";
 import { LayoutProvider } from "./components/layout-provider";
 
-const Analytics = lazy( () => import( "./components/analytics" ) );
 const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
 
 // Génération des paramètres pour les pages statiques.
@@ -91,9 +90,6 @@ export default function Layout( {
 
 						{/* Consentement des cookies */}
 						<CookieConsent />
-
-						{/* Google Analytics */}
-						<Analytics />
 
 						{/* Composant des notifications */}
 						<Toaster />
