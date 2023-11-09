@@ -633,5 +633,10 @@
 		border: 0.25rem solid hsl(var(--border));
 		border-radius: var(--radius);
 		background-color: hsl(var(--primary));
+
+		&:hover
+		{
+			background-color: hsl(var(--primary) / 0.9);
+		}
 	}
 }
