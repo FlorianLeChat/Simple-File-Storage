@@ -588,10 +588,8 @@
 		--input: 215 27.9% 16.9%;
 		--ring: 263.4 70% 50.4%;
 	}
-}
 
-@layer base
-{
+	/* Règles Tailwind par défaut */
 	*
 	{
 		@apply border-border;
@@ -600,5 +598,40 @@
 	body
 	{
 		@apply bg-background text-foreground;
+	}
+
+	/* Sélection des textes */
+	::selection
+	{
+		color: hsl(var(--background));
+		background-color: hsl(var(--primary));
+	}
+
+	/* Badge de Google reCAPTCHA.
+		Source : https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-badge.-what-is-allowed */
+	.grecaptcha-badge
+	{
+		display: none;
+	}
+
+	/* Barre de défilement du navigateur */
+	::-webkit-scrollbar
+	{
+		/* Conteneur */
+		width: 1rem;
+	}
+
+	::-webkit-scrollbar-track
+	{
+		/* Chemin */
+		background-color: hsl(var(--secondary));
+	}
+
+	::-webkit-scrollbar-thumb
+	{
+		/* Boutons haut/bas */
+		border: 0.25rem solid hsl(var(--border));
+		border-radius: var(--radius);
+		background-color: hsl(var(--primary));
 	}
 }
