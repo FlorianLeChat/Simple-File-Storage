@@ -90,7 +90,7 @@ export default function Page( {
 					confidentialité et protéger vos données.
 				</p>
 
-				<div className="mt-8 grid items-center gap-8 space-y-4 md:grid-cols-3">
+				<div className="grid gap-8 max-xl:mt-8 md:grid-cols-3 xl:mt-[5%]">
 					<article className="space-y-2 p-4">
 						<Lock className="mx-auto mb-2 h-6 w-6" />
 
