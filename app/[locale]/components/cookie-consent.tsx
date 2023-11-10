@@ -31,7 +31,7 @@ export default function CookieConsent()
 			// Paramètres internes des cookies.
 			cookie: {
 				path: process.env.__NEXT_ROUTER_BASEPATH,
-				name: "NEXT_ANALYTICS"
+				name: "NEXT_COOKIE"
 			},
 
 			// Paramètres de l'interface utilisateur.

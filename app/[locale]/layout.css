@@ -589,7 +589,6 @@
 		--ring: 263.4 70% 50.4%;
 	}
 
-	/* Règles Tailwind par défaut */
 	*
 	{
 		@apply border-border;
@@ -599,44 +598,94 @@
 	{
 		@apply bg-background text-foreground;
 	}
+}
 
-	/* Sélection des textes */
-	::selection
+/* Sélection des textes */
+::selection
+{
+	color: hsl(var(--primary-foreground));
+	background-color: hsl(var(--primary));
+}
+
+/* Badge de Google reCAPTCHA
+	Source : https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-badge.-what-is-allowed */
+.grecaptcha-badge
+{
+	display: none;
+}
+
+/* Barre de défilement du navigateur */
+::-webkit-scrollbar
+{
+	/* Conteneur */
+	width: 1rem;
+}
+
+::-webkit-scrollbar-track
+{
+	/* Chemin */
+	background-color: hsl(var(--secondary));
+}
+
+::-webkit-scrollbar-thumb
+{
+	/* Boutons haut/bas */
+	border: 0.25rem solid hsl(var(--border));
+	border-radius: var(--radius);
+	background-color: hsl(var(--primary));
+
+	&:hover
 	{
-		color: hsl(var(--background));
-		background-color: hsl(var(--primary));
+		background-color: hsl(var(--primary) / 0.9);
 	}
+}
 
-	/* Badge de Google reCAPTCHA.
-		Source : https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-badge.-what-is-allowed */
-	.grecaptcha-badge
-	{
-		display: none;
-	}
+/* Bannière de consentement des cookies
+	Source : https://cookieconsent.orestbida.com/advanced/ui-customization.html#color-schemes */
+:root
+{
+	--cc-bg: hsl(var(--background));
+	--cc-primary-color: hsl(var(--foreground));
+	--cc-secondary-color: hsl(var(--muted-foreground));
 
-	/* Barre de défilement du navigateur */
-	::-webkit-scrollbar
-	{
-		/* Conteneur */
-		width: 1rem;
-	}
+	--cc-btn-primary-bg: hsl(var(--primary));
+	--cc-btn-primary-color: hsl(var(--primary-foreground));
+	--cc-btn-primary-hover-bg: hsl(var(--primary) / 0.9);
+	--cc-btn-primary-hover-color: var(--cc-btn-primary-color);
 
-	::-webkit-scrollbar-track
-	{
-		/* Chemin */
-		background-color: hsl(var(--secondary));
-	}
+	--cc-btn-secondary-bg: hsl(var(--secondary));
+	--cc-btn-secondary-color: hsl(var(--secondary-foreground));
+	--cc-btn-secondary-hover-bg: hsl(var(--secondary) / 0.8);
+	--cc-btn-secondary-hover-color: var(--cc-btn-secondary-color);
+	--cc-btn-secondary-hover-border-color: var(--cc-btn-secondary-hover-bg);
 
-	::-webkit-scrollbar-thumb
-	{
-		/* Boutons haut/bas */
-		border: 0.25rem solid hsl(var(--border));
-		border-radius: var(--radius);
-		background-color: hsl(var(--primary));
+	--cc-separator-border-color: hsl(var(--border));
 
-		&:hover
-		{
-			background-color: hsl(var(--primary) / 0.9);
-		}
-	}
+	--cc-toggle-off-bg: hsl(var(--input));
+	--cc-toggle-on-knob-bg: hsl(var(--background));
+	--cc-toggle-off-knob-bg: var(--cc-toggle-on-knob-bg);
+
+	--cc-toggle-readonly-bg: var(--cc-btn-primary-bg);
+	--cc-toggle-readonly-knob-bg: var(--cc-bg);
+	--cc-toggle-readonly-knob-icon-color: var(--cc-toggle-readonly-bg);
+
+	--cc-section-category-border: var(--cc-separator-border-color);
+
+	--cc-cookie-category-block-bg: hsl(var(--input) / 0.2);
+	--cc-cookie-category-block-border: transparent;
+	--cc-cookie-category-block-hover-bg: var(--cc-cookie-category-block-bg);
+	--cc-cookie-category-block-hover-border: var(--cc-toggle-readonly-bg);
+	--cc-cookie-category-expanded-block-bg: transparent;
+	--cc-cookie-category-expanded-block-hover-bg: var(--cc-separator-border-color);
+
+	--cc-font-family: inherit;
+	--cc-btn-border-radius: 0.375rem;
+	--cc-modal-border-radius: var(--radius);
+}
+
+#cc-main .pm__section--expandable .pm__section-arrow svg
+{
+	/* Solution pour la couleur des petites flèches incompatibles
+		avec le reste des couleurs secondaires */
+	@apply stroke-primary-foreground;
 }
