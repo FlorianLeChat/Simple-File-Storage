@@ -168,15 +168,7 @@ function Layout( { children = null }: LayoutProviderProps )
 			//  sur le DOM.
 			const element = document.documentElement;
 			element.classList.replace( theme, value );
-			element.classList.remove( "cc--darkmode" );
 			element.style.colorScheme = value;
-
-			if ( value === "dark" )
-			{
-				// Support pour le thème sombre pour les fenêtres
-				//  de consentement des cookies.
-				element.classList.add( "cc--darkmode" );
-			}
 
 			// On définit après cette même valeur avant de
 			//  la sauvegarder dans le stockage de session.
@@ -331,12 +323,6 @@ function Layout( { children = null }: LayoutProviderProps )
 							classes.add(target);
 
 							element.style.colorScheme = target;
-						}
-
-						if (theme === "dark" || newTheme === "dark")
-						{
-							// Application du thème sombre pour les fenêtres de consentement des cookies.
-							classes.add("cc--darkmode");
 						}
 
 						if ([${ colors.map( ( name ) => `"${ name }"` ) }].includes(color))
