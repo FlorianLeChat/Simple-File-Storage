@@ -603,41 +603,33 @@
 /* Sélection des textes */
 ::selection
 {
-	color: hsl(var(--primary-foreground));
-	background-color: hsl(var(--primary));
+	@apply bg-primary text-primary-foreground;
 }
 
 /* Badge de Google reCAPTCHA
 	Source : https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-badge.-what-is-allowed */
 .grecaptcha-badge
 {
-	display: none;
+	@apply hidden;
 }
 
 /* Barre de défilement du navigateur */
-::-webkit-scrollbar
+::-webkit-scrollbar, #cc-main ::-webkit-scrollbar
 {
 	/* Conteneur */
-	width: 1rem;
+	@apply w-4;
 }
 
-::-webkit-scrollbar-track
+::-webkit-scrollbar-track, #cc-main ::-webkit-scrollbar-track
 {
 	/* Chemin */
-	background-color: hsl(var(--secondary));
+	@apply bg-secondary;
 }
 
-::-webkit-scrollbar-thumb
+::-webkit-scrollbar-thumb, #cc-main ::-webkit-scrollbar-thumb
 {
 	/* Boutons haut/bas */
-	border: 0.25rem solid hsl(var(--border));
-	border-radius: var(--radius);
-	background-color: hsl(var(--primary));
-
-	&:hover
-	{
-		background-color: hsl(var(--primary) / 0.9);
-	}
+	@apply border-4 border-solid border-border bg-primary hover:bg-primary/90 rounded-lg;
 }
 
 /* Bannière de consentement des cookies
