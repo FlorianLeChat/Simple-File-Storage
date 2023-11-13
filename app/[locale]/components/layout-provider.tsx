@@ -365,7 +365,9 @@ function Layout( { children = null }: LayoutProviderProps )
 export const useLayout = () => useContext( LayoutContext ) ?? defaultContext;
 
 // Exportation du composant.
-export function LayoutProvider( { children = null }: LayoutProviderProps )
+export default function LayoutProvider( {
+	children = null
+}: LayoutProviderProps )
 {
 	return <Layout>{children}</Layout>;
 }

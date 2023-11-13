@@ -31,6 +31,7 @@
     "next": "~14.0",
     "sharp": "~0.32",
     "deepmerge": "~4.3",
+    "next-auth": "~4.24",
     "next-intl": "3.0.0-rc.6",
     "@sentry/nextjs": "~7.77",
     "react-hook-form": "~7.47",
