@@ -13,7 +13,7 @@ import { Toast,
 	ToastProvider,
 	ToastDescription } from "./toast";
 
-export function Toaster()
+export default function Toaster()
 {
 	const { toasts } = useToast();
 

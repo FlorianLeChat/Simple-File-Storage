@@ -16,10 +16,11 @@ import { Suspense, lazy, type ReactNode, type CSSProperties } from "react";
 
 // Importation des composants.
 import Footer from "./components/footer";
-import { Toaster } from "./components/ui/toaster";
-import { LayoutProvider } from "./components/layout-provider";
 
+const Toaster = lazy( () => import( "./components/ui/toaster" ) );
 const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
+const LayoutProvider = lazy( () => import( "./components/layout-provider" ) );
+const SessionProvider = lazy( () => import( "./components/session-provider" ) );
 
 // Génération des paramètres pour les pages statiques.
 export function generateStaticParams()
@@ -83,20 +84,23 @@ export default function Layout( {
 						/>
 					</video>
 
-					{/* Basculement entre les thèmes */}
-					<LayoutProvider>
-						{/* Composant enfant */}
-						{children}
+					{/* Session pour l'authentification */}
+					<SessionProvider>
+						{/* Basculement entre les thèmes */}
+						<LayoutProvider>
+							{/* Composant enfant */}
+							{children}
 
-						{/* Consentement des cookies */}
-						<CookieConsent />
+							{/* Consentement des cookies */}
+							<CookieConsent />
 
-						{/* Composant des notifications */}
-						<Toaster />
+							{/* Composant des notifications */}
+							<Toaster />
 
-						{/* Pied de page */}
-						<Footer />
-					</LayoutProvider>
+							{/* Pied de page */}
+							<Footer />
+						</LayoutProvider>
+					</SessionProvider>
 				</Suspense>
 			</body>
 		</html>
