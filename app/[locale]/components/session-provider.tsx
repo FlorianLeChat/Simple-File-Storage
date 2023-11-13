@@ -15,7 +15,9 @@ export default function NextAuthProvider( {
 } )
 {
 	return (
-		<SessionProvider basePath={process.env.__NEXT_ROUTER_BASEPATH}>
+		<SessionProvider
+			basePath={`${ process.env.__NEXT_ROUTER_BASEPATH }/api/auth`}
+		>
 			{children}
 		</SessionProvider>
 	);

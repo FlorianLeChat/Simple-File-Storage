@@ -4,12 +4,14 @@
 
 // Importation des dépendances.
 import { lazy } from "react";
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
+import { getServerSession } from "next-auth";
 import { unstable_setRequestLocale } from "next-intl/server";
-import { type File, columns } from "./components/columns";
 
 // Importation des composants.
 import { Separator } from "../components/ui/separator";
+import { type File, columns } from "./components/columns";
 
 const Header = lazy( () => import( "../components/header" ) );
 const UserMenu = lazy( () => import( "../components/user-menu" ) );
@@ -52,7 +54,7 @@ function getData(): File[]
 }
 
 // Affichage de la page.
-export default function Page( {
+export default async function Page( {
 	params: { locale }
 }: {
 	params: { locale: string };
@@ -60,6 +62,14 @@ export default function Page( {
 {
 	// Définition de la langue de la page.
 	unstable_setRequestLocale( locale );
+
+	// Vérification de la session utilisateur.
+	const session = await getServerSession();
+
+	if ( !session )
+	{
+		redirect( "/" );
+	}
 
 	// Déclaration des constantes.
 	const data = getData();
