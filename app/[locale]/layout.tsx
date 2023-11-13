@@ -18,6 +18,7 @@ import { Suspense, lazy, type ReactNode, type CSSProperties } from "react";
 import Footer from "./components/footer";
 
 const Toaster = lazy( () => import( "./components/ui/toaster" ) );
+const Recaptcha = lazy( () => import( "./components/recaptcha" ) );
 const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
 const LayoutProvider = lazy( () => import( "./components/layout-provider" ) );
 const SessionProvider = lazy( () => import( "./components/session-provider" ) );
@@ -93,6 +94,9 @@ export default function Layout( {
 
 							{/* Consentement des cookies */}
 							<CookieConsent />
+
+							{/* Google reCAPTCHA */}
+							<Recaptcha />
 
 							{/* Composant des notifications */}
 							<Toaster />

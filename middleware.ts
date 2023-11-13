@@ -3,7 +3,7 @@
 //
 import createIntlMiddleware from "next-intl/middleware";
 import { type NextRequest, NextResponse } from "next/server";
-import type { Recaptcha } from "./interfaces/Recaptcha";
+import type { RecaptchaResponse } from "./interfaces/Recaptcha";
 
 export default async function middleware( request: NextRequest )
 {
@@ -48,7 +48,7 @@ export default async function middleware( request: NextRequest )
 			{
 				// Si la requête a été traitée avec succès, on vérifie alors le
 				//  résultat obtenu de l'API de Google reCAPTCHA sous format JSON.
-				const json = ( await data.json() ) as Recaptcha;
+				const json = ( await data.json() ) as RecaptchaResponse;
 
 				if ( !json.success || json.score < 0.7 )
 				{
