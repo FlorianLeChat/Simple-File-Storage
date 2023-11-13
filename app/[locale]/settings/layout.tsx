@@ -3,7 +3,9 @@
 //
 
 // Importation des dépendances.
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
+import { getServerSession } from "next-auth";
 import { lazy, type ReactNode } from "react";
 import { unstable_setRequestLocale } from "next-intl/server";
 
@@ -19,7 +21,7 @@ export const metadata: Metadata = {
 	title: "Paramètres – Simple File Storage"
 };
 
-export default function Layout( {
+export default async function Layout( {
 	children,
 	params: { locale }
 }: {
@@ -29,6 +31,14 @@ export default function Layout( {
 {
 	// Définition de la langue de la page.
 	unstable_setRequestLocale( locale );
+
+	// Vérification de la session utilisateur.
+	const session = await getServerSession();
+
+	if ( !session )
+	{
+		redirect( "/" );
+	}
 
 	// Affichage du rendu HTML de la page.
 	return (
