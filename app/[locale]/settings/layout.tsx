@@ -55,7 +55,7 @@ export default async function Layout( {
 				</div>
 
 				{/* Menu utilisateur */}
-				<UserMenu />
+				<UserMenu session={session} />
 			</header>
 
 			<div className="space-y-6 px-4 pb-12 pt-6 md:p-10">

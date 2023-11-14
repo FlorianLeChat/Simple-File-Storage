@@ -6,7 +6,9 @@
 
 import Link from "next/link";
 import { merge } from "@/utilities/tailwind";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import type { Session } from "next-auth";
 import { BellRing, Check } from "lucide-react";
 import { useEffect, useCallback, useState } from "react";
 
@@ -46,7 +48,7 @@ const notifications = [
 	}
 ];
 
-export default function UserMenu()
+export default function UserMenu( { session }: { session: Session } )
 {
 	// Déclaration des constantes.
 	const router = useRouter();
@@ -177,8 +179,17 @@ export default function UserMenu()
 					)}
 				>
 					<Avatar className="h-8 w-8">
-						<AvatarImage src="/avatars/01.png" alt="Florian4016" />
-						<AvatarFallback>FL</AvatarFallback>
+						<AvatarImage
+							src={session.user?.image ?? ""}
+							alt={session.user?.name ?? ""}
+						/>
+
+						<AvatarFallback>
+							{/* Récupérer de la première lettre du prénom et nom */}
+							{session.user?.name
+								?.split( " " )
+								.map( ( word ) => word[ 0 ] ) ?? ""}
+						</AvatarFallback>
 					</Avatar>
 				</DropdownMenuTrigger>
 
@@ -186,11 +197,11 @@ export default function UserMenu()
 					{/* Informations utilisateur */}
 					<DropdownMenuLabel className="font-normal">
 						<span className="block text-sm font-medium leading-none">
-							Florian4016
+							{session.user?.name ?? ""}
 						</span>
 
 						<span className="mt-1 text-xs leading-none text-muted-foreground">
-							florian@gmail.com
+							{session.user?.email ?? ""}
 						</span>
 					</DropdownMenuLabel>
 
@@ -221,14 +232,10 @@ export default function UserMenu()
 					<DropdownMenuSeparator />
 
 					{/* Déconnexion du compte */}
-					<Link href="/authentication">
-						<DropdownMenuItem>
-							Déconnexion
-							<DropdownMenuShortcut>
-								ALT/⌥ + L
-							</DropdownMenuShortcut>
-						</DropdownMenuItem>
-					</Link>
+					<DropdownMenuItem onClick={() => signOut()}>
+						Déconnexion
+						<DropdownMenuShortcut>ALT/⌥ + L</DropdownMenuShortcut>
+					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</nav>

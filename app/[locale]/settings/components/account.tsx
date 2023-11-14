@@ -8,6 +8,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Session } from "next-auth";
 import { Languages, Lock, Contact, Loader2, RefreshCw } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
@@ -39,7 +40,7 @@ const schema = z.object( {
 	password: z.string().min( 10 ).max( 100 )
 } );
 
-export default function Account()
+export default function Account( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
 	const [ isLoading, setIsLoading ] = useState( false );
@@ -70,7 +71,7 @@ export default function Account()
 	const form = useForm<z.infer<typeof schema>>( {
 		resolver: zodResolver( schema ),
 		defaultValues: {
-			realname: "Florian4016",
+			realname: session.user?.name ?? "",
 			language: "fr"
 		}
 	} );
