@@ -9,11 +9,25 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Session } from "next-auth";
-import { Loader2, RefreshCw, WholeWord, AtSign, FileImage } from "lucide-react";
+import { Trash,
+	AtSign,
+	Loader2,
+	RefreshCw,
+	WholeWord,
+	FileImage,
+	PlusCircleIcon } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { toast } from "../../components/ui/use-toast";
-import { Button } from "../../components/ui/button";
+import { Select,
+	SelectItem,
+	SelectValue,
+	SelectContent,
+	SelectTrigger } from "../../components/ui/select";
+import { Tooltip,
+	TooltipTrigger,
+	TooltipContent,
+	TooltipProvider } from "../../components/ui/tooltip";
 import { Form,
 	FormItem,
 	FormLabel,
@@ -21,11 +35,7 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
-import { Select,
-	SelectItem,
-	SelectValue,
-	SelectContent,
-	SelectTrigger } from "../../components/ui/select";
+import { Button, buttonVariants } from "../../components/ui/button";
 
 // Déclaration du schéma de validation du formulaire.
 const schema = z.object( {
@@ -131,36 +141,78 @@ export default function Profile( { session }: { session: Session } )
 							</FormLabel>
 
 							<FormControl className="hidden">
-								<Select
-									defaultValue={field.value}
-									onValueChange={field.onChange}
-								>
-									<SelectTrigger
-										id="email"
-										aria-controls="email"
-									>
-										<SelectValue />
-									</SelectTrigger>
+								<div className="flex gap-2 max-sm:flex-wrap">
+									<TooltipProvider>
+										<Select
+											defaultValue={field.value}
+											onValueChange={field.onChange}
+										>
+											<SelectTrigger
+												id="email"
+												aria-controls="email"
+											>
+												<SelectValue />
+											</SelectTrigger>
 
-									<SelectContent>
-										<SelectItem value={field.value}>
-											{field.value}
-										</SelectItem>
-									</SelectContent>
-								</Select>
+											<SelectContent>
+												<SelectItem value={field.value}>
+													{field.value}
+												</SelectItem>
+											</SelectContent>
+										</Select>
+
+										<Tooltip>
+											<TooltipTrigger
+												type="button"
+												disabled={isLoading}
+												className={buttonVariants( {
+													size: "icon",
+													variant: "outline"
+												} )}
+											>
+												<PlusCircleIcon className="h-4 w-4" />
+											</TooltipTrigger>
+
+											<TooltipContent>
+												Ajouter une adresse électronique
+											</TooltipContent>
+										</Tooltip>
+
+										<Tooltip>
+											<TooltipTrigger
+												type="button"
+												disabled={isLoading}
+												className={buttonVariants( {
+													size: "icon",
+													variant: "outline"
+												} )}
+											>
+												<Trash className="h-4 w-4" />
+											</TooltipTrigger>
+
+											<TooltipContent>
+												Supprimer cette adresse
+												électronique
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
+								</div>
 							</FormControl>
 
-							<FormDescription className="hidden">
-								Ceci est la liste des adresses électroniques
-								associées à votre compte. Vous pouvez en ajouter
-								ou en supprimer à tout moment.
-							</FormDescription>
-
-							<FormDescription className="font-extrabold text-destructive">
-								Ce paramètre ne peut pas être modifié en raison
-								de l&lsquo;utilisation d&lsquo;une plate-forme
-								externe pour vous connecter au site.
-							</FormDescription>
+							{session ? (
+								<FormDescription className="font-extrabold text-destructive">
+									Ce paramètre ne peut pas être modifié en
+									raison de l&lsquo;utilisation d&lsquo;une
+									plate-forme externe pour vous connecter au
+									site.
+								</FormDescription>
+							) : (
+								<FormDescription>
+									Ceci est la liste des adresses électroniques
+									associées à votre compte. Vous pouvez en
+									ajouter ou en supprimer à tout moment.
+								</FormDescription>
+							)}
 
 							<FormMessage />
 						</FormItem>
