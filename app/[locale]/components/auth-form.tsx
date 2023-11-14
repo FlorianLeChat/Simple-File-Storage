@@ -6,11 +6,12 @@
 
 import Link from "next/link";
 import * as z from "zod";
+import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { useState, type FormEvent } from "react";
 import { Loader2, Mail, RefreshCw } from "lucide-react";
 
 import { Input } from "./ui/input";
@@ -67,33 +68,6 @@ export default function AuthForm()
 					<ToastAction
 						altText="Réessayer"
 						onClick={() => createEmailAccount( values )}
-					>
-						Réessayer
-					</ToastAction>
-				)
-			} );
-
-			setIsLoading( false );
-		}, 3000 );
-	};
-
-	// Requête de connexion d'un compte utilisateur par protocole OAuth.
-	const createOAuthAccount = ( event: FormEvent<HTMLButtonElement> ) =>
-	{
-		event.preventDefault();
-		setIsLoading( true );
-
-		setTimeout( () =>
-		{
-			toast( {
-				title: "Authentification échouée",
-				variant: "destructive",
-				description:
-					"Cette fonctionnalité est actuellement indisponible.",
-				action: (
-					<ToastAction
-						altText="Réessayer"
-						onClick={() => createOAuthAccount( event )}
 					>
 						Réessayer
 					</ToastAction>
@@ -471,7 +445,7 @@ export default function AuthForm()
 			<Button
 				type="button"
 				variant="outline"
-				onClick={createOAuthAccount}
+				onClick={() => signIn( "google" )}
 				disabled={isLoading}
 			>
 				{isLoading ? (
@@ -485,7 +459,7 @@ export default function AuthForm()
 			<Button
 				type="button"
 				variant="outline"
-				onClick={createOAuthAccount}
+				onClick={() => signIn( "github" )}
 				disabled={isLoading}
 			>
 				{isLoading ? (
