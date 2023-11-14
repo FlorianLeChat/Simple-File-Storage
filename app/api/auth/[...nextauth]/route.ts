@@ -6,14 +6,6 @@ import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 
 const handler = NextAuth( {
-	pages: {
-		// Pages d'authentification.
-		signIn: "/authentication",
-		signOut: "/auth/signout",
-		error: "/authentication",
-		verifyRequest: "/auth/verify-request",
-		newUser: "/dashboard"
-	},
 	providers: [
 		// Authentification via Google.
 		GoogleProvider( {

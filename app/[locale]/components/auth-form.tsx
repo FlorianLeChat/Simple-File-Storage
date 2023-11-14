@@ -18,10 +18,6 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { useToast } from "./ui/use-toast";
-import { Tooltip,
-	TooltipTrigger,
-	TooltipContent,
-	TooltipProvider } from "./ui/tooltip";
 import { Separator } from "./ui/separator";
 import { Form,
 	FormItem,
@@ -30,6 +26,10 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "./ui/form";
+import { Tooltip,
+	TooltipTrigger,
+	TooltipContent,
+	TooltipProvider } from "./ui/tooltip";
 import { ToastAction } from "./ui/toast";
 import { Button, buttonVariants } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
@@ -445,7 +445,7 @@ export default function AuthForm()
 			<Button
 				type="button"
 				variant="outline"
-				onClick={() => signIn( "google" )}
+				onClick={() => signIn( "google", { callbackUrl: "/dashboard" } )}
 				disabled={isLoading}
 			>
 				{isLoading ? (
@@ -459,7 +459,7 @@ export default function AuthForm()
 			<Button
 				type="button"
 				variant="outline"
-				onClick={() => signIn( "github" )}
+				onClick={() => signIn( "github", { callbackUrl: "/dashboard" } )}
 				disabled={isLoading}
 			>
 				{isLoading ? (

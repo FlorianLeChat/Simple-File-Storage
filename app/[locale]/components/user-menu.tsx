@@ -232,7 +232,9 @@ export default function UserMenu( { session }: { session: Session } )
 					<DropdownMenuSeparator />
 
 					{/* Déconnexion du compte */}
-					<DropdownMenuItem onClick={() => signOut()}>
+					<DropdownMenuItem
+						onClick={() => signOut( { callbackUrl: "/" } )}
+					>
 						Déconnexion
 						<DropdownMenuShortcut>ALT/⌥ + L</DropdownMenuShortcut>
 					</DropdownMenuItem>
