@@ -5,6 +5,7 @@
 // Importation des dépendances.
 import { lazy } from "react";
 import { unstable_setRequestLocale } from "next-intl/server";
+import { type Session, getServerSession } from "next-auth";
 
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
@@ -12,7 +13,7 @@ import { Separator } from "../../components/ui/separator";
 const Account = lazy( () => import( "../components/account" ) );
 
 // Affichage de la page.
-export default function Page( {
+export default async function Page( {
 	params: { locale }
 }: {
 	params: { locale: string };
@@ -37,7 +38,7 @@ export default function Page( {
 			<Separator />
 
 			{/* Formulaire de modification du compte utilisateur */}
-			<Account />
+			<Account session={( await getServerSession() ) as Session} />
 		</>
 	);
 }

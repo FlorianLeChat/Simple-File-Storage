@@ -89,7 +89,7 @@ export default async function Page( {
 				</div>
 
 				{/* Menu utilisateur */}
-				<UserMenu />
+				<UserMenu session={session} />
 			</header>
 
 			<main className="p-4 md:p-10">

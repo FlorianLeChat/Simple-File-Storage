@@ -9,6 +9,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Session } from "next-auth";
 import { Loader2, RefreshCw, WholeWord, AtSign, FileImage } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
@@ -34,7 +35,7 @@ const schema = z.object( {
 	avatar: z.any().optional()
 } );
 
-export default function Profile()
+export default function Profile( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
 	const [ isLoading, setIsLoading ] = useState( false );
@@ -65,7 +66,7 @@ export default function Profile()
 	const form = useForm<z.infer<typeof schema>>( {
 		resolver: zodResolver( schema ),
 		defaultValues: {
-			email: "florian@gmail.com",
+			email: session.user?.email ?? "",
 			username: "florian4016"
 		}
 	} );
@@ -143,12 +144,8 @@ export default function Profile()
 									</SelectTrigger>
 
 									<SelectContent>
-										<SelectItem value="florian@gmail.com">
-											florian@gmail.com
-										</SelectItem>
-
-										<SelectItem value="florian@hotmail.com">
-											florian@hotmail.com
+										<SelectItem value={field.value}>
+											{field.value}
 										</SelectItem>
 									</SelectContent>
 								</Select>
