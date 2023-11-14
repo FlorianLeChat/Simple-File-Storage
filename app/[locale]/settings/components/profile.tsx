@@ -4,7 +4,6 @@
 
 "use client";
 
-import Link from "next/link";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
@@ -131,7 +130,7 @@ export default function Profile( { session }: { session: Session } )
 								Adresse électronique
 							</FormLabel>
 
-							<FormControl>
+							<FormControl className="hidden">
 								<Select
 									defaultValue={field.value}
 									onValueChange={field.onChange}
@@ -151,13 +150,16 @@ export default function Profile( { session }: { session: Session } )
 								</Select>
 							</FormControl>
 
-							<FormDescription>
-								Vous pouvez ajouter ou supprimer des adresses
-								électroniques à partir de vos{" "}
-								<Link href="/settings/account">
-									paramètres de compte utilisateur
-								</Link>
-								.
+							<FormDescription className="hidden">
+								Ceci est la liste des adresses électroniques
+								associées à votre compte. Vous pouvez en ajouter
+								ou en supprimer à tout moment.
+							</FormDescription>
+
+							<FormDescription className="font-extrabold text-destructive">
+								Ce paramètre ne peut pas être modifié en raison
+								de l&lsquo;utilisation d&lsquo;une plate-forme
+								externe pour vous connecter au site.
 							</FormDescription>
 
 							<FormMessage />
@@ -176,7 +178,7 @@ export default function Profile( { session }: { session: Session } )
 								Avatar
 							</FormLabel>
 
-							<FormControl>
+							<FormControl className="hidden">
 								<Input
 									{...field}
 									type="file"
@@ -190,14 +192,23 @@ export default function Profile( { session }: { session: Session } )
 								/>
 							</FormControl>
 
-							<FormDescription>
-								Vous pouvez mettre à jour l&lsquo;avatar utilisé
-								pour votre compte utilisateur.{" "}
-								<strong>
-									Les avatars ne doivent pas dépasser 2 Mo et
-									doivent être au format PNG ou JPEG.
-								</strong>
-							</FormDescription>
+							{session ? (
+								<FormDescription className="font-extrabold text-destructive">
+									Ce paramètre ne peut pas être modifié en
+									raison de l&lsquo;utilisation d&lsquo;une
+									plate-forme externe pour vous connecter au
+									site.
+								</FormDescription>
+							) : (
+								<FormDescription>
+									Vous pouvez mettre à jour l&lsquo;avatar
+									utilisé pour votre compte utilisateur.{" "}
+									<strong>
+										Les avatars ne doivent pas dépasser 2 Mo
+										et doivent être au format PNG ou JPEG.
+									</strong>
+								</FormDescription>
+							)}
 
 							<FormMessage />
 						</FormItem>
