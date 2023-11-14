@@ -94,10 +94,10 @@ export default function Account( { session }: { session: Session } )
 								Nom d&lsquo;affichage
 							</FormLabel>
 
-							<FormControl>
+							<FormControl className="hidden">
 								<Input
 									{...field}
-									disabled={isLoading}
+									disabled
 									minLength={
 										schema.shape.realname
 											.minLength as number
@@ -113,10 +113,21 @@ export default function Account( { session }: { session: Session } )
 								/>
 							</FormControl>
 
-							<FormDescription>
-								Ceci est le nom qui sera affiché sur votre
-								profil et dans les courriels.
-							</FormDescription>
+							{session ? (
+								<FormDescription className="font-extrabold text-destructive">
+									Ce paramètre ne peut pas être modifié en
+									raison de l&lsquo;utilisation d&lsquo;une
+									plate-forme externe pour vous connecter au
+									site.
+								</FormDescription>
+							) : (
+								<FormDescription>
+									Ceci est le nom qui sera affiché sur votre
+									profil et dans la recherche
+									d&lsquo;utilisateurs pour partager des
+									fichiers.
+								</FormDescription>
+							)}
 
 							<FormMessage />
 						</FormItem>
@@ -180,7 +191,7 @@ export default function Account( { session }: { session: Session } )
 								Mot de passe
 							</FormLabel>
 
-							<FormControl>
+							<FormControl className="hidden">
 								<Input
 									{...field}
 									type="password"
@@ -200,14 +211,19 @@ export default function Account( { session }: { session: Session } )
 								/>
 							</FormControl>
 
-							<FormDescription>
-								Ceci est le mot de passe qui sera utilisé pour
-								vous connecter à votre compte.{" "}
-								<em>
-									Ceci ne concerne pas les comptes utilisant
-									le protocole OAuth.
-								</em>
-							</FormDescription>
+							{session ? (
+								<FormDescription className="font-extrabold text-destructive">
+									Ce paramètre ne peut pas être modifié en
+									raison de l&lsquo;utilisation d&lsquo;une
+									plate-forme externe pour vous connecter au
+									site.
+								</FormDescription>
+							) : (
+								<FormDescription>
+									Ceci est le mot de passe qui sera utilisé
+									pour vous connecter à votre compte.
+								</FormDescription>
+							)}
 
 							<FormMessage />
 						</FormItem>
