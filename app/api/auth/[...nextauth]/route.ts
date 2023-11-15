@@ -1,11 +1,14 @@
 //
 // Route de paramétrage des mécanismes d'authentification de Next Auth.
 //
+import prisma from "@/utilities/prisma";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 
 const handler = NextAuth( {
+	adapter: PrismaAdapter( prisma ),
 	providers: [
 		// Authentification via Google.
 		GoogleProvider( {
