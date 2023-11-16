@@ -7,6 +7,9 @@ import { lazy } from "react";
 import { unstable_setRequestLocale } from "next-intl/server";
 import { type Session, getServerSession } from "next-auth";
 
+// Importation des fonctions utilitaires.
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
 
@@ -38,7 +41,9 @@ export default async function Page( {
 			<Separator />
 
 			{/* Formulaire de modification du compte utilisateur */}
-			<Account session={( await getServerSession() ) as Session} />
+			<Account
+				session={( await getServerSession( authOptions ) ) as Session}
+			/>
 		</>
 	);
 }
