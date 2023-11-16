@@ -9,6 +9,13 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
+	pages: {
+		signIn: "/authentication",
+		signOut: "/dashboard",
+		error: "/",
+		verifyRequest: "/auth/verify-request",
+		newUser: "/dashboard"
+	},
 	adapter: PrismaAdapter( prisma ),
 	callbacks: {
 		// Gestion des rôles d'utilisateurs.
