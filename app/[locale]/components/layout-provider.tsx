@@ -76,7 +76,7 @@ function Layout( { children = null }: LayoutProviderProps )
 			return "inter";
 		}
 
-		return sessionStorage.getItem( key )?.split( ";" )[ 0 ] ?? "inter";
+		return localStorage.getItem( key )?.split( ";" )[ 0 ] ?? "inter";
 	};
 
 	// Récupération du thème actuellement utilisé.
@@ -88,7 +88,7 @@ function Layout( { children = null }: LayoutProviderProps )
 			return "light";
 		}
 
-		return sessionStorage.getItem( key )?.split( ";" )[ 1 ] ?? "light";
+		return localStorage.getItem( key )?.split( ";" )[ 1 ] ?? "light";
 	};
 
 	// Récupération de la couleur actuellement utilisée.
@@ -100,7 +100,7 @@ function Layout( { children = null }: LayoutProviderProps )
 			return "blue";
 		}
 
-		return sessionStorage.getItem( key )?.split( ";" )[ 2 ] ?? "blue";
+		return localStorage.getItem( key )?.split( ";" )[ 2 ] ?? "blue";
 	};
 
 	// Récupération du thème du navigateur.
@@ -142,11 +142,11 @@ function Layout( { children = null }: LayoutProviderProps )
 
 			// On définit enfin cette même valeur avant de
 			//  la sauvegarder dans le stockage de session.
-			const cache = sessionStorage.getItem( storageKey )?.split( ";" ) ?? [];
+			const cache = localStorage.getItem( storageKey )?.split( ";" ) ?? [];
 
 			setFont( value );
 
-			sessionStorage.setItem(
+			localStorage.setItem(
 				storageKey,
 				`${ value };${ cache[ 1 ] ?? theme };${ cache[ 2 ] ?? color }`
 			);
@@ -172,11 +172,11 @@ function Layout( { children = null }: LayoutProviderProps )
 
 			// On définit après cette même valeur avant de
 			//  la sauvegarder dans le stockage de session.
-			const cache = sessionStorage.getItem( storageKey )?.split( ";" ) ?? [];
+			const cache = localStorage.getItem( storageKey )?.split( ";" ) ?? [];
 
 			setTheme( value );
 
-			sessionStorage.setItem(
+			localStorage.setItem(
 				storageKey,
 				`${ cache[ 0 ] ?? font };${ value };${ cache[ 2 ] ?? color }`
 			);
@@ -219,11 +219,11 @@ function Layout( { children = null }: LayoutProviderProps )
 
 			// On définit enfin cette même valeur avant de
 			//  la sauvegarder dans le stockage de session.
-			const cache = sessionStorage.getItem( storageKey )?.split( ";" ) ?? [];
+			const cache = localStorage.getItem( storageKey )?.split( ";" ) ?? [];
 
 			setColor( value );
 
-			sessionStorage.setItem(
+			localStorage.setItem(
 				storageKey,
 				`${ cache[ 0 ] ?? font };${ cache[ 1 ] ?? theme };${ value }`
 			);
@@ -300,7 +300,7 @@ function Layout( { children = null }: LayoutProviderProps )
 					__html: `
 						const element = document.documentElement;
 						const classes = element.classList;
-						const [font, theme, color] = sessionStorage.getItem("${ storageKey }")?.split(";") ?? [];
+						const [font, theme, color] = localStorage.getItem("${ storageKey }")?.split(";") ?? [];
 
 						let newFont = font;
 						let newTheme = theme;
@@ -351,7 +351,7 @@ function Layout( { children = null }: LayoutProviderProps )
 							classes.add("inter");
 						}
 
-						sessionStorage.setItem("${ storageKey }", newFont + ";" + newTheme + ";" + newColor);
+						localStorage.setItem("${ storageKey }", newFont + ";" + newTheme + ";" + newColor);
 					`
 				}}
 			/>
