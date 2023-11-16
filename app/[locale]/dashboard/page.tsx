@@ -9,6 +9,9 @@ import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { unstable_setRequestLocale } from "next-intl/server";
 
+// Importation des fonctions utilitaires.
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 // Importation des composants.
 import { Separator } from "../components/ui/separator";
 import { type File, columns } from "./components/columns";
@@ -64,7 +67,7 @@ export default async function Page( {
 	unstable_setRequestLocale( locale );
 
 	// Vérification de la session utilisateur.
-	const session = await getServerSession();
+	const session = await getServerSession( authOptions );
 
 	if ( !session )
 	{
