@@ -9,6 +9,7 @@ import * as z from "zod";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -44,6 +45,7 @@ const authSchema = z.object( {
 export default function AuthForm()
 {
 	// Déclaration des constantes.
+	const router = useRouter();
 	const { toast } = useToast();
 	const characters =
 		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
@@ -54,29 +56,95 @@ export default function AuthForm()
 	const [ authenticationMethod, setAuthenticationMethod ] = useState( "email" );
 
 	// Requête de création d'un compte utilisateur par courriel.
-	const createEmailAccount = ( values: z.infer<typeof authSchema> ) =>
+	const createEmailAccount = async ( values: z.infer<typeof authSchema> ) =>
 	{
+		// On indique d'abord que le formulaire est en cours de traitement.
 		setIsLoading( true );
 
-		setTimeout( () =>
+		// On effectue ensuite une requête de création d'un compte utilisateur
+		//  via son adresse électronique et son mot de passe avant d'attente
+		//  la réponse du serveur.
+		const response = await signIn( authenticationMethod, {
+			email: values.email,
+			password: values.password,
+			redirect: false
+		} );
+
+		// On vérifie alors si la requête a réussi ou non.
+		if ( response?.ok )
 		{
+			// En cas de réussite, on redirige l'utilisateur vers la page
+			//  de son tableau de bord (ou celle indiquée par le serveur).
+			router.push( response.url ?? "/dashboard" );
+		}
+		else
+		{
+			// Dans le cas contraire, on indique le message d'erreur en
+			//  fonction des informations renvoyées par le serveur.
+			//  Source : https://authjs.dev/guides/basics/pages#sign-in-page
+			let description = "";
+
+			switch ( response?.error ?? "" )
+			{
+				case "OAuthSignin":
+					description =
+						"Erreur lors de la connexion avec ce fournisseur d'authentification externe.";
+					break;
+
+				case "OAuthCallback" || "Callback":
+					description =
+						"Erreur lors de la lecture de la réponse du fournisseur d'authentification externe.";
+					break;
+
+				case "OAuthCreateAccount" || "EmailCreateAccount":
+					description =
+						"Erreur lors de la création de votre compte utilisateur dans la base de données.";
+					break;
+
+				case "OAuthAccountNotLinked":
+					description =
+						"Cette adresse électronique est déjà associée à un autre compte utilisateur.";
+					break;
+
+				case "EmailSignin":
+					description =
+						"Erreur lors de l'envoi du courriel de vérification à l'adresse électronique fournie.";
+					break;
+
+				case "CredentialsSignin":
+					description =
+						"Erreur lors de l'authentification avec les informations de connexion fournies.";
+					break;
+
+				case "SessionRequired":
+					description =
+						"Cette page nécessite une session utilisateur pour fonctionner.";
+					break;
+
+				default:
+					description =
+						"Une erreur interne est survenue lors de l'authentification.";
+					break;
+			}
+
+			// On affiche après le message d'erreur.
 			toast( {
 				title: "Authentification échouée",
 				variant: "destructive",
-				description:
-					"Cette fonctionnalité est actuellement indisponible.",
+				description,
 				action: (
 					<ToastAction
 						altText="Réessayer"
-						onClick={() => createEmailAccount( values )}
+						onClick={() => signIn( "email", { callbackUrl: "/dashboard" } )}
 					>
 						Réessayer
 					</ToastAction>
 				)
 			} );
+		}
 
-			setIsLoading( false );
-		}, 3000 );
+		// On indique enfin que le formulaire a fini d'être traité.
+		setIsLoading( false );
 	};
 
 	// Génère un mot de passe aléatoire.
