@@ -2,12 +2,12 @@
 // Route de paramétrage des mécanismes d'authentification de Next Auth.
 //
 import prisma from "@/utilities/prisma";
-import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import NextAuth, { type NextAuthOptions } from "next-auth";
 
-const handler = NextAuth( {
+export const authOptions: NextAuthOptions = {
 	adapter: PrismaAdapter( prisma ),
 	providers: [
 		// Authentification via Google.
@@ -22,6 +22,8 @@ const handler = NextAuth( {
 			clientSecret: process.env.GITHUB_CLIENT_SECRET ?? ""
 		} )
 	]
-} );
+};
+
+const handler = NextAuth( authOptions );
 
 export { handler as GET, handler as POST };
