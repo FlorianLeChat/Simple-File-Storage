@@ -10,6 +10,19 @@ import NextAuth, { type NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
 	adapter: PrismaAdapter( prisma ),
+	callbacks: {
+		// Gestion des rôles d'utilisateurs.
+		// https://authjs.dev/guides/basics/role-based-access-control#with-database
+		session( { session, user } )
+		{
+			if ( session )
+			{
+				session.user.role = user.role;
+			}
+
+			return session;
+		}
+	},
 	providers: [
 		// Authentification via Google.
 		GoogleProvider( {
