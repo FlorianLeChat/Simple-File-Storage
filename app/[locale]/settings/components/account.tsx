@@ -116,9 +116,9 @@ export default function Account( { session }: { session: Session } )
 							{session ? (
 								<FormDescription className="font-extrabold text-destructive">
 									Ce paramètre ne peut pas être modifié en
-									raison de l&lsquo;utilisation d&lsquo;une
-									plate-forme externe pour vous connecter au
-									site.
+									raison de l&lsquo;utilisation fournisseur
+									d&lsquo;authentification externe pour vous
+									connecter au site.
 								</FormDescription>
 							) : (
 								<FormDescription>
@@ -214,9 +214,9 @@ export default function Account( { session }: { session: Session } )
 							{session ? (
 								<FormDescription className="font-extrabold text-destructive">
 									Ce paramètre ne peut pas être modifié en
-									raison de l&lsquo;utilisation d&lsquo;une
-									plate-forme externe pour vous connecter au
-									site.
+									raison de l&lsquo;utilisation fournisseur
+									d&lsquo;authentification externe pour vous
+									connecter au site.
 								</FormDescription>
 							) : (
 								<FormDescription>
