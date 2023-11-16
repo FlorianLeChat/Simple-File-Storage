@@ -12,7 +12,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { Loader2, Mail, RefreshCw } from "lucide-react";
+import { Loader2, Mail, RefreshCw, KeyRound } from "lucide-react";
 
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -51,6 +51,7 @@ export default function AuthForm()
 	// Déclaration des variables d'état.
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ passwordType, setPasswordType ] = useState( "text" );
+	const [ authenticationMethod, setAuthenticationMethod ] = useState( "email" );
 
 	// Requête de création d'un compte utilisateur par courriel.
 	const createEmailAccount = ( values: z.infer<typeof authSchema> ) =>
@@ -99,7 +100,7 @@ export default function AuthForm()
 		resolver: zodResolver( authSchema ),
 		defaultValues: {
 			email: "",
-			password: generateRandomPassword()
+			password: ""
 		}
 	} );
 
@@ -200,6 +201,23 @@ export default function AuthForm()
 													{...field}
 													id="password"
 													type={passwordType}
+													onKeyUp={( event ) =>
+													{
+														// Affichage du mot de passe masqué.
+														setPasswordType(
+															"password"
+														);
+
+														// Modification de la méthode d'authentification.
+														setAuthenticationMethod(
+															event.currentTarget
+																.value.length
+																> 0
+																? "credentials"
+																: "email"
+														);
+													}}
+													disabled={isLoading}
 													minLength={
 														authSchema.shape
 															.password
@@ -210,10 +228,6 @@ export default function AuthForm()
 															.password
 															.maxLength as number
 													}
-													onInput={() => setPasswordType(
-														"password"
-													)}
-													disabled={isLoading}
 													spellCheck="false"
 													placeholder="password"
 													autoComplete="new-password"
@@ -243,14 +257,19 @@ export default function AuthForm()
 															setPasswordType(
 																"text"
 															);
+
+															// Modification de la méthode d'authentification.
+															setAuthenticationMethod(
+																"credentials"
+															);
 														}}
 													>
 														<RefreshCw className="h-4 w-4" />
 													</TooltipTrigger>
 
 													<TooltipContent>
-														Générer un nouveau mot
-														de passe sécurisé
+														Générer un mot de passe
+														sécurisé
 													</TooltipContent>
 												</Tooltip>
 											</TooltipProvider>
@@ -276,8 +295,19 @@ export default function AuthForm()
 								</>
 							) : (
 								<>
-									<Mail className="mr-2 h-4 w-4" />
-									Inscription par courriel
+									{authenticationMethod === "email" && (
+										<>
+											<Mail className="mr-2 h-4 w-4" />
+											Inscription par courriel
+										</>
+									)}
+
+									{authenticationMethod === "credentials" && (
+										<>
+											<KeyRound className="mr-2 h-4 w-4" />
+											Inscription par mot de passe
+										</>
+									)}
 								</>
 							)}
 						</Button>
@@ -355,6 +385,12 @@ export default function AuthForm()
 										<Input
 											{...field}
 											type={passwordType}
+											onKeyUp={( event ) => setAuthenticationMethod(
+												event.currentTarget.value
+													.length > 0
+													? "credentials"
+													: "email"
+											)}
 											disabled={isLoading}
 											minLength={
 												authSchema.shape.password
@@ -421,8 +457,19 @@ export default function AuthForm()
 								</>
 							) : (
 								<>
-									<Mail className="mr-2 h-4 w-4" />
-									Connexion par courriel
+									{authenticationMethod === "email" && (
+										<>
+											<Mail className="mr-2 h-4 w-4" />
+											Connexion par courriel
+										</>
+									)}
+
+									{authenticationMethod === "credentials" && (
+										<>
+											<KeyRound className="mr-2 h-4 w-4" />
+											Connexion par mot de passe
+										</>
+									)}
 								</>
 							)}
 						</Button>
