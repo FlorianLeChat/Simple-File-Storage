@@ -32,6 +32,15 @@ export default function Notifications()
 	// Déclaration des variables d'état.
 	const [ isLoading, setIsLoading ] = useState( false );
 
+	// Déclaration du formulaire.
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema ),
+		defaultValues: {
+			push: false,
+			level: "all"
+		}
+	} );
+
 	// Mise à jour des informations.
 	const updateNotifications = ( data: z.infer<typeof schema> ) =>
 	{
@@ -53,15 +62,6 @@ export default function Notifications()
 			setIsLoading( false );
 		}, 3000 );
 	};
-
-	// Définition du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
-		defaultValues: {
-			push: false,
-			level: "all"
-		}
-	} );
 
 	// Affichage du rendu HTML du composant.
 	return (

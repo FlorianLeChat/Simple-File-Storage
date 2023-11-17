@@ -134,6 +134,16 @@ export default function Layout()
 	const [ isLoading, setIsLoading ] = useState( false );
 	const { font, theme, color, setFont, setTheme, setColor } = useLayout();
 
+	// Déclaration du formulaire.
+	const form = useForm<z.infer<typeof layoutForm>>( {
+		resolver: zodResolver( layoutForm ),
+		defaultValues: {
+			font: "inter",
+			color: "blue",
+			theme: "light"
+		}
+	} );
+
 	// Mise à jour des informations.
 	const updateLayout = ( data: z.infer<typeof layoutForm> ) =>
 	{
@@ -159,16 +169,6 @@ export default function Layout()
 			setIsLoading( false );
 		}, 3000 );
 	};
-
-	// Définition du formulaire.
-	const form = useForm<z.infer<typeof layoutForm>>( {
-		resolver: zodResolver( layoutForm ),
-		defaultValues: {
-			font: "inter",
-			color: "blue",
-			theme: "light"
-		}
-	} );
 
 	// Mise à jour de l'état de montage du composant.
 	//  Source : https://www.npmjs.com/package/next-themes#avoid-hydration-mismatch
