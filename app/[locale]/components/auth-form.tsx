@@ -15,6 +15,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { Loader2, Mail, RefreshCw, KeyRound } from "lucide-react";
 
+import { getAuthErrorMessage } from "@/utilities/next-auth";
+
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
@@ -79,59 +81,11 @@ export default function AuthForm()
 		}
 		else
 		{
-			// Dans le cas contraire, on indique le message d'erreur en
-			//  fonction des informations renvoyées par le serveur.
-			//  Source : https://authjs.dev/guides/basics/pages#sign-in-page
-			let description = "";
-
-			switch ( response?.error ?? "" )
-			{
-				case "OAuthSignin":
-					description =
-						"Erreur lors de la connexion avec ce fournisseur d'authentification externe.";
-					break;
-
-				case "OAuthCallback" || "Callback":
-					description =
-						"Erreur lors de la lecture de la réponse du fournisseur d'authentification externe.";
-					break;
-
-				case "OAuthCreateAccount" || "EmailCreateAccount":
-					description =
-						"Erreur lors de la création de votre compte utilisateur dans la base de données.";
-					break;
-
-				case "OAuthAccountNotLinked":
-					description =
-						"Cette adresse électronique est déjà associée à un autre compte utilisateur.";
-					break;
-
-				case "EmailSignin":
-					description =
-						"Erreur lors de l'envoi du courriel de vérification à l'adresse électronique fournie.";
-					break;
-
-				case "CredentialsSignin":
-					description =
-						"Erreur lors de l'authentification avec les informations de connexion fournies.";
-					break;
-
-				case "SessionRequired":
-					description =
-						"Cette page nécessite une session utilisateur pour fonctionner.";
-					break;
-
-				default:
-					description =
-						"Une erreur interne est survenue lors de l'authentification.";
-					break;
-			}
-
-			// On affiche après le message d'erreur.
+			// Dans le cas, on affiche après un message d'erreur.
 			toast( {
 				title: "Authentification échouée",
 				variant: "destructive",
-				description,
+				description: getAuthErrorMessage( response?.error ?? "" ),
 				action: (
 					<ToastAction
 						altText="Réessayer"
