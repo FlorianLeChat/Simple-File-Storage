@@ -54,6 +54,11 @@ export default function UserMenu( { session }: { session: Session } )
 	const email = session.user?.email;
 	const admin = session.user?.role === "admin";
 	const router = useRouter();
+	const fullName = session.user?.name;
+	const shortName =
+		fullName?.split( " " ).map( ( word ) => word[ 0 ] )
+		?? email?.slice( 0, 2 ).toUpperCase()
+		?? "SFS";
 
 	// Déclaration des variables d'état.
 	const [ open, setOpen ] = useState( false );
@@ -183,23 +188,18 @@ export default function UserMenu( { session }: { session: Session } )
 					<Avatar className="h-8 w-8">
 						<AvatarImage
 							src={session.user?.image ?? ""}
-							alt={session.user?.name ?? ""}
+							alt={fullName ?? ""}
 						/>
 
-						<AvatarFallback>
-							{/* Récupérer de la première lettre du prénom et nom */}
-							{session.user?.name
-								?.split( " " )
-								.map( ( word ) => word[ 0 ] ) ?? ""}
-						</AvatarFallback>
+						<AvatarFallback>{shortName}</AvatarFallback>
 					</Avatar>
 				</DropdownMenuTrigger>
 
 				<DropdownMenuContent className="w-56" align="end" forceMount>
 					{/* Informations utilisateur */}
 					<DropdownMenuLabel className="font-normal">
-						<span className="block text-sm font-medium leading-none">
-							{session.user?.name ?? ""}
+						<span className="block text-sm font-medium">
+							{fullName ?? session.user?.id}
 						</span>
 
 						<span className="block text-xs text-muted-foreground">
