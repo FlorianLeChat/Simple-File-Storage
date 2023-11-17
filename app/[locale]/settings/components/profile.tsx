@@ -49,6 +49,15 @@ export default function Profile( { session }: { session: Session } )
 	// Déclaration des variables d'état.
 	const [ isLoading, setIsLoading ] = useState( false );
 
+	// Déclaration du formulaire.
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema ),
+		defaultValues: {
+			email: session.user?.email ?? "",
+			username: session.user?.name ?? session.user?.id
+		}
+	} );
+
 	// Mise à jour des informations.
 	const updateProfile = ( data: z.infer<typeof schema> ) =>
 	{
@@ -70,15 +79,6 @@ export default function Profile( { session }: { session: Session } )
 			setIsLoading( false );
 		}, 3000 );
 	};
-
-	// Définition du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
-		defaultValues: {
-			email: session.user?.email ?? "",
-			username: "florian4016"
-		}
-	} );
 
 	// Affichage du rendu HTML du composant.
 	return (

@@ -45,6 +45,15 @@ export default function Account()
 	// Déclaration des variables d'état.
 	const [ isLoading, setIsLoading ] = useState( false );
 
+	// Déclaration du formulaire.
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema ),
+		defaultValues: {
+			area: "account",
+			severity: "low"
+		}
+	} );
+
 	// Mise à jour des informations.
 	const openIssue = ( data: z.infer<typeof schema> ) =>
 	{
@@ -66,15 +75,6 @@ export default function Account()
 			setIsLoading( false );
 		}, 3000 );
 	};
-
-	// Définition du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
-		defaultValues: {
-			area: "account",
-			severity: "low"
-		}
-	} );
 
 	// Affichage du rendu HTML du composant.
 	return (

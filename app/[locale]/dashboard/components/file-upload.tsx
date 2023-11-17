@@ -40,6 +40,11 @@ export default function FileUpload()
 	// Déclaration des variables d'état.
 	const [ isLoading, setIsLoading ] = useState( false );
 
+	// Déclaration des formulaires.
+	const form = useForm<z.infer<typeof fileSchema>>( {
+		resolver: zodResolver( fileSchema )
+	} );
+
 	// Téléversement des fichiers sélectionnés.
 	const uploadFile = ( data: z.infer<typeof fileSchema> ) =>
 	{
@@ -61,11 +66,6 @@ export default function FileUpload()
 			setIsLoading( false );
 		}, 3000 );
 	};
-
-	// Définition des formulaires.
-	const uploadForm = useForm<z.infer<typeof fileSchema>>( {
-		resolver: zodResolver( fileSchema )
-	} );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -102,14 +102,14 @@ export default function FileUpload()
 					</DialogDescription>
 				</DialogHeader>
 
-				<Form {...uploadForm}>
+				<Form {...form}>
 					<form
-						onSubmit={uploadForm.handleSubmit( uploadFile )}
+						onSubmit={form.handleSubmit( uploadFile )}
 						className="space-y-6"
 					>
 						<FormField
 							name="upload"
-							control={uploadForm.control}
+							control={form.control}
 							render={( { field } ) => (
 								<FormItem>
 									<FormLabel className="sr-only">
@@ -165,7 +165,7 @@ export default function FileUpload()
 
 						{/* Bouton de fermeture du formulaire */}
 						<DialogClose
-							onClick={() => uploadForm.reset()}
+							onClick={() => form.reset()}
 							disabled={isLoading}
 							className={merge(
 								buttonVariants( {
