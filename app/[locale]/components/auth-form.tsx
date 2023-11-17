@@ -17,6 +17,7 @@ import { LogIn, Loader2, Mail, RefreshCw, KeyRound } from "lucide-react";
 
 import { getAuthErrorMessage } from "@/utilities/next-auth";
 
+import { merge } from "@/utilities/tailwind";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
@@ -56,9 +57,20 @@ export default function AuthForm()
 		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
 
 	// Déclaration des variables d'état.
+	const [ focused, setFocused ] = useState( false );
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ passwordType, setPasswordType ] = useState( "text" );
 	const [ authenticationMethod, setAuthenticationMethod ] = useState( "email" );
+
+	// Déclaration du formulaire.
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema ),
+		defaultValues: {
+			email: "",
+			password: "",
+			remembered: false
+		}
+	} );
 
 	// Requête d'authentification d'un compte utilisateur.
 	const authenticateAccount = async ( values: z.infer<typeof schema> ) =>
@@ -72,11 +84,27 @@ export default function AuthForm()
 		const response = await signIn( authenticationMethod, {
 			email: values.email,
 			password: values.password,
-			redirect: false
+			redirect: false,
+			callbackUrl: "/dashboard"
 		} );
 
-		// On vérifie alors si la requête a réussi ou non.
-		if ( response?.ok )
+		// On vérifie si le serveur a renvoyé une courriel de validation.
+		const verifyRequest = response?.url?.includes( "verify-request" );
+
+		if ( verifyRequest )
+		{
+			// Si c'est le cas, on affiche un message de succès avant de
+			//  bloquer le formulaire pour signifier que l'utilisateur
+			//  doit valider son adresse électronique.
+			toast( {
+				title: "Action nécessaire",
+				description: getAuthErrorMessage( "ValidationRequired" )
+			} );
+
+			// On réinitialise par la même occasion l'entièreté du formulaire.
+			form.reset();
+		}
+		else if ( response?.ok )
 		{
 			// En cas de réussite, on redirige l'utilisateur vers la page
 			//  de son tableau de bord (ou celle indiquée par le serveur).
@@ -84,11 +112,15 @@ export default function AuthForm()
 		}
 		else
 		{
-			// Dans le cas, on affiche après un message d'erreur.
+			// Dans le cas contraire, on affiche après un message d'erreur.
+			const error = response?.error ?? "";
+
 			toast( {
 				title: "Authentification échouée",
 				variant: "destructive",
-				description: getAuthErrorMessage( response?.error ?? "" ),
+				description:
+					getAuthErrorMessage( error )
+					?? "Une erreur interne est survenue lors de l'authentification.",
 				action: (
 					<ToastAction
 						altText="Réessayer"
@@ -111,6 +143,10 @@ export default function AuthForm()
 		const values = new Uint8Array( length );
 		crypto.getRandomValues( values );
 
+		// On indique que le champ de mot de passe est actuellement
+		//  en cours de modification.
+		setFocused( true );
+
 		// On parcourt enfin les octets générés pour les convertir
 		//  en caractères sécurisés.
 		return values.reduce(
@@ -118,16 +154,6 @@ export default function AuthForm()
 			""
 		);
 	};
-
-	// Définition du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
-		defaultValues: {
-			email: "",
-			password: "",
-			remembered: false
-		}
-	} );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -206,6 +232,11 @@ export default function AuthForm()
 												{...field}
 												id="password"
 												type={passwordType}
+												onBlur={() => setFocused(
+													field.value?.length
+															!== 0
+												)}
+												onFocus={() => setFocused( true )}
 												onKeyUp={( event ) =>
 												{
 													// Affichage du mot de passe masqué.
@@ -232,8 +263,7 @@ export default function AuthForm()
 												}}
 												disabled={isLoading}
 												className={`transition-opacity ${
-													authenticationMethod
-														=== "email" && "opacity-25"
+													!focused && "opacity-25"
 												}`}
 												minLength={
 													requiredPassword.minLength as number
@@ -251,10 +281,16 @@ export default function AuthForm()
 												<TooltipTrigger
 													type="button"
 													disabled={isLoading}
-													className={buttonVariants( {
-														size: "icon",
-														variant: "outline"
-													} )}
+													className={merge(
+														`transition-opacity ${
+															!focused
+															&& "opacity-25"
+														}`,
+														buttonVariants( {
+															size: "icon",
+															variant: "outline"
+														} )
+													)}
 													onClick={() =>
 													{
 														// Génération d'un nouveau mot de passe.

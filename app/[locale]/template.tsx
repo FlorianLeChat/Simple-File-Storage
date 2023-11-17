@@ -35,14 +35,14 @@ export default function Template( { children }: { children: ReactNode } )
 		const description =
 			pathname === "/"
 				? getGenericErrorMessage( error )
-				: pathname === "/auth" && getAuthErrorMessage( error );
+				: pathname === "/authentication" && getAuthErrorMessage( error );
 
 		if ( description )
 		{
 			setTimeout( () =>
 			{
 				toast( {
-					title: "Erreur",
+					title: "Erreur interne",
 					variant: "destructive",
 					description
 				} );
