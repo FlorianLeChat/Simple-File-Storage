@@ -38,9 +38,13 @@ import { Button, buttonVariants } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 // Déclaration du schéma de validation du formulaire.
+//  Note : le mot de passe est optionnel pour la connexion par courriel
+//    mais obligatoire pour la connexion par mot de passe.
+const requiredPassword = z.string().min( 10 ).max( 60 );
+const optionalPassword = z.string().optional().optional();
 const authSchema = z.object( {
 	email: z.string().min( 10 ).max( 100 ).email(),
-	password: z.string().min( 10 ).max( 60 ),
+	password: optionalPassword,
 	remembered: z.boolean().optional()
 } );
 
@@ -111,7 +115,7 @@ export default function AuthForm()
 		// On parcourt enfin les octets générés pour les convertir
 		//  en caractères sécurisés.
 		return values.reduce(
-			( password, value ) => password + characters[ value % characters.length ],
+			( previous, current ) => previous + characters[ current % characters.length ],
 			""
 		);
 	};
@@ -230,25 +234,38 @@ export default function AuthForm()
 															"password"
 														);
 
-														// Modification de la méthode d'authentification.
-														setAuthenticationMethod(
+														// Modification de la méthode d'authentification
+														//  et du schéma de validation du formulaire.
+														const method =
 															event.currentTarget
 																.value.length
-																> 0
+															> 0
 																? "credentials"
-																: "email"
+																: "email";
+
+														setAuthenticationMethod(
+															method
 														);
+
+														authSchema.extend( {
+															password:
+																method
+																=== "email"
+																	? optionalPassword
+																	: requiredPassword
+														} );
 													}}
 													disabled={isLoading}
+													className={`transition-opacity ${
+														authenticationMethod
+															=== "email"
+														&& "opacity-25"
+													}`}
 													minLength={
-														authSchema.shape
-															.password
-															.minLength as number
+														requiredPassword.minLength as number
 													}
 													maxLength={
-														authSchema.shape
-															.password
-															.maxLength as number
+														requiredPassword.maxLength as number
 													}
 													spellCheck="false"
 													placeholder="password"
@@ -407,20 +424,35 @@ export default function AuthForm()
 										<Input
 											{...field}
 											type={passwordType}
-											onKeyUp={( event ) => setAuthenticationMethod(
-												event.currentTarget.value
-													.length > 0
-													? "credentials"
-													: "email"
-											)}
+											onKeyUp={( event ) =>
+											{
+												// Modification de la méthode d'authentification
+												//  et du schéma de validation du formulaire.
+												const method =
+													event.currentTarget.value
+														.length > 0
+														? "credentials"
+														: "email";
+
+												setAuthenticationMethod( method );
+
+												authSchema.extend( {
+													password:
+														method === "email"
+															? optionalPassword
+															: requiredPassword
+												} );
+											}}
 											disabled={isLoading}
+											className={`transition-opacity ${
+												authenticationMethod
+													=== "email" && "opacity-25"
+											}`}
 											minLength={
-												authSchema.shape.password
-													.minLength as number
+												requiredPassword.minLength as number
 											}
 											maxLength={
-												authSchema.shape.password
-													.maxLength as number
+												requiredPassword.maxLength as number
 											}
 											spellCheck="false"
 											placeholder="password"
