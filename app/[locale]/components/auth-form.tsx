@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { Loader2, Mail, RefreshCw, KeyRound } from "lucide-react";
+import { LogIn, Loader2, Mail, RefreshCw, KeyRound } from "lucide-react";
 
 import { getAuthErrorMessage } from "@/utilities/next-auth";
 
@@ -35,14 +35,13 @@ import { Tooltip,
 	TooltipProvider } from "./ui/tooltip";
 import { ToastAction } from "./ui/toast";
 import { Button, buttonVariants } from "./ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 // Déclaration du schéma de validation du formulaire.
 //  Note : le mot de passe est optionnel pour la connexion par courriel
 //    mais obligatoire pour la connexion par mot de passe.
 const requiredPassword = z.string().min( 10 ).max( 60 );
 const optionalPassword = z.string().optional().optional();
-const authSchema = z.object( {
+const schema = z.object( {
 	email: z.string().min( 10 ).max( 100 ).email(),
 	password: optionalPassword,
 	remembered: z.boolean().optional()
@@ -61,8 +60,8 @@ export default function AuthForm()
 	const [ passwordType, setPasswordType ] = useState( "text" );
 	const [ authenticationMethod, setAuthenticationMethod ] = useState( "email" );
 
-	// Requête de création d'un compte utilisateur par courriel.
-	const createEmailAccount = async ( values: z.infer<typeof authSchema> ) =>
+	// Requête d'authentification d'un compte utilisateur.
+	const authenticateAccount = async ( values: z.infer<typeof schema> ) =>
 	{
 		// On indique d'abord que le formulaire est en cours de traitement.
 		setIsLoading( true );
@@ -120,19 +119,9 @@ export default function AuthForm()
 		);
 	};
 
-	// Définition des formulaires.
-	const registerForm = useForm<z.infer<typeof authSchema>>( {
-		// Inscription.
-		resolver: zodResolver( authSchema ),
-		defaultValues: {
-			email: "",
-			password: ""
-		}
-	} );
-
-	const loginForm = useForm<z.infer<typeof authSchema>>( {
-		// Connexion.
-		resolver: zodResolver( authSchema ),
+	// Définition du formulaire.
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema ),
 		defaultValues: {
 			email: "",
 			password: "",
@@ -142,394 +131,227 @@ export default function AuthForm()
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<Tabs
-			className="flex w-full flex-col justify-center space-y-6 px-4 text-center sm:mx-auto sm:w-[500px]"
-			defaultValue="account"
-		>
-			<TabsList className="grid w-full grid-cols-2">
-				<TabsTrigger value="account">Inscription</TabsTrigger>
-				<TabsTrigger value="password">Connexion</TabsTrigger>
-			</TabsList>
+		<main className="flex w-full flex-col justify-center space-y-6 p-4 px-4 text-center sm:mx-auto sm:w-[500px]">
+			{/* Titre et description du formulaire */}
+			<h2 className="text-xl font-semibold tracking-tight">
+				<LogIn className="mr-2 inline" />
 
-			<TabsContent value="account" className="space-y-6">
-				{/* Titre et description du formulaire */}
-				<h2 className="text-xl font-semibold tracking-tight">
-					Création d&lsquo;un compte
-				</h2>
+				<span className="align-middle">Authentification</span>
+			</h2>
 
-				<p className="text-sm text-muted-foreground">
-					Saisissez votre adresse électronique et un mot de passe pour
-					créer un nouveau compte.
-				</p>
+			<p className="text-sm text-muted-foreground">
+				Saisissez votre adresse électronique et votre mot de passe pour
+				vous connecter à votre compte existant ou en créer un nouveau.
+			</p>
 
-				<Form {...registerForm}>
-					<form
-						onSubmit={registerForm.handleSubmit( createEmailAccount )}
-						className="space-y-6"
-					>
-						{/* Adresse électronique */}
-						<FormField
-							name="email"
-							control={registerForm.control}
-							render={( { field } ) => (
-								<FormItem>
-									<FormLabel className="sr-only">
-										Adresse électronique
-									</FormLabel>
+			<Form {...form}>
+				<form
+					onSubmit={form.handleSubmit( authenticateAccount )}
+					className="space-y-6"
+				>
+					{/* Adresse électronique */}
+					<FormField
+						name="email"
+						control={form.control}
+						render={( { field } ) => (
+							<FormItem>
+								<FormLabel className="sr-only">
+									Adresse électronique
+								</FormLabel>
 
-									<FormControl>
-										<Input
-											{...field}
-											type="email"
-											disabled={isLoading}
-											minLength={
-												authSchema.shape.email
-													.minLength as number
-											}
-											maxLength={
-												authSchema.shape.email
-													.maxLength as number
-											}
-											spellCheck="false"
-											placeholder="example@domain.com"
-											autoComplete="email"
-											autoCapitalize="off"
-										/>
-									</FormControl>
+								<FormControl>
+									<Input
+										{...field}
+										type="email"
+										disabled={isLoading}
+										minLength={
+											schema.shape.email
+												.minLength as number
+										}
+										maxLength={
+											schema.shape.email
+												.maxLength as number
+										}
+										spellCheck="false"
+										placeholder="example@domain.com"
+										autoComplete="email"
+										autoCapitalize="off"
+									/>
+								</FormControl>
 
-									<FormDescription className="sr-only">
-										L&lsquo;adresse électronique qui doit
-										être associée à votre compte.
-									</FormDescription>
+								<FormDescription className="sr-only">
+									L&lsquo;adresse électronique associée à
+									votre compte.
+								</FormDescription>
 
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 
-						{/* Mot de passe */}
-						<FormField
-							name="password"
-							control={registerForm.control}
-							render={( { field } ) => (
-								<FormItem>
-									<FormLabel
-										htmlFor="password"
-										className="sr-only"
-									>
-										Mot de passe
-									</FormLabel>
+					{/* Mot de passe */}
+					<FormField
+						name="password"
+						control={form.control}
+						render={( { field } ) => (
+							<FormItem>
+								<FormLabel className="sr-only">
+									Mot de passe
+								</FormLabel>
 
-									<FormControl>
-										<div className="flex gap-2">
-											<TooltipProvider>
-												<Input
-													{...field}
-													id="password"
-													type={passwordType}
-													onKeyUp={( event ) =>
-													{
-														// Affichage du mot de passe masqué.
-														setPasswordType(
-															"password"
-														);
+								<FormControl>
+									<div className="flex gap-2">
+										<TooltipProvider>
+											<Input
+												{...field}
+												id="password"
+												type={passwordType}
+												onKeyUp={( event ) =>
+												{
+													// Affichage du mot de passe masqué.
+													setPasswordType( "password" );
 
-														// Modification de la méthode d'authentification
-														//  et du schéma de validation du formulaire.
-														const method =
-															event.currentTarget
-																.value.length
-															> 0
-																? "credentials"
-																: "email";
+													// Modification de la méthode d'authentification
+													//  et du schéma de validation du formulaire.
+													const method =
+														event.currentTarget
+															.value.length > 0
+															? "credentials"
+															: "email";
 
-														setAuthenticationMethod(
-															method
-														);
+													setAuthenticationMethod(
+														method
+													);
 
-														authSchema.extend( {
-															password:
-																method
-																=== "email"
-																	? optionalPassword
-																	: requiredPassword
-														} );
-													}}
-													disabled={isLoading}
-													className={`transition-opacity ${
-														authenticationMethod
-															=== "email"
-														&& "opacity-25"
-													}`}
-													minLength={
-														requiredPassword.minLength as number
-													}
-													maxLength={
-														requiredPassword.maxLength as number
-													}
-													spellCheck="false"
-													placeholder="password"
-													autoComplete="new-password"
-													autoCapitalize="off"
-												/>
-
-												<Tooltip>
-													<TooltipTrigger
-														type="button"
-														disabled={isLoading}
-														className={buttonVariants(
-															{
-																size: "icon",
-																variant:
-																	"outline"
-															}
-														)}
-														onClick={() =>
-														{
-															// Génération d'un nouveau mot de passe.
-															registerForm.setValue(
-																"password",
-																generateRandomPassword()
-															);
-
-															// Affichage du mot de passe en clair.
-															setPasswordType(
-																"text"
-															);
-
-															// Modification de la méthode d'authentification.
-															setAuthenticationMethod(
-																"credentials"
-															);
-														}}
-													>
-														<RefreshCw className="h-4 w-4" />
-													</TooltipTrigger>
-
-													<TooltipContent>
-														Générer un mot de passe
-														sécurisé
-													</TooltipContent>
-												</Tooltip>
-											</TooltipProvider>
-										</div>
-									</FormControl>
-
-									<FormDescription className="sr-only">
-										Le mot de passe qui sera utilisé pour
-										vous connecter à votre compte.
-									</FormDescription>
-
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						{/* Bouton de validation du formulaire */}
-						<Button disabled={isLoading}>
-							{isLoading ? (
-								<>
-									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									Traitement...
-								</>
-							) : (
-								<>
-									{authenticationMethod === "email" && (
-										<>
-											<Mail className="mr-2 h-4 w-4" />
-											Inscription par courriel
-										</>
-									)}
-
-									{authenticationMethod === "credentials" && (
-										<>
-											<KeyRound className="mr-2 h-4 w-4" />
-											Inscription par mot de passe
-										</>
-									)}
-								</>
-							)}
-						</Button>
-					</form>
-				</Form>
-			</TabsContent>
-
-			<TabsContent value="password" className="space-y-6">
-				{/* Titre et description du formulaire */}
-				<h2 className="text-xl font-semibold tracking-tight">
-					Connexion à un compte
-				</h2>
-
-				<p className="text-sm text-muted-foreground">
-					Saisissez votre adresse électronique et votre mot de passe
-					pour vous connecter à votre compte.
-				</p>
-
-				<Form {...loginForm}>
-					<form
-						onSubmit={loginForm.handleSubmit( createEmailAccount )}
-						className="space-y-6"
-					>
-						{/* Adresse électronique */}
-						<FormField
-							name="email"
-							control={loginForm.control}
-							render={( { field } ) => (
-								<FormItem>
-									<FormLabel className="sr-only">
-										Adresse électronique
-									</FormLabel>
-
-									<FormControl>
-										<Input
-											{...field}
-											type="email"
-											disabled={isLoading}
-											minLength={
-												authSchema.shape.email
-													.minLength as number
-											}
-											maxLength={
-												authSchema.shape.email
-													.maxLength as number
-											}
-											spellCheck="false"
-											placeholder="example@domain.com"
-											autoComplete="email"
-											autoCapitalize="off"
-										/>
-									</FormControl>
-
-									<FormDescription className="sr-only">
-										L&lsquo;adresse électronique associée à
-										votre compte.
-									</FormDescription>
-
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						{/* Mot de passe */}
-						<FormField
-							name="password"
-							control={loginForm.control}
-							render={( { field } ) => (
-								<FormItem>
-									<FormLabel className="sr-only">
-										Mot de passe
-									</FormLabel>
-
-									<FormControl>
-										<Input
-											{...field}
-											type={passwordType}
-											onKeyUp={( event ) =>
-											{
-												// Modification de la méthode d'authentification
-												//  et du schéma de validation du formulaire.
-												const method =
-													event.currentTarget.value
-														.length > 0
-														? "credentials"
-														: "email";
-
-												setAuthenticationMethod( method );
-
-												authSchema.extend( {
-													password:
-														method === "email"
-															? optionalPassword
-															: requiredPassword
-												} );
-											}}
-											disabled={isLoading}
-											className={`transition-opacity ${
-												authenticationMethod
-													=== "email" && "opacity-25"
-											}`}
-											minLength={
-												requiredPassword.minLength as number
-											}
-											maxLength={
-												requiredPassword.maxLength as number
-											}
-											spellCheck="false"
-											placeholder="password"
-											autoComplete="current-password"
-											autoCapitalize="off"
-										/>
-									</FormControl>
-
-									<FormDescription className="sr-only">
-										Le mot de passe utilisé pour vous
-										connecter à votre compte.
-									</FormDescription>
-
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						{/* Se souvenir de moi */}
-						<FormField
-							name="remembered"
-							control={registerForm.control}
-							render={() => (
-								<FormItem>
-									<FormLabel className="sr-only">
-										Se souvenir de moi
-									</FormLabel>
-
-									<FormControl>
-										<div className="flex items-center justify-center space-x-2">
-											<Switch
-												id="remember-me"
+													schema.extend( {
+														password:
+															method === "email"
+																? optionalPassword
+																: requiredPassword
+													} );
+												}}
 												disabled={isLoading}
+												className={`transition-opacity ${
+													authenticationMethod
+														=== "email" && "opacity-25"
+												}`}
+												minLength={
+													requiredPassword.minLength as number
+												}
+												maxLength={
+													requiredPassword.maxLength as number
+												}
+												spellCheck="false"
+												placeholder="password"
+												autoComplete="new-password"
+												autoCapitalize="off"
 											/>
 
-											<Label htmlFor="remember-me">
-												Se souvenir de moi
-											</Label>
-										</div>
-									</FormControl>
+											<Tooltip>
+												<TooltipTrigger
+													type="button"
+													disabled={isLoading}
+													className={buttonVariants( {
+														size: "icon",
+														variant: "outline"
+													} )}
+													onClick={() =>
+													{
+														// Génération d'un nouveau mot de passe.
+														form.setValue(
+															"password",
+															generateRandomPassword()
+														);
 
-									<FormDescription className="sr-only">
-										Pour rester connecté à votre compte
-										lorsque vous revenez sur le site.
-									</FormDescription>
-								</FormItem>
-							)}
-						/>
+														// Affichage du mot de passe en clair.
+														setPasswordType( "text" );
 
-						{/* Bouton de validation du formulaire */}
-						<Button disabled={isLoading}>
-							{isLoading ? (
-								<>
-									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									Traitement...
-								</>
-							) : (
-								<>
-									{authenticationMethod === "email" && (
-										<>
-											<Mail className="mr-2 h-4 w-4" />
-											Connexion par courriel
-										</>
-									)}
+														// Modification de la méthode d'authentification.
+														setAuthenticationMethod(
+															"credentials"
+														);
+													}}
+												>
+													<RefreshCw className="h-4 w-4" />
+												</TooltipTrigger>
 
-									{authenticationMethod === "credentials" && (
-										<>
-											<KeyRound className="mr-2 h-4 w-4" />
-											Connexion par mot de passe
-										</>
-									)}
-								</>
-							)}
-						</Button>
-					</form>
-				</Form>
-			</TabsContent>
+												<TooltipContent>
+													Générer un mot de passe
+													sécurisé
+												</TooltipContent>
+											</Tooltip>
+										</TooltipProvider>
+									</div>
+								</FormControl>
+
+								<FormDescription className="sr-only">
+									Le mot de passe utilisé pour vous connecter
+									à votre compte.
+								</FormDescription>
+
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+
+					{/* Se souvenir de moi */}
+					<FormField
+						name="remembered"
+						control={form.control}
+						render={() => (
+							<FormItem>
+								<FormLabel className="sr-only">
+									Se souvenir de moi
+								</FormLabel>
+
+								<FormControl>
+									<div className="flex items-center justify-center space-x-2">
+										<Switch
+											id="remember-me"
+											disabled={isLoading}
+										/>
+
+										<Label htmlFor="remember-me">
+											Se souvenir de moi
+										</Label>
+									</div>
+								</FormControl>
+
+								<FormDescription className="sr-only">
+									Pour rester connecté à votre compte lorsque
+									vous revenez sur le site.
+								</FormDescription>
+							</FormItem>
+						)}
+					/>
+
+					{/* Bouton de validation du formulaire */}
+					<Button disabled={isLoading}>
+						{isLoading ? (
+							<>
+								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+								Traitement...
+							</>
+						) : (
+							<>
+								{authenticationMethod === "email" && (
+									<>
+										<Mail className="mr-2 h-4 w-4" />
+										Authentification par courriel
+									</>
+								)}
+
+								{authenticationMethod === "credentials" && (
+									<>
+										<KeyRound className="mr-2 h-4 w-4" />
+										Authentification par mot de passe
+									</>
+								)}
+							</>
+						)}
+					</Button>
+				</form>
+			</Form>
 
 			{/* Barre verticale de séparation */}
 			<div className="flex items-center space-x-2">
@@ -542,7 +364,7 @@ export default function AuthForm()
 				<Separator className="w-auto flex-grow" />
 			</div>
 
-			{/* Services d'authentification OAuth */}
+			{/* Fournisseurs d'authentification externes */}
 			<Button
 				type="button"
 				variant="outline"
@@ -588,6 +410,6 @@ export default function AuthForm()
 				</Link>
 				.
 			</p>
-		</Tabs>
+		</main>
 	);
 }
