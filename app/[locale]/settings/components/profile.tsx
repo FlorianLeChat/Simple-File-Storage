@@ -202,9 +202,9 @@ export default function Profile( { session }: { session: Session } )
 							{session ? (
 								<FormDescription className="font-extrabold text-destructive">
 									Ce paramètre ne peut pas être modifié en
-									raison de l&lsquo;utilisation fournisseur
-									d&lsquo;authentification externe pour vous
-									connecter au site.
+									raison de l&lsquo;utilisation d&lsquo;un
+									fournisseur d&lsquo;authentification externe
+									pour vous connecter au site.
 								</FormDescription>
 							) : (
 								<FormDescription>
@@ -247,9 +247,9 @@ export default function Profile( { session }: { session: Session } )
 							{session ? (
 								<FormDescription className="font-extrabold text-destructive">
 									Ce paramètre ne peut pas être modifié en
-									raison de l&lsquo;utilisation fournisseur
-									d&lsquo;authentification externe pour vous
-									connecter au site.
+									raison de l&lsquo;utilisation d&lsquo;un
+									fournisseur d&lsquo;authentification externe
+									pour vous connecter au site.
 								</FormDescription>
 							) : (
 								<FormDescription>

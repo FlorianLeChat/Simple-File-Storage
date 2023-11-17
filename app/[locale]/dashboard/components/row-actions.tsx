@@ -292,7 +292,7 @@ export default function RowActions()
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
 							onSelect={( event ) => event.preventDefault()}
-							className="text-red-600"
+							className="text-destructive"
 						>
 							<Trash className="mr-2 h-4 w-4" />
 
