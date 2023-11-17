@@ -51,6 +51,8 @@ const notifications = [
 export default function UserMenu( { session }: { session: Session } )
 {
 	// Déclaration des constantes.
+	const email = session.user?.email;
+	const admin = session.user?.role === "admin";
 	const router = useRouter();
 
 	// Déclaration des variables d'état.
@@ -200,8 +202,18 @@ export default function UserMenu( { session }: { session: Session } )
 							{session.user?.name ?? ""}
 						</span>
 
-						<span className="mt-1 text-xs leading-none text-muted-foreground">
-							{session.user?.email ?? ""}
+						<span className="block text-xs text-muted-foreground">
+							{email ?? ""}
+						</span>
+
+						<span
+							className={`block text-xs font-extrabold ${
+								admin ? "text-destructive" : "text-primary"
+							}`}
+						>
+							{admin
+								? "Compte administrateur"
+								: "Compte utilisateur"}
 						</span>
 					</DropdownMenuLabel>
 
