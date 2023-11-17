@@ -7,6 +7,7 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useLocale } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Session } from "next-auth";
 import { Languages, Lock, Contact, Loader2, RefreshCw } from "lucide-react";
@@ -45,10 +46,24 @@ export default function Account( { session }: { session: Session } )
 	// Déclaration des variables d'état.
 	const [ isLoading, setIsLoading ] = useState( false );
 
+	// Déclaration des constantes.
+	const locale = useLocale() as "en" | "fr";
+
+	// Déclaration du formulaire.
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema ),
+		defaultValues: {
+			realname: session.user?.name ?? "",
+			language: locale
+		}
+	} );
+
 	// Mise à jour des informations.
 	const updateAccount = ( data: z.infer<typeof schema> ) =>
 	{
 		setIsLoading( true );
+
+		document.cookie = `NEXT_LOCALE=${ data.language }; path=/`;
 
 		setTimeout( () =>
 		{
@@ -66,15 +81,6 @@ export default function Account( { session }: { session: Session } )
 			setIsLoading( false );
 		}, 3000 );
 	};
-
-	// Définition du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
-		defaultValues: {
-			realname: session.user?.name ?? "",
-			language: "fr"
-		}
-	} );
 
 	// Affichage du rendu HTML du composant.
 	return (
