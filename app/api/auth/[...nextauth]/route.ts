@@ -10,11 +10,11 @@ import NextAuth, { type NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
 	pages: {
+		error: "/",
 		signIn: "/authentication",
 		signOut: "/dashboard",
-		error: "/",
-		verifyRequest: "/auth/verify-request",
-		newUser: "/dashboard"
+		newUser: "/dashboard",
+		verifyRequest: "/authentication?error=ValidationRequired"
 	},
 	adapter: PrismaAdapter( prisma ),
 	callbacks: {
@@ -24,6 +24,7 @@ export const authOptions: NextAuthOptions = {
 		{
 			if ( session )
 			{
+				session.user.id = user.id;
 				session.user.role = user.role;
 			}
 
@@ -45,7 +46,7 @@ export const authOptions: NextAuthOptions = {
 
 		// Authentification via courriel.
 		EmailProvider( {
-			from: process.env.SMTP_HOST,
+			from: process.env.SMTP_USERNAME,
 			server: {
 				secure: process.env.SMTP_PORT === "465",
 				host: process.env.SMTP_HOST,

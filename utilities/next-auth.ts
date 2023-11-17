@@ -27,8 +27,11 @@ export function getAuthErrorMessage( error: string )
 		case "SessionRequired":
 			return "Cette page nécessite une session utilisateur pour fonctionner.";
 
+		case "ValidationRequired":
+			return "Un courriel de vérification a été envoyé à l'adresse électronique fournie. Veuillez cliquer sur le lien de vérification pour continuer.";
+
 		default:
-			return "Une erreur interne est survenue lors de l'authentification.";
+			return undefined;
 	}
 }
 
@@ -36,7 +39,7 @@ export function getAuthErrorMessage( error: string )
 // Permet de récupérer les messages d'erreurs génériques de Next Auth.
 //  Source : https://authjs.dev/guides/basics/pages#error-page
 //
-export function getGenericErrorMessage( error: string ): string | undefined
+export function getGenericErrorMessage( error: string )
 {
 	switch ( error )
 	{
