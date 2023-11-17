@@ -49,9 +49,7 @@ export default async function Page( {
 			</header>
 
 			{/* Contenu de la page */}
-			<main className="p-4">
-				<AuthForm />
-			</main>
+			<AuthForm />
 		</>
 	);
 }

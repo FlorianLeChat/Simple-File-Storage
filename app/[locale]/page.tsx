@@ -5,9 +5,15 @@
 
 // Importation des dépendances.
 import Link from "next/link";
+import { Eye,
+	Zap,
+	Lock,
+	Smile,
+	LogIn,
+	Share2,
+	PocketKnife } from "lucide-react";
 import type { Metadata } from "next";
 import { unstable_setRequestLocale } from "next-intl/server";
-import { Lock, Smile, Eye, Zap, PocketKnife, Share2 } from "lucide-react";
 
 // Importation des fonctions utilitaires.
 import { merge } from "@/utilities/tailwind";
@@ -47,6 +53,7 @@ export default function Page( {
 						"sm:mr-16"
 					)}
 				>
+					<LogIn className="mr-2 h-5 w-5" />
 					Authentification
 				</Link>
 
