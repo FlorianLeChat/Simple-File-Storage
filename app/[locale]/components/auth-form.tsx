@@ -6,6 +6,7 @@
 
 import Link from "next/link";
 import * as z from "zod";
+import { merge } from "@/utilities/tailwind";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
@@ -13,11 +14,9 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { getAuthErrorMessage } from "@/utilities/next-auth";
 import { LogIn, Loader2, Mail, RefreshCw, KeyRound } from "lucide-react";
 
-import { getAuthErrorMessage } from "@/utilities/next-auth";
-
-import { merge } from "@/utilities/tailwind";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
@@ -104,7 +103,7 @@ export default function AuthForm()
 			// On réinitialise par la même occasion l'entièreté du formulaire.
 			form.reset();
 		}
-		else if ( response?.ok )
+		else if ( response?.ok && response.url )
 		{
 			// En cas de réussite, on redirige l'utilisateur vers la page
 			//  de son tableau de bord (ou celle indiquée par le serveur).
