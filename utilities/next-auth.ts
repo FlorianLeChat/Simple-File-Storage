@@ -27,6 +27,9 @@ export function getAuthErrorMessage( error: string )
 		case "SessionRequired":
 			return "Cette page nécessite une session utilisateur pour fonctionner.";
 
+		case "PasswordRequired":
+			return "Un mot de passe est nécessaire pour créer un compte via cette méthode d'authentification. Une fois votre compte créé, vous pourrez vous connecter avec un lien de connexion par courriel.";
+
 		case "ValidationRequired":
 			return "Un courriel de vérification a été envoyé à l'adresse électronique fournie. Veuillez cliquer sur le lien de vérification pour continuer.";
 
