@@ -6,6 +6,7 @@ import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import sendVerificationRequest from "@/utilities/nodemailer";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
@@ -47,6 +48,7 @@ export const authOptions: NextAuthOptions = {
 		// Authentification via courriel.
 		EmailProvider( {
 			from: process.env.SMTP_USERNAME,
+			sendVerificationRequest,
 			server: {
 				secure: process.env.SMTP_PORT === "465",
 				host: process.env.SMTP_HOST,
