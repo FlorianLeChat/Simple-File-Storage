@@ -17,6 +17,7 @@ import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { merge } from "@/utilities/tailwind";
+import { generateMetadata } from "./layout";
 
 // Importation des composants.
 import { buttonVariants } from "./components/ui/button";
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 // Affichage de la page.
-export default function Page( {
+export default async function Page( {
 	params: { locale }
 }: {
 	params: { locale: string };
@@ -35,6 +36,9 @@ export default function Page( {
 {
 	// Définition de la langue de la page.
 	unstable_setRequestLocale( locale );
+
+	// Déclaration des constantes.
+	const github = ( await generateMetadata() ).source;
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -61,7 +65,7 @@ export default function Page( {
 				{/* Source : https://tholman.com/github-corners/ */}
 				<a
 					rel="noopener noreferrer"
-					href="https://github.com/FlorianLeChat/Simple-File-Storage"
+					href={github}
 					target="_blank"
 					className="group fixed bottom-auto left-auto right-0 top-0 [clip-path:polygon(0_0,100%_0,100%_100%)] max-sm:hidden"
 				>
