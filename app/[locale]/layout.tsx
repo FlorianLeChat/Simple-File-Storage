@@ -21,7 +21,6 @@ const Toaster = lazy( () => import( "./components/ui/toaster" ) );
 const Recaptcha = lazy( () => import( "./components/recaptcha" ) );
 const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
 const LayoutProvider = lazy( () => import( "./components/layout-provider" ) );
-const SessionProvider = lazy( () => import( "./components/session-provider" ) );
 
 // Génération des paramètres pour les pages statiques.
 export function generateStaticParams()
@@ -85,26 +84,23 @@ export default function Layout( {
 						/>
 					</video>
 
-					{/* Session pour l'authentification */}
-					<SessionProvider>
-						{/* Basculement entre les thèmes */}
-						<LayoutProvider>
-							{/* Composant enfant */}
-							{children}
+					{/* Basculement entre les thèmes */}
+					<LayoutProvider>
+						{/* Composant enfant */}
+						{children}
 
-							{/* Consentement des cookies */}
-							<CookieConsent />
+						{/* Consentement des cookies */}
+						<CookieConsent />
 
-							{/* Google reCAPTCHA */}
-							<Recaptcha />
+						{/* Google reCAPTCHA */}
+						<Recaptcha />
 
-							{/* Composant des notifications */}
-							<Toaster />
+						{/* Composant des notifications */}
+						<Toaster />
 
-							{/* Pied de page */}
-							<Footer />
-						</LayoutProvider>
-					</SessionProvider>
+						{/* Pied de page */}
+						<Footer />
+					</LayoutProvider>
 				</Suspense>
 			</body>
 		</html>
