@@ -10,9 +10,14 @@ import "./layout.css";
 import "@total-typescript/ts-reset";
 
 // Importation des dépendances.
+import { join } from "path";
 import { Inter, Poppins, Roboto } from "next/font/google";
 import { unstable_setRequestLocale } from "next-intl/server";
+import { promises as fileSystem, existsSync } from "fs";
 import { Suspense, lazy, type ReactNode, type CSSProperties } from "react";
+
+// Importation des types.
+import type { Metadata, Viewport } from "next";
 
 // Importation des composants.
 import Footer from "./components/footer";
@@ -21,6 +26,144 @@ const Toaster = lazy( () => import( "./components/ui/toaster" ) );
 const Recaptcha = lazy( () => import( "./components/recaptcha" ) );
 const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
 const LayoutProvider = lazy( () => import( "./components/layout-provider" ) );
+
+// Déclaration des paramètres d'affichage.
+export const viewport: Viewport = {
+	themeColor: "#3b82f6",
+	viewportFit: "cover"
+};
+
+// Déclaration des propriétés de la page.
+export async function generateMetadata(): Promise<
+	Metadata & { name: string; source: string }
+	>
+{
+	// On vérifie d'abord si les métadonnées sont déjà enregistrées
+	//  dans le cache du système de fichiers.
+	const path = `${ join( process.cwd(), "public/data" ) }/metadata.json`;
+
+	if ( existsSync( path ) )
+	{
+		return JSON.parse(
+			await fileSystem.readFile( path, "utf8" )
+		) as Metadata & { name: string; source: string };
+	}
+
+	// On récupère ensuite les informations du dépôt GitHub,
+	//  ceux de l'auteur et le dernier commit.
+	const repository = ( await (
+		await fetch(
+			"https://api.github.com/repos/FlorianLeChat/Simple-File-Storage",
+			{
+				cache: "force-cache"
+			}
+		)
+	).json() ) as Record<string, string>;
+
+	const author = ( await (
+		await fetch( "https://api.github.com/users/FlorianLeChat", {
+			cache: "force-cache"
+		} )
+	).json() ) as Record<string, string>;
+
+	const commits = ( await (
+		await fetch(
+			"https://api.github.com/repos/FlorianLeChat/Simple-File-Storage/commits/master",
+			{
+				cache: "force-cache"
+			}
+		)
+	).json() ) as Record<string, string>;
+
+	// On détermine après certaines métadonnées récurrentes.
+	const banner = `https://opengraph.githubassets.com/${ commits.sha }/${ repository.full_name }`;
+	const title = `${ author.name } - ${ repository.name }`;
+	const url =
+		process.env.NEXT_PUBLIC_APP_ENV === "production"
+			? repository.homepage
+			: "http://localhost:3000/";
+
+	// On retourne enfin les métadonnées récupérées récemment
+	//  avant de les enregistrer dans un fichier JSON.
+	const metadata = {
+		// Métadonnées du document.
+		title,
+		name: repository.name,
+		source: repository.html_url,
+		authors: [ { name: author.name, url: author.html_url } ],
+		description: repository.description,
+		keywords: repository.topics,
+		manifest: new URL( "manifest.json", url ),
+		metadataBase: new URL( url ),
+
+		// Icônes du document.
+		icons: {
+			icon: [
+				{
+					url: new URL( "assets/favicons/16x16.webp", url ),
+					type: "image/webp",
+					sizes: "16x16"
+				},
+				{
+					url: new URL( "assets/favicons/32x32.webp", url ),
+					type: "image/webp",
+					sizes: "32x32"
+				},
+				{
+					url: new URL( "assets/favicons/48x48.webp", url ),
+					type: "image/webp",
+					sizes: "48x48"
+				},
+				{
+					url: new URL( "assets/favicons/192x192.webp", url ),
+					type: "image/webp",
+					sizes: "192x192"
+				},
+				{
+					url: new URL( "assets/favicons/512x512.webp", url ),
+					type: "image/webp",
+					sizes: "512x512"
+				}
+			],
+			apple: [
+				{
+					url: new URL( "assets/favicons/180x180.webp", url ),
+					type: "image/webp",
+					sizes: "180x180"
+				}
+			]
+		},
+
+		// Informations pour les moteurs de recherche.
+		openGraph: {
+			url,
+			type: "website",
+			title,
+			description: repository.description,
+			images: [
+				{
+					url: banner
+				}
+			]
+		},
+
+		// Informations pour la plate-forme Twitter.
+		twitter: {
+			title,
+			creator: `@${ author.twitter_username }`,
+			description: repository.description,
+			images: [
+				{
+					url: banner
+				}
+			]
+		}
+	};
+
+	await fileSystem.writeFile( path, JSON.stringify( metadata ) );
+
+	return metadata;
+}
 
 // Génération des paramètres pour les pages statiques.
 export function generateStaticParams()
