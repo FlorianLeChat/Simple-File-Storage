@@ -5,6 +5,7 @@
 "use client";
 
 import * as z from "zod";
+import schema from "@/schemas/layout";
 import { Check,
 	SunMoon,
 	Loader2,
@@ -108,26 +109,6 @@ const colors = [
 	}
 ] as const;
 
-// Déclaration du schéma de validation du formulaire.
-const layoutForm = z.object( {
-	font: z.enum( [ "inter", "poppins", "roboto" ] ),
-	theme: z.enum( [ "light", "dark" ] ),
-	color: z.enum( [
-		"zinc",
-		"slate",
-		"stone",
-		"gray",
-		"neutral",
-		"red",
-		"rose",
-		"orange",
-		"green",
-		"blue",
-		"yellow",
-		"violet"
-	] )
-} );
-
 export default function Layout()
 {
 	// Déclaration des variables d'état.
@@ -135,8 +116,8 @@ export default function Layout()
 	const { font, theme, color, setFont, setTheme, setColor } = useLayout();
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof layoutForm>>( {
-		resolver: zodResolver( layoutForm ),
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema ),
 		defaultValues: {
 			font: "inter",
 			color: "blue",
@@ -145,7 +126,7 @@ export default function Layout()
 	} );
 
 	// Mise à jour des informations.
-	const updateLayout = ( data: z.infer<typeof layoutForm> ) =>
+	const updateLayout = ( data: z.infer<typeof schema> ) =>
 	{
 		setIsLoading( true );
 

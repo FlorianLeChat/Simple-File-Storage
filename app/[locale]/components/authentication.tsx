@@ -11,6 +11,9 @@ import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { schema,
+	requiredPassword,
+	optionalPassword } from "@/schemas/authentication";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -35,17 +38,6 @@ import { Tooltip,
 	TooltipProvider } from "./ui/tooltip";
 import { ToastAction } from "./ui/toast";
 import { Button, buttonVariants } from "./ui/button";
-
-// Déclaration du schéma de validation du formulaire.
-//  Note : le mot de passe est optionnel pour la connexion par courriel
-//    mais obligatoire pour la connexion par mot de passe.
-const requiredPassword = z.string().min( 10 ).max( 60 );
-const optionalPassword = z.string().optional().optional();
-const schema = z.object( {
-	email: z.string().min( 10 ).max( 100 ).email(),
-	password: optionalPassword,
-	remembered: z.boolean().optional()
-} );
 
 export default function AuthForm()
 {
