@@ -5,6 +5,7 @@
 "use client";
 
 import * as z from "zod";
+import schema from "@/schemas/notifications";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,12 +21,6 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
-
-// Déclaration du schéma de validation du formulaire.
-const schema = z.object( {
-	push: z.boolean(),
-	level: z.enum( [ "all", "necessary", "off" ] )
-} );
 
 export default function Notifications()
 {

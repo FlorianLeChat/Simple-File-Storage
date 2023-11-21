@@ -2,6 +2,7 @@
 // Composant de téléversement des fichiers.
 //
 import * as z from "zod";
+import schema from "@/schemas/file-upload";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
@@ -27,11 +28,6 @@ import { Dialog,
 	DialogDescription } from "../../components/ui/dialog";
 import { Button, buttonVariants } from "../../components/ui/button";
 
-// Déclaration du schéma de validation du formulaire.
-const fileSchema = z.object( {
-	upload: z.any()
-} );
-
 export default function FileUpload()
 {
 	// Déclaration des constantes.
@@ -41,12 +37,12 @@ export default function FileUpload()
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Déclaration des formulaires.
-	const form = useForm<z.infer<typeof fileSchema>>( {
-		resolver: zodResolver( fileSchema )
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema )
 	} );
 
 	// Téléversement des fichiers sélectionnés.
-	const uploadFile = ( data: z.infer<typeof fileSchema> ) =>
+	const uploadFile = ( data: z.infer<typeof schema> ) =>
 	{
 		setIsLoading( true );
 

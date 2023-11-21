@@ -5,6 +5,7 @@
 "use client";
 
 import * as z from "zod";
+import schema from "@/schemas/account";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useLocale } from "next-intl";
@@ -33,13 +34,6 @@ const languages = [
 	{ label: "Anglais", value: "en" },
 	{ label: "Français", value: "fr" }
 ] as const;
-
-// Déclaration du schéma de validation du formulaire.
-const schema = z.object( {
-	realname: z.string().min( 10 ).max( 50 ),
-	language: z.enum( [ "en", "fr" ] ),
-	password: z.string().min( 10 ).max( 100 )
-} );
 
 export default function Account( { session }: { session: Session } )
 {

@@ -5,6 +5,7 @@
 "use client";
 
 import * as z from "zod";
+import schema from "@/schemas/profile";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,13 +37,6 @@ import { Form,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
 import { Button, buttonVariants } from "../../components/ui/button";
-
-// Déclaration du schéma de validation du formulaire.
-const schema = z.object( {
-	username: z.string().min( 10 ).max( 50 ),
-	email: z.string().min( 10 ).max( 100 ).email(),
-	avatar: z.any().optional()
-} );
 
 export default function Profile( { session }: { session: Session } )
 {
