@@ -13,7 +13,7 @@ import { unstable_setRequestLocale } from "next-intl/server";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
 
 // Importation des composants.
-const AuthForm = lazy( () => import( "../components/auth-form" ) );
+const Authentication = lazy( () => import( "../components/authentication" ) );
 
 // Déclaration des propriétés de la page.
 export const metadata: Metadata = {
@@ -49,7 +49,7 @@ export default async function Page( {
 			</header>
 
 			{/* Contenu de la page */}
-			<AuthForm />
+			<Authentication />
 		</>
 	);
 }
