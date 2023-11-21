@@ -35,7 +35,7 @@ export const viewport: Viewport = {
 
 // Déclaration des propriétés de la page.
 export async function generateMetadata(): Promise<
-	Metadata & { name: string; source: string }
+	Metadata & { source: string }
 	>
 {
 	// On vérifie d'abord si les métadonnées sont déjà enregistrées
@@ -46,7 +46,7 @@ export async function generateMetadata(): Promise<
 	{
 		return JSON.parse(
 			await fileSystem.readFile( path, "utf8" )
-		) as Metadata & { name: string; source: string };
+		) as Metadata & { source: string };
 	}
 
 	// On récupère ensuite les informations du dépôt GitHub,
@@ -77,7 +77,6 @@ export async function generateMetadata(): Promise<
 
 	// On détermine après certaines métadonnées récurrentes.
 	const banner = `https://opengraph.githubassets.com/${ commits.sha }/${ repository.full_name }`;
-	const title = `${ author.name } - ${ repository.name }`;
 	const url =
 		process.env.NEXT_PUBLIC_APP_ENV === "production"
 			? repository.homepage
@@ -87,8 +86,7 @@ export async function generateMetadata(): Promise<
 	//  avant de les enregistrer dans un fichier JSON.
 	const metadata = {
 		// Métadonnées du document.
-		title,
-		name: repository.name,
+		title: repository.name,
 		source: repository.html_url,
 		authors: [ { name: author.name, url: author.html_url } ],
 		keywords: repository.topics,
@@ -137,7 +135,7 @@ export async function generateMetadata(): Promise<
 		openGraph: {
 			url,
 			type: "website",
-			title,
+			title: repository.name,
 			description: repository.description,
 			images: [
 				{
@@ -148,7 +146,7 @@ export async function generateMetadata(): Promise<
 
 		// Informations pour la plate-forme Twitter.
 		twitter: {
-			title,
+			title: repository.name,
 			creator: `@${ author.twitter_username }`,
 			description: repository.description,
 			images: [

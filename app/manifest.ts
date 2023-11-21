@@ -15,7 +15,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest>
 		name: metadata.title as string,
 		display: "standalone",
 		start_url: "/",
-		short_name: metadata.name,
+		short_name: metadata.title as string,
 		description: metadata.description as string,
 		theme_color: "#3b82f6", // Couleur par défaut du thème sombre (en bleu).
 		background_color: "#020817", // Couleur par défaut de l'arrière-plan du thème sombre (en bleu).
