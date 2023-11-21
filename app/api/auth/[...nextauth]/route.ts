@@ -1,11 +1,14 @@
 //
 // Route de paramétrage des mécanismes d'authentification de Next Auth.
 //
+import bcrypt from "bcrypt";
 import prisma from "@/utilities/prisma";
+import schema from "@/schemas/authentication";
 import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import CredentialsProvider from "next-auth/providers/credentials";
 import sendVerificationRequest from "@/utilities/nodemailer";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 
@@ -41,7 +44,7 @@ export const authOptions: NextAuthOptions = {
 			//  et si le mécanisme d'authentification demande une validation.
 			if ( user.email && email?.verificationRequest )
 			{
-				// On vérifite ensuite si l'adresse électronique existe déjà
+				// On vérifie ensuite si l'adresse électronique existe déjà
 				//  dans la collection des utilisateurs.
 				const exists = await prisma.user.findUnique( {
 					where: {
@@ -94,6 +97,86 @@ export const authOptions: NextAuthOptions = {
 					privateKey: process.env.DKIM_PRIVATE_KEY,
 					keySelector: process.env.DKIM_SELECTOR
 				}
+			}
+		} ),
+
+		// Authentification via adresse électronique et mot de passe.
+		CredentialsProvider( {
+			name: "Credentials",
+			credentials: {
+				// Inutile dans notre cas mais requis par TypeScript.
+				email: { type: "email" },
+				password: { type: "password" }
+			},
+			async authorize( credentials )
+			{
+				// On vérifie d'abord si des informations d'authentification
+				//  ont été fournies.
+				if ( !credentials )
+				{
+					return null;
+				}
+
+				// On valide ensuite les informations d'authentification avec
+				//  le schéma de validation Zod créé précédemment.
+				const parse = schema.safeParse( {
+					email: credentials.email,
+					password:
+						credentials.password === ""
+							? null
+							: credentials.password
+				} );
+
+				if ( !parse.success )
+				{
+					// Si les informations d'authentification ne sont pas valides,
+					//  on retourne une erreur générique.
+					return null;
+				}
+
+				// On tente après de trouver un utilisateur avec l'adresse électronique
+				//  fournie dans la base de données.
+				const exists = await prisma.user.findUnique( {
+					where: {
+						email: credentials?.email
+					}
+				} );
+
+				if ( exists?.password )
+				{
+					// Si l'utilisateur existe déjà, on compare le mot de passe
+					//  fourni avec celui de la base de données avant de retourner
+					//  l'utilisateur.
+					const user = await bcrypt.compare(
+						credentials.password,
+						exists.password
+					);
+
+					if ( user )
+					{
+						return exists;
+					}
+				}
+				else
+				{
+					// Dans le cas contraire, on crée un nouvel utilisateur
+					//  avec le mot de passe fourni.
+					const hashedPassword = await bcrypt.hash(
+						credentials.password,
+						13
+					);
+
+					return prisma.user.create( {
+						data: {
+							email: credentials.email,
+							password: hashedPassword
+						}
+					} );
+				}
+
+				// On retourne enfin une erreur générique si aucune des conditions
+				//  précédentes n'a été rencontrée.
+				return null;
 			}
 		} )
 	]
