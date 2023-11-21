@@ -5,6 +5,7 @@
 "use client";
 
 import * as z from "zod";
+import schema from "@/schemas/issue";
 import { List,
 	Send,
 	Globe,
@@ -31,14 +32,6 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
-
-// Déclaration du schéma de validation du formulaire.
-const schema = z.object( {
-	area: z.enum( [ "account", "upload", "sharing", "other" ] ),
-	severity: z.enum( [ "critical", "high", "medium", "low" ] ),
-	subject: z.string().min( 10 ).max( 50 ),
-	description: z.string().min( 50 ).max( 1000 )
-} );
 
 export default function Account()
 {
