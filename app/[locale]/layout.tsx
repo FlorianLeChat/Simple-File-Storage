@@ -81,7 +81,7 @@ export async function generateMetadata(): Promise<
 	const url =
 		process.env.NEXT_PUBLIC_APP_ENV === "production"
 			? repository.homepage
-			: "http://localhost:3000/";
+			: `http://localhost:3000${ process.env.__NEXT_ROUTER_BASEPATH }`;
 
 	// On retourne enfin les métadonnées récupérées récemment
 	//  avant de les enregistrer dans un fichier JSON.
@@ -91,43 +91,42 @@ export async function generateMetadata(): Promise<
 		name: repository.name,
 		source: repository.html_url,
 		authors: [ { name: author.name, url: author.html_url } ],
-		description: repository.description,
 		keywords: repository.topics,
-		manifest: new URL( "manifest.json", url ),
+		description: repository.description,
 		metadataBase: new URL( url ),
 
 		// Icônes du document.
 		icons: {
 			icon: [
 				{
-					url: new URL( "assets/favicons/16x16.webp", url ),
+					url: "assets/favicons/16x16.webp",
 					type: "image/webp",
 					sizes: "16x16"
 				},
 				{
-					url: new URL( "assets/favicons/32x32.webp", url ),
+					url: "assets/favicons/32x32.webp",
 					type: "image/webp",
 					sizes: "32x32"
 				},
 				{
-					url: new URL( "assets/favicons/48x48.webp", url ),
+					url: "assets/favicons/48x48.webp",
 					type: "image/webp",
 					sizes: "48x48"
 				},
 				{
-					url: new URL( "assets/favicons/192x192.webp", url ),
+					url: "assets/favicons/192x192.webp",
 					type: "image/webp",
 					sizes: "192x192"
 				},
 				{
-					url: new URL( "assets/favicons/512x512.webp", url ),
+					url: "assets/favicons/512x512.webp",
 					type: "image/webp",
 					sizes: "512x512"
 				}
 			],
 			apple: [
 				{
-					url: new URL( "assets/favicons/180x180.webp", url ),
+					url: "assets/favicons/180x180.webp",
 					type: "image/webp",
 					sizes: "180x180"
 				}

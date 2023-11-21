@@ -7,20 +7,22 @@ import { generateMetadata } from "./[locale]/layout";
 export default async function Sitemap()
 {
 	// Déclaration des constantes.
-	const metadata = await generateMetadata();
 	const date = new Date();
-	const base = metadata?.metadataBase ?? "";
+	const baseUrl = new URL( ( await generateMetadata() )?.metadataBase ?? "" );
+	const pathname = baseUrl.pathname.endsWith( "/" )
+		? baseUrl.pathname
+		: `${ baseUrl.pathname }/`;
 
 	// Génération du plan du site.
 	return [
 		{
 			// Page d'accueil.
-			url: base,
+			url: baseUrl,
 			lastModified: date
 		},
 		{
 			// Page d'authentification.
-			url: new URL( "authentication", base ).href,
+			url: new URL( `${ pathname }authentication`, baseUrl ),
 			lastModified: date
 		}
 	];
