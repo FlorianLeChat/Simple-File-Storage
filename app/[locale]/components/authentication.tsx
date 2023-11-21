@@ -6,14 +6,12 @@
 
 import Link from "next/link";
 import * as z from "zod";
+import schema from "@/schemas/authentication";
 import { merge } from "@/utilities/tailwind";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { schema,
-	requiredPassword,
-	optionalPassword } from "@/schemas/authentication";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -36,10 +34,9 @@ import { Tooltip,
 	TooltipTrigger,
 	TooltipContent,
 	TooltipProvider } from "./ui/tooltip";
-import { ToastAction } from "./ui/toast";
 import { Button, buttonVariants } from "./ui/button";
 
-export default function AuthForm()
+export default function Authentification()
 {
 	// Déclaration des constantes.
 	const router = useRouter();
@@ -111,15 +108,7 @@ export default function AuthForm()
 				variant: "destructive",
 				description:
 					getAuthErrorMessage( error )
-					?? "Une erreur interne est survenue lors de l'authentification.",
-				action: (
-					<ToastAction
-						altText="Réessayer"
-						onClick={() => signIn( "email", { callbackUrl: "/dashboard" } )}
-					>
-						Réessayer
-					</ToastAction>
-				)
+					?? "Une erreur interne est survenue lors de l'authentification."
 			} );
 		}
 
@@ -233,34 +222,27 @@ export default function AuthForm()
 													// Affichage du mot de passe masqué.
 													setPasswordType( "password" );
 
-													// Modification de la méthode d'authentification
-													//  et du schéma de validation du formulaire.
-													const method =
+													// Modification de la méthode d'authentification.
+													setAuthenticationMethod(
 														event.currentTarget
 															.value.length > 0
 															? "credentials"
-															: "email";
-
-													setAuthenticationMethod(
-														method
+															: "email"
 													);
-
-													schema.extend( {
-														password:
-															method === "email"
-																? optionalPassword
-																: requiredPassword
-													} );
 												}}
 												disabled={isLoading}
 												className={`transition-opacity ${
 													!focused && "opacity-25"
 												}`}
 												minLength={
-													requiredPassword.minLength as number
+													schema.shape.password._def
+														.options[ 0 ]
+														.minLength as number
 												}
 												maxLength={
-													requiredPassword.maxLength as number
+													schema.shape.password._def
+														.options[ 0 ]
+														.maxLength as number
 												}
 												spellCheck="false"
 												placeholder="password"
