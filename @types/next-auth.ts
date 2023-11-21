@@ -18,6 +18,7 @@ declare module "@auth/core/adapters" {
 		// Propriétés par défaut.
 		id: string;
 		email: string;
+		password: string;
 		emailVerified: Date | null;
 
 		// Propriétés personnalisées.
@@ -30,6 +31,7 @@ declare module "next-auth/adapters" {
 		// Propriétés par défaut.
 		id: string;
 		email: string;
+		password: string;
 		emailVerified: Date | null;
 
 		// Propriétés personnalisées.
