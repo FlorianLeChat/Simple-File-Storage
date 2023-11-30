@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { getAuthErrorMessage } from "@/utilities/next-auth";
-import { LogIn, Loader2, Mail, RefreshCw, KeyRound } from "lucide-react";
+import { Loader2, Mail, RefreshCw, KeyRound } from "lucide-react";
 
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -35,6 +35,7 @@ import { Tooltip,
 	TooltipContent,
 	TooltipProvider } from "./ui/tooltip";
 import { Button, buttonVariants } from "./ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 export default function Authentification()
 {
@@ -137,230 +138,392 @@ export default function Authentification()
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<main className="flex w-full flex-col justify-center space-y-6 p-4 px-4 text-center sm:mx-auto sm:w-[500px]">
-			{/* Titre et description du formulaire */}
-			<h2 className="text-xl font-semibold tracking-tight">
-				<LogIn className="mr-2 inline" />
+		<Tabs
+			className="flex w-full flex-col justify-center space-y-6 p-4 text-center sm:mx-auto sm:w-[500px]"
+			defaultValue="signUp"
+		>
+			<TabsList className="grid w-full grid-cols-2">
+				<TabsTrigger value="signUp">Inscription</TabsTrigger>
+				<TabsTrigger value="signIn">Connexion</TabsTrigger>
+			</TabsList>
 
-				<span className="align-middle">Authentification</span>
-			</h2>
+			<TabsContent value="signUp" className="space-y-6">
+				{/* Titre et description du formulaire */}
+				<h2 className="text-xl font-semibold tracking-tight">
+					Création d&lsquo;un compte
+				</h2>
 
-			<p className="text-sm text-muted-foreground">
-				Saisissez votre adresse électronique et votre mot de passe pour
-				vous connecter à votre compte existant ou en créer un nouveau.
-			</p>
+				<p className="text-sm text-muted-foreground">
+					Saisissez votre adresse électronique et un mot de passe pour
+					créer un nouveau compte.
+				</p>
 
-			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit( authenticateAccount )}
-					className="space-y-6"
-				>
-					{/* Adresse électronique */}
-					<FormField
-						name="email"
-						control={form.control}
-						render={( { field } ) => (
-							<FormItem>
-								<FormLabel className="sr-only">
-									Adresse électronique
-								</FormLabel>
+				<Form {...form}>
+					<form
+						onSubmit={form.handleSubmit( authenticateAccount )}
+						className="space-y-6"
+					>
+						{/* Adresse électronique */}
+						<FormField
+							name="email"
+							control={form.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormLabel className="sr-only">
+										Adresse électronique
+									</FormLabel>
 
-								<FormControl>
-									<Input
-										{...field}
-										type="email"
-										disabled={isLoading}
-										minLength={
-											schema.shape.email
-												.minLength as number
-										}
-										maxLength={
-											schema.shape.email
-												.maxLength as number
-										}
-										spellCheck="false"
-										placeholder="example@domain.com"
-										autoComplete="email"
-										autoCapitalize="off"
-									/>
-								</FormControl>
+									<FormControl>
+										<Input
+											{...field}
+											type="email"
+											disabled={isLoading}
+											minLength={
+												schema.shape.email
+													.minLength as number
+											}
+											maxLength={
+												schema.shape.email
+													.maxLength as number
+											}
+											spellCheck="false"
+											placeholder="example@domain.com"
+											autoComplete="email"
+											autoCapitalize="off"
+										/>
+									</FormControl>
 
-								<FormDescription className="sr-only">
-									L&lsquo;adresse électronique associée à
-									votre compte.
-								</FormDescription>
+									<FormDescription className="sr-only">
+										L&lsquo;adresse électronique associée à
+										votre compte.
+									</FormDescription>
 
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-					{/* Mot de passe */}
-					<FormField
-						name="password"
-						control={form.control}
-						render={( { field } ) => (
-							<FormItem>
-								<FormLabel className="sr-only">
-									Mot de passe
-								</FormLabel>
+						{/* Mot de passe */}
+						<FormField
+							name="password"
+							control={form.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormLabel className="sr-only">
+										Mot de passe
+									</FormLabel>
 
-								<FormControl>
-									<div className="flex gap-2">
-										<TooltipProvider>
-											<Input
-												{...field}
-												id="password"
-												type={passwordType}
-												onBlur={() => setFocused(
-													field.value?.length
-															!== 0
-												)}
-												onFocus={() => setFocused( true )}
-												onKeyUp={( event ) =>
-												{
-													// Affichage du mot de passe masqué.
-													setPasswordType( "password" );
-
-													// Modification de la méthode d'authentification.
-													setAuthenticationMethod(
-														event.currentTarget
-															.value.length > 0
-															? "credentials"
-															: "email"
-													);
-												}}
-												disabled={isLoading}
-												className={`transition-opacity ${
-													!focused && "opacity-25"
-												}`}
-												minLength={
-													schema.shape.password._def
-														.options[ 0 ]
-														.minLength as number
-												}
-												maxLength={
-													schema.shape.password._def
-														.options[ 0 ]
-														.maxLength as number
-												}
-												spellCheck="false"
-												placeholder="password"
-												autoComplete="new-password"
-												autoCapitalize="off"
-											/>
-
-											<Tooltip>
-												<TooltipTrigger
-													type="button"
-													disabled={isLoading}
-													className={merge(
-														`transition-opacity ${
-															!focused
-															&& "opacity-25"
-														}`,
-														buttonVariants( {
-															size: "icon",
-															variant: "outline"
-														} )
+									<FormControl>
+										<div className="flex gap-2">
+											<TooltipProvider>
+												<Input
+													{...field}
+													id="password"
+													type={passwordType}
+													onBlur={() => setFocused(
+														field.value
+															?.length !== 0
 													)}
-													onClick={() =>
+													onFocus={() => setFocused( true )}
+													onKeyUp={( event ) =>
 													{
-														// Génération d'un nouveau mot de passe.
-														form.setValue(
-															"password",
-															generateRandomPassword()
+														// Affichage du mot de passe masqué.
+														setPasswordType(
+															"password"
 														);
-
-														// Affichage du mot de passe en clair.
-														setPasswordType( "text" );
 
 														// Modification de la méthode d'authentification.
 														setAuthenticationMethod(
-															"credentials"
+															event.currentTarget
+																.value.length
+																> 0
+																? "credentials"
+																: "email"
 														);
 													}}
-												>
-													<RefreshCw className="h-4 w-4" />
-												</TooltipTrigger>
+													disabled={isLoading}
+													className={`transition-opacity ${
+														!focused && "opacity-25"
+													}`}
+													minLength={
+														schema.shape.password
+															._def.options[ 0 ]
+															.minLength as number
+													}
+													maxLength={
+														schema.shape.password
+															._def.options[ 0 ]
+															.maxLength as number
+													}
+													spellCheck="false"
+													placeholder="password"
+													autoComplete="new-password"
+													autoCapitalize="off"
+												/>
 
-												<TooltipContent>
-													Générer un mot de passe
-													sécurisé
-												</TooltipContent>
-											</Tooltip>
-										</TooltipProvider>
-									</div>
-								</FormControl>
+												<Tooltip>
+													<TooltipTrigger
+														type="button"
+														disabled={isLoading}
+														className={merge(
+															`transition-opacity ${
+																!focused
+																&& "opacity-25"
+															}`,
+															buttonVariants( {
+																size: "icon",
+																variant:
+																	"outline"
+															} )
+														)}
+														onClick={() =>
+														{
+															// Génération d'un nouveau mot de passe.
+															form.setValue(
+																"password",
+																generateRandomPassword()
+															);
 
-								<FormDescription className="sr-only">
-									Le mot de passe utilisé pour vous connecter
-									à votre compte.
-								</FormDescription>
+															// Affichage du mot de passe en clair.
+															setPasswordType(
+																"text"
+															);
 
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+															// Modification de la méthode d'authentification.
+															setAuthenticationMethod(
+																"credentials"
+															);
+														}}
+													>
+														<RefreshCw className="h-4 w-4" />
+													</TooltipTrigger>
 
-					{/* Se souvenir de moi */}
-					<FormField
-						name="remembered"
-						control={form.control}
-						render={() => (
-							<FormItem>
-								<FormLabel className="sr-only">
-									Se souvenir de moi
-								</FormLabel>
+													<TooltipContent>
+														Générer un mot de passe
+														sécurisé
+													</TooltipContent>
+												</Tooltip>
+											</TooltipProvider>
+										</div>
+									</FormControl>
 
-								<FormControl>
-									<div className="flex items-center justify-center space-x-2">
-										<Switch
-											id="remember-me"
+									<FormDescription className="sr-only">
+										Le mot de passe utilisé pour vous
+										connecter à votre compte.
+									</FormDescription>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{/* Bouton de validation du formulaire */}
+						<Button disabled={isLoading}>
+							{isLoading ? (
+								<>
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									Traitement...
+								</>
+							) : (
+								<>
+									{authenticationMethod === "email" && (
+										<>
+											<Mail className="mr-2 h-4 w-4" />
+											Inscription par courriel
+										</>
+									)}
+
+									{authenticationMethod === "credentials" && (
+										<>
+											<KeyRound className="mr-2 h-4 w-4" />
+											Inscription par mot de passe
+										</>
+									)}
+								</>
+							)}
+						</Button>
+					</form>
+				</Form>
+			</TabsContent>
+
+			<TabsContent value="signIn" className="space-y-6">
+				{/* Titre et description du formulaire */}
+				<h2 className="text-xl font-semibold tracking-tight">
+					Authentification à un compte
+				</h2>
+
+				<p className="text-sm text-muted-foreground">
+					Saisissez votre adresse électronique et votre mot de passe
+					pour vous connecter à votre compte.
+				</p>
+
+				<Form {...form}>
+					<form
+						onSubmit={form.handleSubmit( authenticateAccount )}
+						className="space-y-6"
+					>
+						{/* Adresse électronique */}
+						<FormField
+							name="email"
+							control={form.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormLabel className="sr-only">
+										Adresse électronique
+									</FormLabel>
+
+									<FormControl>
+										<Input
+											{...field}
+											type="email"
 											disabled={isLoading}
+											minLength={
+												schema.shape.email
+													.minLength as number
+											}
+											maxLength={
+												schema.shape.email
+													.maxLength as number
+											}
+											spellCheck="false"
+											placeholder="example@domain.com"
+											autoComplete="email"
+											autoCapitalize="off"
 										/>
+									</FormControl>
 
-										<Label htmlFor="remember-me">
-											Se souvenir de moi
-										</Label>
-									</div>
-								</FormControl>
+									<FormDescription className="sr-only">
+										L&lsquo;adresse électronique associée à
+										votre compte.
+									</FormDescription>
 
-								<FormDescription className="sr-only">
-									Pour rester connecté à votre compte lorsque
-									vous revenez sur le site.
-								</FormDescription>
-							</FormItem>
-						)}
-					/>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-					{/* Bouton de validation du formulaire */}
-					<Button disabled={isLoading}>
-						{isLoading ? (
-							<>
-								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-								Traitement...
-							</>
-						) : (
-							<>
-								{authenticationMethod === "email" && (
-									<>
-										<Mail className="mr-2 h-4 w-4" />
-										Authentification par courriel
-									</>
-								)}
+						{/* Mot de passe */}
+						<FormField
+							name="password"
+							control={form.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormLabel className="sr-only">
+										Mot de passe
+									</FormLabel>
 
-								{authenticationMethod === "credentials" && (
-									<>
-										<KeyRound className="mr-2 h-4 w-4" />
-										Authentification par mot de passe
-									</>
-								)}
-							</>
-						)}
-					</Button>
-				</form>
-			</Form>
+									<FormControl>
+										<Input
+											{...field}
+											id="password"
+											type={passwordType}
+											onBlur={() => setFocused(
+												field.value?.length !== 0
+											)}
+											onFocus={() => setFocused( true )}
+											onKeyUp={( event ) =>
+											{
+												// Affichage du mot de passe masqué.
+												setPasswordType( "password" );
+
+												// Modification de la méthode d'authentification.
+												setAuthenticationMethod(
+													event.currentTarget.value
+														.length > 0
+														? "credentials"
+														: "email"
+												);
+											}}
+											disabled={isLoading}
+											className={`transition-opacity ${
+												!focused && "opacity-25"
+											}`}
+											minLength={
+												schema.shape.password._def
+													.options[ 0 ]
+													.minLength as number
+											}
+											maxLength={
+												schema.shape.password._def
+													.options[ 0 ]
+													.maxLength as number
+											}
+											spellCheck="false"
+											placeholder="password"
+											autoComplete="new-password"
+											autoCapitalize="off"
+										/>
+									</FormControl>
+
+									<FormDescription className="sr-only">
+										Le mot de passe utilisé pour vous
+										connecter à votre compte.
+									</FormDescription>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{/* Se souvenir de moi */}
+						<FormField
+							name="remembered"
+							control={form.control}
+							render={() => (
+								<FormItem>
+									<FormLabel className="sr-only">
+										Se souvenir de moi
+									</FormLabel>
+
+									<FormControl>
+										<div className="flex items-center justify-center space-x-2">
+											<Switch
+												id="remember-me"
+												disabled={isLoading}
+											/>
+
+											<Label htmlFor="remember-me">
+												Se souvenir de moi
+											</Label>
+										</div>
+									</FormControl>
+
+									<FormDescription className="sr-only">
+										Pour rester connecté à votre compte
+										lorsque vous revenez sur le site.
+									</FormDescription>
+								</FormItem>
+							)}
+						/>
+
+						{/* Bouton de validation du formulaire */}
+						<Button disabled={isLoading}>
+							{isLoading ? (
+								<>
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									Traitement...
+								</>
+							) : (
+								<>
+									{authenticationMethod === "email" && (
+										<>
+											<Mail className="mr-2 h-4 w-4" />
+											Authentification par courriel
+										</>
+									)}
+
+									{authenticationMethod === "credentials" && (
+										<>
+											<KeyRound className="mr-2 h-4 w-4" />
+											Authentification par mot de passe
+										</>
+									)}
+								</>
+							)}
+						</Button>
+					</form>
+				</Form>
+			</TabsContent>
 
 			{/* Barre verticale de séparation */}
 			<div className="flex items-center space-x-2">
@@ -419,6 +582,6 @@ export default function Authentification()
 				</Link>
 				.
 			</p>
-		</main>
+		</Tabs>
 	);
 }
