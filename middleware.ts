@@ -63,7 +63,7 @@ export default async function middleware( request: NextRequest )
 		}
 	}
 
-	// On créé enfin le mécanisme de gestion des langues et traductions.
+	// On créé le mécanisme de gestion des langues et traductions.
 	//  Source : https://next-intl-docs.vercel.app/docs/getting-started/app-router-server-components
 	const handleI18nRouting = createIntlMiddleware( {
 		locales: [ "en", "fr", "es", "jp" ],
@@ -71,7 +71,22 @@ export default async function middleware( request: NextRequest )
 		defaultLocale: "en"
 	} );
 
-	return handleI18nRouting( request );
+	// On modifie enfin la réponse de la requête courante afin de modifier
+	//  le chemin d'accès applicable au cookie créé par Next Intl.
+	//  Sources : https://github.com/amannn/next-intl/issues/486 / https://github.com/amannn/next-intl/pull/589
+	const response = handleI18nRouting( request );
+	response.cookies.set(
+		"NEXT_LOCALE",
+		response.headers.get( "x-middleware-request-x-next-intl-locale" ) ?? "en",
+		{
+			// https://github.com/amannn/next-intl/blob/2f267edb0e414692d3c7c86fe52130cc2ef89a3d/packages/next-intl/src/middleware/middleware.tsx#L236-L238
+			path: process.env.__NEXT_ROUTER_BASEPATH,
+			maxAge: 60 * 60 * 24 * 365,
+			sameSite: "strict"
+		}
+	);
+
+	return response;
 }
 
 export const config = {
