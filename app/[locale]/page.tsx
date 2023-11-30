@@ -11,12 +11,15 @@ import { Eye,
 	Smile,
 	LogIn,
 	Share2,
-	PocketKnife } from "lucide-react";
+	PocketKnife,
+	LayoutDashboard } from "lucide-react";
 import type { Metadata } from "next";
+import { getServerSession } from "next-auth";
 import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { merge } from "@/utilities/tailwind";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 import { generateMetadata } from "./layout";
 
 // Importation des composants.
@@ -39,6 +42,7 @@ export default async function Page( {
 
 	// Déclaration des constantes.
 	const github = ( await generateMetadata() ).source;
+	const session = await getServerSession( authOptions );
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -50,16 +54,29 @@ export default async function Page( {
 				</h1>
 
 				{/* Bouton vers l'authentification */}
-				<Link
-					href="/authentication"
-					className={merge(
-						buttonVariants( { variant: "outline" } ),
-						"sm:mr-16"
-					)}
-				>
-					<LogIn className="mr-2 h-5 w-5" />
-					Authentification
-				</Link>
+				{session ? (
+					<Link
+						href="/dashboard"
+						className={merge(
+							buttonVariants( { variant: "outline" } ),
+							"sm:mr-16"
+						)}
+					>
+						<LayoutDashboard className="mr-2 h-5 w-5" />
+						Tableau de bord
+					</Link>
+				) : (
+					<Link
+						href="/authentication"
+						className={merge(
+							buttonVariants( { variant: "outline" } ),
+							"sm:mr-16"
+						)}
+					>
+						<LogIn className="mr-2 h-5 w-5" />
+						Authentification
+					</Link>
+				)}
 
 				{/* Affichage de l'animation du logo vers le dépôt GitHub */}
 				{/* Source : https://tholman.com/github-corners/ */}
