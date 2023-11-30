@@ -35,36 +35,6 @@ export const authOptions: NextAuthOptions = {
 			}
 
 			return session;
-		},
-		// Filtrage de l'envoi des courriels de validation.
-		//  Source : https://next-auth.js.org/providers/email#sending-magic-links-to-existing-users
-		async signIn( { user, email } )
-		{
-			// On vérifie d'abord si une adresse électronique a été fournie
-			//  et si le mécanisme d'authentification demande une validation.
-			if ( user.email && email?.verificationRequest )
-			{
-				// On vérifie ensuite si l'adresse électronique existe déjà
-				//  dans la collection des utilisateurs.
-				const exists = await prisma.user.findUnique( {
-					where: {
-						email: user.email
-					}
-				} );
-
-				if ( exists )
-				{
-					// Si c'est le cas, on continue le processus d'authentification.
-					return true;
-				}
-
-				// Dans le cas contraire, on retourne une erreur générique.
-				return `${ process.env.NEXTAUTH_URL }/authentication?error=PasswordRequired`;
-			}
-
-			// Si ce n'est pas notre cas de figure, on continue enfin le processus
-			//  d'authentification de l'utilisateur.
-			return true;
 		}
 	},
 	providers: [
