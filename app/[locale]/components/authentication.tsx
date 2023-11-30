@@ -5,17 +5,15 @@
 "use client";
 
 import Link from "next/link";
-import * as z from "zod";
 import schema from "@/schemas/authentication";
 import { merge } from "@/utilities/tailwind";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { getAuthErrorMessage } from "@/utilities/next-auth";
+import { useState, useEffect } from "react";
+import { useFormState, useFormStatus } from "react-dom";
 import { Loader2, Mail, RefreshCw, KeyRound } from "lucide-react";
 
 import { Input } from "./ui/input";
@@ -35,87 +33,41 @@ import { Tooltip,
 	TooltipContent,
 	TooltipProvider } from "./ui/tooltip";
 import { Button, buttonVariants } from "./ui/button";
+import { signUpAccount, signInAccount } from "../authentication/actions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 export default function Authentification()
 {
 	// Déclaration des constantes.
-	const router = useRouter();
 	const { toast } = useToast();
+	const { pending } = useFormStatus();
+	const initialState = {
+		success: true,
+		reason: ""
+	};
 	const characters =
 		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
 
 	// Déclaration des variables d'état.
 	const [ focused, setFocused ] = useState( false );
-	const [ isLoading, setIsLoading ] = useState( false );
+	const [ signUpState, signUpAction ] = useFormState(
+		signUpAccount,
+		initialState
+	);
+	const [ signInState, signInAction ] = useFormState(
+		signInAccount,
+		initialState
+	);
 	const [ passwordType, setPasswordType ] = useState( "text" );
-	const [ authenticationMethod, setAuthenticationMethod ] = useState( "email" );
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
+	const form = useForm( {
 		defaultValues: {
 			email: "",
 			password: "",
 			remembered: false
 		}
 	} );
-
-	// Requête d'authentification d'un compte utilisateur.
-	const authenticateAccount = async ( values: z.infer<typeof schema> ) =>
-	{
-		// On indique d'abord que le formulaire est en cours de traitement.
-		setIsLoading( true );
-
-		// On effectue ensuite une requête de création d'un compte utilisateur
-		//  via son adresse électronique et son mot de passe avant d'attente
-		//  la réponse du serveur.
-		const response = await signIn( authenticationMethod, {
-			email: values.email,
-			password: values.password,
-			redirect: false,
-			callbackUrl: "/dashboard"
-		} );
-
-		// On vérifie si le serveur a renvoyé une courriel de validation.
-		const verifyRequest = response?.url?.includes( "verify-request" );
-
-		if ( verifyRequest )
-		{
-			// Si c'est le cas, on affiche un message de succès avant de
-			//  bloquer le formulaire pour signifier que l'utilisateur
-			//  doit valider son adresse électronique.
-			toast( {
-				title: "Action nécessaire",
-				description: getAuthErrorMessage( "ValidationRequired" )
-			} );
-
-			// On réinitialise par la même occasion l'entièreté du formulaire.
-			form.reset();
-		}
-		else if ( response?.ok && response.url )
-		{
-			// En cas de réussite, on redirige l'utilisateur vers la page
-			//  de son tableau de bord (ou celle indiquée par le serveur).
-			router.push( response.url ?? "/dashboard" );
-		}
-		else
-		{
-			// Dans le cas contraire, on affiche après un message d'erreur.
-			const error = response?.error ?? "";
-
-			toast( {
-				title: "Authentification échouée",
-				variant: "destructive",
-				description:
-					getAuthErrorMessage( error )
-					?? "Une erreur interne est survenue lors de l'authentification."
-			} );
-		}
-
-		// On indique enfin que le formulaire a fini d'être traité.
-		setIsLoading( false );
-	};
 
 	// Génère un mot de passe aléatoire.
 	const generateRandomPassword = ( length: number = 15 ) =>
@@ -135,6 +87,22 @@ export default function Authentification()
 			""
 		);
 	};
+
+	// Affichage des erreurs en provenance du serveur.
+	useEffect( () =>
+	{
+		const reason = signUpState.reason ?? signInState.reason;
+		const success = signUpState.success ?? signInState.success;
+
+		if ( reason !== "" )
+		{
+			toast( {
+				title: "Authentification échouée",
+				variant: success ? "default" : "destructive",
+				description: getAuthErrorMessage( reason ) ?? reason
+			} );
+		}
+	}, [ toast, signUpState, signInState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -159,10 +127,7 @@ export default function Authentification()
 				</p>
 
 				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit( authenticateAccount )}
-						className="space-y-6"
-					>
+					<form action={signUpAction} className="space-y-6">
 						{/* Adresse électronique */}
 						<FormField
 							name="email"
@@ -177,7 +142,7 @@ export default function Authentification()
 										<Input
 											{...field}
 											type="email"
-											disabled={isLoading}
+											disabled={pending}
 											minLength={
 												schema.shape.email
 													.minLength as number
@@ -225,23 +190,10 @@ export default function Authentification()
 															?.length !== 0
 													)}
 													onFocus={() => setFocused( true )}
-													onKeyUp={( event ) =>
-													{
-														// Affichage du mot de passe masqué.
-														setPasswordType(
-															"password"
-														);
-
-														// Modification de la méthode d'authentification.
-														setAuthenticationMethod(
-															event.currentTarget
-																.value.length
-																> 0
-																? "credentials"
-																: "email"
-														);
-													}}
-													disabled={isLoading}
+													onKeyUp={() => setPasswordType(
+														"password"
+													)}
+													disabled={pending}
 													className={`transition-opacity ${
 														!focused && "opacity-25"
 													}`}
@@ -264,7 +216,7 @@ export default function Authentification()
 												<Tooltip>
 													<TooltipTrigger
 														type="button"
-														disabled={isLoading}
+														disabled={pending}
 														className={merge(
 															`transition-opacity ${
 																!focused
@@ -287,11 +239,6 @@ export default function Authentification()
 															// Affichage du mot de passe en clair.
 															setPasswordType(
 																"text"
-															);
-
-															// Modification de la méthode d'authentification.
-															setAuthenticationMethod(
-																"credentials"
 															);
 														}}
 													>
@@ -318,28 +265,24 @@ export default function Authentification()
 						/>
 
 						{/* Bouton de validation du formulaire */}
-						<Button disabled={isLoading}>
-							{isLoading ? (
+						<Button disabled={pending}>
+							{pending ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									Traitement...
 								</>
 							) : (
-								<>
-									{authenticationMethod === "email" && (
-										<>
-											<Mail className="mr-2 h-4 w-4" />
-											Inscription par courriel
-										</>
-									)}
-
-									{authenticationMethod === "credentials" && (
-										<>
-											<KeyRound className="mr-2 h-4 w-4" />
-											Inscription par mot de passe
-										</>
-									)}
-								</>
+								( form.getValues( "password" ) === "" && (
+									<>
+										<Mail className="mr-2 h-4 w-4" />
+										Inscription par courriel
+									</>
+								) ) || (
+									<>
+										<KeyRound className="mr-2 h-4 w-4" />
+										Inscription par mot de passe
+									</>
+								)
 							)}
 						</Button>
 					</form>
@@ -349,7 +292,7 @@ export default function Authentification()
 			<TabsContent value="signIn" className="space-y-6">
 				{/* Titre et description du formulaire */}
 				<h2 className="text-xl font-semibold tracking-tight">
-					Authentification à un compte
+					Connexion à un compte
 				</h2>
 
 				<p className="text-sm text-muted-foreground">
@@ -358,10 +301,7 @@ export default function Authentification()
 				</p>
 
 				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit( authenticateAccount )}
-						className="space-y-6"
-					>
+					<form action={signInAction} className="space-y-6">
 						{/* Adresse électronique */}
 						<FormField
 							name="email"
@@ -376,7 +316,7 @@ export default function Authentification()
 										<Input
 											{...field}
 											type="email"
-											disabled={isLoading}
+											disabled={pending}
 											minLength={
 												schema.shape.email
 													.minLength as number
@@ -421,20 +361,8 @@ export default function Authentification()
 												field.value?.length !== 0
 											)}
 											onFocus={() => setFocused( true )}
-											onKeyUp={( event ) =>
-											{
-												// Affichage du mot de passe masqué.
-												setPasswordType( "password" );
-
-												// Modification de la méthode d'authentification.
-												setAuthenticationMethod(
-													event.currentTarget.value
-														.length > 0
-														? "credentials"
-														: "email"
-												);
-											}}
-											disabled={isLoading}
+											onKeyUp={() => setPasswordType( "password" )}
+											disabled={pending}
 											className={`transition-opacity ${
 												!focused && "opacity-25"
 											}`}
@@ -479,7 +407,7 @@ export default function Authentification()
 										<div className="flex items-center justify-center space-x-2">
 											<Switch
 												id="remember-me"
-												disabled={isLoading}
+												disabled={pending}
 											/>
 
 											<Label htmlFor="remember-me">
@@ -497,28 +425,24 @@ export default function Authentification()
 						/>
 
 						{/* Bouton de validation du formulaire */}
-						<Button disabled={isLoading}>
-							{isLoading ? (
+						<Button disabled={pending}>
+							{pending ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									Traitement...
 								</>
 							) : (
-								<>
-									{authenticationMethod === "email" && (
-										<>
-											<Mail className="mr-2 h-4 w-4" />
-											Authentification par courriel
-										</>
-									)}
-
-									{authenticationMethod === "credentials" && (
-										<>
-											<KeyRound className="mr-2 h-4 w-4" />
-											Authentification par mot de passe
-										</>
-									)}
-								</>
+								( form.getValues( "password" ) === "" && (
+									<>
+										<Mail className="mr-2 h-4 w-4" />
+										Authentification par courriel
+									</>
+								) ) || (
+									<>
+										<KeyRound className="mr-2 h-4 w-4" />
+										Authentification par mot de passe
+									</>
+								)
 							)}
 						</Button>
 					</form>
@@ -541,9 +465,9 @@ export default function Authentification()
 				type="button"
 				variant="outline"
 				onClick={() => signIn( "google", { callbackUrl: "/dashboard" } )}
-				disabled={isLoading}
+				disabled={pending}
 			>
-				{isLoading ? (
+				{pending ? (
 					<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 				) : (
 					<FontAwesomeIcon icon={faGoogle} className="mr-2 h-4 w-4" />
@@ -555,9 +479,9 @@ export default function Authentification()
 				type="button"
 				variant="outline"
 				onClick={() => signIn( "github", { callbackUrl: "/dashboard" } )}
-				disabled={isLoading}
+				disabled={pending}
 			>
-				{isLoading ? (
+				{pending ? (
 					<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 				) : (
 					<FontAwesomeIcon icon={faGithub} className="mr-2 h-4 w-4" />
