@@ -90,5 +90,13 @@ export default async function middleware( request: NextRequest )
 }
 
 export const config = {
-	matcher: [ "/((?!api/auth|_next|_vercel|.*\\..*).*)" ]
+	matcher: [ "/", "/((?!api/auth|_next|_vercel|.*\\..*).*)" ]
 };
+
+if ( process.env.__NEXT_ROUTER_BASEPATH )
+{
+	// Ajout du support du chemin de base de NextJS pour le routage
+	//  effectué par le mécanisme de gestion des langues et traductions.
+	//  Source : https://next-intl-docs.vercel.app/docs/routing/middleware#base-path
+	config.matcher.push( process.env.__NEXT_ROUTER_BASEPATH );
+}
