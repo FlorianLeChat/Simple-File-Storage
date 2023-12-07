@@ -78,7 +78,7 @@ export async function generateMetadata(): Promise<
 	// On détermine après certaines métadonnées récurrentes.
 	const banner = `https://opengraph.githubassets.com/${ commits.sha }/${ repository.full_name }`;
 	const url =
-		process.env.NEXT_PUBLIC_APP_ENV === "production"
+		process.env.NEXT_PUBLIC_ENV === "production"
 			? repository.homepage
 			: `http://localhost:3000${ process.env.__NEXT_ROUTER_BASEPATH }`;
 
