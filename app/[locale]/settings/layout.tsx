@@ -5,12 +5,11 @@
 // Importation des dépendances.
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
 import { lazy, type ReactNode } from "react";
 import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { auth } from "@/utilities/next-auth";
 
 // Importation des composants.
 import { Separator } from "../components/ui/separator";
@@ -36,7 +35,7 @@ export default async function Layout( {
 	unstable_setRequestLocale( locale );
 
 	// Vérification de la session utilisateur.
-	const session = await getServerSession( authOptions );
+	const session = await auth();
 
 	if ( !session )
 	{
