@@ -14,12 +14,11 @@ import { Eye,
 	PocketKnife,
 	LayoutDashboard } from "lucide-react";
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
 import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
+import { auth } from "@/utilities/next-auth";
 import { merge } from "@/utilities/tailwind";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import { generateMetadata } from "./layout";
 
 // Importation des composants.
@@ -42,7 +41,7 @@ export default async function Page( {
 
 	// Déclaration des constantes.
 	const github = ( await generateMetadata() ).source;
-	const session = await getServerSession( authOptions );
+	const session = await auth();
 
 	// Affichage du rendu HTML de la page.
 	return (
