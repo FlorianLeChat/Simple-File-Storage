@@ -5,18 +5,15 @@
 import bcrypt from "bcrypt";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
-import NextAuth from "next-auth";
 import EmailProvider from "@auth/core/providers/email";
 import GoogleProvider from "@auth/core/providers/google";
 import GithubProvider from "@auth/core/providers/github";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "@auth/core/providers/credentials";
 import sendVerificationRequest from "@/utilities/nodemailer";
+import NextAuth, { type NextAuthConfig } from "next-auth";
 
-export const {
-	handlers: { GET, POST },
-	auth
-} = NextAuth( {
+export const { handlers, auth, signIn, signOut } = NextAuth( {
 	pages: {
 		error: "/",
 		signIn: "/authentication",
@@ -147,7 +144,7 @@ export const {
 			}
 		} )
 	]
-} );
+} satisfies NextAuthConfig );
 
 //
 // Récupère les messages d'erreurs liés à l'authentification de Next Auth.

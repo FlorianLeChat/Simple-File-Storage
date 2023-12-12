@@ -12,7 +12,7 @@ import schema from "@/schemas/authentication";
 // Enregistrement d'un nouveau compte utilisateur.
 //
 export async function signUpAccount(
-	_currentState: Record<string, unknown>,
+	_state: Record<string, unknown>,
 	formData: FormData
 )
 {
@@ -66,14 +66,11 @@ export async function signUpAccount(
 //
 // Connexion à un compte utilisateur existant.
 //
-export async function signInAccount( formData: FormData )
+export async function signInAccount(
+	_state: Record<string, unknown>,
+	formData: FormData
+)
 {
-	await new Promise( ( resolve ) =>
-	{
-		console.log( formData );
-		setTimeout( resolve, 1000 );
-	} );
-
 	return {
 		success: true,
 		reason: "ValidationRequired"

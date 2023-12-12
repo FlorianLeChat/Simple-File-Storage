@@ -6,12 +6,12 @@
 
 import Link from "next/link";
 import { merge } from "@/utilities/tailwind";
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import type { Session } from "next-auth";
 import { BellRing, Check } from "lucide-react";
 import { useEffect, useCallback, useState } from "react";
 
+import { signOut } from "@/utilities/next-auth";
 import { Dialog,
 	DialogTitle,
 	DialogHeader,
@@ -245,7 +245,7 @@ export default function UserMenu( { session }: { session: Session } )
 
 					{/* Déconnexion du compte */}
 					<DropdownMenuItem
-						onClick={() => signOut( { callbackUrl: "/" } )}
+						onClick={() => signOut( { redirectTo: "/" } )}
 					>
 						Déconnexion
 						<DropdownMenuShortcut>ALT/⌥ + L</DropdownMenuShortcut>

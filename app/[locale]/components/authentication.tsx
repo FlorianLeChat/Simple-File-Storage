@@ -7,13 +7,12 @@
 import Link from "next/link";
 import schema from "@/schemas/authentication";
 import { merge } from "@/utilities/tailwind";
-import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { getAuthErrorMessage } from "@/utilities/next-auth";
 import { useState, useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
+import { signIn, getAuthErrorMessage } from "@/utilities/next-auth";
 import { Loader2, Mail, RefreshCw, KeyRound } from "lucide-react";
 
 import { Input } from "./ui/input";
