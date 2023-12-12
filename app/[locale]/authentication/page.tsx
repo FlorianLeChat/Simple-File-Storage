@@ -6,11 +6,10 @@
 import { lazy } from "react";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
 import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
-import { authOptions } from "../../api/auth/[...nextauth]/route";
+import { auth } from "@/utilities/next-auth";
 
 // Importation des composants.
 const Authentication = lazy( () => import( "../components/authentication" ) );
@@ -31,7 +30,7 @@ export default async function Page( {
 	unstable_setRequestLocale( locale );
 
 	// Vérification de la session utilisateur.
-	const session = await getServerSession( authOptions );
+	const session = await auth();
 
 	if ( session )
 	{
