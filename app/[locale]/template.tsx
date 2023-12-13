@@ -7,12 +7,7 @@
 
 // Importation des dépendances.
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-
-// Importation des fonctions utilitaires.
-import { getAuthErrorMessage,
-	getGenericErrorMessage } from "@/utilities/next-auth";
 
 // Importation des composants.
 import { useToast } from "./components/ui/use-toast";
@@ -20,7 +15,6 @@ import { useToast } from "./components/ui/use-toast";
 export default function Template( { children }: { children: ReactNode } )
 {
 	// Déclaration des constantes.
-	const pathname = usePathname();
 	const { toast } = useToast();
 
 	// Affichage automatique des messages d'erreur.
@@ -32,23 +26,15 @@ export default function Template( { children }: { children: ReactNode } )
 
 		// On affiche ensuite le message d'erreur en fonction de la page
 		//  sur laquelle où se trouve l'utilisateur.
-		const description =
-			pathname === "/"
-				? getGenericErrorMessage( error )
-				: pathname === "/authentication" && getAuthErrorMessage( error );
-
-		if ( description )
+		setTimeout( () =>
 		{
-			setTimeout( () =>
-			{
-				toast( {
-					title: "Erreur interne",
-					variant: "destructive",
-					description
-				} );
-			}, 0 );
-		}
-	}, [ toast, pathname ] );
+			toast( {
+				title: "Erreur interne",
+				variant: "destructive",
+				description: error
+			} );
+		}, 0 );
+	}, [ toast ] );
 
 	// Affichage du rendu HTML de la page.
 	return children;
