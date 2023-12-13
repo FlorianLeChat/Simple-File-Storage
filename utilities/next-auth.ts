@@ -5,7 +5,6 @@
 import Email from "@auth/core/providers/email";
 import bcrypt from "bcrypt";
 import prisma from "@/utilities/prisma";
-import schema from "@/schemas/authentication";
 import Google from "@auth/core/providers/google";
 import GitHub from "@auth/core/providers/github";
 import Credentials from "@auth/core/providers/credentials";
@@ -65,14 +64,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 			}
 		} ),
 
-		// Authentification via adresse électronique et mot de passe.
+		// Authentification via compte utilisateur.
 		Credentials( {
-			name: "Credentials",
-			credentials: {
-				// Inutile dans notre cas mais requis par TypeScript.
-				email: { type: "email" },
-				password: { type: "password" }
-			},
 			async authorize( credentials )
 			{
 				// On vérifie d'abord si des informations d'authentification
@@ -82,57 +75,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 					return null;
 				}
 
-				// On valide ensuite les informations d'authentification avec
-				//  le schéma de validation Zod créé précédemment.
-				const parse = schema.safeParse( {
-					email: credentials.email,
-					password:
-						credentials.password === ""
-							? null
-							: credentials.password
-				} );
-
-				if ( !parse.success )
-				{
-					// Si les informations d'authentification ne sont pas valides,
-					//  on retourne une erreur générique.
-					return null;
-				}
-
-				// On tente après de trouver un utilisateur avec l'adresse électronique
-				//  fournie dans la base de données.
+				// On tente de récupérer le compte utilisateur via son adresse
+				//  électronique avant de vérifier si le mot de passe fourni
+				//  correspond à celui enregistré dans la base de données.
 				const exists = await prisma.user.findUnique( {
 					where: {
-						email: credentials?.email
+						email: credentials.email as string
 					}
 				} );
 
 				if ( exists?.password )
 				{
-					// Si l'utilisateur existe déjà, on compare le mot de passe
-					//  fourni avec celui de la base de données avant de retourner
-					//  l'utilisateur.
+					// On compare ensuite le mot de passe fourni avec celui
+					//  enregistré dans la base de données.
 					const user = await bcrypt.compare(
-						credentials.password,
+						credentials.password as string,
 						exists.password
 					);
 
+					// Si les deux mots de passe correspondent, on retourne
+					//  le compte utilisateur.
 					return user ? exists : null;
 				}
 
-				// Dans le cas contraire, on crée enfin un nouvel utilisateur
-				//  avec le mot de passe fourni.
-				const hashedPassword = await bcrypt.hash(
-					credentials.password,
-					13
-				);
-
-				return prisma.user.create( {
-					data: {
-						email: credentials.email,
-						password: hashedPassword
-					}
-				} );
+				// Dans le cas contraire, on retourne enfin une valeur nulle.
+				return null;
 			}
 		} )
 	]
