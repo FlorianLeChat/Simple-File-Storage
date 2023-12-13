@@ -2,14 +2,14 @@
 // Options de configuration de Next Auth.
 //  Source : https://authjs.dev/guides/providers/custom-provider
 //
+import Email from "@auth/core/providers/email";
 import bcrypt from "bcrypt";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
-import EmailProvider from "@auth/core/providers/email";
-import GoogleProvider from "@auth/core/providers/google";
-import GithubProvider from "@auth/core/providers/github";
+import Google from "@auth/core/providers/google";
+import GitHub from "@auth/core/providers/github";
+import Credentials from "@auth/core/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import CredentialsProvider from "@auth/core/providers/credentials";
 import sendVerificationRequest from "@/utilities/nodemailer";
 import NextAuth, { type NextAuthConfig } from "next-auth";
 
@@ -40,27 +40,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 	},
 	providers: [
 		// Authentification via Google.
-		GoogleProvider( {
-			clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-			clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ""
-		} ),
+		Google,
 
 		// Authentification via GitHub.
-		GithubProvider( {
-			clientId: process.env.GITHUB_CLIENT_ID ?? "",
-			clientSecret: process.env.GITHUB_CLIENT_SECRET ?? ""
-		} ),
+		GitHub,
 
 		// Authentification via courriel.
-		EmailProvider( {
-			from: `Simple File Storage <${ process.env.SMTP_USERNAME }>`,
+		Email( {
+			from: process.env.SMTP_USERNAME,
 			sendVerificationRequest,
 			server: {
 				secure: process.env.SMTP_PORT === "465",
 				host: process.env.SMTP_HOST,
-				port: process.env.SMTP_PORT
-					? parseInt( process.env.SMTP_PORT, 10 )
-					: 0,
+				port: process.env.SMTP_PORT ? Number( process.env.SMTP_PORT ) : 0,
 				auth: {
 					user: process.env.SMTP_USERNAME,
 					pass: process.env.SMTP_PASSWORD
@@ -74,7 +66,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 		} ),
 
 		// Authentification via adresse électronique et mot de passe.
-		CredentialsProvider( {
+		Credentials( {
 			name: "Credentials",
 			credentials: {
 				// Inutile dans notre cas mais requis par TypeScript.
