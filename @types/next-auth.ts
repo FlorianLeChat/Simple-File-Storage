@@ -25,16 +25,3 @@ declare module "@auth/core/adapters" {
 		role: string;
 	}
 }
-
-declare module "next-auth/adapters" {
-	interface AdapterUser extends User {
-		// Propriétés par défaut.
-		id: string;
-		email: string;
-		password: string;
-		emailVerified: Date | null;
-
-		// Propriétés personnalisées.
-		role: string;
-	}
-}
