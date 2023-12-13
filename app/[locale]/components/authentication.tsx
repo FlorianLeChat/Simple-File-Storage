@@ -7,7 +7,6 @@
 import Link from "next/link";
 import schema from "@/schemas/authentication";
 import { merge } from "@/utilities/tailwind";
-import { signIn } from "@/utilities/next-auth";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -40,7 +39,7 @@ export default function Authentification()
 	// Déclaration des constantes.
 	const { toast } = useToast();
 	const { pending } = useFormStatus();
-	const initialState = {
+	const defaultState = {
 		success: true,
 		reason: ""
 	};
@@ -51,11 +50,11 @@ export default function Authentification()
 	const [ focused, setFocused ] = useState( false );
 	const [ signUpState, signUpAction ] = useFormState(
 		signUpAccount,
-		initialState
+		defaultState
 	);
 	const [ signInState, signInAction ] = useFormState(
 		signInAccount,
-		initialState
+		defaultState
 	);
 	const [ passwordType, setPasswordType ] = useState( "text" );
 
@@ -90,8 +89,11 @@ export default function Authentification()
 	// Affichage des erreurs en provenance du serveur.
 	useEffect( () =>
 	{
-		const reason = signUpState.reason ?? signInState.reason;
-		const success = signUpState.success ?? signInState.success;
+		const reason =
+			signUpState.reason !== "" ? signUpState.reason : signInState.reason;
+		const success = !signUpState.success
+			? signUpState.success
+			: signInState.success;
 
 		if ( reason !== "" )
 		{
@@ -108,6 +110,7 @@ export default function Authentification()
 		<Tabs
 			className="flex w-full flex-col justify-center space-y-6 p-4 text-center sm:mx-auto sm:w-[500px]"
 			defaultValue="signUp"
+			onValueChange={() => form.reset()}
 		>
 			<TabsList className="grid w-full grid-cols-2">
 				<TabsTrigger value="signUp">Inscription</TabsTrigger>
@@ -460,33 +463,47 @@ export default function Authentification()
 			</div>
 
 			{/* Fournisseurs d'authentification externes */}
-			<Button
-				type="button"
-				variant="outline"
-				onClick={() => signIn( "google", { callbackUrl: "/dashboard" } )}
-				disabled={pending}
-			>
-				{pending ? (
-					<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-				) : (
-					<FontAwesomeIcon icon={faGoogle} className="mr-2 h-4 w-4" />
-				)}
-				Google
-			</Button>
+			<form action={signInAction}>
+				<input type="hidden" name="provider" value="google" />
 
-			<Button
-				type="button"
-				variant="outline"
-				onClick={() => signIn( "github", { callbackUrl: "/dashboard" } )}
-				disabled={pending}
-			>
-				{pending ? (
-					<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-				) : (
-					<FontAwesomeIcon icon={faGithub} className="mr-2 h-4 w-4" />
-				)}
-				GitHub
-			</Button>
+				<Button
+					type="submit"
+					variant="outline"
+					disabled={pending}
+					className="w-full"
+				>
+					{pending ? (
+						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+					) : (
+						<FontAwesomeIcon
+							icon={faGoogle}
+							className="mr-2 h-4 w-4"
+						/>
+					)}
+					Google
+				</Button>
+			</form>
+
+			<form action={signInAction}>
+				<input type="hidden" name="provider" value="github" />
+
+				<Button
+					type="submit"
+					variant="outline"
+					disabled={pending}
+					className="w-full"
+				>
+					{pending ? (
+						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+					) : (
+						<FontAwesomeIcon
+							icon={faGithub}
+							className="mr-2 h-4 w-4"
+						/>
+					)}
+					GitHub
+				</Button>
+			</form>
 
 			<p className="px-8 text-center text-sm text-muted-foreground">
 				En continuant, vous acceptez nos{" "}
