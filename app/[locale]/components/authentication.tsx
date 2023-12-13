@@ -7,12 +7,12 @@
 import Link from "next/link";
 import schema from "@/schemas/authentication";
 import { merge } from "@/utilities/tailwind";
+import { signIn } from "@/utilities/next-auth";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { useState, useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
-import { signIn, getAuthErrorMessage } from "@/utilities/next-auth";
 import { Loader2, Mail, RefreshCw, KeyRound } from "lucide-react";
 
 import { Input } from "./ui/input";
@@ -98,7 +98,7 @@ export default function Authentification()
 			toast( {
 				title: "Authentification échouée",
 				variant: success ? "default" : "destructive",
-				description: getAuthErrorMessage( reason ) ?? reason
+				description: reason
 			} );
 		}
 	}, [ toast, signUpState, signInState ] );
