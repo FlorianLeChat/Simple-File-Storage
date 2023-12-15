@@ -3,7 +3,7 @@
 //  Source : https://next-auth.js.org/providers/email#customizing-emails
 //
 import { createTransport } from "nodemailer";
-import type { SendVerificationRequestParams } from "next-auth/providers/email";
+import type { SendVerificationRequestParams } from "@auth/core/providers/email";
 
 // Couleurs utilisées dans les courriels.
 const colors = {

@@ -26,14 +26,17 @@ export default function Template( { children }: { children: ReactNode } )
 
 		// On affiche ensuite le message d'erreur en fonction de la page
 		//  sur laquelle où se trouve l'utilisateur.
-		setTimeout( () =>
+		if ( error )
 		{
-			toast( {
-				title: "Erreur interne",
-				variant: "destructive",
-				description: error
-			} );
-		}, 0 );
+			setTimeout( () =>
+			{
+				toast( {
+					title: "Erreur interne",
+					variant: "destructive",
+					description: error
+				} );
+			}, 0 );
+		}
 	}, [ toast ] );
 
 	// Affichage du rendu HTML de la page.

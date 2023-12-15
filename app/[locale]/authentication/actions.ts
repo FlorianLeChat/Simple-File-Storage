@@ -21,7 +21,7 @@ export async function signUpAccount(
 	//  fournies par l'utilisateur.
 	const result = schema.safeParse( {
 		email: formData.get( "email" ),
-		password: formData.get( "password" )
+		password: ""
 	} );
 
 	if ( !result.success )
@@ -56,16 +56,18 @@ export async function signUpAccount(
 	//  les informations d'authentification fournies.
 	const validation = await prisma.verificationToken.findFirst( {
 		where: {
-			identifier: result.data.email,
-			expires: {
-				gte: new Date()
-			}
+			identifier: result.data.email
 		}
 	} );
 
 	if ( !validation )
 	{
-		// TODO : Envoyer un courriel de validation.
+		signIn( "email", {
+			email: result.data.email,
+			redirect: false,
+			redirectTo: "/dashboard",
+			sendVerificationRequest: true
+		} );
 	}
 
 	// On retourne enfin un message de succès à l'utilisateur afin
@@ -90,27 +92,12 @@ export async function signInAccount(
 
 	if ( provider )
 	{
-		try
-		{
-			// Si c'est le cas, on tente une authentification via le fournisseur
-			//  d'authentification externe avant de rediriger l'utilisateur vers
-			//  la page de son tableau de bord.
-			redirect(
-				await signIn( provider as string, {
-					redirect: false,
-					redirectTo: "/dashboard"
-				} )
-			);
-		}
-		catch ( error )
-		{
-			// En cas d'erreur, on affiche un message d'erreur sur la page
-			//  d'authentification.
-			return {
-				success: false,
-				reason: "OAuthCallbackError"
-			};
-		}
+		// Si c'est le cas, on tente une authentification via le fournisseur
+		//  d'authentification externe avant de rediriger l'utilisateur vers
+		//  la page de son tableau de bord.
+		await signIn( provider as string, {
+			redirectTo: "/dashboard"
+		} );
 	}
 
 	// Dans le cas contraire, on tente de valider les informations
@@ -130,19 +117,34 @@ export async function signInAccount(
 		};
 	}
 
+	if ( !result.data.password )
+	{
+		// Dans certains cas, le mot de passe fourni peut être vide, ce qui
+		//  signifie que l'utilisateur a tenté de se connecter via une
+		//  validation de son adresse électronique.
+		await signIn( "email", {
+			email: result.data.email,
+			redirect: false,
+			redirectTo: "/dashboard",
+			sendVerificationRequest: true
+		} );
+
+		return {
+			success: true,
+			reason: "ValidationRequired"
+		};
+	}
+
 	try
 	{
 		// Dans le cas contraire, on tente alors une authentification via
 		//  les informations d'authentification fournies avant de rediriger
 		//  l'utilisateur vers la page de son tableau de bord.
-		redirect(
-			await signIn( "credentials", {
-				email: result.data.email,
-				password: result.data.password,
-				redirect: false,
-				redirectTo: "/dashboard"
-			} )
-		);
+		await signIn( "credentials", {
+			email: result.data.email,
+			password: result.data.password,
+			redirectTo: "/dashboard"
+		} );
 	}
 	catch ( error )
 	{
