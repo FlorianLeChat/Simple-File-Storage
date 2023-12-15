@@ -6,17 +6,17 @@
 
 import Link from "next/link";
 import schema from "@/schemas/authentication";
-import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { useState, useEffect } from "react";
+import { Loader2, Mail, KeyRound } from "lucide-react";
 import { useFormState, useFormStatus } from "react-dom";
-import { Loader2, Mail, RefreshCw, KeyRound } from "lucide-react";
 
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
+import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { Separator } from "./ui/separator";
 import { Form,
@@ -26,11 +26,6 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "./ui/form";
-import { Tooltip,
-	TooltipTrigger,
-	TooltipContent,
-	TooltipProvider } from "./ui/tooltip";
-import { Button, buttonVariants } from "./ui/button";
 import { signUpAccount, signInAccount } from "../authentication/actions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
@@ -43,8 +38,6 @@ export default function Authentification()
 		success: true,
 		reason: ""
 	};
-	const characters =
-		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
 
 	// Déclaration des variables d'état.
 	const [ focused, setFocused ] = useState( false );
@@ -66,25 +59,6 @@ export default function Authentification()
 			remembered: false
 		}
 	} );
-
-	// Génère un mot de passe aléatoire.
-	const generateRandomPassword = ( length: number = 15 ) =>
-	{
-		// On génère aléatoirement des octets sécurisés.
-		const values = new Uint8Array( length );
-		crypto.getRandomValues( values );
-
-		// On indique que le champ de mot de passe est actuellement
-		//  en cours de modification.
-		setFocused( true );
-
-		// On parcourt enfin les octets générés pour les convertir
-		//  en caractères sécurisés.
-		return values.reduce(
-			( previous, current ) => previous + characters[ current % characters.length ],
-			""
-		);
-	};
 
 	// Affichage des erreurs en provenance du serveur.
 	useEffect( () =>
@@ -124,8 +98,9 @@ export default function Authentification()
 				</h2>
 
 				<p className="text-sm text-muted-foreground">
-					Saisissez votre adresse électronique et un mot de passe pour
-					créer un nouveau compte.
+					Saisissez votre adresse électronique pour créer un nouveau
+					compte utilisateur. Vous recevrez un lien d&lsquo;activation
+					pour valider votre compte et saisir un mot de passe.
 				</p>
 
 				<Form {...form}>
@@ -170,102 +145,6 @@ export default function Authentification()
 							)}
 						/>
 
-						{/* Mot de passe */}
-						<FormField
-							name="password"
-							control={form.control}
-							render={( { field } ) => (
-								<FormItem>
-									<FormLabel className="sr-only">
-										Mot de passe
-									</FormLabel>
-
-									<FormControl>
-										<div className="flex gap-2">
-											<TooltipProvider>
-												<Input
-													{...field}
-													id="password"
-													type={passwordType}
-													onBlur={() => setFocused(
-														field.value
-															?.length !== 0
-													)}
-													onFocus={() => setFocused( true )}
-													onKeyUp={() => setPasswordType(
-														"password"
-													)}
-													disabled={pending}
-													className={`transition-opacity ${
-														!focused && "opacity-25"
-													}`}
-													minLength={
-														schema.shape.password
-															._def.options[ 0 ]
-															.minLength as number
-													}
-													maxLength={
-														schema.shape.password
-															._def.options[ 0 ]
-															.maxLength as number
-													}
-													spellCheck="false"
-													placeholder="password"
-													autoComplete="new-password"
-													autoCapitalize="off"
-												/>
-
-												<Tooltip>
-													<TooltipTrigger
-														type="button"
-														disabled={pending}
-														className={merge(
-															`transition-opacity ${
-																!focused
-																&& "opacity-25"
-															}`,
-															buttonVariants( {
-																size: "icon",
-																variant:
-																	"outline"
-															} )
-														)}
-														onClick={() =>
-														{
-															// Génération d'un nouveau mot de passe.
-															form.setValue(
-																"password",
-																generateRandomPassword()
-															);
-
-															// Affichage du mot de passe en clair.
-															setPasswordType(
-																"text"
-															);
-														}}
-													>
-														<RefreshCw className="h-4 w-4" />
-													</TooltipTrigger>
-
-													<TooltipContent>
-														Générer un mot de passe
-														sécurisé
-													</TooltipContent>
-												</Tooltip>
-											</TooltipProvider>
-										</div>
-									</FormControl>
-
-									<FormDescription className="sr-only">
-										Le mot de passe utilisé pour vous
-										connecter à votre compte.
-									</FormDescription>
-
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
 						{/* Bouton de validation du formulaire */}
 						<Button disabled={pending}>
 							{pending ? (
@@ -274,17 +153,10 @@ export default function Authentification()
 									Traitement...
 								</>
 							) : (
-								( form.getValues( "password" ) === "" && (
-									<>
-										<Mail className="mr-2 h-4 w-4" />
-										Inscription par courriel
-									</>
-								) ) || (
-									<>
-										<KeyRound className="mr-2 h-4 w-4" />
-										Inscription par mot de passe
-									</>
-								)
+								<>
+									<Mail className="mr-2 h-4 w-4" />
+									Inscription par courriel
+								</>
 							)}
 						</Button>
 					</form>
@@ -298,8 +170,10 @@ export default function Authentification()
 				</h2>
 
 				<p className="text-sm text-muted-foreground">
-					Saisissez votre adresse électronique et votre mot de passe
-					pour vous connecter à votre compte.
+					Saisissez votre adresse électronique pour vous connecter à
+					l&lsquo;aide d&lsquo;un lien d&lsquo;authentification. Si
+					vous avez associé un mot de passe à votre compte, vous
+					pouvez également le saisir pour vous connecter directement.
 				</p>
 
 				<Form {...form}>
@@ -380,7 +254,7 @@ export default function Authentification()
 											}
 											spellCheck="false"
 											placeholder="password"
-											autoComplete="new-password"
+											autoComplete="current-password"
 											autoCapitalize="off"
 										/>
 									</FormControl>
@@ -437,12 +311,12 @@ export default function Authentification()
 								( form.getValues( "password" ) === "" && (
 									<>
 										<Mail className="mr-2 h-4 w-4" />
-										Authentification par courriel
+										Connexion par courriel
 									</>
 								) ) || (
 									<>
 										<KeyRound className="mr-2 h-4 w-4" />
-										Authentification par mot de passe
+										Connexion par mot de passe
 									</>
 								)
 							)}
