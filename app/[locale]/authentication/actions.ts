@@ -52,8 +52,8 @@ export async function signUpAccount(
 		};
 	}
 
-	// On tente ensuite de créer un nouveau compte utilisateur via
-	//  les informations d'authentification fournies.
+	// On vérifie ensuite si une demande de validation de l'adresse
+	//  électronique a déjà été envoyée.
 	const validation = await prisma.verificationToken.findFirst( {
 		where: {
 			identifier: result.data.email
@@ -62,12 +62,25 @@ export async function signUpAccount(
 
 	if ( !validation )
 	{
-		signIn( "email", {
+		// Si ce n'est pas le cas, on envoie immédiatement une demande
+		//  de validation de l'adresse électronique fournie.
+		const response = await signIn( "email", {
 			email: result.data.email,
 			redirect: false,
 			redirectTo: "/dashboard",
 			sendVerificationRequest: true
 		} );
+
+		if ( !response )
+		{
+			// Lorsque la demande de validation de l'adresse électronique
+			//  semble ne pas renvoyer de réponse, on affiche un message
+			//  d'erreur sur la page d'authentification.
+			return {
+				success: false,
+				reason: "EmailSignin"
+			};
+		}
 	}
 
 	// On retourne enfin un message de succès à l'utilisateur afin
@@ -122,7 +135,7 @@ export async function signInAccount(
 		// Dans certains cas, le mot de passe fourni peut être vide, ce qui
 		//  signifie que l'utilisateur a tenté de se connecter via une
 		//  validation de son adresse électronique.
-		await signIn( "email", {
+		const response = await signIn( "email", {
 			email: result.data.email,
 			redirect: false,
 			redirectTo: "/dashboard",
@@ -130,8 +143,8 @@ export async function signInAccount(
 		} );
 
 		return {
-			success: true,
-			reason: "ValidationRequired"
+			success: !!response,
+			reason: response ? "ValidationRequired" : "EmailSignin"
 		};
 	}
 
