@@ -94,10 +94,9 @@ export default function Account( { session }: { session: Session } )
 								Nom d&lsquo;affichage
 							</FormLabel>
 
-							<FormControl className="hidden">
+							<FormControl>
 								<Input
 									{...field}
-									disabled
 									minLength={
 										schema.shape.realname
 											.minLength as number
@@ -113,21 +112,11 @@ export default function Account( { session }: { session: Session } )
 								/>
 							</FormControl>
 
-							{session ? (
-								<FormDescription className="font-extrabold text-destructive">
-									Ce paramètre ne peut pas être modifié en
-									raison de l&lsquo;utilisation d&lsquo;un
-									fournisseur d&lsquo;authentification externe
-									pour vous connecter au site.
-								</FormDescription>
-							) : (
-								<FormDescription>
-									Ceci est le nom qui sera affiché sur votre
-									profil et dans la recherche
-									d&lsquo;utilisateurs pour partager des
-									fichiers.
-								</FormDescription>
-							)}
+							<FormDescription>
+								Ceci est le nom qui sera affiché sur votre
+								profil et dans la recherche d&lsquo;utilisateurs
+								pour partager des fichiers.
+							</FormDescription>
 
 							<FormMessage />
 						</FormItem>
@@ -191,11 +180,12 @@ export default function Account( { session }: { session: Session } )
 								Mot de passe
 							</FormLabel>
 
-							<FormControl className="hidden">
+							<FormControl
+								className={session.user.oauth ? "hidden" : ""}
+							>
 								<Input
 									{...field}
 									type="password"
-									disabled
 									minLength={
 										schema.shape.password
 											.minLength as number
@@ -211,7 +201,7 @@ export default function Account( { session }: { session: Session } )
 								/>
 							</FormControl>
 
-							{session ? (
+							{session.user.oauth ? (
 								<FormDescription className="font-extrabold text-destructive">
 									Ce paramètre ne peut pas être modifié en
 									raison de l&lsquo;utilisation d&lsquo;un
