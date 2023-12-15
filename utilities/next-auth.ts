@@ -32,6 +32,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 				//  de l'utilisateur à la session.
 				session.user.id = user.id;
 				session.user.role = user.role;
+				session.user.oauth = !user.password && !user.emailVerified;
 			}
 
 			return session;

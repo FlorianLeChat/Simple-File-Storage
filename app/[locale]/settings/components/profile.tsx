@@ -134,7 +134,9 @@ export default function Profile( { session }: { session: Session } )
 								Adresse électronique
 							</FormLabel>
 
-							<FormControl className="hidden">
+							<FormControl
+								className={session.user.oauth ? "hidden" : ""}
+							>
 								<div className="flex gap-2 max-sm:flex-wrap">
 									<TooltipProvider>
 										<Select
@@ -193,7 +195,7 @@ export default function Profile( { session }: { session: Session } )
 								</div>
 							</FormControl>
 
-							{session ? (
+							{session.user.oauth ? (
 								<FormDescription className="font-extrabold text-destructive">
 									Ce paramètre ne peut pas être modifié en
 									raison de l&lsquo;utilisation d&lsquo;un
@@ -224,7 +226,7 @@ export default function Profile( { session }: { session: Session } )
 								Avatar
 							</FormLabel>
 
-							<FormControl className="hidden">
+							<FormControl>
 								<Input
 									{...field}
 									type="file"
@@ -238,23 +240,14 @@ export default function Profile( { session }: { session: Session } )
 								/>
 							</FormControl>
 
-							{session ? (
-								<FormDescription className="font-extrabold text-destructive">
-									Ce paramètre ne peut pas être modifié en
-									raison de l&lsquo;utilisation d&lsquo;un
-									fournisseur d&lsquo;authentification externe
-									pour vous connecter au site.
-								</FormDescription>
-							) : (
-								<FormDescription>
-									Vous pouvez mettre à jour l&lsquo;avatar
-									utilisé pour votre compte utilisateur.{" "}
-									<strong>
-										Les avatars ne doivent pas dépasser 2 Mo
-										et doivent être au format PNG ou JPEG.
-									</strong>
-								</FormDescription>
-							)}
+							<FormDescription>
+								Vous pouvez mettre à jour l&lsquo;avatar utilisé
+								pour votre compte utilisateur.{" "}
+								<strong>
+									Les avatars ne doivent pas dépasser 2 Mo et
+									doivent être au format PNG ou JPEG.
+								</strong>
+							</FormDescription>
 
 							<FormMessage />
 						</FormItem>
