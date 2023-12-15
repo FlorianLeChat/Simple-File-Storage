@@ -15,12 +15,15 @@ import { Languages, Lock, Contact, Loader2, RefreshCw } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { toast } from "../../components/ui/use-toast";
-import { Button } from "../../components/ui/button";
 import { Select,
 	SelectItem,
 	SelectValue,
 	SelectContent,
 	SelectTrigger } from "../../components/ui/select";
+import { Tooltip,
+	TooltipTrigger,
+	TooltipContent,
+	TooltipProvider } from "../../components/ui/tooltip";
 import { Form,
 	FormItem,
 	FormField,
@@ -28,6 +31,7 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
+import { Button, buttonVariants } from "../../components/ui/button";
 
 // Déclaration des langues disponibles.
 const languages = [
@@ -39,9 +43,12 @@ export default function Account( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
 	const [ isLoading, setIsLoading ] = useState( false );
+	const [ passwordType, setPasswordType ] = useState( "text" );
 
 	// Déclaration des constantes.
 	const locale = useLocale() as "en" | "fr";
+	const characters =
+		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
 
 	// Déclaration du formulaire.
 	const form = useForm<z.infer<typeof schema>>( {
@@ -51,6 +58,24 @@ export default function Account( { session }: { session: Session } )
 			language: locale
 		}
 	} );
+
+	// Génère un mot de passe aléatoire.
+	const generateRandomPassword = ( length: number = 15 ) =>
+	{
+		// On génère d'abord aléatoirement des octets sécurisés.
+		const values = new Uint8Array( length );
+		crypto.getRandomValues( values );
+
+		// On affiche le mot de passe en clair pour l'utilisateur.
+		setPasswordType( "text" );
+
+		// On parcourt enfin les octets générés pour les convertir
+		//  en caractères sécurisés.
+		return values.reduce(
+			( previous, current ) => previous + characters[ current % characters.length ],
+			""
+		);
+	};
 
 	// Mise à jour des informations.
 	const updateAccount = ( data: z.infer<typeof schema> ) =>
@@ -113,9 +138,9 @@ export default function Account( { session }: { session: Session } )
 							</FormControl>
 
 							<FormDescription>
-								Ceci est le nom qui sera affiché sur votre
-								profil et dans la recherche d&lsquo;utilisateurs
-								pour partager des fichiers.
+								Ceci est le nom qui sera affiché publiquement
+								sur votre profil et dans la recherche
+								d&lsquo;utilisateurs pour partager des fichiers.
 							</FormDescription>
 
 							<FormMessage />
@@ -161,7 +186,10 @@ export default function Account( { session }: { session: Session } )
 
 							<FormDescription>
 								Ceci est la langue qui sera utilisée sur
-								l&lsquo;ensemble des pages du site.
+								l&lsquo;ensemble des pages du site. Si votre
+								langue comporte des traductions incomplètes,
+								nous utiliserons la langue par défaut du site
+								pour les compléter.
 							</FormDescription>
 
 							<FormMessage />
@@ -183,22 +211,51 @@ export default function Account( { session }: { session: Session } )
 							<FormControl
 								className={session.user.oauth ? "hidden" : ""}
 							>
-								<Input
-									{...field}
-									type="password"
-									minLength={
-										schema.shape.password
-											.minLength as number
-									}
-									maxLength={
-										schema.shape.password
-											.maxLength as number
-									}
-									spellCheck="false"
-									placeholder="password"
-									autoComplete="new-password"
-									autoCapitalize="off"
-								/>
+								<div className="flex gap-2">
+									<TooltipProvider>
+										<Input
+											{...field}
+											type={passwordType}
+											onKeyDown={() => setPasswordType( "password" )}
+											minLength={
+												schema.shape.password
+													.minLength as number
+											}
+											maxLength={
+												schema.shape.password
+													.maxLength as number
+											}
+											spellCheck="false"
+											placeholder="password"
+											autoComplete="new-password"
+											autoCapitalize="off"
+										/>
+
+										<Tooltip>
+											<TooltipTrigger
+												type="button"
+												className={buttonVariants( {
+													size: "icon",
+													variant: "outline"
+												} )}
+												onClick={() =>
+												{
+													// Génération d'un nouveau mot de passe.
+													form.setValue(
+														"password",
+														generateRandomPassword()
+													);
+												}}
+											>
+												<RefreshCw className="h-4 w-4" />
+											</TooltipTrigger>
+
+											<TooltipContent>
+												Générer un mot de passe sécurisé
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
+								</div>
 							</FormControl>
 
 							{session.user.oauth ? (
@@ -211,7 +268,10 @@ export default function Account( { session }: { session: Session } )
 							) : (
 								<FormDescription>
 									Ceci est le mot de passe qui sera utilisé
-									pour vous connecter à votre compte.
+									pour vous connecter à votre compte si vous
+									ne souhaitez pas utiliser les liens
+									d&lsquo;authentification envoyés par
+									courriel.
 								</FormDescription>
 							)}
 
