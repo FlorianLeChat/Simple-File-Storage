@@ -112,10 +112,11 @@ export default function Profile( { session }: { session: Session } )
 							</FormControl>
 
 							<FormDescription>
-								Ceci est votre pseudonyme unique. Il peut
+								Ceci est votre pseudonyme unique, il peut
 								s&lsquo;agir de votre nom réel ou d&lsquo;un
 								pseudonyme. Vous ne pouvez le changer
-								qu&lsquo;une fois tous les 30 jours.
+								qu&lsquo;une fois tous les 30 jours. Personne ne
+								peut le voir sauf vous.
 							</FormDescription>
 
 							<FormMessage />
@@ -207,6 +208,8 @@ export default function Profile( { session }: { session: Session } )
 									Ceci est la liste des adresses électroniques
 									associées à votre compte. Vous pouvez en
 									ajouter ou en supprimer à tout moment.
+									Chacune de ses adresses électroniques peut
+									être utilisée pour vous connecter au site.
 								</FormDescription>
 							)}
 

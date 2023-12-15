@@ -49,7 +49,6 @@ export default function Authentification()
 		signInAccount,
 		defaultState
 	);
-	const [ passwordType, setPasswordType ] = useState( "text" );
 
 	// Déclaration du formulaire.
 	const form = useForm( {
@@ -232,12 +231,11 @@ export default function Authentification()
 										<Input
 											{...field}
 											id="password"
-											type={passwordType}
+											type="password"
 											onBlur={() => setFocused(
 												field.value?.length !== 0
 											)}
 											onFocus={() => setFocused( true )}
-											onKeyUp={() => setPasswordType( "password" )}
 											disabled={pending}
 											className={`transition-opacity ${
 												!focused && "opacity-25"
