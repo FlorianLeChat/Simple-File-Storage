@@ -16,8 +16,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 	pages: {
 		error: "/",
 		signIn: "/authentication",
-		signOut: "/dashboard",
-		newUser: "/dashboard",
+		signOut: "/",
 		verifyRequest: "/authentication?error=ValidationRequired"
 	},
 	adapter: PrismaAdapter( prisma ),
