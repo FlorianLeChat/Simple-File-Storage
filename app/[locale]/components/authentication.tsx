@@ -7,11 +7,11 @@
 import Link from "next/link";
 import schema from "@/schemas/authentication";
 import { useForm } from "react-hook-form";
+import { useFormState } from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { useState, useEffect } from "react";
 import { Loader2, Mail, KeyRound } from "lucide-react";
-import { useFormState, useFormStatus } from "react-dom";
 
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -33,22 +33,16 @@ export default function Authentification()
 {
 	// Déclaration des constantes.
 	const { toast } = useToast();
-	const { pending } = useFormStatus();
-	const defaultState = {
+	const formState = {
 		success: true,
 		reason: ""
 	};
 
 	// Déclaration des variables d'état.
 	const [ focused, setFocused ] = useState( false );
-	const [ signUpState, signUpAction ] = useFormState(
-		signUpAccount,
-		defaultState
-	);
-	const [ signInState, signInAction ] = useFormState(
-		signInAccount,
-		defaultState
-	);
+	const [ loading, setLoading ] = useState( false );
+	const [ signUpState, signUpAction ] = useFormState( signUpAccount, formState );
+	const [ signInState, signInAction ] = useFormState( signInAccount, formState );
 
 	// Déclaration du formulaire.
 	const form = useForm( {
@@ -62,21 +56,36 @@ export default function Authentification()
 	// Affichage des erreurs en provenance du serveur.
 	useEffect( () =>
 	{
+		// On récupère d'abord une possible raison d'échec
+		//  ainsi que l'état associé.
 		const reason =
 			signUpState.reason !== "" ? signUpState.reason : signInState.reason;
 		const success = !signUpState.success
 			? signUpState.success
 			: signInState.success;
 
+		// On informe ensuite que le traitement est terminé.
+		setLoading( false );
+
+		// On réinitialise après le formulaire après un succès.
+		if ( success )
+		{
+			form.reset();
+		}
+
+		// On affiche enfin le message correspondant si une raison
+		//  a été fournie.
 		if ( reason !== "" )
 		{
 			toast( {
-				title: "Authentification échouée",
+				title: success
+					? "Action nécessaire"
+					: "Authentification échouée",
 				variant: success ? "default" : "destructive",
 				description: reason
 			} );
 		}
-	}, [ toast, signUpState, signInState ] );
+	}, [ toast, form, signUpState, signInState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -103,7 +112,11 @@ export default function Authentification()
 				</p>
 
 				<Form {...form}>
-					<form action={signUpAction} className="space-y-6">
+					<form
+						action={signUpAction}
+						onSubmit={() => setLoading( true )}
+						className="space-y-6"
+					>
 						{/* Adresse électronique */}
 						<FormField
 							name="email"
@@ -118,7 +131,7 @@ export default function Authentification()
 										<Input
 											{...field}
 											type="email"
-											disabled={pending}
+											disabled={loading}
 											minLength={
 												schema.shape.email
 													.minLength as number
@@ -145,8 +158,8 @@ export default function Authentification()
 						/>
 
 						{/* Bouton de validation du formulaire */}
-						<Button disabled={pending}>
-							{pending ? (
+						<Button disabled={loading}>
+							{loading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									Traitement...
@@ -176,7 +189,11 @@ export default function Authentification()
 				</p>
 
 				<Form {...form}>
-					<form action={signInAction} className="space-y-6">
+					<form
+						action={signInAction}
+						onSubmit={() => setLoading( true )}
+						className="space-y-6"
+					>
 						{/* Adresse électronique */}
 						<FormField
 							name="email"
@@ -191,7 +208,7 @@ export default function Authentification()
 										<Input
 											{...field}
 											type="email"
-											disabled={pending}
+											disabled={loading}
 											minLength={
 												schema.shape.email
 													.minLength as number
@@ -236,7 +253,7 @@ export default function Authentification()
 												field.value?.length !== 0
 											)}
 											onFocus={() => setFocused( true )}
-											disabled={pending}
+											disabled={loading}
 											className={`transition-opacity ${
 												!focused && "opacity-25"
 											}`}
@@ -281,7 +298,7 @@ export default function Authentification()
 										<div className="flex items-center justify-center space-x-2">
 											<Switch
 												id="remember-me"
-												disabled={pending}
+												disabled={loading}
 											/>
 
 											<Label htmlFor="remember-me">
@@ -299,8 +316,8 @@ export default function Authentification()
 						/>
 
 						{/* Bouton de validation du formulaire */}
-						<Button disabled={pending}>
-							{pending ? (
+						<Button disabled={loading}>
+							{loading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									Traitement...
@@ -335,16 +352,16 @@ export default function Authentification()
 			</div>
 
 			{/* Fournisseurs d'authentification externes */}
-			<form action={signInAction}>
+			<form action={signInAction} onSubmit={() => setLoading( true )}>
 				<input type="hidden" name="provider" value="google" />
 
 				<Button
 					type="submit"
 					variant="outline"
-					disabled={pending}
+					disabled={loading}
 					className="w-full"
 				>
-					{pending ? (
+					{loading ? (
 						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 					) : (
 						<FontAwesomeIcon
@@ -356,16 +373,16 @@ export default function Authentification()
 				</Button>
 			</form>
 
-			<form action={signInAction}>
+			<form action={signInAction} onSubmit={() => setLoading( true )}>
 				<input type="hidden" name="provider" value="github" />
 
 				<Button
 					type="submit"
 					variant="outline"
-					disabled={pending}
+					disabled={loading}
 					className="w-full"
 				>
-					{pending ? (
+					{loading ? (
 						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 					) : (
 						<FontAwesomeIcon

@@ -1,5 +1,5 @@
 //
-// Actions du serveur pour le formulaire d'inscription et d'authentification.
+// Actions du serveur pour le formulaire d'inscription et de connexion.
 //  Source :https://nextjs.org/docs/app/api-reference/functions/server-actions
 //
 
