@@ -7,8 +7,7 @@
 
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
-import { signIn } from "@/utilities/next-auth";
-import { redirect } from "next/navigation";
+import { signIn, signOut } from "@/utilities/next-auth";
 
 //
 // Enregistrement d'un nouveau compte utilisateur.
@@ -161,4 +160,16 @@ export async function signInAccount(
 		success: false,
 		reason: "CredentialsSignin"
 	};
+}
+
+//
+// Déconnexion d'un compte utilisateur.
+//
+export async function signOutAccount()
+{
+	// On tente de déconnecter l'utilisateur de son compte utilisateur
+	//  avant de rediriger celui-ci vers la page d'accueil.
+	await signOut( {
+		redirectTo: "/"
+	} );
 }

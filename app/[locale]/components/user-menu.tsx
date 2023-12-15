@@ -11,7 +11,6 @@ import type { Session } from "next-auth";
 import { BellRing, Check } from "lucide-react";
 import { useEffect, useCallback, useState } from "react";
 
-import { signOut } from "@/utilities/next-auth";
 import { Dialog,
 	DialogTitle,
 	DialogHeader,
@@ -19,6 +18,7 @@ import { Dialog,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "./ui/dialog";
+import { signOutAccount } from "../authentication/actions";
 import { DropdownMenu,
 	DropdownMenuItem,
 	DropdownMenuGroup,
@@ -245,7 +245,10 @@ export default function UserMenu( { session }: { session: Session } )
 
 					{/* Déconnexion du compte */}
 					<DropdownMenuItem
-						onClick={() => signOut( { redirectTo: "/" } )}
+						onClick={() =>
+						{
+							signOutAccount();
+						}}
 					>
 						Déconnexion
 						<DropdownMenuShortcut>ALT/⌥ + L</DropdownMenuShortcut>
