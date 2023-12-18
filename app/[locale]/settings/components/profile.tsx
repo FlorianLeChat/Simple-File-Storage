@@ -4,22 +4,20 @@
 
 "use client";
 
-import * as z from "zod";
 import schema from "@/schemas/profile";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { Session } from "next-auth";
-import { Trash,
-	AtSign,
+import { AtSign,
 	Loader2,
 	RefreshCw,
-	WholeWord,
 	FileImage,
-	PlusCircleIcon } from "lucide-react";
+	Fingerprint } from "lucide-react";
+import { useFormState } from "react-dom";
+import type { Session } from "next-auth";
+import { useState, useEffect } from "react";
 
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
+import { useToast } from "../../components/ui/use-toast";
 import { Form,
 	FormItem,
 	FormLabel,
@@ -27,48 +25,65 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
+import { updateProfile } from "../profile/actions";
 
 export default function Profile( { session }: { session: Session } )
 {
+	// Déclaration des constantes.
+	const { toast } = useToast();
+	const formState = {
+		success: true,
+		reason: ""
+	};
+
 	// Déclaration des variables d'état.
-	const [ isLoading, setIsLoading ] = useState( false );
+	const [ loading, setLoading ] = useState( false );
+	const [ updateState, updateAction ] = useFormState( updateProfile, formState );
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
+	const form = useForm( {
 		defaultValues: {
-			email: session.user?.email,
+			email: session.user?.email ?? "",
 			avatar: ""
 		}
 	} );
 
-	// Mise à jour des informations.
-	const updateProfile = ( data: z.infer<typeof schema> ) =>
+	// Affichage des erreurs en provenance du serveur.
+	useEffect( () =>
 	{
-		setIsLoading( true );
+		// On récupère d'abord une possible raison d'échec
+		//  ainsi que l'état associé.
+		const { success, reason } = updateState;
 
-		setTimeout( () =>
+		// On informe ensuite que le traitement est terminé.
+		setLoading( false );
+
+		// On réinitialise après le formulaire après un succès.
+		if ( success )
+		{
+			form.reset();
+		}
+
+		// On affiche enfin le message correspondant si une raison
+		//  a été fournie.
+		if ( reason !== "" )
 		{
 			toast( {
-				title: "Vous avez soumis les informations suivantes :",
-				description: (
-					<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-						<code className="text-white">
-							{JSON.stringify( data, null, 4 )}
-						</code>
-					</pre>
-				)
+				title: success
+					? "Action nécessaire"
+					: "Authentification échouée",
+				variant: success ? "default" : "destructive",
+				description: reason
 			} );
-
-			setIsLoading( false );
-		}, 3000 );
-	};
+		}
+	}, [ toast, form, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
 		<Form {...form}>
 			<form
-				onSubmit={form.handleSubmit( updateProfile )}
+				action={updateAction}
+				onSubmit={() => setLoading( true )}
 				className="space-y-8"
 			>
 				{/* Nom d'utilisateur */}
@@ -162,12 +177,8 @@ export default function Profile( { session }: { session: Session } )
 								<Input
 									{...field}
 									type="file"
-									accept=".png,.jpg,.jpeg"
-									disabled={isLoading}
-									onChange={( event ) => field.onChange(
-										event.target.files
-												&& event.target.files[ 0 ]
-									)}
+									accept=".png,.jpg,.jpeg,.webp"
+									disabled={loading}
 									className="file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
 								/>
 							</FormControl>
@@ -176,8 +187,8 @@ export default function Profile( { session }: { session: Session } )
 								Vous pouvez mettre à jour l&lsquo;avatar utilisé
 								pour votre compte utilisateur.{" "}
 								<strong>
-									Les avatars ne doivent pas dépasser 2 Mo et
-									doivent être au format PNG ou JPEG.
+									Les avatars ne doivent pas dépasser 5 Mo et
+									doivent être au format PNG, JPEG ou WEBP.
 								</strong>
 							</FormDescription>
 
@@ -187,8 +198,8 @@ export default function Profile( { session }: { session: Session } )
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading} className="max-sm:w-full">
-					{isLoading ? (
+				<Button disabled={loading} className="max-sm:w-full">
+					{loading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							Mise à jour...
