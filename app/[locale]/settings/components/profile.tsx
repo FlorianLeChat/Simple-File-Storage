@@ -15,8 +15,8 @@ import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
 import { useState, useEffect } from "react";
 
-import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
 import { useToast } from "../../components/ui/use-toast";
 import { Form,
 	FormItem,
@@ -58,10 +58,11 @@ export default function Profile( { session }: { session: Session } )
 		// On informe ensuite que le traitement est terminé.
 		setLoading( false );
 
-		// On réinitialise après le formulaire après un succès.
+		// On réinitialise après une partie du formulaire
+		//  en cas de succès.
 		if ( success )
 		{
-			form.reset();
+			form.resetField( "avatar" );
 		}
 
 		// On affiche enfin le message correspondant si une raison
@@ -69,9 +70,7 @@ export default function Profile( { session }: { session: Session } )
 		if ( reason !== "" )
 		{
 			toast( {
-				title: success
-					? "Action nécessaire"
-					: "Authentification échouée",
+				title: success ? "Action nécessaire" : "Mise à jour échouée",
 				variant: success ? "default" : "destructive",
 				description: reason
 			} );
