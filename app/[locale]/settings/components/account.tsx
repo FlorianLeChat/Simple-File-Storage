@@ -4,22 +4,21 @@
 
 "use client";
 
-import * as z from "zod";
 import schema from "@/schemas/account";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
 import { useLocale } from "next-intl";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
+import { useState, useEffect } from "react";
 import { Languages, Lock, Contact, Loader2, RefreshCw } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
-import { toast } from "../../components/ui/use-toast";
 import { Select,
 	SelectItem,
 	SelectValue,
 	SelectContent,
 	SelectTrigger } from "../../components/ui/select";
+import { useToast } from "../../components/ui/use-toast";
 import { Tooltip,
 	TooltipTrigger,
 	TooltipContent,
@@ -31,6 +30,7 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
+import { updateAccount } from "../account/actions";
 import { Button, buttonVariants } from "../../components/ui/button";
 
 // Déclaration des langues disponibles.
@@ -41,21 +41,29 @@ const languages = [
 
 export default function Account( { session }: { session: Session } )
 {
+	// Déclaration des constantes.
+	const { toast } = useToast();
+	const formState = {
+		success: true,
+		reason: ""
+	};
+
 	// Déclaration des variables d'état.
-	const [ isLoading, setIsLoading ] = useState( false );
+	const [ loading, setLoading ] = useState( false );
+	const [ updateState, updateAction ] = useFormState( updateAccount, formState );
 	const [ passwordType, setPasswordType ] = useState( "text" );
 
 	// Déclaration des constantes.
-	const locale = useLocale() as "en" | "fr";
+	const locale = useLocale();
 	const characters =
 		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
+	const form = useForm( {
 		defaultValues: {
 			username: session.user?.name ?? "",
-			language: locale
+			language: locale,
+			password: ""
 		}
 	} );
 
@@ -77,35 +85,41 @@ export default function Account( { session }: { session: Session } )
 		);
 	};
 
-	// Mise à jour des informations.
-	const updateAccount = ( data: z.infer<typeof schema> ) =>
+	// Affichage des erreurs en provenance du serveur.
+	useEffect( () =>
 	{
-		setIsLoading( true );
+		// On récupère d'abord une possible raison d'échec
+		//  ainsi que l'état associé.
+		const { success, reason } = updateState;
 
-		document.cookie = `NEXT_LOCALE=${ data.language }; path=/`;
+		// On informe ensuite que le traitement est terminé.
+		setLoading( false );
 
-		setTimeout( () =>
+		// On réinitialise après une partie du formulaire
+		//  en cas de succès.
+		if ( success )
+		{
+			form.resetField( "password" );
+		}
+
+		// On affiche enfin le message correspondant si une raison
+		//  a été fournie.
+		if ( reason !== "" )
 		{
 			toast( {
-				title: "Vous avez soumis les informations suivantes :",
-				description: (
-					<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-						<code className="text-white">
-							{JSON.stringify( data, null, 4 )}
-						</code>
-					</pre>
-				)
+				title: success ? "Action nécessaire" : "Mise à jour échouée",
+				variant: success ? "default" : "destructive",
+				description: reason
 			} );
-
-			setIsLoading( false );
-		}, 3000 );
-	};
+		}
+	}, [ toast, form, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
 		<Form {...form}>
 			<form
-				onSubmit={form.handleSubmit( updateAccount )}
+				action={updateAction}
+				onSubmit={() => setLoading( true )}
 				className="space-y-8"
 			>
 				{/* Nom d'affichage */}
@@ -141,7 +155,8 @@ export default function Account( { session }: { session: Session } )
 								Ceci est le nom d&lsquo;utilisateur qui sera
 								affiché publiquement sur votre profil et dans la
 								recherche d&lsquo;utilisateurs pour partager des
-								fichiers.
+								fichiers. Cela peut être votre nom complet ou un
+								simple pseudonyme.
 							</FormDescription>
 
 							<FormMessage />
@@ -162,6 +177,7 @@ export default function Account( { session }: { session: Session } )
 
 							<FormControl>
 								<Select
+									{...field}
 									defaultValue={field.value}
 									onValueChange={field.onChange}
 								>
@@ -219,11 +235,13 @@ export default function Account( { session }: { session: Session } )
 											type={passwordType}
 											onKeyDown={() => setPasswordType( "password" )}
 											minLength={
-												schema.shape.password
+												schema.shape.password._def
+													.options[ 0 ]
 													.minLength as number
 											}
 											maxLength={
-												schema.shape.password
+												schema.shape.password._def
+													.options[ 0 ]
 													.maxLength as number
 											}
 											spellCheck="false"
@@ -282,8 +300,8 @@ export default function Account( { session }: { session: Session } )
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading} className="max-sm:w-full">
-					{isLoading ? (
+				<Button disabled={loading} className="max-sm:w-full">
+					{loading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							Mise à jour...

@@ -55,10 +55,7 @@ export default function UserMenu( { session }: { session: Session } )
 	const admin = session.user?.role === "admin";
 	const router = useRouter();
 	const fullName = session.user?.name;
-	const shortName =
-		fullName?.split( " " ).map( ( word ) => word[ 0 ] )
-		?? email?.slice( 0, 2 ).toUpperCase()
-		?? "SFS";
+	const shortName = ( fullName ?? email )?.slice( 0, 2 ).toUpperCase() ?? "SFS";
 
 	// Déclaration des variables d'état.
 	const [ open, setOpen ] = useState( false );

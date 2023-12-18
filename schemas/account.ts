@@ -11,7 +11,7 @@ const schema = z.object( {
 	language: z.enum( [ "en", "fr" ] ),
 
 	// Mot de passe.
-	password: z.string().min( 10 ).max( 100 )
+	password: z.string().min( 10 ).max( 100 ).or( z.literal( "" ) )
 } );
 
 export default schema;
