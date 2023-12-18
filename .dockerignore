@@ -1,0 +1,12 @@
+**/*.md
+**/*.d.ts
+**/.next
+**/.git*
+**/.dockerignore
+**/.editorconfig
+**/.gitattributes
+**/node_modules
+**/Dockerfile
+**/docker-*
+**/CODEOWNERS
+**/LICENSE
