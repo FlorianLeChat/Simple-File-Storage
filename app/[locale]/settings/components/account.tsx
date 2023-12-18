@@ -54,7 +54,7 @@ export default function Account( { session }: { session: Session } )
 	const form = useForm<z.infer<typeof schema>>( {
 		resolver: zodResolver( schema ),
 		defaultValues: {
-			realname: session.user?.name ?? "",
+			username: session.user?.name ?? "",
 			language: locale
 		}
 	} );
@@ -110,24 +110,24 @@ export default function Account( { session }: { session: Session } )
 			>
 				{/* Nom d'affichage */}
 				<FormField
-					name="realname"
+					name="username"
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel>
 								<Contact className="mr-2 inline h-6 w-6" />
-								Nom d&lsquo;affichage
+								Nom d&lsquo;utilisateur
 							</FormLabel>
 
 							<FormControl>
 								<Input
 									{...field}
 									minLength={
-										schema.shape.realname
+										schema.shape.username
 											.minLength as number
 									}
 									maxLength={
-										schema.shape.realname
+										schema.shape.username
 											.maxLength as number
 									}
 									spellCheck="false"
@@ -138,9 +138,10 @@ export default function Account( { session }: { session: Session } )
 							</FormControl>
 
 							<FormDescription>
-								Ceci est le nom qui sera affiché publiquement
-								sur votre profil et dans la recherche
-								d&lsquo;utilisateurs pour partager des fichiers.
+								Ceci est le nom d&lsquo;utilisateur qui sera
+								affiché publiquement sur votre profil et dans la
+								recherche d&lsquo;utilisateurs pour partager des
+								fichiers.
 							</FormDescription>
 
 							<FormMessage />

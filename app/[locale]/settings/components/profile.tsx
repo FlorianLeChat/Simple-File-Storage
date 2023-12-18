@@ -47,8 +47,8 @@ export default function Profile( { session }: { session: Session } )
 	const form = useForm<z.infer<typeof schema>>( {
 		resolver: zodResolver( schema ),
 		defaultValues: {
-			email: session.user?.email ?? "",
-			username: session.user?.name ?? session.user?.id
+			email: session.user?.email,
+			avatar: ""
 		}
 	} );
 
@@ -82,47 +82,28 @@ export default function Profile( { session }: { session: Session } )
 				className="space-y-8"
 			>
 				{/* Nom d'utilisateur */}
-				<FormField
-					name="username"
-					control={form.control}
-					render={( { field } ) => (
-						<FormItem>
-							<FormLabel>
-								<WholeWord className="mr-2 inline h-6 w-6" />
-								Nom d&lsquo;utilisateur
-							</FormLabel>
+				<FormItem>
+					<FormLabel>
+						<Fingerprint className="mr-2 inline h-6 w-6" />
+						Identifiant unique
+					</FormLabel>
 
-							<FormControl>
-								<Input
-									{...field}
-									disabled={isLoading}
-									minLength={
-										schema.shape.username
-											.minLength as number
-									}
-									maxLength={
-										schema.shape.username
-											.maxLength as number
-									}
-									spellCheck="false"
-									placeholder="john-doe"
-									autoComplete="username"
-									autoCapitalize="off"
-								/>
-							</FormControl>
+					<FormControl>
+						<Input value={session.user.id} disabled />
+					</FormControl>
 
-							<FormDescription>
-								Ceci est votre pseudonyme unique, il peut
-								s&lsquo;agir de votre nom réel ou d&lsquo;un
-								pseudonyme. Vous ne pouvez le changer
-								qu&lsquo;une fois tous les 30 jours. Personne ne
-								peut le voir sauf vous.
-							</FormDescription>
+					<FormDescription>
+						Ceci est votre identifiant unique, il est utilisé pour
+						vous identifier sur le site et pour accéder aux
+						ressources publiques qui vous sont associées.{" "}
+						<strong>
+							Vous pouvez demander son changement en contactant
+							l&lsquo;administrateur du site.
+						</strong>
+					</FormDescription>
 
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
+					<FormMessage />
+				</FormItem>
 
 				{/* Adresse électronique */}
 				<FormField
