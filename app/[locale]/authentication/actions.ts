@@ -1,6 +1,6 @@
 //
 // Actions du serveur pour le formulaire d'inscription et de connexion.
-//  Source :https://nextjs.org/docs/app/api-reference/functions/server-actions
+//  Source : https://github.com/nextauthjs/next-auth/blob/87b037f0560c09ee186e8c0b50ae368bbff40cbe/packages/core/src/lib/pages/signin.tsx#L7-L21
 //
 
 "use server";
@@ -30,7 +30,7 @@ export async function signUpAccount(
 		//  on affiche un message d'erreur sur la page d'authentification.
 		return {
 			success: false,
-			reason: result.error.issues[ 0 ].message
+			reason: "form.errors.invalid"
 		};
 	}
 
@@ -48,7 +48,7 @@ export async function signUpAccount(
 		//  électronique fournie est déjà utilisée.
 		return {
 			success: false,
-			reason: "OAuthAccountNotLinked"
+			reason: "form.errors.email_used"
 		};
 	}
 
@@ -78,7 +78,7 @@ export async function signUpAccount(
 			//  d'erreur sur la page d'authentification.
 			return {
 				success: false,
-				reason: "EmailSignin"
+				reason: "form.errors.email_error"
 			};
 		}
 	}
@@ -87,7 +87,7 @@ export async function signUpAccount(
 	//  qu'il puisse valider son adresse électronique.
 	return {
 		success: true,
-		reason: "ValidationRequired"
+		reason: "form.info.email_validation"
 	};
 }
 
@@ -126,7 +126,7 @@ export async function signInAccount(
 		//  on affiche un message d'erreur sur la page d'authentification.
 		return {
 			success: false,
-			reason: result.error.issues[ 0 ].message
+			reason: "form.errors.generic"
 		};
 	}
 
@@ -144,7 +144,9 @@ export async function signInAccount(
 
 		return {
 			success: !!response,
-			reason: response ? "ValidationRequired" : "EmailSignin"
+			reason: response
+				? "form.info.email_validation"
+				: "form.errors.email_error"
 		};
 	}
 
@@ -165,7 +167,7 @@ export async function signInAccount(
 		//  d'authentification.
 		return {
 			success: false,
-			reason: "CredentialsSignin"
+			reason: "form.errors.invalid"
 		};
 	}
 
@@ -173,7 +175,7 @@ export async function signInAccount(
 	//  ne correspondant à aucun des cas précédents.
 	return {
 		success: false,
-		reason: "CredentialsSignin"
+		reason: "form.errors.invalid"
 	};
 }
 
