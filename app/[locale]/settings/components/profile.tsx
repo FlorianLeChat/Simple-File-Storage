@@ -18,17 +18,8 @@ import { Trash,
 	FileImage,
 	PlusCircleIcon } from "lucide-react";
 
+import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
-import { toast } from "../../components/ui/use-toast";
-import { Select,
-	SelectItem,
-	SelectValue,
-	SelectContent,
-	SelectTrigger } from "../../components/ui/select";
-import { Tooltip,
-	TooltipTrigger,
-	TooltipContent,
-	TooltipProvider } from "../../components/ui/tooltip";
 import { Form,
 	FormItem,
 	FormLabel,
@@ -36,7 +27,6 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
-import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function Profile( { session }: { session: Session } )
 {
@@ -119,62 +109,20 @@ export default function Profile( { session }: { session: Session } )
 							<FormControl
 								className={session.user.oauth ? "hidden" : ""}
 							>
-								<div className="flex gap-2 max-sm:flex-wrap">
-									<TooltipProvider>
-										<Select
-											defaultValue={field.value}
-											onValueChange={field.onChange}
-										>
-											<SelectTrigger
-												id="email"
-												aria-controls="email"
-											>
-												<SelectValue />
-											</SelectTrigger>
-
-											<SelectContent>
-												<SelectItem value={field.value}>
-													{field.value}
-												</SelectItem>
-											</SelectContent>
-										</Select>
-
-										<Tooltip>
-											<TooltipTrigger
-												type="button"
-												disabled={isLoading}
-												className={buttonVariants( {
-													size: "icon",
-													variant: "outline"
-												} )}
-											>
-												<PlusCircleIcon className="h-4 w-4" />
-											</TooltipTrigger>
-
-											<TooltipContent>
-												Ajouter une adresse électronique
-											</TooltipContent>
-										</Tooltip>
-
-										<Tooltip>
-											<TooltipTrigger
-												type="button"
-												disabled={isLoading}
-												className={buttonVariants( {
-													size: "icon",
-													variant: "outline"
-												} )}
-											>
-												<Trash className="h-4 w-4" />
-											</TooltipTrigger>
-
-											<TooltipContent>
-												Supprimer cette adresse
-												électronique
-											</TooltipContent>
-										</Tooltip>
-									</TooltipProvider>
-								</div>
+								<Input
+									{...field}
+									disabled={loading}
+									minLength={
+										schema.shape.email.minLength as number
+									}
+									maxLength={
+										schema.shape.email.maxLength as number
+									}
+									spellCheck="false"
+									placeholder="name@example.com"
+									autoComplete="email"
+									autoCapitalize="off"
+								/>
 							</FormControl>
 
 							{session.user.oauth ? (
@@ -186,11 +134,11 @@ export default function Profile( { session }: { session: Session } )
 								</FormDescription>
 							) : (
 								<FormDescription>
-									Ceci est la liste des adresses électroniques
-									associées à votre compte. Vous pouvez en
-									ajouter ou en supprimer à tout moment.
-									Chacune de ses adresses électroniques peut
-									être utilisée pour vous connecter au site.
+									Ceci est l&lsquo;adresse électronique
+									associée à votre compte. Elle est
+									indispensable pour vous connecter à votre
+									compte et recevoir les notifications via
+									courriel.
 								</FormDescription>
 							)}
 
