@@ -203,7 +203,7 @@ export default function UserMenu( { session }: { session: Session } )
 						</span>
 
 						<span className="block text-xs text-muted-foreground">
-							{email ?? ""}
+							{email}
 						</span>
 
 						<span
