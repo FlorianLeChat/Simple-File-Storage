@@ -3,10 +3,10 @@
 //
 
 // Importation des dépendances.
+import { readdir } from "fs/promises";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { lazy, type ReactNode } from "react";
-import { promises as fileSystem } from "fs";
 import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
@@ -46,7 +46,7 @@ export default async function Layout( {
 	// Récupération de l'avatar utilisateur.
 	if ( !session.user?.image )
 	{
-		const avatar = await fileSystem.readdir( "./public/avatars" );
+		const avatar = await readdir( "./public/avatars" );
 
 		if ( avatar.length > 0 )
 		{
