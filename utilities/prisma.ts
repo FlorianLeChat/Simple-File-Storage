@@ -4,28 +4,25 @@
 //
 import { PrismaClient } from "@prisma/client";
 
-declare global {
-	// Déclaration des variables globales.
-	// eslint-disable-next-line vars-on-top, no-var
-	var prisma: PrismaClient;
-}
-
 // Récupération et mise en mémoire du client Prisma.
-// eslint-disable-next-line import/no-mutable-exports
-let prisma: PrismaClient;
+let cache: PrismaClient;
 
 if ( process.env.NODE_ENV === "production" )
 {
-	prisma = new PrismaClient();
+	cache = new PrismaClient();
 }
 else
 {
 	if ( !global.prisma )
 	{
-		global.prisma = new PrismaClient();
+		global.prisma = {
+			client: new PrismaClient()
+		};
 	}
 
-	prisma = global.prisma;
+	cache = global.prisma.client;
 }
 
-export default prisma;
+// Exportation du client Prisma.
+const client: PrismaClient = cache;
+export default client;
