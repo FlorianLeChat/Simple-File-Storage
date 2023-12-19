@@ -8,6 +8,7 @@
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
 import { redirect } from "next/navigation";
+import { AuthError } from "next-auth";
 import { auth, signIn, signOut } from "@/utilities/next-auth";
 
 //
@@ -171,14 +172,17 @@ export async function signInAccount(
 		};
 	}
 
+	let response;
+
 	try
 	{
 		// Dans le cas contraire, on tente alors une authentification via
 		//  les informations d'authentification fournies avant de rediriger
 		//  l'utilisateur vers la page de son tableau de bord.
-		await signIn( "credentials", {
+		response = await signIn( "credentials", {
 			email: result.data.email,
 			password: result.data.password,
+			redirect: false, // https://github.com/vercel/next.js/issues/55586
 			redirectTo: "/dashboard"
 		} );
 	}
@@ -186,10 +190,18 @@ export async function signInAccount(
 	{
 		// En cas d'erreur, on affiche un message d'erreur sur la page
 		//  d'authentification.
-		return {
-			success: false,
-			reason: "form.errors.invalid"
-		};
+		if ( error instanceof AuthError )
+		{
+			return {
+				success: false,
+				reason: "form.errors.generic"
+			};
+		}
+	}
+
+	if ( response )
+	{
+		redirect( response );
 	}
 
 	// On retourne enfin un message d'erreur par défaut au l'utilisateur
