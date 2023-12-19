@@ -336,7 +336,7 @@ export default function Authentification()
 						<FormField
 							name="remembered"
 							control={form.control}
-							render={() => (
+							render={( { field } ) => (
 								<FormItem>
 									<FormLabel className="sr-only">
 										Se souvenir de moi
@@ -345,11 +345,14 @@ export default function Authentification()
 									<FormControl>
 										<div className="flex items-center justify-center space-x-2">
 											<Switch
-												id="remember-me"
+												id="remembered"
+												name="remembered"
+												checked={field.value}
 												disabled={loading}
+												onCheckedChange={field.onChange}
 											/>
 
-											<Label htmlFor="remember-me">
+											<Label htmlFor="remembered">
 												Se souvenir de moi
 											</Label>
 										</div>
