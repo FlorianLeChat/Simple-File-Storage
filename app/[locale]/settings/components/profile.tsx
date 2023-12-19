@@ -43,7 +43,7 @@ export default function Profile( { session }: { session: Session } )
 	// Déclaration du formulaire.
 	const form = useForm( {
 		defaultValues: {
-			email: session.user?.email ?? "",
+			email: session.user.email ?? "",
 			avatar: ""
 		}
 	} );

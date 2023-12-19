@@ -44,7 +44,7 @@ export default async function Layout( {
 	}
 
 	// Récupération de l'avatar utilisateur.
-	if ( !session.user?.image )
+	if ( !session.user.image )
 	{
 		const avatar = await readdir( "./public/avatars" );
 
