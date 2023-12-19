@@ -7,7 +7,8 @@
 
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
-import { signIn, signOut } from "@/utilities/next-auth";
+import { redirect } from "next/navigation";
+import { auth, signIn, signOut } from "@/utilities/next-auth";
 
 //
 // Enregistrement d'un nouveau compte utilisateur.
@@ -17,8 +18,18 @@ export async function signUpAccount(
 	formData: FormData
 )
 {
-	// On tente d'abord de valider les informations d'authentification
-	//  fournies par l'utilisateur.
+	// On récupère d'abord la session de l'utilisateur.
+	const session = await auth();
+
+	if ( session )
+	{
+		// Si la session existe, on redirige l'utilisateur vers la page
+		//  de son tableau de bord.
+		return redirect( "/dashboard" );
+	}
+
+	// On tente de valider les informations d'authentification fournies
+	//  par l'utilisateur.
 	const result = schema.safeParse( {
 		email: formData.get( "email" ),
 		password: ""
@@ -99,8 +110,18 @@ export async function signInAccount(
 	formData: FormData
 )
 {
-	// On vérifie d'abord si l'utilisateur a tenté de se connecter via
-	//  un fournisseur d'authentification externe.
+	// On récupère d'abord la session de l'utilisateur.
+	const session = await auth();
+
+	if ( session )
+	{
+		// Si la session existe, on redirige l'utilisateur vers la page
+		//  de son tableau de bord.
+		return redirect( "/dashboard" );
+	}
+
+	// On vérifie si l'utilisateur a tenté de se connecter via
+	//  fournisseur d'authentification externe.
 	const provider = formData.get( "provider" );
 
 	if ( provider )
