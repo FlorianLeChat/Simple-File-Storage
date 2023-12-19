@@ -6,17 +6,17 @@
 
 import Link from "next/link";
 import schema from "@/schemas/authentication";
+import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import { useFormState } from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { useState, useEffect } from "react";
-import { Loader2, Mail, KeyRound } from "lucide-react";
+import { Eye, EyeOff, Loader2, Mail, KeyRound } from "lucide-react";
 
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
-import { Button } from "./ui/button";
 import { useToast } from "./ui/use-toast";
 import { Separator } from "./ui/separator";
 import { Form,
@@ -26,6 +26,11 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "./ui/form";
+import { Tooltip,
+	TooltipTrigger,
+	TooltipContent,
+	TooltipProvider } from "./ui/tooltip";
+import { buttonVariants, Button } from "./ui/button";
 import { signUpAccount, signInAccount } from "../authentication/actions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
@@ -43,6 +48,7 @@ export default function Authentification()
 	const [ loading, setLoading ] = useState( false );
 	const [ signUpState, signUpAction ] = useFormState( signUpAccount, formState );
 	const [ signInState, signInAction ] = useFormState( signInAccount, formState );
+	const [ passwordType, setPasswordType ] = useState( "password" );
 
 	// Déclaration du formulaire.
 	const form = useForm( {
@@ -245,33 +251,75 @@ export default function Authentification()
 									</FormLabel>
 
 									<FormControl>
-										<Input
-											{...field}
-											id="password"
-											type="password"
-											onBlur={() => setFocused(
-												field.value?.length !== 0
-											)}
-											onFocus={() => setFocused( true )}
-											disabled={loading}
-											className={`transition-opacity ${
-												!focused && "opacity-25"
-											}`}
-											minLength={
-												schema.shape.password._def
-													.options[ 0 ]
-													.minLength as number
-											}
-											maxLength={
-												schema.shape.password._def
-													.options[ 0 ]
-													.maxLength as number
-											}
-											spellCheck="false"
-											placeholder="password"
-											autoComplete="current-password"
-											autoCapitalize="off"
-										/>
+										<div className="flex gap-2">
+											<TooltipProvider>
+												<Input
+													{...field}
+													type={passwordType}
+													onBlur={() => setFocused(
+														field.value
+															?.length !== 0
+													)}
+													onFocus={() => setFocused( true )}
+													disabled={loading}
+													className={`transition-opacity ${
+														!focused && "opacity-25"
+													}`}
+													minLength={
+														schema.shape.password
+															._def.options[ 0 ]
+															.minLength as number
+													}
+													maxLength={
+														schema.shape.password
+															._def.options[ 0 ]
+															.maxLength as number
+													}
+													spellCheck="false"
+													placeholder="password"
+													autoComplete="current-password"
+													autoCapitalize="off"
+												/>
+
+												<Tooltip>
+													<TooltipTrigger
+														type="button"
+														className={merge(
+															`transition-opacity ${
+																!focused
+																&& "opacity-25"
+															}`,
+															buttonVariants( {
+																size: "icon",
+																variant:
+																	"outline"
+															} )
+														)}
+														onClick={() =>
+														{
+															setPasswordType(
+																passwordType
+																	=== "password"
+																	? "text"
+																	: "password"
+															);
+														}}
+													>
+														{( passwordType
+															=== "password" && (
+															<Eye className="h-4 w-4" />
+														) ) || (
+															<EyeOff className="h-4 w-4" />
+														)}
+													</TooltipTrigger>
+
+													<TooltipContent>
+														Voir ou masquer le mot
+														de passe
+													</TooltipContent>
+												</Tooltip>
+											</TooltipProvider>
+										</div>
 									</FormControl>
 
 									<FormDescription className="sr-only">
