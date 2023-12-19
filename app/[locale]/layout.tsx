@@ -44,6 +44,8 @@ export async function generateMetadata(): Promise<
 	const folderPath = join( process.cwd(), "public/data" );
 	const filePath = join( folderPath, "metadata.json" );
 
+	mkdir( folderPath, { recursive: true } );
+
 	if ( existsSync( filePath ) )
 	{
 		return JSON.parse( await readFile( filePath, "utf8" ) ) as Metadata & {
@@ -159,9 +161,8 @@ export async function generateMetadata(): Promise<
 		}
 	};
 
-	// On créé enfin les dossiers nécessaires pour enregistrer
-	//  les métadonnées dans un fichier JSON avant de les retourner.
-	mkdir( folderPath, { recursive: true } );
+	// On enregistre enfin les métadonnées dans un fichier JSON
+	//  avant de les retourner.
 	writeFile( filePath, JSON.stringify( metadata ) );
 
 	return metadata;
