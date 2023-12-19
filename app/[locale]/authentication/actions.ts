@@ -7,6 +7,7 @@
 
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { auth, signIn, signOut } from "@/utilities/next-auth";
@@ -139,7 +140,8 @@ export async function signInAccount(
 	//  d'authentification fournies par l'utilisateur.
 	const result = schema.safeParse( {
 		email: formData.get( "email" ),
-		password: formData.get( "password" )
+		password: formData.get( "password" ),
+		remembered: formData.get( "remembered" ) === "on"
 	} );
 
 	if ( !result.success )
@@ -201,6 +203,23 @@ export async function signInAccount(
 
 	if ( response )
 	{
+		// Lorsqu'une réponse semble avoir été récupérée précédemment,
+		//  on tente alors de mettre à jour la durée de vie du cookie
+		//  d'authentification de l'utilisateur avant de le rediriger
+		//  vers la page de la réponse.
+		//   Source : https://github.com/nextauthjs/next-auth/discussions/3794
+		const cookiesList = cookies();
+		const authCookie = cookiesList.get( "authjs.session-token" );
+
+		if ( authCookie )
+		{
+			cookiesList.set( {
+				// https://github.com/nextauthjs/next-auth/blob/065b7e9d9b8d046758e381c88ef351e65764ea5f/packages/core/src/index.ts#L238-L243
+				...authCookie,
+				maxAge: 24 * 60 * 60 * ( result.data.remembered ? 30 : 1 )
+			} );
+		}
+
 		redirect( response );
 	}
 

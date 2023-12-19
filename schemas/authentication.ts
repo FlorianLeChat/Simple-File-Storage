@@ -11,7 +11,7 @@ const schema = z.object( {
 	password: z.string().min( 10 ).max( 60 ).or( z.literal( "" ) ),
 
 	// Se souvenir de moi.
-	remembered: z.boolean().optional()
+	remembered: z.boolean()
 } );
 
 export default schema;
