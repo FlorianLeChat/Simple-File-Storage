@@ -46,7 +46,7 @@ function html( parameters: { url: string; host: string } )
 
 		<tr>
 			<td align="center" style="padding: 0px 0px 10px 0px; font-size: 16px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: ${ colors.text };">
-				Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce courriel.
+				<strong>Ce lien est valable 30 minutes.</strong> Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce courriel.
 			</td>
 		</tr>
 	</table>
