@@ -11,9 +11,10 @@ import "@total-typescript/ts-reset";
 
 // Importation des dépendances.
 import { join } from "path";
+import { existsSync } from "fs";
 import { Inter, Poppins, Roboto } from "next/font/google";
 import { unstable_setRequestLocale } from "next-intl/server";
-import { promises as fileSystem, existsSync } from "fs";
+import { mkdir, readFile, writeFile } from "fs/promises";
 import { Suspense, lazy, type ReactNode, type CSSProperties } from "react";
 
 // Importation des types.
@@ -40,13 +41,14 @@ export async function generateMetadata(): Promise<
 {
 	// On vérifie d'abord si les métadonnées sont déjà enregistrées
 	//  dans le cache du système de fichiers.
-	const path = `${ join( process.cwd(), "public/data" ) }/metadata.json`;
+	const folderPath = join( process.cwd(), "public/data" );
+	const filePath = join( folderPath, "metadata.json" );
 
-	if ( existsSync( path ) )
+	if ( existsSync( filePath ) )
 	{
-		return JSON.parse(
-			await fileSystem.readFile( path, "utf8" )
-		) as Metadata & { source: string };
+		return JSON.parse( await readFile( filePath, "utf8" ) ) as Metadata & {
+			source: string;
+		};
 	}
 
 	// On récupère ensuite les informations du dépôt GitHub,
@@ -82,7 +84,7 @@ export async function generateMetadata(): Promise<
 			? repository.homepage
 			: `http://localhost:3000${ process.env.__NEXT_ROUTER_BASEPATH }`;
 
-	// On retourne enfin les métadonnées récupérées récemment
+	// On retourne également les métadonnées récupérées récemment
 	//  avant de les enregistrer dans un fichier JSON.
 	const metadata = {
 		// Métadonnées du document.
@@ -157,7 +159,10 @@ export async function generateMetadata(): Promise<
 		}
 	};
 
-	await fileSystem.writeFile( path, JSON.stringify( metadata ) );
+	// On créé enfin les dossiers nécessaires pour enregistrer
+	//  les métadonnées dans un fichier JSON avant de les retourner.
+	mkdir( folderPath, { recursive: true } );
+	writeFile( filePath, JSON.stringify( metadata ) );
 
 	return metadata;
 }

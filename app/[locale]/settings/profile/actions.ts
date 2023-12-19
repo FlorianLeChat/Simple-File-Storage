@@ -7,7 +7,7 @@
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/profile";
 import { auth } from "@/utilities/next-auth";
-import { promises as fileSystem } from "fs";
+import { mkdir, writeFile } from "fs/promises";
 
 //
 // Mise à jour des informations du profil utilisateur.
@@ -83,8 +83,8 @@ export async function updateProfile(
 			const folderPath = "./public/avatars";
 			const filePath = `${ folderPath }/${ session.user.id }.${ type }`;
 
-			await fileSystem.mkdir( folderPath, { recursive: true } );
-			await fileSystem.writeFile(
+			await mkdir( folderPath, { recursive: true } );
+			await writeFile(
 				filePath,
 				new Uint8Array( await avatar.arrayBuffer() )
 			);
