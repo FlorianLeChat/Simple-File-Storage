@@ -47,6 +47,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 		// Authentification via courriel.
 		Email( {
 			from: process.env.SMTP_USERNAME,
+			maxAge: 1800,
 			sendVerificationRequest,
 			server: {
 				secure: process.env.SMTP_PORT === "465",
