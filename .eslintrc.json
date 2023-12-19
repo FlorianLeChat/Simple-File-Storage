@@ -36,7 +36,6 @@
 		"import/no-extraneous-dependencies": "off",
 
 		"@typescript-eslint/no-shadow": "error",
-		"@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "IntlMessages" }], // https://next-intl-docs.vercel.app/docs/workflows/typescript
 
 		"react/no-danger": "off", // https://github.com/pacocoursey/next-themes/blob/cd67bfa20ef6ea78a814d65625c530baae4075ef/packages/next-themes/src/index.tsx#L267
 		"react/jsx-indent": ["error", "tab"],
