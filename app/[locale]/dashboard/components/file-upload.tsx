@@ -106,7 +106,7 @@ export default function FileUpload()
 						<FormField
 							name="upload"
 							control={form.control}
-							render={( { field } ) => (
+							render={() => (
 								<FormItem>
 									<FormLabel className="sr-only">
 										Fichiers à téléverser
@@ -114,7 +114,6 @@ export default function FileUpload()
 
 									<FormControl>
 										<Input
-											{...field}
 											type="file"
 											accept="image/*,video/*,audio/*"
 											multiple

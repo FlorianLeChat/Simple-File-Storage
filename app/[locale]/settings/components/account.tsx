@@ -61,7 +61,7 @@ export default function Account( { session }: { session: Session } )
 	// Déclaration du formulaire.
 	const form = useForm( {
 		defaultValues: {
-			username: session.user?.name ?? "",
+			username: session.user.name ?? "",
 			language: locale,
 			password: ""
 		}

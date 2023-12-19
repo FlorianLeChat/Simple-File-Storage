@@ -75,7 +75,7 @@ export default async function Page( {
 	}
 
 	// Récupération de l'avatar utilisateur.
-	if ( !session.user?.image )
+	if ( !session.user.image )
 	{
 		const avatar = await readdir( "./public/avatars" );
 
