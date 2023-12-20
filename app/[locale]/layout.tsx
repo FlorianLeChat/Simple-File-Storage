@@ -101,34 +101,34 @@ export async function generateMetadata(): Promise<
 		icons: {
 			icon: [
 				{
-					url: "assets/favicons/16x16.webp",
+					url: `${ url }/assets/favicons/16x16.webp`,
 					type: "image/webp",
 					sizes: "16x16"
 				},
 				{
-					url: "assets/favicons/32x32.webp",
+					url: `${ url }/assets/favicons/32x32.webp`,
 					type: "image/webp",
 					sizes: "32x32"
 				},
 				{
-					url: "assets/favicons/48x48.webp",
+					url: `${ url }/assets/favicons/48x48.webp`,
 					type: "image/webp",
 					sizes: "48x48"
 				},
 				{
-					url: "assets/favicons/192x192.webp",
+					url: `${ url }/assets/favicons/192x192.webp`,
 					type: "image/webp",
 					sizes: "192x192"
 				},
 				{
-					url: "assets/favicons/512x512.webp",
+					url: `${ url }/assets/favicons/512x512.webp`,
 					type: "image/webp",
 					sizes: "512x512"
 				}
 			],
 			apple: [
 				{
-					url: "assets/favicons/180x180.webp",
+					url: `${ url }/assets/favicons/180x180.webp`,
 					type: "image/webp",
 					sizes: "180x180"
 				}
