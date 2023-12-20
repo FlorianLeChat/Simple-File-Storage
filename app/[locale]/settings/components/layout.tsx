@@ -6,18 +6,12 @@
 
 import * as z from "zod";
 import schema from "@/schemas/layout";
-import { Check,
-	SunMoon,
-	Loader2,
-	CaseUpper,
-	RefreshCw,
-	Paintbrush } from "lucide-react";
+import { Check, SunMoon, CaseUpper, RefreshCw, Paintbrush } from "lucide-react";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useEffect, type CSSProperties } from "react";
+import { useEffect, type CSSProperties } from "react";
 
-import { toast } from "../../components/ui/use-toast";
 import { Button } from "../../components/ui/button";
 import { Select,
 	SelectItem,
@@ -112,7 +106,6 @@ const colors = [
 export default function Layout()
 {
 	// Déclaration des variables d'état.
-	const [ isLoading, setIsLoading ] = useState( false );
 	const { font, theme, color, setFont, setTheme, setColor } = useLayout();
 
 	// Déclaration du formulaire.
@@ -128,27 +121,9 @@ export default function Layout()
 	// Mise à jour des informations.
 	const updateLayout = ( data: z.infer<typeof schema> ) =>
 	{
-		setIsLoading( true );
-
 		setFont( data.font );
 		setTheme( data.theme );
 		setColor( data.color );
-
-		setTimeout( () =>
-		{
-			toast( {
-				title: "Vous avez soumis les informations suivantes :",
-				description: (
-					<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-						<code className="text-white">
-							{JSON.stringify( data, null, 4 )}
-						</code>
-					</pre>
-				)
-			} );
-
-			setIsLoading( false );
-		}, 3000 );
 	};
 
 	// Mise à jour de l'état de montage du composant.
@@ -244,7 +219,6 @@ export default function Layout()
 														updateLayout
 													);
 												}}
-												disabled={isLoading}
 												className={merge(
 													"relative inline-flex h-9 w-9 flex-col items-center justify-center rounded-full border-2 text-xs",
 													field.value === value.name
@@ -348,7 +322,6 @@ export default function Layout()
 														updateLayout
 													);
 												}}
-												disabled={isLoading}
 											/>
 										</FormControl>
 
@@ -403,7 +376,6 @@ export default function Layout()
 														updateLayout
 													);
 												}}
-												disabled={isLoading}
 											/>
 										</FormControl>
 
@@ -430,18 +402,9 @@ export default function Layout()
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading} className="max-sm:w-full">
-					{isLoading ? (
-						<>
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Mise à jour...
-						</>
-					) : (
-						<>
-							<RefreshCw className="mr-2 h-4 w-4" />
-							Mettre à jour
-						</>
-					)}
+				<Button className="max-sm:w-full">
+					<RefreshCw className="mr-2 h-4 w-4" />
+					Mettre à jour
 				</Button>
 			</form>
 		</Form>
