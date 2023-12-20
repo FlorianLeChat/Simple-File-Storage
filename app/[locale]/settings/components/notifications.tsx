@@ -7,13 +7,16 @@
 import * as z from "zod";
 import schema from "@/schemas/notifications";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import serverAction from "@/utilities/recaptcha";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Session } from "next-auth";
+import { useFormState } from "react-dom";
+import { useState, useEffect } from "react";
 import { Loader2, RefreshCw, Bell, User2, EyeOff, Mail } from "lucide-react";
 
-import { toast } from "../../components/ui/use-toast";
 import { Switch } from "../../components/ui/switch";
 import { Button } from "../../components/ui/button";
+import { useToast } from "../../components/ui/use-toast";
 import { Form,
 	FormItem,
 	FormField,
@@ -21,48 +24,82 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
+import { updateNotifications } from "../notifications/actions";
 
-export default function Notifications()
+export default function Notifications( { session }: { session: Session } )
 {
+	// Déclaration des constantes.
+	const { toast } = useToast();
+	const formState = {
+		success: true,
+		reason: ""
+	};
+	const notifications = session.user.notifications.split( "+" );
+
 	// Déclaration des variables d'état.
-	const [ isLoading, setIsLoading ] = useState( false );
+	const [ push, setPush ] = useState( notifications[ 1 ] === "mail" );
+	const [ loading, setLoading ] = useState( false );
+	const [ updateState, updateAction ] = useFormState(
+		updateNotifications,
+		formState
+	);
 
 	// Déclaration du formulaire.
 	const form = useForm<z.infer<typeof schema>>( {
 		resolver: zodResolver( schema ),
 		defaultValues: {
-			push: false,
-			level: "all"
+			push: notifications[ 1 ] === "mail",
+			level: notifications[ 0 ] as "all" | "necessary" | "off"
 		}
 	} );
 
-	// Mise à jour des informations.
-	const updateNotifications = ( data: z.infer<typeof schema> ) =>
+	// Affichage des erreurs en provenance du serveur.
+	useEffect( () =>
 	{
-		setIsLoading( true );
-
-		setTimeout( () =>
+		// On vérifie d'abord si la variable d'état liée à l'action
+		//  du formulaire est encore définie.
+		if ( !updateState )
 		{
+			// Si ce n'est pas le cas, quelque chose s'est mal passé au
+			//  niveau du serveur.
+			setLoading( false );
+
 			toast( {
-				title: "Vous avez soumis les informations suivantes :",
-				description: (
-					<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-						<code className="text-white">
-							{JSON.stringify( data, null, 4 )}
-						</code>
-					</pre>
-				)
+				title: "form.errors.update_failed",
+				variant: "destructive",
+				description: "form.errors.server_error"
 			} );
 
-			setIsLoading( false );
-		}, 3000 );
-	};
+			return;
+		}
+
+		// On récupère également une possible raison d'échec ainsi que
+		//  l'état associé.
+		const { success, reason } = updateState;
+
+		// On informe ensuite que le traitement est terminé.
+		setLoading( false );
+
+		// On affiche enfin le message correspondant si une raison
+		//  a été fournie.
+		if ( reason !== "" )
+		{
+			toast( {
+				title: success
+					? "form.info.update_success"
+					: "form.errors.update_failed",
+				variant: success ? "default" : "destructive",
+				description: reason
+			} );
+		}
+	}, [ toast, form, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
 		<Form {...form}>
 			<form
-				onSubmit={form.handleSubmit( updateNotifications )}
+				action={( formData ) => serverAction( updateAction, formData )}
+				onSubmit={() => setLoading( true )}
 				className="space-y-6"
 			>
 				{/* Activation des notifications par courriel */}
@@ -70,7 +107,11 @@ export default function Notifications()
 					name="push"
 					control={form.control}
 					render={( { field } ) => (
-						<FormItem className="-mx-2 mb-2 flex items-center space-x-4 space-y-0 rounded-md border p-4">
+						<FormItem
+							className={`-mx-2 mb-2 flex items-center space-x-4 space-y-0 rounded-md border p-4 transition-opacity ${
+								!push && "opacity-50"
+							}`}
+						>
 							<Mail />
 
 							<div className="flex-1">
@@ -84,9 +125,18 @@ export default function Notifications()
 								</FormDescription>
 							</div>
 
+							<input
+								// Support des actions de serveur pour NextJS.
+								// https://github.com/react-hook-form/react-hook-form/pull/11061
+								type="hidden"
+								name="push"
+								value={field.value ? "on" : "off"}
+							/>
+
 							<FormControl>
 								<Switch
 									checked={field.value}
+									disabled={loading || !push}
 									onCheckedChange={field.onChange}
 								/>
 							</FormControl>
@@ -102,6 +152,14 @@ export default function Notifications()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
+							<input
+								// Support des actions de serveur pour NextJS.
+								// https://github.com/react-hook-form/react-hook-form/pull/11061
+								type="hidden"
+								name="level"
+								value={field.value}
+							/>
+
 							<FormControl>
 								<div className="grid gap-2">
 									<Button
@@ -112,8 +170,12 @@ export default function Notifications()
 												? "secondary"
 												: "ghost"
 										}
-										onClick={() => form.setValue( "level", "all" )}
-										disabled={isLoading}
+										onClick={() =>
+										{
+											form.setValue( "level", "all" );
+											setPush( true );
+										}}
+										disabled={loading}
 										className="-mx-2 h-auto justify-normal gap-4 p-3 text-left"
 									>
 										<Bell className="h-9 w-auto max-sm:hidden" />
@@ -141,8 +203,12 @@ export default function Notifications()
 												? "secondary"
 												: "ghost"
 										}
-										onClick={() => form.setValue( "level", "necessary" )}
-										disabled={isLoading}
+										onClick={() =>
+										{
+											form.setValue( "level", "necessary" );
+											setPush( true );
+										}}
+										disabled={loading}
 										className="-mx-2 h-auto justify-normal gap-4 p-3 text-left"
 									>
 										<User2 className="max-sm:hidden" />
@@ -170,8 +236,13 @@ export default function Notifications()
 												? "secondary"
 												: "ghost"
 										}
-										onClick={() => form.setValue( "level", "off" )}
-										disabled={isLoading}
+										onClick={() =>
+										{
+											form.setValue( "level", "off" );
+											form.setValue( "push", false );
+											setPush( false );
+										}}
+										disabled={loading}
 										className="-mx-2 h-auto justify-normal gap-4 p-3 text-left"
 									>
 										<EyeOff className="max-sm:hidden" />
@@ -197,8 +268,8 @@ export default function Notifications()
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading} className="max-sm:w-full">
-					{isLoading ? (
+				<Button disabled={loading} className="max-sm:w-full">
+					{loading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							Mise à jour...
