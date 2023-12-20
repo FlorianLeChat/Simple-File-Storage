@@ -5,12 +5,13 @@
 "use client";
 
 import schema from "@/schemas/profile";
-import { useForm } from "react-hook-form";
 import { AtSign,
 	Loader2,
 	RefreshCw,
 	FileImage,
 	Fingerprint } from "lucide-react";
+import { useForm } from "react-hook-form";
+import serverAction from "@/utilities/recaptcha";
 import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
 import { useState, useEffect } from "react";
@@ -51,8 +52,25 @@ export default function Profile( { session }: { session: Session } )
 	// Affichage des erreurs en provenance du serveur.
 	useEffect( () =>
 	{
-		// On récupère d'abord une possible raison d'échec
-		//  ainsi que l'état associé.
+		// On vérifie d'abord si la variable d'état liée à l'action
+		//  du formulaire est encore définie.
+		if ( !updateState )
+		{
+			// Si ce n'est pas le cas, quelque chose s'est mal passé au
+			//  niveau du serveur.
+			setLoading( false );
+
+			toast( {
+				title: "form.errors.update_failed",
+				variant: "destructive",
+				description: "form.errors.server_error"
+			} );
+
+			return;
+		}
+
+		// On récupère également une possible raison d'échec ainsi que
+		//  l'état associé.
 		const { success, reason } = updateState;
 
 		// On informe ensuite que le traitement est terminé.
@@ -81,7 +99,7 @@ export default function Profile( { session }: { session: Session } )
 	return (
 		<Form {...form}>
 			<form
-				action={updateAction}
+				action={( formData ) => serverAction( updateAction, formData )}
 				onSubmit={() => setLoading( true )}
 				className="space-y-8"
 			>
