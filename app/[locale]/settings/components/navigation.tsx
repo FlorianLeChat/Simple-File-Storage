@@ -6,58 +6,11 @@
 
 import Link from "next/link";
 import { merge } from "@/utilities/tailwind";
+import { Cookie } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { Bell, Cookie, User, KeyRound, Palette, Bug } from "lucide-react";
-import { Button, buttonVariants } from "../../components/ui/button";
 
-// Déclaration des routes de paramétrage.
-const routes = [
-	{
-		title: (
-			<>
-				<User className="mr-2 inline" />
-				Profil utilisateur
-			</>
-		),
-		href: "/settings/profile"
-	},
-	{
-		title: (
-			<>
-				<KeyRound className="mr-2 inline" />
-				Compte utilisateur
-			</>
-		),
-		href: "/settings/account"
-	},
-	{
-		title: (
-			<>
-				<Bell className="mr-2 inline" />
-				Notifications
-			</>
-		),
-		href: "/settings/notifications"
-	},
-	{
-		title: (
-			<>
-				<Palette className="mr-2 inline" />
-				Apparence
-			</>
-		),
-		href: "/settings/layout"
-	},
-	{
-		title: (
-			<>
-				<Bug className="mr-2 inline" />
-				Bogues
-			</>
-		),
-		href: "/settings/issue"
-	}
-];
+import { routes } from "../../components/header";
+import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function Navigation()
 {
