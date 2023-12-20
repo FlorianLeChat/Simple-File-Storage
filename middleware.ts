@@ -20,20 +20,13 @@ export default async function middleware( request: NextRequest )
 			|| request.method === "POST"
 		)
 		{
-			// On vérifie après si le corps de la requête est vide ou non.
-			const body = await request.text();
-
-			if ( body.length === 0 )
-			{
-				return new NextResponse( null, { status: 400 } );
-			}
-
-			// On vérifie également si un jeton d'authentification a été
-			//  transmis par l'utilisateur.
-			const { token } = JSON.parse( body ) as { token?: string };
+			// On récupère après la requête sous format de formulaire avant
+			//  de vérifier si elle contient un jeton d'authentification.
+			const token = ( await request.formData() ).get( "recaptcha" );
 
 			if ( !token )
 			{
+				// Si ce n'est pas le cas, on bloque la requête courante.
 				return new NextResponse( null, { status: 400 } );
 			}
 
