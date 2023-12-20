@@ -11,6 +11,7 @@ import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
+import { generateMetadata } from "../layout";
 
 // Importation des composants.
 import { Separator } from "../components/ui/separator";
@@ -54,6 +55,9 @@ export default async function Layout( {
 		}
 	}
 
+	// Déclaration des constantes.
+	const github = ( await generateMetadata() ).source;
+
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
@@ -65,7 +69,7 @@ export default async function Layout( {
 					</h1>
 
 					{/* Éléments de navigation */}
-					<Header />
+					<Header source={github} />
 				</div>
 
 				{/* Menu utilisateur */}
