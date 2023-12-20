@@ -27,11 +27,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 		{
 			if ( session )
 			{
-				// Ajout de l'identifiant unique et du rôle
-				//  de l'utilisateur à la session.
+				// Ajout de propriétés personnalisées à la session.
 				session.user.id = user.id;
 				session.user.role = user.role;
 				session.user.oauth = !user.password && !user.emailVerified;
+				session.user.notifications = user.notifications;
 			}
 
 			return session;

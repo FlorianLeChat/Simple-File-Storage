@@ -8,6 +8,7 @@ declare module "next-auth" {
 			id: string;
 			role: string;
 			oauth: boolean;
+			notifications: string;
 		} & DefaultSession["user"];
 	}
 }
@@ -24,5 +25,6 @@ declare module "@auth/core/adapters" {
 
 		// Propriétés personnalisées.
 		role: string;
+		notifications: string;
 	}
 }

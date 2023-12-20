@@ -4,7 +4,11 @@
 
 // Importation des dépendances.
 import { lazy } from "react";
+import { type Session } from "next-auth";
 import { unstable_setRequestLocale } from "next-intl/server";
+
+// Importation des fonctions utilitaires.
+import { auth } from "@/utilities/next-auth";
 
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
@@ -12,7 +16,7 @@ import { Separator } from "../../components/ui/separator";
 const Notifications = lazy( () => import( "../components/notifications" ) );
 
 // Affichage de la page.
-export default function Page( {
+export default async function Page( {
 	params: { locale }
 }: {
 	params: { locale: string };
@@ -38,7 +42,7 @@ export default function Page( {
 			<Separator />
 
 			{/* Formulaire de signalement d'un bogue */}
-			<Notifications />
+			<Notifications session={( await auth() ) as Session} />
 		</>
 	);
 }

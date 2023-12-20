@@ -103,7 +103,7 @@ export default function Authentification()
 		{
 			toast( {
 				title: success
-					? "form.info.auth_success"
+					? "form.info.email_validation"
 					: "form.errors.auth_failed",
 				variant: success ? "default" : "destructive",
 				description: reason
