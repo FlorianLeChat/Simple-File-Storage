@@ -8,6 +8,7 @@ import Link from "next/link";
 import schema from "@/schemas/authentication";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
+import serverAction from "@/utilities/recaptcha";
 import { useFormState } from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -62,8 +63,25 @@ export default function Authentification()
 	// Affichage des erreurs en provenance du serveur.
 	useEffect( () =>
 	{
-		// On récupère d'abord une possible raison d'échec
-		//  ainsi que l'état associé.
+		// On vérifie d'abord si les deux variables d'état liées aux actions
+		//  de formulaire sont encore définies.
+		if ( !signUpState || !signInState )
+		{
+			// Si ce n'est pas le cas, quelque chose s'est mal passé au
+			//  niveau du serveur.
+			setLoading( false );
+
+			toast( {
+				title: "form.errors.auth_failed",
+				variant: "destructive",
+				description: "form.errors.server_error"
+			} );
+
+			return;
+		}
+
+		// On récupère également une possible raison d'échec ainsi que
+		//  l'état associé.
 		const reason =
 			signUpState.reason !== "" ? signUpState.reason : signInState.reason;
 		const success = !signUpState.success
@@ -85,8 +103,8 @@ export default function Authentification()
 		{
 			toast( {
 				title: success
-					? "Action nécessaire"
-					: "Authentification échouée",
+					? "form.info.auth_success"
+					: "form.errors.auth_failed",
 				variant: success ? "default" : "destructive",
 				description: reason
 			} );
@@ -119,7 +137,7 @@ export default function Authentification()
 
 				<Form {...form}>
 					<form
-						action={signUpAction}
+						action={( formData ) => serverAction( signUpAction, formData )}
 						onSubmit={() => setLoading( true )}
 						className="space-y-6"
 					>
@@ -196,7 +214,7 @@ export default function Authentification()
 
 				<Form {...form}>
 					<form
-						action={signInAction}
+						action={( formData ) => serverAction( signInAction, formData )}
 						onSubmit={() => setLoading( true )}
 						className="space-y-6"
 					>
@@ -403,7 +421,10 @@ export default function Authentification()
 			</div>
 
 			{/* Fournisseurs d'authentification externes */}
-			<form action={signInAction} onSubmit={() => setLoading( true )}>
+			<form
+				action={( formData ) => serverAction( signInAction, formData )}
+				onSubmit={() => setLoading( true )}
+			>
 				<input type="hidden" name="provider" value="google" />
 
 				<Button
@@ -424,7 +445,10 @@ export default function Authentification()
 				</Button>
 			</form>
 
-			<form action={signInAction} onSubmit={() => setLoading( true )}>
+			<form
+				action={( formData ) => serverAction( signInAction, formData )}
+				onSubmit={() => setLoading( true )}
+			>
 				<input type="hidden" name="provider" value="github" />
 
 				<Button
