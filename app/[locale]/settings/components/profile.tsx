@@ -88,7 +88,9 @@ export default function Profile( { session }: { session: Session } )
 		if ( reason !== "" )
 		{
 			toast( {
-				title: success ? "Action nécessaire" : "Mise à jour échouée",
+				title: success
+					? "form.info.update_success"
+					: "form.errors.update_failed",
 				variant: success ? "default" : "destructive",
 				description: reason
 			} );

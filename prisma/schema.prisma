@@ -39,6 +39,7 @@ model User {
 	name          String?
 	email         String    @unique
 	password      String?
+	notifications String?   @default("necessary")
 	emailVerified DateTime?
 	image         String?
 	role          String    @default("user")
