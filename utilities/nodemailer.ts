@@ -1,5 +1,5 @@
 //
-// Permet de personnaliser l'apparence et le contenu des courriels envoyés par Next Auth.
+// Personnalisation de l'apparence et le contenu des courriels envoyés par Next Auth.
 //  Source : https://next-auth.js.org/providers/email#customizing-emails
 //
 import { createTransport } from "nodemailer";
