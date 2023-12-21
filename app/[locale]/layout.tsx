@@ -84,6 +84,7 @@ export async function generateMetadata(): Promise<
 
 	// On détermine après certaines métadonnées récurrentes.
 	const banner = `https://opengraph.githubassets.com/${ commits.sha }/${ repository.full_name }`;
+	const title = repository.name.replaceAll( "-", " " );
 	const url =
 		process.env.NEXT_PUBLIC_ENV === "production"
 			? repository.homepage
@@ -93,7 +94,7 @@ export async function generateMetadata(): Promise<
 	//  avant de les enregistrer dans un fichier JSON.
 	const metadata = {
 		// Métadonnées du document.
-		title: repository.name,
+		title,
 		source: repository.html_url,
 		authors: [ { name: author.name, url: author.html_url } ],
 		keywords: repository.topics,
@@ -142,7 +143,7 @@ export async function generateMetadata(): Promise<
 		openGraph: {
 			url,
 			type: "website",
-			title: repository.name,
+			title,
 			description: repository.description,
 			images: [
 				{
@@ -153,7 +154,7 @@ export async function generateMetadata(): Promise<
 
 		// Informations pour la plate-forme Twitter.
 		twitter: {
-			title: repository.name,
+			title,
 			creator: `@${ author.twitter_username }`,
 			description: repository.description,
 			images: [
