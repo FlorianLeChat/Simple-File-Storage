@@ -295,67 +295,6 @@ function Layout( { children = null }: LayoutProviderProps )
 
 	return (
 		<LayoutContext.Provider value={value}>
-			<script
-				dangerouslySetInnerHTML={{
-					__html: `
-						const element = document.documentElement;
-						const classes = element.classList;
-						const [font, theme, color] = localStorage.getItem("${ storageKey }")?.split(";") ?? [];
-
-						let newFont = font;
-						let newTheme = theme;
-						let newColor = color;
-
-						if ([${ themes.map( ( name ) => `"${ name }"` ) }].includes(theme))
-						{
-							// Application du thème choisi par l'utilisateur.
-							classes.add(theme)
-
-							element.style.colorScheme = theme;
-						}
-						else
-						{
-							// Application du thème préféré par le navigateur.
-							const target = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-
-							newTheme = target;
-
-							classes.add(target);
-
-							element.style.colorScheme = target;
-						}
-
-						if ([${ colors.map( ( name ) => `"${ name }"` ) }].includes(color))
-						{
-							// Application de la couleur choisie par l'utilisateur.
-							classes.add(color)
-						}
-						else
-						{
-							// Application de la couleur par défaut.
-							newColor = "blue";
-
-							classes.add("blue");
-						}
-
-						if ([${ fonts.map( ( name ) => `"${ name }"` ) }].includes(font))
-						{
-							// Application de la police de caractères choisie par l'utilisateur.
-							classes.add(font)
-						}
-						else
-						{
-							// Application de la police de caractères par défaut.
-							newFont = "inter";
-
-							classes.add("inter");
-						}
-
-						localStorage.setItem("${ storageKey }", newFont + ";" + newTheme + ";" + newColor);
-					`
-				}}
-			/>
-
 			{children}
 		</LayoutContext.Provider>
 	);
@@ -370,4 +309,70 @@ export default function LayoutProvider( {
 }: LayoutProviderProps )
 {
 	return <Layout>{children}</Layout>;
+}
+
+// Export du script de mise à jour de l'apparence.
+export function LayoutUpdater()
+{
+	return (
+		<script
+			dangerouslySetInnerHTML={{
+				__html: `
+const element = document.documentElement;
+const classes = element.classList;
+const [font, theme, color] = localStorage.getItem("${ storageKey }")?.split(";") ?? [];
+
+let newFont = font;
+let newTheme = theme;
+let newColor = color;
+
+if ([${ themes.map( ( name ) => `"${ name }"` ) }].includes(theme))
+{
+	// Application du thème choisi par l'utilisateur.
+	classes.add(theme)
+
+	element.style.colorScheme = theme;
+}
+else
+{
+	// Application du thème préféré par le navigateur.
+	const target = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+
+	newTheme = target;
+
+	classes.add(target);
+
+	element.style.colorScheme = target;
+}
+
+if ([${ colors.map( ( name ) => `"${ name }"` ) }].includes(color))
+{
+	// Application de la couleur choisie par l'utilisateur.
+	classes.add(color)
+}
+else
+{
+	// Application de la couleur par défaut.
+	newColor = "blue";
+
+	classes.add("blue");
+}
+
+if ([${ fonts.map( ( name ) => `"${ name }"` ) }].includes(font))
+{
+	// Application de la police de caractères choisie par l'utilisateur.
+	classes.add(font)
+}
+else
+{
+	// Application de la police de caractères par défaut.
+	newFont = "inter";
+
+	classes.add("inter");
+}
+
+localStorage.setItem("${ storageKey }", newFont + ";" + newTheme + ";" + newColor);`
+			}}
+		/>
+	);
 }
