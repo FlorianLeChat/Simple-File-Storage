@@ -25,6 +25,7 @@ import type { Metadata, Viewport } from "next";
 
 // Importation des composants.
 import Footer from "./components/footer";
+import { LayoutUpdater } from "./components/layout-provider";
 
 const Toaster = lazy( () => import( "./components/ui/toaster" ) );
 const Recaptcha = lazy( () => import( "./components/recaptcha" ) );
@@ -227,7 +228,15 @@ export default function Layout( {
 				} as CSSProperties
 			}
 		>
+			{/* En-tête de la page */}
+			<head>
+				{/* Mise à jour de l'apparence */}
+				<LayoutUpdater />
+			</head>
+
+			{/* Corps de la page */}
 			<body className="flex min-h-screen flex-col">
+				{/* Écran de chargement de la page */}
 				<Suspense>
 					{/* Vidéo en arrière-plan */}
 					<video
@@ -242,7 +251,7 @@ export default function Layout( {
 						/>
 					</video>
 
-					{/* Basculement entre les thèmes */}
+					{/* Mise à jour de l'apparence */}
 					<LayoutProvider>
 						{/* Composant enfant */}
 						{children}
