@@ -135,8 +135,8 @@ const FormControl = forwardRef<
 
 	return (
 		<Slot
-			id={formItemId}
 			ref={ref}
+			id={formItemId}
 			aria-describedby={
 				!error
 					? `${ formDescriptionId }`
@@ -159,8 +159,8 @@ const FormDescription = forwardRef<
 
 	return (
 		<p
-			id={formDescriptionId}
 			ref={ref}
+			id={formDescriptionId}
 			className={merge( "text-sm text-muted-foreground", className )}
 			{...props}
 		/>
@@ -184,12 +184,9 @@ const FormMessage = forwardRef<
 
 	return (
 		<p
-			id={formMessageId}
 			ref={ref}
-			className={merge(
-				"text-sm font-extrabold text-destructive",
-				className
-			)}
+			id={formMessageId}
+			className={merge( "text-sm font-medium text-destructive", className )}
 			{...props}
 		>
 			{body}
