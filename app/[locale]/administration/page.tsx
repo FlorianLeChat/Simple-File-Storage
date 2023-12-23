@@ -34,7 +34,7 @@ export default async function Page( {
 	// Vérification de la session utilisateur.
 	const session = await auth();
 
-	if ( !session )
+	if ( !session || session.user.role !== "admin" )
 	{
 		redirect( "/" );
 	}
