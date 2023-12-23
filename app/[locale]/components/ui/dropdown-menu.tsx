@@ -22,7 +22,7 @@ const DropdownMenuSubTrigger = forwardRef<
 	ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & {
 		inset?: boolean;
 	}
->( ( { className, inset = false, children, ...props }, ref ) => (
+>( ( { className, inset, children, ...props }, ref ) => (
 	<DropdownMenuPrimitive.SubTrigger
 		ref={ref}
 		className={merge(
