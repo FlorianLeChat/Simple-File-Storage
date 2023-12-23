@@ -11,6 +11,6 @@
 	},
 	"aliases": {
 		"utils": "utilities/tailwind.ts",
-		"components": "app/[locale]/components/ui"
+		"components": "app/[locale]/components"
 	}
 }
