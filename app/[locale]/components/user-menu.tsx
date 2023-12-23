@@ -87,6 +87,11 @@ export default function UserMenu( { session }: { session: Session } )
 						router.push( "/settings" );
 						break;
 
+					case "a":
+						// Accès à l'administration.
+						router.push( "/administration" );
+						break;
+
 					case "l":
 						// Accès à la page d'authentification.
 						router.push( "/authentication" );
@@ -236,6 +241,17 @@ export default function UserMenu( { session }: { session: Session } )
 								</DropdownMenuShortcut>
 							</DropdownMenuItem>
 						</Link>
+
+						{admin && (
+							<Link href="/administration">
+								<DropdownMenuItem>
+									Administration
+									<DropdownMenuShortcut>
+										ALT/⌥ + A
+									</DropdownMenuShortcut>
+								</DropdownMenuItem>
+							</Link>
+						)}
 					</DropdownMenuGroup>
 
 					<DropdownMenuSeparator />
