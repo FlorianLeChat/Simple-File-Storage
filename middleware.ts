@@ -70,7 +70,7 @@ export default async function middleware( request: NextRequest )
 }
 
 export const config = {
-	matcher: [ "/", "/((?!api/auth|_next|_vercel|.*\\..*).*)" ]
+	matcher: [ "/", "/((?!api|_next|_vercel|.*\\..*).*)" ]
 };
 
 if ( process.env.__NEXT_ROUTER_BASEPATH )
