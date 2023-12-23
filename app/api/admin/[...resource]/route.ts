@@ -3,10 +3,10 @@
 //
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { type RaPayload, defaultHandler } from "ra-data-simple-prisma";
 
-const handler = async ( request: Request ) =>
+const handler = async ( request: NextRequest ) =>
 {
 	// On vérifie d'abord la session de l'utilisateur.
 	const session = await auth();
