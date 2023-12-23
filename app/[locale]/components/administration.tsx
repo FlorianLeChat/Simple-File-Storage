@@ -1,12 +1,28 @@
 //
 // Composant de la page d'administration.
+//  Source : https://marmelab.com/react-admin/documentation.html
 //
 
 "use client";
 
 // Importation des dépendances.
+import frenchMessages from "ra-language-french";
+import englishMessages from "ra-language-english";
 import { dataProvider } from "ra-data-simple-prisma";
-import { Admin, Resource, withLifecycleCallbacks } from "react-admin";
+import polyglotI18nProvider from "ra-i18n-polyglot";
+import { Title,
+	Admin,
+	Layout,
+	AppBar,
+	Resource,
+	defaultTheme,
+	LocalesMenuButton,
+	ToggleThemeButton,
+	RefreshIconButton,
+	resolveBrowserLocale,
+	withLifecycleCallbacks } from "react-admin";
+import type { CoreLayoutProps } from "ra-core";
+import { ExternalLink, KeyRound, Save, User } from "lucide-react";
 
 // Importation des composants.
 import { TokenList } from "./admin/verification-token";
@@ -14,7 +30,46 @@ import { AccountList } from "./admin/account";
 import { SessionList } from "./admin/session";
 import { UserCreate, UserEdit, UserList } from "./admin/user";
 
-// Déclaration du fournisseur de données personnalisé.
+// Basculement entre les traductions.
+const i18nProvider = polyglotI18nProvider(
+	( locale ) => ( locale === "fr" ? frenchMessages : englishMessages ),
+	resolveBrowserLocale(),
+	[
+		// https://marmelab.com/react-admin/TranslationLocales.html
+		{ locale: "en", name: "English" },
+		{ locale: "fr", name: "Français" }
+	]
+);
+
+// Personnalisation de l'en-tête.
+//  Source : https://marmelab.com/react-admin/ToggleThemeButton.html
+function CustomHeader()
+{
+	return (
+		<AppBar
+			toolbar={(
+				<>
+					{/* Changement de langue */}
+					<LocalesMenuButton />
+
+					{/* Changement de thème */}
+					<ToggleThemeButton />
+
+					{/* Rafraîchissement des données */}
+					<RefreshIconButton />
+				</>
+			)}
+		/>
+	);
+}
+
+function CustomLayout( props: CoreLayoutProps )
+{
+	return <Layout {...props} appBar={CustomHeader} />;
+}
+
+// Modification des fonctions de rappel du fournisseur de données.
+//  Source : https://marmelab.com/react-admin/withLifecycleCallbacks.html
 export const customDataProvider = withLifecycleCallbacks(
 	dataProvider( "/api/admin" ),
 	[
@@ -51,8 +106,8 @@ export const customDataProvider = withLifecycleCallbacks(
 			}
 		},
 		{
-			// Jetons de verificationToken.
-			resource: "session",
+			// Jetons de vérification.
+			resource: "verificationToken",
 			beforeGetList: async ( data ) =>
 			{
 				data.sort.field = "identifier";
@@ -69,14 +124,24 @@ export const customDataProvider = withLifecycleCallbacks(
 	]
 );
 
-// Affichage de la page.
 export default function Administration()
 {
+	// Affichage du rendu HTML du composant.
 	return (
-		<Admin dataProvider={customDataProvider}>
+		<Admin
+			theme={defaultTheme}
+			layout={CustomLayout}
+			darkTheme={{ palette: { mode: "dark" } }}
+			i18nProvider={i18nProvider}
+			dataProvider={customDataProvider}
+		>
+			{/* Titre par défaut */}
+			<Title title="Administration" />
+
 			{/* Comptes utilisateurs */}
 			<Resource
 				name="user"
+				icon={User}
 				list={UserList}
 				edit={UserEdit}
 				create={UserCreate}
@@ -85,6 +150,7 @@ export default function Administration()
 
 			{/* Comptes OAuth */}
 			<Resource
+				icon={ExternalLink}
 				name="account"
 				list={AccountList}
 				options={{ label: "Comptes OAuth" }}
@@ -92,6 +158,7 @@ export default function Administration()
 
 			{/* Sessions */}
 			<Resource
+				icon={Save}
 				name="session"
 				list={SessionList}
 				options={{ label: "Sessions utilisateurs" }}
@@ -99,6 +166,7 @@ export default function Administration()
 
 			{/* Jetons de vérification */}
 			<Resource
+				icon={KeyRound}
 				name="verificationToken"
 				list={TokenList}
 				options={{ label: "Jetons de vérification" }}
