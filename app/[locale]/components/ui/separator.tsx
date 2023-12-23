@@ -21,6 +21,8 @@ const Separator = forwardRef<
 	) => (
 		<SeparatorPrimitive.Root
 			ref={ref}
+			decorative={decorative}
+			orientation={orientation}
 			className={merge(
 				"shrink-0 bg-border",
 				orientation === "horizontal"
@@ -28,8 +30,6 @@ const Separator = forwardRef<
 					: "h-full w-[1px]",
 				className
 			)}
-			decorative={decorative}
-			orientation={orientation}
 			{...props}
 		/>
 	)
