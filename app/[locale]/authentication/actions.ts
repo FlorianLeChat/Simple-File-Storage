@@ -174,24 +174,43 @@ export async function signInAccount(
 		};
 	}
 
-	let response;
-
 	try
 	{
 		// Dans le cas contraire, on tente alors une authentification via
 		//  les informations d'authentification fournies avant de rediriger
 		//  l'utilisateur vers la page de son tableau de bord.
-		response = await signIn( "credentials", {
+		const response = await signIn( "credentials", {
 			email: result.data.email,
 			password: result.data.password,
-			redirect: false, // https://github.com/vercel/next.js/issues/55586
 			redirectTo: "/dashboard"
 		} );
+
+		if ( response )
+		{
+			// Lorsqu'une réponse semble avoir été récupérée précédemment,
+			//  on tente alors de mettre à jour la durée de vie du cookie
+			//  d'authentification de l'utilisateur avant de le rediriger
+			//  vers la page de la réponse.
+			//   Source : https://github.com/nextauthjs/next-auth/discussions/3794
+			const cookiesList = cookies();
+			const authCookie = cookiesList.get( "authjs.session-token" );
+
+			if ( authCookie )
+			{
+				cookiesList.set( {
+					// https://github.com/nextauthjs/next-auth/blob/065b7e9d9b8d046758e381c88ef351e65764ea5f/packages/core/src/index.ts#L238-L243
+					...authCookie,
+					maxAge: 24 * 60 * 60 * ( result.data.remembered ? 30 : 1 )
+				} );
+			}
+
+			redirect( response );
+		}
 	}
 	catch ( error )
 	{
 		// En cas d'erreur, on affiche un message d'erreur sur la page
-		//  d'authentification.
+		//  d'authentification avant de relancer l'erreur.
 		if ( error instanceof AuthError )
 		{
 			return {
@@ -199,28 +218,8 @@ export async function signInAccount(
 				reason: "form.errors.generic"
 			};
 		}
-	}
 
-	if ( response )
-	{
-		// Lorsqu'une réponse semble avoir été récupérée précédemment,
-		//  on tente alors de mettre à jour la durée de vie du cookie
-		//  d'authentification de l'utilisateur avant de le rediriger
-		//  vers la page de la réponse.
-		//   Source : https://github.com/nextauthjs/next-auth/discussions/3794
-		const cookiesList = cookies();
-		const authCookie = cookiesList.get( "authjs.session-token" );
-
-		if ( authCookie )
-		{
-			cookiesList.set( {
-				// https://github.com/nextauthjs/next-auth/blob/065b7e9d9b8d046758e381c88ef351e65764ea5f/packages/core/src/index.ts#L238-L243
-				...authCookie,
-				maxAge: 24 * 60 * 60 * ( result.data.remembered ? 30 : 1 )
-			} );
-		}
-
-		redirect( response );
+		throw error;
 	}
 
 	// On retourne enfin un message d'erreur par défaut au l'utilisateur
