@@ -2,7 +2,7 @@
 // Source : https://next-auth.js.org/getting-started/typescript#module-augmentation
 import type { DefaultSession, User } from "next-auth";
 
-declare module "next-auth" {
+declare module "@auth/core/types" {
 	interface Session {
 		user: {
 			id: string;
