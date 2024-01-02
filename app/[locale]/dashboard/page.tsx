@@ -6,6 +6,7 @@
 import { lazy } from "react";
 import { readdir } from "fs/promises";
 import { redirect } from "next/navigation";
+import { join } from "path";
 import type { Metadata } from "next";
 import { unstable_setRequestLocale } from "next-intl/server";
 
@@ -78,7 +79,7 @@ export default async function Page( {
 	// Récupération de l'avatar utilisateur.
 	if ( !session.user.image )
 	{
-		const avatar = await readdir( "./public/avatars" );
+		const avatar = await readdir( join( process.cwd(), "public/avatar" ) );
 
 		if ( avatar.length > 0 )
 		{
@@ -88,7 +89,6 @@ export default async function Page( {
 
 	// Déclaration des constantes.
 	const data = getData();
-	const github = ( await generateMetadata() ).source;
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -101,7 +101,7 @@ export default async function Page( {
 					</h1>
 
 					{/* Éléments de navigation */}
-					<Header source={github} />
+					<Header source={( await generateMetadata() ).source} />
 				</div>
 
 				{/* Menu utilisateur */}

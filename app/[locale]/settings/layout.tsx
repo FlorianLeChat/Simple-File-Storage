@@ -3,6 +3,7 @@
 //
 
 // Importation des dépendances.
+import { join } from "path";
 import { readdir } from "fs/promises";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
@@ -47,16 +48,13 @@ export default async function Layout( {
 	// Récupération de l'avatar utilisateur.
 	if ( !session.user.image )
 	{
-		const avatar = await readdir( "./public/avatars" );
+		const avatar = await readdir( join( process.cwd(), "public/avatar" ) );
 
 		if ( avatar.length > 0 )
 		{
 			session.user.image = `/avatars/${ avatar[ 0 ] }`;
 		}
 	}
-
-	// Déclaration des constantes.
-	const github = ( await generateMetadata() ).source;
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -69,7 +67,7 @@ export default async function Layout( {
 					</h1>
 
 					{/* Éléments de navigation */}
-					<Header source={github} />
+					<Header source={( await generateMetadata() ).source} />
 				</div>
 
 				{/* Menu utilisateur */}
