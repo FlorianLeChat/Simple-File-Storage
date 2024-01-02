@@ -6,6 +6,7 @@
 
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/profile";
+import { join } from "path";
 import { auth } from "@/utilities/next-auth";
 import { redirect } from "next/navigation";
 import { mkdir, writeFile } from "fs/promises";
@@ -77,9 +78,8 @@ export async function updateProfile(
 			// Si un fichier d'avatar a bien été fourni, on le met à jour
 			//  dans le système de fichiers.
 			const type = avatar.type.split( "/" )[ 1 ];
-
-			const folderPath = "./public/avatars";
-			const filePath = `${ folderPath }/${ session.user.id }.${ type }`;
+			const folderPath = join( process.cwd(), "public/avatars" );
+			const filePath = join( folderPath, `${ session.user.id }.${ type }` );
 
 			await mkdir( folderPath, { recursive: true } );
 			await writeFile(
