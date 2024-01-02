@@ -148,7 +148,7 @@ export default function Account()
 									>
 										<SelectTrigger
 											id="level"
-											className="line-clamp-1 w-full truncate sm:w-[160px]"
+											className="w-full truncate sm:w-[160px]"
 											aria-controls="level"
 										>
 											<SelectValue />
