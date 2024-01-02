@@ -22,9 +22,10 @@ import { Title,
 	resolveBrowserLocale,
 	withLifecycleCallbacks } from "react-admin";
 import type { CoreLayoutProps } from "ra-core";
-import { ExternalLink, KeyRound, Save, User } from "lucide-react";
+import { Bug, ExternalLink, KeyRound, Save, User } from "lucide-react";
 
 // Importation des composants.
+import { IssueList } from "./admin/issue";
 import { TokenList } from "./admin/verification-token";
 import { AccountList } from "./admin/account";
 import { SessionList } from "./admin/session";
@@ -106,6 +107,22 @@ export const customDataProvider = withLifecycleCallbacks(
 			}
 		},
 		{
+			// Signalements de bogues.
+			resource: "issue",
+			beforeGetList: async ( data ) =>
+			{
+				data.sort.field = "issueId";
+
+				return data;
+			},
+			afterRead: ( data ) =>
+			{
+				data.id = data.issueId;
+
+				return data;
+			}
+		},
+		{
 			// Jetons de vérification.
 			resource: "verificationToken",
 			beforeGetList: async ( data ) =>
@@ -162,6 +179,14 @@ export default function Administration()
 				name="session"
 				list={SessionList}
 				options={{ label: "Sessions utilisateurs" }}
+			/>
+
+			{/* Signalements de bogues */}
+			<Resource
+				icon={Bug}
+				name="issue"
+				list={IssueList}
+				options={{ label: "Signalements de bogues" }}
 			/>
 
 			{/* Jetons de vérification */}
