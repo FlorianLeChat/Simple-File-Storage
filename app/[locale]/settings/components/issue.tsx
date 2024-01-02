@@ -4,7 +4,6 @@
 
 "use client";
 
-import * as z from "zod";
 import schema from "@/schemas/issue";
 import { List,
 	Send,
@@ -13,17 +12,18 @@ import { List,
 	Subtitles,
 	ShieldAlert } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import serverAction from "@/utilities/recaptcha";
+import { useFormState } from "react-dom";
+import { useState, useEffect } from "react";
 
 import { Input } from "../../components/ui/input";
-import { toast } from "../../components/ui/use-toast";
+import { Button } from "../../components/ui/button";
 import { Select,
 	SelectItem,
 	SelectValue,
 	SelectTrigger,
 	SelectContent } from "../../components/ui/select";
-import { Button } from "../../components/ui/button";
+import { useToast } from "../../components/ui/use-toast";
 import { Textarea } from "../../components/ui/textarea";
 import { Form,
 	FormItem,
@@ -32,47 +32,80 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
+import { createIssue } from "../issue/actions";
 
 export default function Account()
 {
+	// Déclaration des constantes.
+	const { toast } = useToast();
+	const formState = {
+		success: true,
+		reason: ""
+	};
+
 	// Déclaration des variables d'état.
-	const [ isLoading, setIsLoading ] = useState( false );
+	const [ loading, setLoading ] = useState( false );
+	const [ updateState, updateAction ] = useFormState( createIssue, formState );
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
+	const form = useForm( {
 		defaultValues: {
 			area: "account",
-			severity: "low"
+			subject: "",
+			severity: "low",
+			description: ""
 		}
 	} );
 
-	// Mise à jour des informations.
-	const openIssue = ( data: z.infer<typeof schema> ) =>
+	// Affichage des erreurs en provenance du serveur.
+	useEffect( () =>
 	{
-		setIsLoading( true );
-
-		setTimeout( () =>
+		// On vérifie d'abord si la variable d'état liée à l'action
+		//  du formulaire est encore définie.
+		if ( !updateState )
 		{
+			// Si ce n'est pas le cas, quelque chose s'est mal passé au
+			//  niveau du serveur.
+			setLoading( false );
+
 			toast( {
-				title: "Vous avez soumis les informations suivantes :",
-				description: (
-					<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-						<code className="text-white">
-							{JSON.stringify( data, null, 4 )}
-						</code>
-					</pre>
-				)
+				title: "form.errors.update_failed",
+				variant: "destructive",
+				description: "form.errors.server_error"
 			} );
 
-			setIsLoading( false );
-		}, 3000 );
-	};
+			return;
+		}
+
+		// On récupère également une possible raison d'échec ainsi que
+		//  l'état associé.
+		const { success, reason } = updateState;
+
+		// On informe ensuite que le traitement est terminé.
+		setLoading( false );
+
+		// On affiche enfin le message correspondant si une raison
+		//  a été fournie.
+		if ( reason !== "" )
+		{
+			toast( {
+				title: success
+					? "form.info.update_success"
+					: "form.errors.update_failed",
+				variant: success ? "default" : "destructive",
+				description: reason
+			} );
+		}
+	}, [ toast, form, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit( openIssue )} className="space-y-8">
+			<form
+				action={( formData ) => serverAction( updateAction, formData )}
+				onSubmit={() => setLoading( true )}
+				className="space-y-8"
+			>
 				<div className="flex gap-4 max-sm:flex-col">
 					{/* Domaine touché */}
 					<FormField
@@ -87,11 +120,13 @@ export default function Account()
 
 								<FormControl>
 									<Select
+										{...field}
 										defaultValue={field.value}
 										onValueChange={field.onChange}
 									>
 										<SelectTrigger
 											id="area"
+											disabled={loading}
 											className="h-auto"
 											aria-controls="area"
 										>
@@ -143,11 +178,13 @@ export default function Account()
 
 								<FormControl>
 									<Select
+										{...field}
 										defaultValue={field.value}
 										onValueChange={field.onChange}
 									>
 										<SelectTrigger
 											id="level"
+											disabled={loading}
 											className="w-full truncate sm:w-[160px]"
 											aria-controls="level"
 										>
@@ -199,7 +236,7 @@ export default function Account()
 								<Input
 									{...field}
 									id="subject"
-									disabled={isLoading}
+									disabled={loading}
 									minLength={
 										schema.shape.subject.minLength as number
 									}
@@ -234,7 +271,7 @@ export default function Account()
 								<Textarea
 									{...field}
 									id="description"
-									disabled={isLoading}
+									disabled={loading}
 									minLength={
 										schema.shape.description
 											.minLength as number
@@ -259,8 +296,8 @@ export default function Account()
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading} className="max-sm:w-full">
-					{isLoading ? (
+				<Button disabled={loading} className="max-sm:w-full">
+					{loading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							Envoi...
