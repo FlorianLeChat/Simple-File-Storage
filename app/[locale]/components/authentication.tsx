@@ -281,7 +281,9 @@ export default function Authentification()
 													onFocus={() => setFocused( true )}
 													disabled={loading}
 													className={`transition-opacity ${
-														!focused && "opacity-25"
+														!focused
+															? "opacity-25"
+															: ""
 													}`}
 													minLength={
 														schema.shape.password

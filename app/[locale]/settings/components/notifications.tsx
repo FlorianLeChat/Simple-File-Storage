@@ -108,13 +108,13 @@ export default function Notifications( { session }: { session: Session } )
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem
-							className={`-mx-2 mb-2 flex items-center space-x-4 space-y-0 rounded-md border p-4 transition-opacity ${
-								!push && "opacity-50"
+							className={`-mx-2 mb-2 flex items-center space-y-0 rounded-md border p-4 transition-opacity ${
+								!push ? "opacity-50" : ""
 							}`}
 						>
-							<Mail />
+							<Mail className="max-sm:hidden" />
 
-							<div className="flex-1">
+							<div className="flex-1 sm:ml-4">
 								<FormLabel className="text-sm font-medium leading-none">
 									Notifications par courriel
 								</FormLabel>
