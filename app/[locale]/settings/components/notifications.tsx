@@ -4,11 +4,8 @@
 
 "use client";
 
-import * as z from "zod";
-import schema from "@/schemas/notifications";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { zodResolver } from "@hookform/resolvers/zod";
 import type { Session } from "next-auth";
 import { useFormState } from "react-dom";
 import { useState, useEffect } from "react";
@@ -45,8 +42,7 @@ export default function Notifications( { session }: { session: Session } )
 	);
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
+	const form = useForm( {
 		defaultValues: {
 			push: notifications[ 1 ] === "mail",
 			level: notifications[ 0 ] as "all" | "necessary" | "off"
