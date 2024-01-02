@@ -143,6 +143,10 @@ export const customDataProvider = withLifecycleCallbacks(
 
 export default function Administration()
 {
+	// Suppression des éléments inutiles.
+	document.querySelector( "video" )?.remove();
+	document.querySelector( "footer" )?.remove();
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<Admin
