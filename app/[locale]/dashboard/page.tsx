@@ -3,11 +3,13 @@
 //
 
 // Importation des dépendances.
+import mime from "mime";
 import { lazy } from "react";
-import { readdir } from "fs/promises";
 import { redirect } from "next/navigation";
-import { join } from "path";
+import { join, parse } from "path";
 import type { Metadata } from "next";
+import { mkdir, readdir } from "fs/promises";
+import { existsSync, statSync } from "fs";
 import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
@@ -27,35 +29,47 @@ export const metadata: Metadata = {
 	title: "Tableau de bord – Simple File Storage"
 };
 
-// Récupération des données depuis l'API.
-function getData(): File[]
+// Récupération des fichiers depuis le système de fichiers.
+async function getFiles(): Promise<File[]>
 {
-	return [
-		{
-			id: "728ed52f",
-			name: "Document",
-			type: "document/pdf",
-			size: 11450005.2,
-			date: "2021-09-01",
+	// On vérifie d'abord si la session utilisateur est valide.
+	const session = await auth();
+
+	if ( !session )
+	{
+		return [];
+	}
+
+	// On créé ensuite le dossier de stockage si celui-ci n'existe pas.
+	const folderPath = join( process.cwd(), "public/storage" );
+
+	mkdir( folderPath, { recursive: true } );
+
+	// On vérifie après l'existance du dossier de l'utilisateur.
+	const userFolder = join( folderPath, session.user.id );
+
+	if ( !existsSync( userFolder ) )
+	{
+		return [];
+	}
+
+	// On récupère alors tous les fichiers de l'utilisateur.
+	const userFiles = await readdir( userFolder );
+
+	return userFiles.map( ( file, index ) =>
+	{
+		// On retourne enfin les propriétés de chaque fichier.
+		const fileStats = statSync( join( userFolder, file ) );
+
+		return {
+			id: index.toString(),
+			name: parse( file ).name,
+			type: mime.getType( file ) ?? "application/octet-stream",
+			size: fileStats.size,
+			date: fileStats.birthtime.toISOString(),
 			status: "public"
-		},
-		{
-			id: "728ed53f",
-			name: "Secret",
-			type: "image/gif",
-			size: 404150.6,
-			date: "2023-02-01",
-			status: "public"
-		},
-		{
-			id: "728ed54f",
-			name: "Application",
-			type: "application/exe",
-			size: 334156500.4,
-			date: "2023-04-06",
-			status: "private"
-		}
-	];
+		} as File;
+	} );
 }
 
 // Affichage de la page.
@@ -86,9 +100,6 @@ export default async function Page( {
 			session.user.image = `/avatars/${ avatar[ 0 ] }`;
 		}
 	}
-
-	// Déclaration des constantes.
-	const data = getData();
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -123,7 +134,7 @@ export default async function Page( {
 				<Separator className="my-6" />
 
 				{/* Tableau des fichiers téléversés */}
-				<DataTable columns={columns} data={data} />
+				<DataTable columns={columns} data={await getFiles()} />
 			</main>
 		</>
 	);
