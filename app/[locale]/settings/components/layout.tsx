@@ -155,7 +155,8 @@ export default function Layout()
 
 							<FormControl>
 								<Select
-									value={field.value}
+									{...field}
+									defaultValue={field.value}
 									onValueChange={field.onChange}
 								>
 									<SelectTrigger
