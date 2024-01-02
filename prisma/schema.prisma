@@ -34,6 +34,17 @@ model Session {
 	user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Issue {
+	issueId      Int        @unique @default(autoincrement())
+	userId       String
+	area         String
+	severity     String
+	subject      String
+	description  String
+	createdAt    DateTime   @default(now())
+	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model User {
 	id            String    @id @default(cuid())
 	name          String?
@@ -45,6 +56,7 @@ model User {
 	role          String    @default("user")
 	accounts      Account[]
 	sessions      Session[]
+	issues        Issue[]
 }
 
 model VerificationToken {
