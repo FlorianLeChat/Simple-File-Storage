@@ -151,7 +151,7 @@ export default function DataTable( {
 								colSpan={columns.length}
 								className="h-24 text-center"
 							>
-								Aucun résultat.
+								Aucun fichier trouvé.
 							</TableCell>
 						</TableRow>
 					)}
