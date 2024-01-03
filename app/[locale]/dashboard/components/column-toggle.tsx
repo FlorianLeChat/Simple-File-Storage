@@ -3,7 +3,7 @@
 //  Source : https://ui.shadcn.com/docs/components/data-table#column-toggle
 //
 import { merge } from "@/utilities/tailwind";
-import { Table } from "@tanstack/react-table";
+import type { Table } from "@tanstack/react-table";
 import { SlidersHorizontal } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 
@@ -14,13 +14,7 @@ import { DropdownMenu,
 	DropdownMenuSeparator,
 	DropdownMenuCheckboxItem } from "../../components/ui/dropdown-menu";
 
-interface ColumnToggleProps<TData> {
-	table: Table<TData>;
-}
-
-export default function ColumnToggle<TData>( {
-	table
-}: ColumnToggleProps<TData> )
+export default function ColumnToggle<File>( { table }: { table: Table<File> } )
 {
 	// Affichage du rendu HTML du composant.
 	return (

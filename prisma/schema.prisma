@@ -35,13 +35,21 @@ model Session {
 }
 
 model Issue {
-	issueId      Int        @unique @default(autoincrement())
+	issueId      Int        @id @default(autoincrement())
 	userId       String
 	area         String
 	severity     String
 	subject      String
 	description  String
 	createdAt    DateTime   @default(now())
+	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model File {
+	fileId       String     @id @default(cuid())
+	userId       String
+	name         String
+	status	     String
 	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -57,6 +65,7 @@ model User {
 	accounts      Account[]
 	sessions      Session[]
 	issues        Issue[]
+	files         File[]
 }
 
 model VerificationToken {
