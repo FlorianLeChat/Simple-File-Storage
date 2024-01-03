@@ -4,15 +4,11 @@
 import { z } from "zod";
 
 // Taille maximale d'un avatar.
-const MAX_FILE_SIZE = 1024 * 1024 * 5;
+const MAX_FILE_SIZE = Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE ?? "0" );
 
 // Types d'images acceptés pour l'avatar.
-const ACCEPTED_FILE_TYPES = [
-	"image/jpeg",
-	"image/jpg",
-	"image/png",
-	"image/webp"
-];
+const ACCEPTED_FILE_TYPES =
+	process.env.NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES?.split( "," ) ?? [];
 
 const schema = z.object( {
 	// Adresse électronique.
@@ -29,7 +25,11 @@ const schema = z.object( {
 		)
 		.refine(
 			// Type de l'image.
-			( file ) => ACCEPTED_FILE_TYPES.includes( file.type ),
+			( file ) => ACCEPTED_FILE_TYPES.some( ( type ) =>
+			{
+				const acceptedType = type.trim().slice( 0, -1 );
+				return file.type.startsWith( acceptedType );
+			} ),
 			"wrong_file_type"
 		)
 		.or(
