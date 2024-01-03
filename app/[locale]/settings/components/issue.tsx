@@ -84,6 +84,13 @@ export default function Account()
 		// On informe ensuite que le traitement est terminé.
 		setLoading( false );
 
+		// On réinitialise après la totalité du formulaire
+		//  en cas de succès.
+		if ( success )
+		{
+			form.reset();
+		}
+
 		// On affiche enfin le message correspondant si une raison
 		//  a été fournie.
 		if ( reason !== "" )
