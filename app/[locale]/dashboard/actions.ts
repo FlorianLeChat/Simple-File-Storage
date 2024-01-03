@@ -131,9 +131,23 @@ export async function uploadFiles(
 
 		await mkdir( userFolder, { recursive: true } );
 
-		// On sort après chaque fichier téléversé de la mémoire.
-		result.data.upload.forEach( async ( file: File ) =>
+		// On récupère après le quota actuel et maximal de l'utilisateur.
+		const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA );
+		let currentQuota = ( await getUserQuota() ).value;
+
+		// On vérifie si le quota de l'utilisateur n'est pas dépassé pour
+		//  chaque fichier à téléverser.
+		result.data.upload.every( async ( file ) =>
 		{
+			// Si le quota de l'utilisateur est dépassé, on indique
+			//  que le téléversement a été interrompu.
+			currentQuota += file.size;
+
+			if ( currentQuota > maxQuota )
+			{
+				return false;
+			}
+
 			// On insère le nom du fichier et son statut dans la base de
 			//  données afin de générer un identifiant unique.
 			const identifier = (
@@ -155,7 +169,21 @@ export async function uploadFiles(
 				),
 				new Uint8Array( await file.arrayBuffer() )
 			);
+
+			// On indique par ailleurs que le téléversement s'est bien
+			//  passé.
+			return true;
 		} );
+
+		if ( currentQuota > maxQuota )
+		{
+			// Si un dépassement de quota a été détecté, on affiche un
+			//  message d'erreur dans le formulaire.
+			return {
+				success: false,
+				reason: "form.errors.quota_exceeded"
+			};
+		}
 	}
 	catch ( error )
 	{
