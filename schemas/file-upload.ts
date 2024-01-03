@@ -4,7 +4,7 @@
 import { z } from "zod";
 
 // Taille maximale d'un fichier.
-const MAX_FILE_SIZE = Number( process.env.NEXT_PUBLIC_MAX_FILE_SIZE ?? "0" );
+const MAX_FILE_SIZE = Number( process.env.NEXT_PUBLIC_MAX_QUOTA ?? "0" );
 
 // Types de fichiers acceptés.
 const ACCEPTED_FILE_TYPES =

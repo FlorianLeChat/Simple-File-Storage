@@ -16,6 +16,7 @@ import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
 import { useState, useEffect } from "react";
 
+import { formatSize } from "@/utilities/react-table";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { useToast } from "../../components/ui/use-toast";
@@ -31,6 +32,7 @@ import { updateProfile } from "../profile/actions";
 export default function Profile( { session }: { session: Session } )
 {
 	// Déclaration des constantes.
+	const maxAvatarSize = Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE ?? 0 );
 	const { toast } = useToast();
 	const formState = {
 		success: true,
@@ -209,8 +211,9 @@ export default function Profile( { session }: { session: Session } )
 								Vous pouvez mettre à jour l&lsquo;avatar utilisé
 								pour votre compte utilisateur.{" "}
 								<strong>
-									Les avatars ne doivent pas dépasser 5 Mo et
-									doivent être au format PNG, JPEG ou WEBP.
+									Les avatars ne doivent pas dépasser{" "}
+									{formatSize( maxAvatarSize )} et doivent être
+									au format PNG, JPEG ou WEBP.
 								</strong>
 							</FormDescription>
 
