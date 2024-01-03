@@ -20,15 +20,15 @@ const schema = z.object( {
 	upload: z
 		.array( z.custom<File>() )
 		.refine( ( files ) => files.every( ( file ) => file instanceof File ), {
-			message: "zod.errors.wrong_file_object"
+			message: "wrong_file_object"
 		} )
 		.refine(
 			( files ) => files.every( ( file ) => file.size <= MAX_FILE_SIZE ),
-			"zod.errors.wrong_file_size"
+			"wrong_file_size"
 		)
 		.refine(
 			( files ) => files.every( ( file ) => ACCEPTED_FILE_TYPES.includes( file.type ) ),
-			"zod.errors.wrong_file_type"
+			"wrong_file_type"
 		)
 } );
 
