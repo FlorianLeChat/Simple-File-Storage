@@ -10,7 +10,7 @@ import GitHub from "@auth/core/providers/github";
 import Credentials from "@auth/core/providers/credentials";
 import type { Adapter } from "@auth/core/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import sendVerificationRequest from "@/utilities/nodemailer";
+import sendVerificationRequest from "@/utilities/node-mailer";
 import NextAuth, { type NextAuthConfig } from "next-auth";
 
 export const { handlers, auth, signIn, signOut } = NextAuth( {
