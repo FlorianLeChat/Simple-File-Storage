@@ -4,12 +4,13 @@
 
 // Importation des dépendances.
 import mime from "mime";
+import prisma from "@/utilities/prisma";
 import { lazy } from "react";
 import { redirect } from "next/navigation";
+import { existsSync } from "fs";
 import { join, parse } from "path";
 import type { Metadata } from "next";
-import { mkdir, readdir } from "fs/promises";
-import { existsSync, statSync } from "fs";
+import { mkdir, readdir, stat } from "fs/promises";
 import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
@@ -53,21 +54,31 @@ async function getFiles(): Promise<File[]>
 		return [];
 	}
 
-	// On récupère enfin tous les fichiers de l'utilisateur.
-	return ( await readdir( userFolder ) ).map( ( file, index ) =>
-	{
-		// On retourne enfin les propriétés de chaque fichier.
-		const stats = statSync( join( userFolder, file ) );
+	// On récupère enfin tous les fichiers de l'utilisateur
+	//  à travers une promesse pour les opérations de la base
+	//  de données.
+	return Promise.all(
+		( await readdir( userFolder ) ).map( async ( file, index ) =>
+		{
+			// On retourne enfin les propriétés de chaque fichier
+			//  associé avec leur nom d'origine.
+			const stats = await stat( join( userFolder, file ) );
+			const result = await prisma.file.findFirst( {
+				where: {
+					fileId: parse( file ).name
+				}
+			} );
 
-		return {
-			id: index,
-			name: parse( file ).name,
-			type: mime.getType( file ) ?? "application/octet-stream",
-			size: stats.size,
-			date: stats.birthtime.toISOString(),
-			status: "public"
-		} as File;
-	} );
+			return {
+				id: index,
+				name: result?.name ?? parse( file ).name,
+				type: mime.getType( file ) ?? "application/octet-stream",
+				size: stats.size,
+				date: stats.birthtime.toISOString(),
+				status: "public"
+			} as File;
+		} )
+	);
 }
 
 // Affichage de la page.
