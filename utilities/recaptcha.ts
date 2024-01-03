@@ -2,8 +2,11 @@
 // Ajout du support de Google reCAPTCHA sur les actions côté serveur de NextJS.
 //  Source : https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#non-form-elements
 //
+
+"use client";
+
 export default async function serverAction(
-	action: ( payload: FormData ) => void,
+	action: ( payload: FormData ) => unknown,
 	formData: FormData
 )
 {
@@ -15,26 +18,30 @@ export default async function serverAction(
 	{
 		// Dans ce cas, on traite la requête comme si le service reCAPTCHA n'était
 		//  pas activé et on laisse le serveur répondre à l'utilisateur.
-		action( formData );
-		return;
+		return action( formData );
 	}
 
-	// On attend ensuite que le service soit chargé dans le navigateur de
-	//  l'utilisateur avant de continuer le traitement de la requête.
-	window.grecaptcha.ready( async () =>
+	// On créé après une promesse afin de gérer le chargement des services de
+	//  Google reCAPTCHA.
+	return new Promise( ( resolve ) =>
 	{
-		// Une fois prêt, on génère alors un jeton d'authentification auprès
-		//  des services de Google reCAPTCHA avant de l'inclure dans la requête
-		//  courante.
-		const token = await window.grecaptcha.execute(
-			process.env.NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY,
-			{ action: "submit" }
-		);
+		// On attend ensuite que le service soit chargé dans le navigateur de
+		//  l'utilisateur.
+		window.grecaptcha.ready( async () =>
+		{
+			// Une fois prêt, on génère alors un jeton d'authentification auprès
+			//  des services de Google reCAPTCHA avant de l'inclure dans la requête
+			//  courante.
+			const token = await window.grecaptcha.execute(
+				process.env.NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY,
+				{ action: "submit" }
+			);
 
-		formData.append( "recaptcha", token );
+			formData.append( "recaptcha", token );
 
-		// On exécute enfin l'action côté serveur avec les données du formulaire
-		//  récupérées précédemment.
-		action( formData );
+			// On résout enfin l'action côté serveur avec les données du formulaire
+			//  récupérées précédemment.
+			resolve( await action( formData ) );
+		} );
 	} );
 }

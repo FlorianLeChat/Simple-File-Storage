@@ -63,7 +63,7 @@ export default function Recaptcha()
 
 			// On envoie enfin le jeton au serveur pour vérification.
 			const body = new FormData();
-			body.append( "recaptcha", token );
+			body.append( "1_recaptcha", token );
 
 			fetch( `${ process.env.__NEXT_ROUTER_BASEPATH }/api/recaptcha`, {
 				body,

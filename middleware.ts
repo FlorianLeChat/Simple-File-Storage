@@ -12,19 +12,12 @@ export default async function middleware( request: NextRequest )
 	// On vérifie d'abord si le service reCAPTCHA est activé ou non.
 	if ( process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true" )
 	{
-		// On vérifie ensuite s'il s'agit d'une requête de type GET ou POST.
-		//  Note : les requêtes de type GET sont utilisées pour les diverses
-		//   statistiques, tant disque que les requêtes de type POST sont
-		//   utilisées pour la vérification de la validité des formulaires.
-		if (
-			( request.method === "GET"
-				&& request.nextUrl.pathname === "/api/recaptcha" )
-			|| request.method === "POST"
-		)
+		// On vérifie ensuite s'il s'agit d'une requête de type POST.
+		if ( request.method === "POST" )
 		{
 			// On récupère après la requête sous format de formulaire avant
 			//  de vérifier si elle contient un jeton d'authentification.
-			const token = ( await request.formData() ).get( "recaptcha" );
+			const token = ( await request.formData() ).get( "1_recaptcha" );
 
 			if ( !token )
 			{
@@ -52,8 +45,13 @@ export default async function middleware( request: NextRequest )
 					return new NextResponse( null, { status: 400 } );
 				}
 
-				// Dans le cas contraire, on continue le traitement de la requête.
-				return new NextResponse( null, { status: 200 } );
+				// Dans le cas contraire et dans le cas où la requête a cherchée
+				//  à accéder à l'API de Google reCAPTCHA, on retourne une réponse
+				//  vide avec un code de statut 200.
+				if ( request.nextUrl.pathname === "/api/recaptcha" )
+				{
+					return new NextResponse( null, { status: 200 } );
+				}
 			}
 		}
 	}
@@ -70,7 +68,7 @@ export default async function middleware( request: NextRequest )
 }
 
 export const config = {
-	matcher: [ "/", "/((?!api|_next|_vercel|.*\\..*).*)" ]
+	matcher: [ "/", "/((?!api/admin|api/auth|_next|_vercel|.*\\..*).*)" ]
 };
 
 if ( process.env.__NEXT_ROUTER_BASEPATH )
