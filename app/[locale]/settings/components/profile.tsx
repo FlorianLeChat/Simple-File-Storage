@@ -196,7 +196,10 @@ export default function Profile( { session }: { session: Session } )
 								<Input
 									{...field}
 									type="file"
-									accept=".png,.jpg,.jpeg,.webp"
+									accept={
+										process.env
+											.NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES
+									}
 									disabled={loading}
 									className="file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
 								/>

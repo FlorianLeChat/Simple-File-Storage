@@ -4,15 +4,11 @@
 import { z } from "zod";
 
 // Taille maximale d'un fichier.
-const MAX_FILE_SIZE = 1024 * 1024 * 5;
+const MAX_FILE_SIZE = Number( process.env.NEXT_PUBLIC_MAX_FILE_SIZE ?? "0" );
 
 // Types de fichiers acceptés.
-const ACCEPTED_FILE_TYPES = [
-	"image/jpeg",
-	"image/jpg",
-	"image/png",
-	"image/webp"
-];
+const ACCEPTED_FILE_TYPES =
+	process.env.NEXT_PUBLIC_ACCEPTED_FILE_TYPES?.split( "," ) ?? [];
 
 const schema = z.object( {
 	// Fichier(s) à téléverser.
@@ -27,7 +23,11 @@ const schema = z.object( {
 			"wrong_file_size"
 		)
 		.refine(
-			( files ) => files.every( ( file ) => ACCEPTED_FILE_TYPES.includes( file.type ) ),
+			( files ) => files.every( ( file ) => ACCEPTED_FILE_TYPES.some( ( type ) =>
+			{
+				const acceptedType = type.trim().slice( 0, -1 );
+				return file.type.startsWith( acceptedType );
+			} ) ),
 			"wrong_file_type"
 		)
 } );
