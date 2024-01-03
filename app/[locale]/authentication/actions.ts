@@ -39,11 +39,11 @@ export async function signUpAccount(
 
 	if ( !result.success )
 	{
-		// Si les informations d'authentification fournies sont invalides,
-		//  on affiche un message d'erreur sur la page d'authentification.
+		// Si les données du formulaire sont invalides, on affiche le
+		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: "form.errors.invalid"
+			reason: `zod.errors.${ result.error.issues[ 0 ].code }`
 		};
 	}
 
@@ -146,11 +146,11 @@ export async function signInAccount(
 
 	if ( !result.success )
 	{
-		// Si les informations d'authentification fournies sont invalides,
-		//  on affiche un message d'erreur sur la page d'authentification.
+		// Si les données du formulaire sont invalides, on affiche le
+		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: "form.errors.generic"
+			reason: `zod.errors.${ result.error.issues[ 0 ].code }`
 		};
 	}
 
@@ -215,7 +215,7 @@ export async function signInAccount(
 		{
 			return {
 				success: false,
-				reason: "form.errors.generic"
+				reason: `authjs.errors.${ error.type }`
 			};
 		}
 
@@ -226,7 +226,7 @@ export async function signInAccount(
 	//  ne correspondant à aucun des cas précédents.
 	return {
 		success: false,
-		reason: "form.errors.invalid"
+		reason: "form.errors.invalid_credentials"
 	};
 }
 

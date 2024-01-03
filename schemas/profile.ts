@@ -25,12 +25,12 @@ const schema = z.object( {
 		.refine(
 			// Taille de l'image.
 			( file ) => file.size > 0 || file.size <= MAX_FILE_SIZE,
-			"zod.errors.wrong_file_size"
+			"wrong_file_size"
 		)
 		.refine(
 			// Type de l'image.
 			( file ) => ACCEPTED_FILE_TYPES.includes( file.type ),
-			"zod.errors.wrong_file_type"
+			"wrong_file_type"
 		)
 		.or(
 			// Fichier vide (par défaut).
