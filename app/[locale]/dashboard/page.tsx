@@ -43,9 +43,9 @@ async function getFiles(): Promise<File[]>
 	// On créé ensuite le dossier de stockage si celui-ci n'existe pas.
 	const folderPath = join( process.cwd(), "public/storage" );
 
-	mkdir( folderPath, { recursive: true } );
+	await mkdir( folderPath, { recursive: true } );
 
-	// On vérifie après l'existance du dossier de l'utilisateur.
+	// On vérifie après l'existence du dossier de l'utilisateur.
 	const userFolder = join( folderPath, session.user.id );
 
 	if ( !existsSync( userFolder ) )
@@ -53,20 +53,18 @@ async function getFiles(): Promise<File[]>
 		return [];
 	}
 
-	// On récupère alors tous les fichiers de l'utilisateur.
-	const userFiles = await readdir( userFolder );
-
-	return userFiles.map( ( file, index ) =>
+	// On récupère enfin tous les fichiers de l'utilisateur.
+	return ( await readdir( userFolder ) ).map( ( file, index ) =>
 	{
 		// On retourne enfin les propriétés de chaque fichier.
-		const fileStats = statSync( join( userFolder, file ) );
+		const stats = statSync( join( userFolder, file ) );
 
 		return {
-			id: index.toString(),
+			id: index,
 			name: parse( file ).name,
 			type: mime.getType( file ) ?? "application/octet-stream",
-			size: fileStats.size,
-			date: fileStats.birthtime.toISOString(),
+			size: stats.size,
+			date: stats.birthtime.toISOString(),
 			status: "public"
 		} as File;
 	} );

@@ -15,7 +15,7 @@ import { Checkbox } from "../../components/ui/checkbox";
 
 // Déclaration du typage d'un fichier.
 export type File = {
-	id: string;
+	id: number;
 	name: string;
 	type: string;
 	size: number;
