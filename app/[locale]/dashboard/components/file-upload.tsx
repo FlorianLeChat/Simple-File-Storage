@@ -1,17 +1,21 @@
 //
 // Composant de téléversement des fichiers.
 //
-import * as z from "zod";
-import schema from "@/schemas/file-upload";
+
+"use client";
+
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import serverAction from "@/utilities/recaptcha";
+import { formatSize } from "@/utilities/react-table";
+import { useFormState } from "react-dom";
+import { useState, useEffect, type Dispatch, type SetStateAction } from "react";
 import { Ban, Loader2, PlusCircleIcon, UploadCloud } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { Progress } from "../../components/ui/progress";
 import { useToast } from "../../components/ui/use-toast";
+import { type File } from "./columns";
 import { Form,
 	FormItem,
 	FormField,
@@ -27,41 +31,115 @@ import { Dialog,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
 import { Button, buttonVariants } from "../../components/ui/button";
+import { getUserQuota, uploadFiles } from "../actions";
 
-export default function FileUpload()
+export default function FileUpload( {
+	data,
+	setData
+}: {
+	data: File[];
+	setData: Dispatch<SetStateAction<File[]>>;
+} )
 {
 	// Déclaration des constantes.
+	const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA ?? 0 );
 	const { toast } = useToast();
+	const formState = {
+		success: true,
+		reason: ""
+	};
 
 	// Déclaration des variables d'état.
-	const [ isLoading, setIsLoading ] = useState( false );
+	const [ quota, setQuota ] = useState( 0 );
+	const [ loading, setLoading ] = useState( false );
+	const [ uploadState, uploadAction ] = useFormState( uploadFiles, formState );
 
-	// Déclaration des formulaires.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema )
+	// Déclaration du formulaire.
+	const percent = ( ( quota / maxQuota ) * 100 ).toFixed( 2 ) as unknown as number;
+	const form = useForm( {
+		defaultValues: {
+			upload: ""
+		}
 	} );
 
-	// Téléversement des fichiers sélectionnés.
-	const uploadFile = ( data: z.infer<typeof schema> ) =>
+	// Récupération des informations de quota de l'utilisateur
+	//  auprès du serveur.
+	const fetchUserQuota = async () =>
 	{
-		setIsLoading( true );
+		const response = ( await serverAction( getUserQuota, new FormData() ) ) as {
+			success: boolean;
+			value: number;
+		};
 
-		setTimeout( () =>
+		if ( response && response.success )
 		{
+			setQuota( response.value );
+		}
+	};
+
+	// Détection de la disponibilité des services Google reCAPTCHA.
+	useEffect( () =>
+	{
+		// Exécution directe si les services sont désactivés.
+		if ( process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED !== "true" )
+		{
+			fetchUserQuota();
+		}
+
+		// Ajout et suppression de l'écouteur d'événement de détection
+		//  de la disponibilité des services.
+		window.addEventListener( "onRecaptchaReady", fetchUserQuota );
+
+		return () => window.removeEventListener( "onRecaptchaReady", fetchUserQuota );
+	}, [] );
+
+	// Affichage des erreurs en provenance du serveur.
+	useEffect( () =>
+	{
+		// On vérifie d'abord si la variable d'état liée à l'action
+		//  du formulaire est encore définie.
+		if ( !uploadState )
+		{
+			// Si ce n'est pas le cas, quelque chose s'est mal passé au
+			//  niveau du serveur.
+			setLoading( false );
+
 			toast( {
-				title: "Vous avez soumis les informations suivantes :",
-				description: (
-					<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-						<code className="text-white">
-							{JSON.stringify( data, null, 4 )}
-						</code>
-					</pre>
-				)
+				title: "form.errors.update_failed",
+				variant: "destructive",
+				description: "form.errors.server_error"
 			} );
 
-			setIsLoading( false );
-		}, 3000 );
-	};
+			return;
+		}
+
+		// On récupère également une possible raison d'échec ainsi que
+		//  l'état associé.
+		const { success, reason } = uploadState;
+
+		// On informe ensuite que le traitement est terminé.
+		setLoading( false );
+
+		// On réinitialise après une partie du formulaire
+		//  en cas de succès.
+		if ( success )
+		{
+			form.reset();
+		}
+
+		// On affiche enfin le message correspondant si une raison
+		//  a été fournie.
+		if ( reason !== "" )
+		{
+			toast( {
+				title: success
+					? "form.info.upload_success"
+					: "form.errors.upload_failed",
+				variant: success ? "default" : "destructive",
+				description: reason
+			} );
+		}
+	}, [ data, setData, toast, form, uploadState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -100,13 +178,14 @@ export default function FileUpload()
 
 				<Form {...form}>
 					<form
-						onSubmit={form.handleSubmit( uploadFile )}
+						action={( formData ) => serverAction( uploadAction, formData )}
+						onSubmit={() => setLoading( true )}
 						className="space-y-6"
 					>
 						<FormField
 							name="upload"
 							control={form.control}
-							render={() => (
+							render={( { field } ) => (
 								<FormItem>
 									<FormLabel className="sr-only">
 										Fichiers à téléverser
@@ -114,24 +193,29 @@ export default function FileUpload()
 
 									<FormControl>
 										<Input
+											{...field}
 											type="file"
-											accept="image/*,video/*,audio/*"
+											accept={
+												process.env
+													.NEXT_PUBLIC_ACCEPTED_FILE_TYPES
+											}
 											multiple
 											required
-											disabled={isLoading}
+											disabled={loading}
 											className="file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
 										/>
 									</FormControl>
 
 									<FormDescription className="!mt-3">
 										<Progress
-											value={33}
+											value={percent}
 											className="mb-1 h-1"
 										/>
 
 										<span className="text-sm text-muted-foreground">
-											33% du quota actuellement utilisés
-											(333 Mo / 1 Go)
+											{percent}% du quota actuellement
+											utilisés ({formatSize( quota )} /{" "}
+											{formatSize( maxQuota )})
 										</span>
 									</FormDescription>
 
@@ -142,18 +226,18 @@ export default function FileUpload()
 
 						{/* Bouton de validation du formulaire */}
 						<Button
-							disabled={isLoading}
+							disabled={loading}
 							className="float-right ml-1 max-sm:w-[calc(50%-0.25rem)] sm:ml-2"
 						>
-							{isLoading ? (
+							{loading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									Mise à jour...
+									Téléversement...
 								</>
 							) : (
 								<>
 									<PlusCircleIcon className="mr-2 h-4 w-4" />
-									Ajouter
+									Téléverser
 								</>
 							)}
 						</Button>
@@ -161,7 +245,7 @@ export default function FileUpload()
 						{/* Bouton de fermeture du formulaire */}
 						<DialogClose
 							onClick={() => form.reset()}
-							disabled={isLoading}
+							disabled={loading}
 							className={merge(
 								buttonVariants( {
 									variant: "outline"
