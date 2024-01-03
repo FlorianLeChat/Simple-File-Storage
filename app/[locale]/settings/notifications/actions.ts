@@ -35,15 +35,11 @@ export async function updateNotifications(
 
 	if ( !result.success )
 	{
-		// Si les données du formulaire sont invalides, on affiche un
-		//  message d'erreur générique ou plus précis selon le cas.
-		const reason = result.error.issues[ 0 ].message;
-
+		// Si les données du formulaire sont invalides, on affiche le
+		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: reason.startsWith( "zod.errors." )
-				? reason
-				: "form.errors.generic"
+			reason: `zod.errors.${ result.error.issues[ 0 ].code }`
 		};
 	}
 

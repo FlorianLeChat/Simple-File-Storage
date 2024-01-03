@@ -37,11 +37,11 @@ export async function createIssue(
 
 	if ( !result.success )
 	{
-		// Si les données du formulaire sont invalides, on affiche un
-		//  message d'erreur générique.
+		// Si les données du formulaire sont invalides, on affiche le
+		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: "form.errors.generic"
+			reason: `zod.errors.${ result.error.issues[ 0 ].code }`
 		};
 	}
 
