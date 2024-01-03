@@ -6,6 +6,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { formatSize } from "@/utilities/react-table";
 
 import { Badge } from "../../components/ui/badge";
 import RowActions from "./row-actions";
@@ -58,23 +59,7 @@ export const columns: ColumnDef<File>[] = [
 		// Taille du fichier (en octets).
 		accessorKey: "size",
 		header: ( { column } ) => <ColumnHeader column={column} title="Taille" />,
-		cell: ( { row } ) =>
-		{
-			// Calcul de conversion de la taille du fichier.
-			//  Source : https://stackoverflow.com/q/10420352
-			const units = [ "octets", "ko", "Mo", "Go", "To" ];
-
-			let size = parseFloat( row.getValue( "size" ) );
-			let index = 0;
-
-			while ( size >= 1024 && index < units.length - 1 )
-			{
-				size /= 1024;
-				index++;
-			}
-
-			return `${ size.toFixed( 2 ) } ${ units[ index ] }`;
-		}
+		cell: ( { row } ) => formatSize( parseFloat( row.getValue( "size" ) ) )
 	},
 	{
 		// Date de téléversement du fichier.
@@ -83,7 +68,7 @@ export const columns: ColumnDef<File>[] = [
 		cell: ( { row } ) =>
 		{
 			const date = new Date( row.getValue( "date" ) );
-			return date.toLocaleDateString( "fr-FR" );
+			return date.toLocaleDateString();
 		}
 	},
 	{
