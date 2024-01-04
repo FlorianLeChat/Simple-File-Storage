@@ -79,25 +79,25 @@ export async function uploadFiles(
 		await mkdir( userFolder, { recursive: true } );
 
 		// On récupère après le quota actuel et maximal de l'utilisateur.
+		const currentFiles = await readdir( userFolder );
 		const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA );
-		let currentQuota = ( await readdir( userFolder ) ).reduce(
+		let currentQuota = currentFiles.reduce(
 			( previous, current ) => previous + statSync( join( userFolder, current ) ).size,
 			0
 		);
 
-		// On vérifie si le quota de l'utilisateur n'est pas dépassé pour
-		//  chaque fichier à téléverser.
-		result.data.upload.every( async ( file ) =>
+		// On filtre la liste des fichiers à téléverser pour ne garder que
+		//  ceux qui ne dépassent pas le quota de l'utilisateur.
+		result.data.upload = result.data.upload.filter( ( file ) =>
 		{
-			// Si le quota de l'utilisateur est dépassé, on indique
-			//  que le téléversement a été interrompu.
 			currentQuota += file.size;
 
-			if ( currentQuota > maxQuota )
-			{
-				return false;
-			}
+			return currentQuota <= maxQuota;
+		} );
 
+		// On téléverse chaque fichier dans le système de fichiers.
+		result.data.upload.forEach( async ( file ) =>
+		{
 			// On insère le nom du fichier et son statut dans la base de
 			//  données afin de générer un identifiant unique.
 			const identifier = (
@@ -119,35 +119,36 @@ export async function uploadFiles(
 				),
 				new Uint8Array( await file.arrayBuffer() )
 			);
-
-			// On indique par ailleurs que le téléversement s'est bien
-			//  passé.
-			return true;
 		} );
 
-		if ( currentQuota > maxQuota )
-		{
-			// Si un dépassement de quota a été détecté, on affiche un
-			//  message d'erreur dans le formulaire.
-			return {
-				success: false,
-				reason: "form.errors.quota_exceeded"
-			};
-		}
+		// On retourne un message de succès ou d'erreur si le quota de
+		//  l'utilisateur a été dépassé en compagnie de la liste des
+		//  fichiers téléversés avec succès.
+		return {
+			success: currentQuota <= maxQuota,
+			reason:
+				currentQuota > maxQuota
+					? "form.errors.quota_exceeded"
+					: "form.info.upload_success",
+			data: result.data.upload.map( ( file, index ) => JSON.stringify( {
+				// Suite à un problème dans React, on doit convertir les
+				//  fichiers sous format JSON pour pouvoir les envoyer
+				//  à travers le réseau vers les composants clients.
+				//  Source : https://github.com/vercel/next.js/issues/47447
+				id: currentFiles.length + index,
+				size: file.size,
+				name: file.name,
+				type: file.type
+			} ) )
+		};
 	}
 	catch ( error )
 	{
 		// Si une erreur survient lors de la mise à jour de l'avatar,
-		//  on affiche un message d'erreur générique.
+		//  on affiche enfin un message d'erreur générique.
 		return {
 			success: false,
 			reason: "form.errors.file_system"
 		};
 	}
-
-	// On retourne enfin un message de succès.
-	return {
-		success: true,
-		reason: "form.info.upload_success"
-	};
 }

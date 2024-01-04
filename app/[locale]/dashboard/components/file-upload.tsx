@@ -9,10 +9,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { formatSize } from "@/utilities/react-table";
 import { useFormState } from "react-dom";
-import { useState,
-	useEffect,
-	type Dispatch,
-	type SetStateAction } from "react";
+import { useState, useEffect, type Dispatch, type SetStateAction } from "react";
 import { Ban, Loader2, PlusCircleIcon, UploadCloud } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
@@ -54,14 +51,14 @@ export default function FileUpload( {
 	};
 
 	// Déclaration des variables d'état.
-	const [ quota ] = useState(
+	const [ quota, setQuota ] = useState(
 		files.reduce( ( previous, current ) => previous + current.size, 0 )
 	);
 	const [ loading, setLoading ] = useState( false );
 	const [ uploadState, uploadAction ] = useFormState( uploadFiles, formState );
 
 	// Déclaration du formulaire.
-	const percent = ( ( quota / maxQuota ) * 100 ).toFixed( 2 ) as unknown as number;
+	const percent = Number( ( ( quota / maxQuota ) * 100 ).toFixed( 2 ) );
 	const form = useForm( {
 		defaultValues: {
 			upload: ""
@@ -90,10 +87,40 @@ export default function FileUpload( {
 
 		// On récupère également une possible raison d'échec ainsi que
 		//  l'état associé.
-		const { success, reason } = uploadState;
+		const { success, reason, data } = uploadState;
 
 		// On informe ensuite que le traitement est terminé.
 		setLoading( false );
+
+		// On vérifie également si le serveur a renvoyé la liste des
+		//  fichiers téléversés avec succès.
+		if ( data && data.length > 0 )
+		{
+			// Si c'est le cas, on ajoute les fichiers à la liste
+			//  des fichiers déjà existants.
+			const uploaded: File[] = [];
+
+			data.forEach( ( file ) =>
+			{
+				// Transformation de la chaîne JSON en objet.
+				const json = JSON.parse( file ) as File;
+
+				// Mise à jour du quota utilisateur.
+				setQuota( ( previous ) => previous + json.size );
+
+				// Ajout du fichier à la liste des fichiers téléversés.
+				uploaded.push( {
+					id: json.id,
+					name: json.name,
+					type: json.type,
+					size: json.size,
+					date: new Date().toISOString(),
+					status: "public"
+				} );
+			} );
+
+			setFiles( ( previous ) => [ ...previous, ...uploaded ] );
+		}
 
 		// On réinitialise après une partie du formulaire
 		//  en cas de succès.
@@ -114,7 +141,7 @@ export default function FileUpload( {
 				description: reason
 			} );
 		}
-	}, [ files, setFiles, toast, form, uploadState ] );
+	}, [ setFiles, toast, form, uploadState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -188,8 +215,8 @@ export default function FileUpload( {
 										/>
 
 										<span className="text-sm text-muted-foreground">
-											{Number( percent ).toLocaleString()}%
-											du quota actuellement utilisés (
+											{percent.toLocaleString()}% du quota
+											actuellement utilisés (
 											{formatSize( quota )} /{" "}
 											{formatSize( maxQuota )})
 										</span>
