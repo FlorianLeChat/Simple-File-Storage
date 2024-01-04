@@ -2,6 +2,9 @@
 // Composant des actions disponibles pour une ligne d'un tableau de données.
 //  Source : https://ui.shadcn.com/docs/components/data-table
 //
+
+"use client";
+
 import { merge } from "@/utilities/tailwind";
 import { Ban,
 	Check,

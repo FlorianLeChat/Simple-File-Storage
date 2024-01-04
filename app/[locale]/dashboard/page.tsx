@@ -63,7 +63,7 @@ async function getFiles(): Promise<File[]>
 			// On retourne enfin les propriétés de chaque fichier
 			//  associé avec leur nom d'origine.
 			const stats = await stat( join( userFolder, file ) );
-			const result = await prisma.file.findFirst( {
+			const result = await prisma.file.findUnique( {
 				where: {
 					fileId: parse( file ).name
 				}
@@ -71,11 +71,11 @@ async function getFiles(): Promise<File[]>
 
 			return {
 				id: index,
-				name: result?.name ?? parse( file ).name,
+				name: parse( result?.name ?? file ).name,
 				type: mime.getType( file ) ?? "application/octet-stream",
 				size: stats.size,
 				date: stats.birthtime.toISOString(),
-				status: "public"
+				status: result?.status ?? "public"
 			} as File;
 		} )
 	);
