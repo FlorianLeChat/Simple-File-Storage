@@ -15,5 +15,5 @@ export function formatSize( raw: number ): string
 		index++;
 	}
 
-	return `${ parseFloat( size.toFixed( 2 ) ).toLocaleString() } ${ units[ index ] }`;
+	return `${ Number( size.toFixed( 2 ) ).toLocaleString() } ${ units[ index ] }`;
 }

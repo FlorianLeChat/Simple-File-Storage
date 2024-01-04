@@ -9,66 +9,9 @@ import mime from "mime";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
+import { statSync } from "fs";
 import { join, parse } from "path";
-import { existsSync, statSync } from "fs";
 import { mkdir, readdir, writeFile } from "fs/promises";
-
-//
-// Récupération du quota de l'utilisateur.
-//
-export async function getUserQuota()
-{
-	// On récupère d'abord la session de l'utilisateur.
-	const session = await auth();
-
-	if ( !session )
-	{
-		// Si la session n'existe pas, on retourne un quota de 0.
-		return {
-			success: false,
-			value: 0
-		};
-	}
-
-	try
-	{
-		// On créé le dossier de stockage si celui-ci n'existe pas.
-		const folderPath = join( process.cwd(), "public/storage" );
-
-		await mkdir( folderPath, { recursive: true } );
-
-		// On vérifie ensuite si le dossier de l'utilisateur existe.
-		const userFolder = join( folderPath, session.user.id );
-
-		if ( !existsSync( userFolder ) )
-		{
-			// Si ce n'est pas le cas, le quota est de 0.
-			return {
-				success: true,
-				value: 0
-			};
-		}
-
-		// Dans le cas contraire, on calcule la somme des tailles des
-		//  fichiers de l'utilisateur.
-		return {
-			success: true,
-			value: ( await readdir( userFolder ) ).reduce(
-				( previous, current ) => previous + statSync( join( userFolder, current ) ).size,
-				0
-			)
-		};
-	}
-	catch ( error )
-	{
-		// On affiche enfin une erreur en cas d'erreur avec le système
-		//  de fichiers.
-		return {
-			success: false,
-			value: 0
-		};
-	}
-}
 
 //
 // Téléversement d'un nouveau fichier.
@@ -137,7 +80,10 @@ export async function uploadFiles(
 
 		// On récupère après le quota actuel et maximal de l'utilisateur.
 		const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA );
-		let currentQuota = ( await getUserQuota() ).value;
+		let currentQuota = ( await readdir( userFolder ) ).reduce(
+			( previous, current ) => previous + statSync( join( userFolder, current ) ).size,
+			0
+		);
 
 		// On vérifie si le quota de l'utilisateur n'est pas dépassé pour
 		//  chaque fichier à téléverser.

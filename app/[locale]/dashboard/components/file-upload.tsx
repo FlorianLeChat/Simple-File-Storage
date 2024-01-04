@@ -9,7 +9,10 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { formatSize } from "@/utilities/react-table";
 import { useFormState } from "react-dom";
-import { useState, useEffect, type Dispatch, type SetStateAction } from "react";
+import { useState,
+	useEffect,
+	type Dispatch,
+	type SetStateAction } from "react";
 import { Ban, Loader2, PlusCircleIcon, UploadCloud } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
@@ -23,6 +26,7 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
+import { uploadFiles } from "../actions";
 import { Dialog,
 	DialogClose,
 	DialogTitle,
@@ -31,14 +35,13 @@ import { Dialog,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
 import { Button, buttonVariants } from "../../components/ui/button";
-import { getUserQuota, uploadFiles } from "../actions";
 
 export default function FileUpload( {
-	data,
-	setData
+	files,
+	setFiles
 }: {
-	data: File[];
-	setData: Dispatch<SetStateAction<File[]>>;
+	files: File[];
+	setFiles: Dispatch<SetStateAction<File[]>>;
 } )
 {
 	// Déclaration des constantes.
@@ -46,11 +49,14 @@ export default function FileUpload( {
 	const { toast } = useToast();
 	const formState = {
 		success: true,
-		reason: ""
+		reason: "",
+		data: []
 	};
 
 	// Déclaration des variables d'état.
-	const [ quota, setQuota ] = useState( 0 );
+	const [ quota ] = useState(
+		files.reduce( ( previous, current ) => previous + current.size, 0 )
+	);
 	const [ loading, setLoading ] = useState( false );
 	const [ uploadState, uploadAction ] = useFormState( uploadFiles, formState );
 
@@ -61,37 +67,6 @@ export default function FileUpload( {
 			upload: ""
 		}
 	} );
-
-	// Récupération des informations de quota de l'utilisateur
-	//  auprès du serveur.
-	const fetchUserQuota = async () =>
-	{
-		const response = ( await serverAction( getUserQuota, new FormData() ) ) as {
-			success: boolean;
-			value: number;
-		};
-
-		if ( response && response.success )
-		{
-			setQuota( response.value );
-		}
-	};
-
-	// Détection de la disponibilité des services Google reCAPTCHA.
-	useEffect( () =>
-	{
-		// Exécution directe si les services sont désactivés.
-		if ( process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED !== "true" )
-		{
-			fetchUserQuota();
-		}
-
-		// Ajout et suppression de l'écouteur d'événement de détection
-		//  de la disponibilité des services.
-		window.addEventListener( "onRecaptchaReady", fetchUserQuota );
-
-		return () => window.removeEventListener( "onRecaptchaReady", fetchUserQuota );
-	}, [] );
 
 	// Affichage des erreurs en provenance du serveur.
 	useEffect( () =>
@@ -139,7 +114,7 @@ export default function FileUpload( {
 				description: reason
 			} );
 		}
-	}, [ data, setData, toast, form, uploadState ] );
+	}, [ files, setFiles, toast, form, uploadState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -213,8 +188,9 @@ export default function FileUpload( {
 										/>
 
 										<span className="text-sm text-muted-foreground">
-											{percent}% du quota actuellement
-											utilisés ({formatSize( quota )} /{" "}
+											{Number( percent ).toLocaleString()}%
+											du quota actuellement utilisés (
+											{formatSize( quota )} /{" "}
 											{formatSize( maxQuota )})
 										</span>
 									</FormDescription>
