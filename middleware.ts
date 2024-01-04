@@ -9,49 +9,49 @@ import type { RecaptchaResponse } from "./interfaces/Recaptcha";
 
 export default async function middleware( request: NextRequest )
 {
-	// On vérifie d'abord si le service reCAPTCHA est activé ou non.
-	if ( process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true" )
+	// On vérifie d'abord si le service reCAPTCHA est activé ou non
+	//  et s'il s'agit d'une requête de type POST.
+	if (
+		process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true"
+		&& request.method === "POST"
+	)
 	{
-		// On vérifie ensuite s'il s'agit d'une requête de type POST.
-		if ( request.method === "POST" )
-		{
-			// On récupère après la requête sous format de formulaire avant
-			//  de vérifier si elle contient un jeton d'authentification.
-			const token = ( await request.formData() ).get( "1_recaptcha" );
+		// On récupère ensuite la requête sous format de formulaire avant
+		//  de vérifier si elle contient un jeton d'authentification.
+		const token = ( await request.formData() ).get( "1_recaptcha" );
 
-			if ( !token )
+		if ( !token )
+		{
+			// Si ce n'est pas le cas, on bloque la requête courante.
+			return new NextResponse( null, { status: 400 } );
+		}
+
+		// On effectue une requête à l'API de Google reCAPTCHA afin de vérifier
+		//  la validité du jeton d'authentification auprès de leurs services.
+		const data = await fetch(
+			`https://www.google.com/recaptcha/api/siteverify?secret=${ process.env.RECAPTCHA_SECRET_KEY }&response=${ token }`,
+			{ method: "POST" }
+		);
+
+		if ( data.ok )
+		{
+			// Si la requête a été traitée avec succès, on vérifie alors le
+			//  résultat obtenu de l'API de Google reCAPTCHA sous format JSON.
+			const json = ( await data.json() ) as RecaptchaResponse;
+
+			if ( !json.success || json.score < 0.7 )
 			{
-				// Si ce n'est pas le cas, on bloque la requête courante.
+				// En cas de score insuffisant ou si la réponse est invalide,
+				//  on bloque la requête courante.
 				return new NextResponse( null, { status: 400 } );
 			}
 
-			// On effectue une requête à l'API de Google reCAPTCHA afin de vérifier
-			//  la validité du jeton d'authentification auprès de leurs services.
-			const data = await fetch(
-				`https://www.google.com/recaptcha/api/siteverify?secret=${ process.env.RECAPTCHA_SECRET_KEY }&response=${ token }`,
-				{ method: "POST" }
-			);
-
-			if ( data.ok )
+			// Dans le cas contraire et dans le cas où la requête a cherchée
+			//  à accéder à l'API de Google reCAPTCHA, on retourne une réponse
+			//  vide avec un code de statut 200.
+			if ( request.nextUrl.pathname === "/api/recaptcha" )
 			{
-				// Si la requête a été traitée avec succès, on vérifie alors le
-				//  résultat obtenu de l'API de Google reCAPTCHA sous format JSON.
-				const json = ( await data.json() ) as RecaptchaResponse;
-
-				if ( !json.success || json.score < 0.7 )
-				{
-					// En cas de score insuffisant ou si la réponse est invalide,
-					//  on bloque la requête courante.
-					return new NextResponse( null, { status: 400 } );
-				}
-
-				// Dans le cas contraire et dans le cas où la requête a cherchée
-				//  à accéder à l'API de Google reCAPTCHA, on retourne une réponse
-				//  vide avec un code de statut 200.
-				if ( request.nextUrl.pathname === "/api/recaptcha" )
-				{
-					return new NextResponse( null, { status: 200 } );
-				}
+				return new NextResponse( null, { status: 200 } );
 			}
 		}
 	}
