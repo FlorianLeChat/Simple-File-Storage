@@ -9,14 +9,45 @@ import type { RecaptchaResponse } from "./interfaces/Recaptcha";
 
 export default async function middleware( request: NextRequest )
 {
-	// On vérifie d'abord si le service reCAPTCHA est activé ou non
+	// On vérifie d'abord si la requête courante est de type GET
+	//  et si elle cherche à accéder à un fichier utilisateur.
+	if (
+		request.method === "GET"
+		&& request.nextUrl.pathname.startsWith( "/d/" )
+	)
+	{
+		// Si c'est le cas, on récupère l'identifiant du fichier
+		//  à partir de l'URL de la requête.
+		const identifier = request.nextUrl.pathname.split( "/d/" )[ 1 ];
+
+		if ( identifier )
+		{
+			// On fait une requête à l'API pour récupérer le chemin
+			//  du fichier à partir de son identifiant.
+			const data = await fetch(
+				new URL(
+					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/storage/${ identifier }`,
+					request.url
+				)
+			);
+
+			if ( data.ok )
+			{
+				// Si l'API semble avoir traitée la requête avec succès,
+				//  on retourne une redirection vers le fichier.
+				return NextResponse.rewrite( await data.text() );
+			}
+		}
+	}
+
+	// On vérifie ensuite si le service reCAPTCHA est activé ou non
 	//  et s'il s'agit d'une requête de type POST.
 	if (
 		process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true"
 		&& request.method === "POST"
 	)
 	{
-		// On récupère ensuite la requête sous format de formulaire avant
+		// On récupère alors la requête sous format de formulaire avant
 		//  de vérifier si elle contient un jeton d'authentification.
 		const token = ( await request.formData() ).get( "1_recaptcha" );
 
@@ -68,7 +99,10 @@ export default async function middleware( request: NextRequest )
 }
 
 export const config = {
-	matcher: [ "/", "/((?!api/admin|api/auth|_next|_vercel|.*\\..*).*)" ]
+	matcher: [
+		"/",
+		"/((?!api/admin|api/auth|api/storage|_next|_vercel|.*\\..*).*)"
+	]
 };
 
 if ( process.env.__NEXT_ROUTER_BASEPATH )

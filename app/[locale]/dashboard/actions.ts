@@ -5,7 +5,6 @@
 
 "use server";
 
-import mime from "mime";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
@@ -103,9 +102,9 @@ export async function uploadFiles(
 			const identifier = (
 				await prisma.file.create( {
 					data: {
-						name: parse( file.name ).name,
+						name: file.name,
 						userId: user.id,
-						status: "public"
+						status: "private"
 					}
 				} )
 			).fileId;
@@ -113,10 +112,7 @@ export async function uploadFiles(
 			// On écrit alors le fichier dans le système de fichiers
 			//  avec l'identifiant unique généré précédemment.
 			await writeFile(
-				join(
-					userFolder,
-					`${ identifier }.${ mime.getExtension( file.type ) }`
-				),
+				join( userFolder, `${ identifier + parse( file.name ).ext }` ),
 				new Uint8Array( await file.arrayBuffer() )
 			);
 		} );
@@ -136,8 +132,8 @@ export async function uploadFiles(
 				//  à travers le réseau vers les composants clients.
 				//  Source : https://github.com/vercel/next.js/issues/47447
 				id: currentFiles.length + index,
+				name: parse( file.name ).name,
 				size: file.size,
-				name: file.name,
 				type: file.type
 			} ) )
 		};
