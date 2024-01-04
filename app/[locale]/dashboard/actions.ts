@@ -9,10 +9,9 @@ import mime from "mime";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
-import { redirect } from "next/navigation";
 import { join, parse } from "path";
-import { mkdir, readdir, writeFile } from "fs/promises";
 import { existsSync, statSync } from "fs";
+import { mkdir, readdir, writeFile } from "fs/promises";
 
 //
 // Récupération du quota de l'utilisateur.
@@ -24,9 +23,11 @@ export async function getUserQuota()
 
 	if ( !session )
 	{
-		// Si la session n'existe pas, on redirige l'utilisateur vers
-		//  la page d'accueil.
-		return redirect( "/" );
+		// Si la session n'existe pas, on retourne un quota de 0.
+		return {
+			success: false,
+			value: 0
+		};
 	}
 
 	try
@@ -82,9 +83,12 @@ export async function uploadFiles(
 
 	if ( !session )
 	{
-		// Si la session n'existe pas, on redirige l'utilisateur vers
-		//  la page d'accueil.
-		return redirect( "/" );
+		// Si la session n'existe pas, on indique que l'utilisateur
+		//  n'est pas connecté.
+		return {
+			success: false,
+			reason: "form.errors.unauthenticated"
+		};
 	}
 
 	// On tente ensuite de valider les données du formulaire.
