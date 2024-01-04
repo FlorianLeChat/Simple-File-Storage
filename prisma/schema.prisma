@@ -46,7 +46,7 @@ model Issue {
 }
 
 model File {
-	fileId       String     @id @default(cuid())
+	fileId       String     @id @default(uuid())
 	userId       String
 	name         String
 	status	     String
@@ -54,7 +54,7 @@ model File {
 }
 
 model User {
-	id            String    @id @default(cuid())
+	id            String    @id @default(uuid())
 	name          String?
 	email         String    @unique
 	password      String?
