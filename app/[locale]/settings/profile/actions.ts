@@ -8,7 +8,6 @@ import prisma from "@/utilities/prisma";
 import schema from "@/schemas/profile";
 import { join } from "path";
 import { auth } from "@/utilities/next-auth";
-import { redirect } from "next/navigation";
 import { mkdir, writeFile } from "fs/promises";
 
 //
@@ -24,9 +23,12 @@ export async function updateProfile(
 
 	if ( !session )
 	{
-		// Si la session n'existe pas, on redirige l'utilisateur vers
-		//  la page d'accueil.
-		return redirect( "/" );
+		// Si la session n'existe pas, on indique que l'utilisateur
+		//  n'est pas connecté.
+		return {
+			success: false,
+			reason: "form.errors.unauthenticated"
+		};
 	}
 
 	// On tente ensuite de valider les données du formulaire.
