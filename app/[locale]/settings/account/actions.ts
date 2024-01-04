@@ -9,7 +9,6 @@ import prisma from "@/utilities/prisma";
 import schema from "@/schemas/account";
 import { auth } from "@/utilities/next-auth";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 //
 // Mise à jour des informations du compte utilisateur.
@@ -24,9 +23,12 @@ export async function updateAccount(
 
 	if ( !session )
 	{
-		// Si la session n'existe pas, on redirige l'utilisateur vers
-		//  la page d'accueil.
-		return redirect( "/" );
+		// Si la session n'existe pas, on indique que l'utilisateur
+		//  n'est pas connecté.
+		return {
+			success: false,
+			reason: "form.errors.unauthenticated"
+		};
 	}
 
 	// On tente ensuite de valider les données du formulaire.
