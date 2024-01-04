@@ -59,7 +59,7 @@ export const columns: ColumnDef<File>[] = [
 		// Taille du fichier (en octets).
 		accessorKey: "size",
 		header: ( { column } ) => <ColumnHeader column={column} title="Taille" />,
-		cell: ( { row } ) => formatSize( parseFloat( row.getValue( "size" ) ) )
+		cell: ( { row } ) => formatSize( Number( row.getValue( "size" ) ) )
 	},
 	{
 		// Date de téléversement du fichier.

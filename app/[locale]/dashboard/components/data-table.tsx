@@ -41,6 +41,7 @@ export default function DataTable( {
 } )
 {
 	// Déclaration des variables d'état.
+	const [ files, setFiles ] = useState( data );
 	const [ sorting, setSorting ] = useState<SortingState>( [] );
 	const [ rowSelection, setRowSelection ] = useState( {} );
 	const [ columnFilters, setColumnFilters ] = useState<ColumnFiltersState>( [] );
@@ -50,7 +51,7 @@ export default function DataTable( {
 
 	// Définition des tableaux.
 	const table = useReactTable( {
-		data,
+		data: files,
 		state: {
 			sorting,
 			rowSelection,
@@ -103,7 +104,7 @@ export default function DataTable( {
 				<ColumnToggle table={table} />
 
 				{/* Ajout d'une nouvelle entrée */}
-				<FileUpload />
+				<FileUpload files={files} setFiles={setFiles} />
 			</div>
 
 			{/* Affichage des données dans le tableau */}

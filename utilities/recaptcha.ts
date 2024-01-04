@@ -22,7 +22,7 @@ export default async function serverAction(
 	}
 
 	// On créé après une promesse afin de gérer le chargement des services de
-	//  Google reCAPTCHA.
+	//  Google reCAPTCHA et pouvoir retourner une réponse à l'utilisateur.
 	return new Promise( ( resolve ) =>
 	{
 		// On attend ensuite que le service soit chargé dans le navigateur de
