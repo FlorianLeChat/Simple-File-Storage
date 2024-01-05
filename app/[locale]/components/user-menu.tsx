@@ -11,6 +11,7 @@ import type { Session } from "next-auth";
 import { BellRing, Check } from "lucide-react";
 import { useEffect, useCallback, useState } from "react";
 
+import serverAction from "@/utilities/recaptcha";
 import { Dialog,
 	DialogTitle,
 	DialogHeader,
@@ -260,7 +261,7 @@ export default function UserMenu( { session }: { session: Session } )
 					<DropdownMenuItem
 						onClick={() =>
 						{
-							signOutAccount();
+							serverAction( signOutAccount, new FormData() );
 						}}
 					>
 						Déconnexion
