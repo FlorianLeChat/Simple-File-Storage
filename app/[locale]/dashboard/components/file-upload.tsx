@@ -9,13 +9,13 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { formatSize } from "@/utilities/react-table";
 import { useFormState } from "react-dom";
-import { useState, useEffect, type Dispatch, type SetStateAction } from "react";
+import { type FileAttributes } from "@/interfaces/File";
+import { useState, useEffect, useContext } from "react";
 import { Ban, Loader2, PlusCircleIcon, UploadCloud } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
 import { Progress } from "../../components/ui/progress";
 import { useToast } from "../../components/ui/use-toast";
-import { type File } from "./columns";
 import { Form,
 	FormItem,
 	FormField,
@@ -31,15 +31,10 @@ import { Dialog,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
+import { StorageContext } from "../../components/storage-provider";
 import { Button, buttonVariants } from "../../components/ui/button";
 
-export default function FileUpload( {
-	files,
-	setFiles
-}: {
-	files: File[];
-	setFiles: Dispatch<SetStateAction<File[]>>;
-} )
+export default function FileUpload()
 {
 	// Déclaration des constantes.
 	const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA ?? 0 );
@@ -51,6 +46,7 @@ export default function FileUpload( {
 	};
 
 	// Déclaration des variables d'état.
+	const { files, setFiles } = useContext( StorageContext );
 	const [ quota, setQuota ] = useState(
 		files.reduce( ( previous, current ) => previous + current.size, 0 )
 	);
@@ -98,12 +94,12 @@ export default function FileUpload( {
 		{
 			// Si c'est le cas, on ajoute les fichiers à la liste
 			//  des fichiers déjà existants.
-			const uploaded: File[] = [];
+			const uploaded: FileAttributes[] = [];
 
 			data.forEach( ( file ) =>
 			{
 				// Transformation de la chaîne JSON en objet.
-				const json = JSON.parse( file ) as File;
+				const json = JSON.parse( file ) as FileAttributes;
 
 				// Mise à jour du quota utilisateur.
 				setQuota( ( previous ) => previous + json.size );
