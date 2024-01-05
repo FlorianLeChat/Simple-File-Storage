@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import { existsSync } from "fs";
 import { join, parse } from "path";
 import type { Metadata } from "next";
+import type { FileAttributes } from "@/interfaces/File";
 import { mkdir, readdir, stat } from "fs/promises";
 import { unstable_setRequestLocale } from "next-intl/server";
 
@@ -18,8 +19,8 @@ import { auth } from "@/utilities/next-auth";
 import { generateMetadata } from "../layout";
 
 // Importation des composants.
+import { columns } from "./components/columns";
 import { Separator } from "../components/ui/separator";
-import { type File, columns } from "./components/columns";
 
 const Header = lazy( () => import( "../components/header" ) );
 const UserMenu = lazy( () => import( "../components/user-menu" ) );
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
 };
 
 // Récupération des fichiers depuis le système de fichiers.
-async function getFiles(): Promise<File[]>
+async function getFiles(): Promise<FileAttributes[]>
 {
 	// On vérifie d'abord si la session utilisateur est valide.
 	const session = await auth();
@@ -76,7 +77,7 @@ async function getFiles(): Promise<File[]>
 				size: stats.size,
 				date: stats.birthtime.toISOString(),
 				status: result?.status ?? "public"
-			} as File;
+			} as FileAttributes;
 		} )
 	);
 }
