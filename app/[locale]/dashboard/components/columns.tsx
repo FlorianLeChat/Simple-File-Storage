@@ -7,24 +7,15 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { formatSize } from "@/utilities/react-table";
+import { FileAttributes } from "@/interfaces/File";
 
 import { Badge } from "../../components/ui/badge";
 import RowActions from "./row-actions";
 import ColumnHeader from "./column-header";
 import { Checkbox } from "../../components/ui/checkbox";
 
-// Déclaration du typage d'un fichier.
-export type File = {
-	id: number;
-	name: string;
-	type: string;
-	size: number;
-	date: string;
-	status: "public" | "private" | "shared";
-};
-
 // Déclaration des colonnes du tableau.
-export const columns: ColumnDef<File>[] = [
+export const columns: ColumnDef<FileAttributes>[] = [
 	{
 		// Case de sélection d'une ou plusieurs lignes.
 		id: "select",
