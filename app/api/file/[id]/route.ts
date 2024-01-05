@@ -33,7 +33,7 @@ export async function GET(
 		//  vers le fichier.
 		return new NextResponse(
 			new URL(
-				`/storage/${ file.userId }/${ file.fileId + parse( file.name ).ext }`,
+				`/files/${ file.userId }/${ file.fileId + parse( file.name ).ext }`,
 				request.url
 			).href
 		);
