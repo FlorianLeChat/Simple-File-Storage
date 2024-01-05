@@ -99,17 +99,6 @@ export default async function Page( {
 		redirect( "/" );
 	}
 
-	// Récupération de l'avatar utilisateur.
-	if ( !session.user.image )
-	{
-		const avatar = await readdir( join( process.cwd(), "public/avatar" ) );
-
-		if ( avatar.length > 0 )
-		{
-			session.user.image = `/avatars/${ avatar[ 0 ] }`;
-		}
-	}
-
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
