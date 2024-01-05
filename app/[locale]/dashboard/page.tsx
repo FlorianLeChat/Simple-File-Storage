@@ -42,7 +42,7 @@ async function getFiles(): Promise<File[]>
 	}
 
 	// On créé ensuite le dossier de stockage si celui-ci n'existe pas.
-	const folderPath = join( process.cwd(), "public/storage" );
+	const folderPath = join( process.cwd(), "public/files" );
 
 	await mkdir( folderPath, { recursive: true } );
 

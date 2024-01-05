@@ -71,11 +71,7 @@ export async function uploadFiles(
 	try
 	{
 		// On créé le dossier de l'utilisateur si celui-ci n'existe pas.
-		const userFolder = join(
-			process.cwd(),
-			"public/storage",
-			session.user.id
-		);
+		const userFolder = join( process.cwd(), "public/files", session.user.id );
 
 		await mkdir( userFolder, { recursive: true } );
 
