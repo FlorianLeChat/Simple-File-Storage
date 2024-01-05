@@ -42,9 +42,11 @@ export async function uploadFiles(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
+		const { code, message } = result.error.issues[ 0 ];
+
 		return {
 			success: false,
-			reason: `zod.errors.${ result.error.issues[ 0 ].code }`
+			reason: `zod.errors.${ code === "custom" ? message : code }`
 		};
 	}
 
