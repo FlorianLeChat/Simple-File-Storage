@@ -15,12 +15,17 @@ const schema = z.object( {
 	//  Source : https://github.com/colinhacks/zod/issues/387
 	upload: z
 		.array( z.custom<File>() )
-		.refine( ( files ) => files.every( ( file ) => file instanceof File ), {
-			message: "wrong_file_object"
-		} )
+		.refine(
+			( files ) => files.every( ( file ) => file instanceof File ),
+			"wrong_file_object"
+		)
 		.refine(
 			( files ) => files.every( ( file ) => file.size <= MAX_FILE_SIZE ),
 			"wrong_file_size"
+		)
+		.refine(
+			( files ) => files.every( ( file ) => file.name.length <= 100 ),
+			"wrong_file_name"
 		)
 		.refine(
 			( files ) => files.every( ( file ) => ACCEPTED_FILE_TYPES.some( ( type ) =>
