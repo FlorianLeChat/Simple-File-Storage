@@ -34,7 +34,7 @@ export default function Notifications( { session }: { session: Session } )
 	const notifications = session.user.notifications.split( "+" );
 
 	// Déclaration des variables d'état.
-	const [ push, setPush ] = useState( notifications[ 1 ] === "mail" );
+	const [ push, setPush ] = useState( notifications[ 0 ] !== "off" );
 	const [ loading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState(
 		updateNotifications,
