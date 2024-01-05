@@ -3,8 +3,6 @@
 //
 
 // Importation des dépendances.
-import { join } from "path";
-import { readdir } from "fs/promises";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { lazy, type ReactNode } from "react";
@@ -43,17 +41,6 @@ export default async function Layout( {
 	if ( !session )
 	{
 		redirect( "/" );
-	}
-
-	// Récupération de l'avatar utilisateur.
-	if ( !session.user.image )
-	{
-		const avatar = await readdir( join( process.cwd(), "public/avatar" ) );
-
-		if ( avatar.length > 0 )
-		{
-			session.user.image = `/avatars/${ avatar[ 0 ] }`;
-		}
 	}
 
 	// Affichage du rendu HTML de la page.

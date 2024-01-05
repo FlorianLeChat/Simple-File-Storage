@@ -7,7 +7,10 @@ import bcrypt from "bcrypt";
 import prisma from "@/utilities/prisma";
 import Google from "@auth/core/providers/google";
 import GitHub from "@auth/core/providers/github";
+import { join } from "path";
+import { readdir } from "fs/promises";
 import Credentials from "@auth/core/providers/credentials";
+import { existsSync } from "fs";
 import type { Adapter } from "@auth/core/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import sendVerificationRequest from "@/utilities/node-mailer";
@@ -24,7 +27,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 	callbacks: {
 		// Gestion des rôles d'utilisateurs.
 		//  Source : https://authjs.dev/guides/basics/role-based-access-control#with-database
-		session( { session, user } )
+		async session( { session, user } )
 		{
 			if ( session )
 			{
@@ -33,6 +36,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 				session.user.role = user.role;
 				session.user.oauth = !user.password && !user.emailVerified;
 				session.user.notifications = user.notifications;
+
+				// Définition de l'avatar personnalisé de l'utilisateur.
+				const avatars = join( process.cwd(), "public", "avatars" );
+
+				if ( existsSync( avatars ) )
+				{
+					const avatar = ( await readdir( avatars ) ).find( ( file ) => file.includes( user.id ) );
+
+					if ( avatar )
+					{
+						session.user.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }`;
+					}
+				}
 			}
 
 			return session;

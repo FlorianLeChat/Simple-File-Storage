@@ -77,9 +77,12 @@ export async function updateProfile(
 		{
 			// Si un fichier d'avatar a bien été fourni, on le met à jour
 			//  dans le système de fichiers.
-			const type = avatar.type.split( "/" )[ 1 ];
+			const extension = avatar.type.split( "/" )[ 1 ];
 			const folderPath = join( process.cwd(), "public/avatars" );
-			const filePath = join( folderPath, `${ session.user.id }.${ type }` );
+			const filePath = join(
+				folderPath,
+				`${ session.user.id }.${ extension }`
+			);
 
 			await mkdir( folderPath, { recursive: true } );
 			await writeFile(
