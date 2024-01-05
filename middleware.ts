@@ -2,7 +2,7 @@
 // Mécanisme de routage pour les pages de l'application.
 //
 import createIntlMiddleware from "next-intl/middleware";
-import { type NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { getLanguages } from "./utilities/i18n";
 import type { RecaptchaResponse } from "./interfaces/Recaptcha";
@@ -26,7 +26,7 @@ export default async function middleware( request: NextRequest )
 			//  du fichier à partir de son identifiant.
 			const data = await fetch(
 				new URL(
-					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/storage/${ identifier }`,
+					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/file/${ identifier }`,
 					request.url
 				)
 			);
@@ -40,15 +40,47 @@ export default async function middleware( request: NextRequest )
 		}
 	}
 
-	// On vérifie ensuite si le service reCAPTCHA est activé ou non
+	// On bloque aussi toutes les requêtes qui cherchent à accéder
+	//  aux fichiers téléversés par les utilisateurs sans passer
+	//  par l'API précédemment créée.
+	if ( request.nextUrl.pathname.startsWith( "/files/" ) )
+	{
+		return new NextResponse( null, { status: 404 } );
+	}
+
+	// On restreint après l'accès aux avatars personnalisés aux
+	//  utilisateurs connectés pour éviter d'être récupérés par
+	//  des robots d'indexation.
+	if ( request.nextUrl.pathname.startsWith( "/avatars/" ) )
+	{
+		const data = await fetch(
+			new URL(
+				`${ process.env.__NEXT_ROUTER_BASEPATH }/api/session`,
+				request.url
+			),
+			{ headers: request.headers }
+		);
+
+		if ( data.ok )
+		{
+			// La session existe, on retourne le fichier demandé
+			//  comme une requête classique.
+			return NextResponse.next();
+		}
+
+		// La session n'existe pas, on retourne une erreur 403.
+		return new NextResponse( null, { status: 403 } );
+	}
+
+	// On vérifie également si le service reCAPTCHA est activé ou non
 	//  et s'il s'agit d'une requête de type POST.
 	if (
 		process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true"
 		&& request.method === "POST"
 	)
 	{
-		// On récupère alors la requête sous format de formulaire avant
-		//  de vérifier si elle contient un jeton d'authentification.
+		// On récupère la requête sous format de formulaire avant de vérifier
+		//  si elle contient un jeton d'authentification.
 		const token = ( await request.formData() ).get( "1_recaptcha" );
 
 		if ( !token )
@@ -101,7 +133,7 @@ export default async function middleware( request: NextRequest )
 export const config = {
 	matcher: [
 		"/",
-		"/((?!api/admin|api/auth|api/storage|_next|_vercel|.*\\..*).*)"
+		"/((?!api/admin|api/auth|api/file|api/session|assets|locales|_next|_vercel|manifest.webmanifest).*)"
 	]
 };
 
