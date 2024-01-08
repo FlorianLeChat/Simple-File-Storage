@@ -200,22 +200,17 @@ export default function FileUpload()
 											multiple
 											required
 											disabled={loading}
-											className="file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
+											className="!mt-0 file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
 										/>
 									</FormControl>
 
-									<FormDescription className="!mt-3">
-										<Progress
-											value={percent}
-											className="mb-1 h-1"
-										/>
+									<Progress value={percent} className="h-1" />
 
-										<span className="text-sm text-muted-foreground">
-											{percent.toLocaleString()}% du quota
-											actuellement utilisés (
-											{formatSize( quota )} /{" "}
-											{formatSize( maxQuota )})
-										</span>
+									<FormDescription className="!mt-1 text-sm text-muted-foreground">
+										{percent.toLocaleString()}% du quota
+										actuellement utilisés (
+										{formatSize( quota )} /{" "}
+										{formatSize( maxQuota )})
 									</FormDescription>
 
 									<FormMessage />
