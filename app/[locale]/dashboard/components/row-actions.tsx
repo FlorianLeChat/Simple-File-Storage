@@ -6,6 +6,8 @@
 "use client";
 
 import { merge } from "@/utilities/tailwind";
+import type { Row } from "@tanstack/react-table";
+import serverAction from "@/utilities/recaptcha";
 import { Ban,
 	Check,
 	Trash,
@@ -17,7 +19,12 @@ import { Ban,
 	ArrowUpRight,
 	ClipboardCopy,
 	MoreHorizontal } from "lucide-react";
+import { FileAttributes } from "@/interfaces/File";
+import { useContext, useState } from "react";
 
+import FileHistory from "./file-history";
+import ShareManager from "./share-manager";
+import { useToast } from "../../components/ui/use-toast";
 import { Dialog,
 	DialogTitle,
 	DialogHeader,
@@ -25,6 +32,13 @@ import { Dialog,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
 import { buttonVariants } from "../../components/ui/button";
+import { StorageContext } from "../../components/storage-provider";
+import { DropdownMenu,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+	DropdownMenuSeparator } from "../../components/ui/dropdown-menu";
 import { AlertDialog,
 	AlertDialogTitle,
 	AlertDialogAction,
@@ -34,21 +48,21 @@ import { AlertDialog,
 	AlertDialogHeader,
 	AlertDialogTrigger,
 	AlertDialogDescription } from "../../components/ui/alert-dialog";
-import { DropdownMenu,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuContent,
-	DropdownMenuTrigger,
-	DropdownMenuSeparator } from "../../components/ui/dropdown-menu";
+import { changeFileStatus, deleteFile } from "../actions";
 
-import FileHistory from "./file-history";
-import ShareManager from "./share-manager";
-
-export default function RowActions()
+export default function RowActions( { row }: { row: Row<FileAttributes> } )
 {
+	// Déclaration des constantes.
+	const { toast } = useToast();
+
+	// Déclaration des variables d'état.
+	const [ open, setOpen ] = useState( false );
+	const { files, setFiles } = useContext( StorageContext );
+	const data = files.filter( ( file ) => `${ file.id }` === row.id )[ 0 ];
+
 	// Affichage du rendu HTML du composant.
 	return (
-		<DropdownMenu>
+		<DropdownMenu open={open} onOpenChange={setOpen}>
 			{/* Bouton d'ouverture du menu */}
 			<DropdownMenuTrigger
 				className={merge(
@@ -105,7 +119,44 @@ export default function RowActions()
 								Annuler
 							</AlertDialogCancel>
 
-							<AlertDialogAction>
+							<AlertDialogAction
+								onClick={async () =>
+								{
+									// Fermeture du menu des actions.
+									setOpen( false );
+
+									// Création d'un formulaire de données.
+									const form = new FormData();
+									form.append( "uuid", data.uuid );
+									form.append( "status", "public" );
+
+									// Envoi de la requête au serveur et
+									//  attente de la réponse.
+									const state = ( await serverAction(
+										changeFileStatus,
+										form
+									) ) as boolean;
+
+									if ( state )
+									{
+										// Mise à jour de l'état du fichier.
+										data.status = "public";
+
+										setFiles( [ ...files ] );
+									}
+
+									// Envoi d'une notification.
+									toast( {
+										title: "form.info.update_success",
+										variant: state
+											? "default"
+											: "destructive",
+										description: state
+											? "form.info.status_updated"
+											: "form.errors.server_error"
+									} );
+								}}
+							>
 								<Check className="mr-2 h-4 w-4" />
 								Confirmer
 							</AlertDialogAction>
@@ -153,7 +204,44 @@ export default function RowActions()
 								Annuler
 							</AlertDialogCancel>
 
-							<AlertDialogAction>
+							<AlertDialogAction
+								onClick={async () =>
+								{
+									// Fermeture du menu des actions.
+									setOpen( false );
+
+									// Création d'un formulaire de données.
+									const form = new FormData();
+									form.append( "uuid", data.uuid );
+									form.append( "status", "private" );
+
+									// Envoi de la requête au serveur et
+									//  attente de la réponse.
+									const state = ( await serverAction(
+										changeFileStatus,
+										form
+									) ) as boolean;
+
+									if ( state )
+									{
+										// Mise à jour de l'état du fichier.
+										data.status = "private";
+
+										setFiles( [ ...files ] );
+									}
+
+									// Envoi d'une notification.
+									toast( {
+										title: "form.info.update_success",
+										variant: state
+											? "default"
+											: "destructive",
+										description: state
+											? "form.info.status_updated"
+											: "form.errors.server_error"
+									} );
+								}}
+							>
 								<Check className="mr-2 h-4 w-4" />
 								Confirmer
 							</AlertDialogAction>
