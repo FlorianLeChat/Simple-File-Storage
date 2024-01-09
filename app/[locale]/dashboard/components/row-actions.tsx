@@ -14,6 +14,7 @@ import { Ban,
 	UserX,
 	Globe,
 	Share2,
+	Loader2,
 	History,
 	FolderLock,
 	ArrowUpRight,
@@ -31,7 +32,6 @@ import { Dialog,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
-import { buttonVariants } from "../../components/ui/button";
 import { StorageContext } from "../../components/storage-provider";
 import { DropdownMenu,
 	DropdownMenuItem,
@@ -48,6 +48,7 @@ import { AlertDialog,
 	AlertDialogHeader,
 	AlertDialogTrigger,
 	AlertDialogDescription } from "../../components/ui/alert-dialog";
+import { Button, buttonVariants } from "../../components/ui/button";
 import { changeFileStatus, deleteFile } from "../actions";
 
 export default function RowActions( { row }: { row: Row<FileAttributes> } )
@@ -58,7 +59,20 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 	// Déclaration des variables d'état.
 	const [ open, setOpen ] = useState( false );
 	const { files, setFiles } = useContext( StorageContext );
+	const [ loading, setLoading ] = useState( "" );
 	const data = files.filter( ( file ) => `${ file.id }` === row.id )[ 0 ];
+
+	// Vérification de l'état de chargement.
+	if ( loading === row.id )
+	{
+		return (
+			<Button variant="link" className="h-8 w-8 p-0 text-foreground">
+				<span className="sr-only">En cours de mise à jour...</span>
+
+				<Loader2 className="white h-4 w-4 animate-spin" />
+			</Button>
+		);
+	}
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -125,6 +139,9 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 									// Fermeture du menu des actions.
 									setOpen( false );
 
+									// Activation de l'état de chargement.
+									setLoading( row.id );
+
 									// Création d'un formulaire de données.
 									const form = new FormData();
 									form.append( "uuid", data.uuid );
@@ -144,6 +161,9 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 
 										setFiles( [ ...files ] );
 									}
+
+									// Fin de l'état de chargement.
+									setLoading( "" );
 
 									// Envoi d'une notification.
 									toast( {
@@ -210,6 +230,9 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 									// Fermeture du menu des actions.
 									setOpen( false );
 
+									// Activation de l'état de chargement.
+									setLoading( row.id );
+
 									// Création d'un formulaire de données.
 									const form = new FormData();
 									form.append( "uuid", data.uuid );
@@ -229,6 +252,9 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 
 										setFiles( [ ...files ] );
 									}
+
+									// Fin de l'état de chargement.
+									setLoading( "" );
 
 									// Envoi d'une notification.
 									toast( {
@@ -421,6 +447,9 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 									// Fermeture du menu des actions.
 									setOpen( false );
 
+									// Activation de l'état de chargement.
+									setLoading( row.id );
+
 									// Création d'un formulaire de données.
 									const form = new FormData();
 									form.append( "uuid", data.uuid );
@@ -449,6 +478,9 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 												} )
 										);
 									}
+
+									// Fin de l'état de chargement.
+									setLoading( "" );
 
 									// Envoi d'une notification.
 									toast( {
