@@ -50,6 +50,7 @@ model File {
 	userId       String
 	name         String
 	status	     String
+	hash         String
 	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
