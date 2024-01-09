@@ -16,19 +16,23 @@ import { Ban,
 	Share2,
 	Loader2,
 	History,
+	RefreshCw,
 	FolderLock,
 	ArrowUpRight,
 	ClipboardCopy,
-	MoreHorizontal } from "lucide-react";
+	MoreHorizontal,
+	TextCursorInput } from "lucide-react";
 import { FileAttributes } from "@/interfaces/File";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 
+import { Input } from "../../components/ui/input";
 import FileHistory from "./file-history";
 import ShareManager from "./share-manager";
 import { useToast } from "../../components/ui/use-toast";
 import { Dialog,
 	DialogTitle,
 	DialogHeader,
+	DialogFooter,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
@@ -49,11 +53,12 @@ import { AlertDialog,
 	AlertDialogTrigger,
 	AlertDialogDescription } from "../../components/ui/alert-dialog";
 import { Button, buttonVariants } from "../../components/ui/button";
-import { changeFileStatus, deleteFile } from "../actions";
+import { changeFileStatus, deleteFile, renameFile } from "../actions";
 
 export default function RowActions( { row }: { row: Row<FileAttributes> } )
 {
 	// Déclaration des constantes.
+	const rename = useRef<HTMLButtonElement>( null );
 	const { toast } = useToast();
 
 	// Déclaration des variables d'état.
@@ -62,31 +67,36 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 	const [ loading, setLoading ] = useState( "" );
 	const data = files.filter( ( file ) => `${ file.id }` === row.id )[ 0 ];
 
-	// Vérification de l'état de chargement.
-	if ( loading === row.id )
-	{
-		return (
-			<Button variant="link" className="h-8 w-8 p-0 text-foreground">
-				<span className="sr-only">En cours de mise à jour...</span>
-
-				<Loader2 className="white h-4 w-4 animate-spin" />
-			</Button>
-		);
-	}
-
 	// Affichage du rendu HTML du composant.
 	return (
 		<DropdownMenu open={open} onOpenChange={setOpen}>
 			{/* Bouton d'ouverture du menu */}
 			<DropdownMenuTrigger
+				onClick={( event ) =>
+				{
+					if ( loading === row.id )
+					{
+						// Suppression de l'ouverture du menu si l'état de
+						//  chargement est actif.
+						event.preventDefault();
+					}
+				}}
 				className={merge(
 					buttonVariants( { variant: "ghost" } ),
 					"h-8 w-8 p-0"
 				)}
 			>
-				<span className="sr-only">Ouvrir le menu</span>
-
-				<MoreHorizontal className="h-4 w-4" />
+				{loading === row.id ? (
+					<>
+						<span className="sr-only">Mise à jour en cours...</span>
+						<Loader2 className="h-4 w-4 animate-spin" />
+					</>
+				) : (
+					<>
+						<span className="sr-only">Ouvrir le menu</span>
+						<MoreHorizontal className="h-4 w-4" />
+					</>
+				)}
 			</DropdownMenuTrigger>
 
 			{/* Actions disponibles */}
@@ -138,6 +148,12 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 								{
 									// Fermeture du menu des actions.
 									setOpen( false );
+
+									// Vérification de l'état du fichier.
+									if ( data.status === "public" )
+									{
+										return;
+									}
 
 									// Activation de l'état de chargement.
 									setLoading( row.id );
@@ -229,6 +245,12 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 								{
 									// Fermeture du menu des actions.
 									setOpen( false );
+
+									// Vérification de l'état du fichier.
+									if ( data.status === "private" )
+									{
+										return;
+									}
 
 									// Activation de l'état de chargement.
 									setLoading( row.id );
@@ -354,7 +376,118 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 
 				<DropdownMenuSeparator />
 
-				{/* Accès et suppression */}
+				{/* Accès, renommage et suppression */}
+				<Dialog>
+					<DialogTrigger asChild>
+						<DropdownMenuItem
+							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+							onSelect={( event ) => event.preventDefault()}
+						>
+							<TextCursorInput className="mr-2 h-4 w-4" />
+							Renommer la ressource
+						</DropdownMenuItem>
+					</DialogTrigger>
+
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>
+								<TextCursorInput className="mr-2 inline h-5 w-5" />
+
+								<span className="align-middle">
+									Quel sera le nouveau nom de la ressource ?
+								</span>
+							</DialogTitle>
+
+							<DialogDescription>
+								<strong>Cette action est irréversible.</strong>{" "}
+								Cela ne modifiera pas le lien d&lsquo;accès, ni
+								son extension et ni les partages actuellement
+								associés avec d&lsquo;autres utilisateurs.
+							</DialogDescription>
+						</DialogHeader>
+
+						<Input
+							type="text"
+							onInput={( event ) =>
+							{
+								data.name = event.currentTarget.value;
+							}}
+							onKeyDown={( event ) =>
+							{
+								if ( event.key === "Enter" )
+								{
+									rename.current?.click();
+								}
+							}}
+							spellCheck="false"
+							placeholder="john-doe"
+							autoComplete="off"
+							defaultValue={data.name}
+							autoCapitalize="off"
+						/>
+
+						<DialogFooter>
+							<Button
+								ref={rename}
+								onClick={async () =>
+								{
+									// Activation de l'état de chargement.
+									setLoading( row.id );
+
+									// Création d'un formulaire de données.
+									const form = new FormData();
+									form.append( "uuid", data.uuid );
+									form.append( "name", data.name );
+
+									// Envoi de la requête au serveur et
+									//  attente de la réponse.
+									const state = ( await serverAction(
+										renameFile,
+										form
+									) ) as boolean;
+
+									if ( state )
+									{
+										// Fermeture du menu des actions.
+										setOpen( false );
+
+										// Renommage du fichier.
+										setFiles( [ ...files ] );
+									}
+
+									// Fin de l'état de chargement.
+									setLoading( "" );
+
+									// Envoi d'une notification.
+									toast( {
+										title: "form.info.update_success",
+										variant: state
+											? "default"
+											: "destructive",
+										description: state
+											? "form.info.name_updated"
+											: "form.errors.server_error"
+									} );
+								}}
+								disabled={loading === row.id}
+								className="max-sm:w-full"
+							>
+								{loading ? (
+									<>
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+										Mise à jour...
+									</>
+								) : (
+									<>
+										<RefreshCw className="mr-2 h-4 w-4" />
+										Mettre à jour
+									</>
+								)}
+							</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+
 				<a rel="noopener noreferrer" href={data.path} target="_blank">
 					<DropdownMenuItem>
 						<ArrowUpRight className="mr-2 h-4 w-4" />
