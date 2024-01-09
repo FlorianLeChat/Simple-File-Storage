@@ -206,3 +206,69 @@ export async function uploadFiles(
 		};
 	}
 }
+
+//
+// Suppression irréversible d'un fichier.
+//
+export async function deleteFile( formData: FormData )
+{
+	// On récupère d'abord la session de l'utilisateur.
+	const session = await auth();
+
+	if ( !session )
+	{
+		return false;
+	}
+
+	// On créé ensuite un schéma de validation personnalisé pour
+	//  les données du formulaire.
+	const validation = z.object( {
+		uuid: z.string().uuid()
+	} );
+
+	// On tente alors de valider les données du formulaire.
+	const result = validation.safeParse( {
+		uuid: formData.get( "uuid" )
+	} );
+
+	if ( !result.success )
+	{
+		return false;
+	}
+
+	try
+	{
+		// On supprime après le fichier dans la base de données.
+		const file = await prisma.file.delete( {
+			where: {
+				fileId: result.data.uuid,
+				userId: session.user.id
+			}
+		} );
+
+		// On vérifie si le fichier existe dans le système de fichiers.
+		const filePath = join(
+			process.cwd(),
+			"public/files",
+			session.user.id,
+			file.fileId + parse( file.name ).ext
+		);
+
+		if ( !existsSync( filePath ) )
+		{
+			return false;
+		}
+
+		// On supprime le fichier avant de retourner une valeur de succès.
+		await unlink( filePath );
+
+		return true;
+	}
+	catch
+	{
+		// Si une erreur s'est produite lors de la transaction avec la
+		//  base de données ou avec le système de fichiers, on retourne
+		//  enfin une valeur d'échec.
+		return false;
+	}
+}

@@ -415,7 +415,53 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 								Annuler
 							</AlertDialogCancel>
 
-							<AlertDialogAction>
+							<AlertDialogAction
+								onClick={async () =>
+								{
+									// Fermeture du menu des actions.
+									setOpen( false );
+
+									// Création d'un formulaire de données.
+									const form = new FormData();
+									form.append( "uuid", data.uuid );
+
+									// Envoi de la requête au serveur et
+									//  attente de la réponse.
+									const state = ( await serverAction(
+										deleteFile,
+										form
+									) ) as boolean;
+
+									if ( state )
+									{
+										// Suppression du fichier de la liste
+										//  recomptage des identifiants.
+										setFiles(
+											files
+												.filter(
+													( file ) => file.uuid !== data.uuid
+												)
+												.map( ( file, index ) =>
+												{
+													file.id = index;
+
+													return file;
+												} )
+										);
+									}
+
+									// Envoi d'une notification.
+									toast( {
+										title: "form.info.action_success",
+										variant: state
+											? "default"
+											: "destructive",
+										description: state
+											? "form.info.file_deleted"
+											: "form.errors.server_error"
+									} );
+								}}
+							>
 								<Check className="mr-2 h-4 w-4" />
 								Confirmer
 							</AlertDialogAction>
