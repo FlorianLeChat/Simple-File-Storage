@@ -329,11 +329,7 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 				<DropdownMenuSeparator />
 
 				{/* Accès et suppression */}
-				<a
-					rel="noopener noreferrer"
-					href="https://www.google.fr/"
-					target="_blank"
-				>
+				<a rel="noopener noreferrer" href={data.path} target="_blank">
 					<DropdownMenuItem>
 						<ArrowUpRight className="mr-2 h-4 w-4" />
 						Accéder à la ressource
@@ -373,7 +369,11 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 					</DialogContent>
 				</Dialog>
 
-				<DropdownMenuItem>
+				<DropdownMenuItem
+					onClick={() => navigator.clipboard.writeText(
+						new URL( data.path, window.location.href ).href
+					)}
+				>
 					<ClipboardCopy className="mr-2 h-4 w-4" />
 					Copier le lien d&lsquo;accès
 				</DropdownMenuItem>
