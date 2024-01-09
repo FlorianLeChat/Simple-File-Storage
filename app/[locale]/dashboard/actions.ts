@@ -6,12 +6,13 @@
 "use server";
 
 import { z } from "zod";
+import crypto from "crypto";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
 import { join, parse } from "path";
 import { existsSync, statSync } from "fs";
-import { mkdir, readdir, unlink, writeFile } from "fs/promises";
+import { mkdir, readdir, symlink, unlink, writeFile } from "fs/promises";
 
 //
 // Changement du statut d'un fichier.
@@ -151,24 +152,57 @@ export async function uploadFiles(
 		// On téléverse chaque fichier dans le système de fichiers.
 		const data = result.data.upload.map( async ( file, index ) =>
 		{
+			// On génère une chaîne de hachage unique représentant les
+			//  données du fichier.
+			const buffer = new Uint8Array( await file.arrayBuffer() );
+			const hash = crypto.createHash( "sha256" );
+			hash.update( buffer );
+
+			// On vérifie si ce fichier semble être une duplication d'un
+			//  autre fichier déjà téléversé.
+			const digest = hash.digest( "hex" );
+			const duplication = await prisma.file.findFirst( {
+				where: {
+					hash: digest
+				}
+			} );
+
 			// On insère le nom du fichier et son statut dans la base de
 			//  données afin de générer un identifiant unique.
 			const identifier = (
 				await prisma.file.create( {
 					data: {
 						name: file.name,
+						hash: digest,
 						userId: user.id,
 						status: "private"
 					}
 				} )
 			).fileId;
 
-			// On écrit alors le fichier dans le système de fichiers
-			//  avec l'identifiant unique généré précédemment.
-			await writeFile(
-				join( userFolder, `${ identifier + parse( file.name ).ext }` ),
-				new Uint8Array( await file.arrayBuffer() )
-			);
+			if ( duplication )
+			{
+				// Si c'est une duplication, on créé un lien symbolique
+				//  vers le fichier original pour économiser de l'espace
+				//  disque.
+				await symlink(
+					join(
+						userFolder,
+						`${ duplication.fileId + parse( duplication.name ).ext }`
+					),
+					join( userFolder, `${ identifier + parse( file.name ).ext }` )
+				);
+			}
+			else
+			{
+				// Dans le cas contraire, on écrit le fichier dans le
+				//  système de fichiers avec l'identifiant unique généré
+				//  précédemment.
+				await writeFile(
+					join( userFolder, `${ identifier + parse( file.name ).ext }` ),
+					buffer
+				);
+			}
 
 			// Suite à un problème dans React, on doit convertir les
 			//  fichiers sous format JSON pour pouvoir les envoyer
