@@ -20,11 +20,15 @@ const schema = z.object( {
 			"wrong_file_object"
 		)
 		.refine(
-			( files ) => files.every( ( file ) => file.size <= MAX_FILE_SIZE ),
+			( files ) => files.every(
+				( file ) => file.size > 0 && file.size <= MAX_FILE_SIZE
+			),
 			"wrong_file_size"
 		)
 		.refine(
-			( files ) => files.every( ( file ) => file.name.length <= 100 ),
+			( files ) => files.every(
+				( file ) => file.name.length > 0 && file.name.length <= 100
+			),
 			"wrong_file_name"
 		)
 		.refine(
