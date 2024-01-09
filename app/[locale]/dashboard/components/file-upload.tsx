@@ -107,11 +107,13 @@ export default function FileUpload()
 				// Ajout du fichier à la liste des fichiers téléversés.
 				uploaded.push( {
 					id: json.id,
+					uuid: json.uuid,
 					name: json.name,
 					type: json.type,
 					size: json.size,
 					date: new Date().toISOString(),
-					status: "public"
+					path: new URL( json.path, window.location.href ).href,
+					status: "private"
 				} );
 			} );
 

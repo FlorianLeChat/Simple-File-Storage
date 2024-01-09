@@ -72,10 +72,12 @@ async function getFiles(): Promise<FileAttributes[]>
 
 			return {
 				id: index,
+				uuid: result?.fileId ?? parse( file ).name,
 				name: parse( result?.name ?? file ).name,
 				type: mime.getType( file ) ?? "application/octet-stream",
 				size: stats.size,
 				date: stats.birthtime.toISOString(),
+				path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ result?.fileId }`,
 				status: result?.status ?? "public"
 			} as FileAttributes;
 		} )
