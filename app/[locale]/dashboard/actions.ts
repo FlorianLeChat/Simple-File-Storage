@@ -70,6 +70,77 @@ export async function changeFileStatus( formData: FormData )
 }
 
 //
+// Renommage du nom d'un fichier.
+//
+export async function renameFile( formData: FormData )
+{
+	// On récupère d'abord la session de l'utilisateur.
+	const session = await auth();
+
+	if ( !session )
+	{
+		return false;
+	}
+
+	// On créé ensuite un schéma de validation personnalisé pour
+	//  les données du formulaire.
+	//  Note : les validations Zod du nom doivent correspondre à
+	//   celles utilisées lors du téléversement de fichiers.
+	const validation = z.object( {
+		uuid: z.string().uuid(),
+		name: z.string().min( 1 ).max( 100 )
+	} );
+
+	// On tente alors de valider les données du formulaire.
+	const result = validation.safeParse( {
+		uuid: formData.get( "uuid" ),
+		name: formData.get( "name" )
+	} );
+
+	if ( !result.success )
+	{
+		return false;
+	}
+
+	try
+	{
+		// On récupère après les données du fichier depuis
+		//  la base de données.
+		const file = await prisma.file.findUnique( {
+			where: {
+				fileId: result.data.uuid,
+				userId: session.user.id
+			}
+		} );
+
+		if ( !file )
+		{
+			return false;
+		}
+
+		// On renomme le fichier dans la base de données avant de
+		//  retourner une valeur de succès.
+		await prisma.file.update( {
+			where: {
+				fileId: result.data.uuid,
+				userId: session.user.id
+			},
+			data: {
+				name: result.data.name + parse( file.name ).ext
+			}
+		} );
+
+		return true;
+	}
+	catch
+	{
+		// En cas d'erreur lors de la transaction avec la base de données,
+		//  on retourne enfin une valeur d'échec.
+		return false;
+	}
+}
+
+//
 // Téléversement d'un nouveau fichier.
 //
 export async function uploadFiles(
