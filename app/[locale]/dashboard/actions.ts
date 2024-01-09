@@ -93,7 +93,7 @@ export async function uploadFiles(
 		} );
 
 		// On téléverse chaque fichier dans le système de fichiers.
-		result.data.upload.forEach( async ( file ) =>
+		const data = result.data.upload.map( async ( file, index ) =>
 		{
 			// On insère le nom du fichier et son statut dans la base de
 			//  données afin de générer un identifiant unique.
@@ -113,6 +113,19 @@ export async function uploadFiles(
 				join( userFolder, `${ identifier + parse( file.name ).ext }` ),
 				new Uint8Array( await file.arrayBuffer() )
 			);
+
+			// Suite à un problème dans React, on doit convertir les
+			//  fichiers sous format JSON pour pouvoir les envoyer
+			//  à travers le réseau vers les composants clients.
+			//  Source : https://github.com/vercel/next.js/issues/47447
+			return JSON.stringify( {
+				id: currentFiles.length + index,
+				uuid: identifier,
+				name: parse( file.name ).name,
+				size: file.size,
+				type: file.type,
+				path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ identifier }`
+			} );
 		} );
 
 		// On retourne un message de succès ou d'erreur si le quota de
@@ -124,16 +137,7 @@ export async function uploadFiles(
 				currentQuota > maxQuota
 					? "form.errors.quota_exceeded"
 					: "form.info.upload_success",
-			data: result.data.upload.map( ( file, index ) => JSON.stringify( {
-				// Suite à un problème dans React, on doit convertir les
-				//  fichiers sous format JSON pour pouvoir les envoyer
-				//  à travers le réseau vers les composants clients.
-				//  Source : https://github.com/vercel/next.js/issues/47447
-				id: currentFiles.length + index,
-				name: parse( file.name ).name,
-				size: file.size,
-				type: file.type
-			} ) )
+			data: await Promise.all( data )
 		};
 	}
 	catch ( error )
