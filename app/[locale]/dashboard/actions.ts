@@ -5,12 +5,68 @@
 
 "use server";
 
+import { z } from "zod";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
-import { statSync } from "fs";
 import { join, parse } from "path";
-import { mkdir, readdir, writeFile } from "fs/promises";
+import { existsSync, statSync } from "fs";
+import { mkdir, readdir, unlink, writeFile } from "fs/promises";
+
+//
+// Changement du statut d'un fichier.
+//
+export async function changeFileStatus( formData: FormData )
+{
+	// On récupère d'abord la session de l'utilisateur.
+	const session = await auth();
+
+	if ( !session )
+	{
+		return false;
+	}
+
+	// On créé ensuite un schéma de validation personnalisé pour
+	//  les données du formulaire.
+	const validation = z.object( {
+		uuid: z.string().uuid(),
+		status: z.enum( [ "private", "public" ] )
+	} );
+
+	// On tente alors de valider les données du formulaire.
+	const result = validation.safeParse( {
+		uuid: formData.get( "uuid" ),
+		status: formData.get( "status" )
+	} );
+
+	if ( !result.success )
+	{
+		return false;
+	}
+
+	try
+	{
+		// On met à jour le statut du fichier dans la base de données
+		//  avant de retourner une valeur de succès.
+		await prisma.file.update( {
+			where: {
+				fileId: result.data.uuid,
+				userId: session.user.id
+			},
+			data: {
+				status: result.data.status
+			}
+		} );
+
+		return true;
+	}
+	catch
+	{
+		// En cas d'erreur lors de la transaction avec la base de données,
+		//  on retourne enfin une valeur d'échec.
+		return false;
+	}
+}
 
 //
 // Téléversement d'un nouveau fichier.
