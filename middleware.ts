@@ -28,7 +28,8 @@ export default async function middleware( request: NextRequest )
 				new URL(
 					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/file/${ identifier }`,
 					request.url
-				)
+				),
+				{ headers: request.headers }
 			);
 
 			if ( data.ok )
