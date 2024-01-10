@@ -6,6 +6,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import { useState } from "react";
 import { flexRender,
 	SortingState,
 	useReactTable,
@@ -15,7 +16,6 @@ import { flexRender,
 	ColumnFiltersState,
 	getFilteredRowModel,
 	getPaginationRowModel } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
 import type { FileAttributes } from "@/interfaces/File";
 
 import { Input } from "../../components/ui/input";
@@ -30,7 +30,6 @@ import Pagination from "./pagination";
 import FileUpload from "./file-upload";
 import { columns } from "./columns";
 import ColumnToggle from "./column-toggle";
-import { StorageContext } from "../../components/storage-provider";
 
 export default function DataTable( { data }: { data: FileAttributes[] } )
 {
@@ -45,7 +44,6 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 	);
 
 	// Définition des tableaux.
-	const state = useMemo( () => ( { files, setFiles } ), [ files ] );
 	const table = useReactTable( {
 		data: files,
 		state: {
@@ -56,7 +54,9 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 		},
 		columns,
 		meta: {
+			files,
 			loading,
+			setFiles,
 			setLoading
 		},
 		getRowId: ( row ) => row.uuid,
@@ -72,7 +72,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<StorageContext.Provider value={state}>
+		<>
 			{/* Filtrage et tri des données */}
 			<div className="flex items-center gap-2 py-4">
 				{/* Filtrage par nom */}
@@ -105,7 +105,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 				<ColumnToggle table={table} />
 
 				{/* Ajout d'une nouvelle entrée */}
-				<FileUpload />
+				<FileUpload table={table} />
 			</div>
 
 			{/* Affichage des données dans le tableau */}
@@ -164,6 +164,6 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 			<aside className="flex items-center justify-end gap-2 py-4 max-sm:flex-col sm:gap-4 lg:gap-8">
 				<Pagination table={table} />
 			</aside>
-		</StorageContext.Provider>
+		</>
 	);
 }

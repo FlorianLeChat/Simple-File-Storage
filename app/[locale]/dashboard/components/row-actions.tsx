@@ -23,7 +23,7 @@ import { Ban,
 	TextCursorInput } from "lucide-react";
 import { FileAttributes } from "@/interfaces/File";
 import type { Table, Row } from "@tanstack/react-table";
-import { useContext, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { Input } from "../../components/ui/input";
 import FileHistory from "./file-history";
@@ -36,7 +36,6 @@ import { Dialog,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
-import { StorageContext } from "../../components/storage-provider";
 import { DropdownMenu,
 	DropdownMenuItem,
 	DropdownMenuLabel,
@@ -64,14 +63,19 @@ export default function RowActions( {
 } )
 {
 	// Déclaration des constantes.
+	const files = table.options.meta?.files ?? [];
 	const rename = useRef<HTMLButtonElement>( null );
+	const setFiles = useMemo(
+		() => table.options.meta?.setFiles ?? ( () =>
+		{} ),
+		[ table.options.meta ]
+	);
 	const { toast } = useToast();
 	const isLoading = table.options.meta?.loading.includes( row.id );
 	const selectedRows = table.getFilteredSelectedRowModel();
 
 	// Déclaration des variables d'état.
 	const [ open, setOpen ] = useState( false );
-	const { files, setFiles } = useContext( StorageContext );
 
 	// Filtrage des données d'une ou plusieurs lignes.
 	const rowData = files.filter( ( file ) => file.uuid === row.id );
