@@ -6,8 +6,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { ColumnDef,
-	flexRender,
+import { flexRender,
 	SortingState,
 	useReactTable,
 	VisibilityState,
@@ -27,22 +26,17 @@ import { Table,
 	TableCell,
 	TableHead,
 	TableHeader } from "../../components/ui/table";
-import { StorageContext } from "../../components/storage-provider";
-
 import Pagination from "./pagination";
 import FileUpload from "./file-upload";
+import { columns } from "./columns";
 import ColumnToggle from "./column-toggle";
+import { StorageContext } from "../../components/storage-provider";
 
-export default function DataTable( {
-	columns,
-	data
-}: {
-	columns: ColumnDef<FileAttributes>[];
-	data: FileAttributes[];
-} )
+export default function DataTable( { data }: { data: FileAttributes[] } )
 {
 	// Déclaration des variables d'état.
 	const [ files, setFiles ] = useState( data );
+	const [ loading, setLoading ] = useState<string[]>( [] );
 	const [ sorting, setSorting ] = useState<SortingState>( [] );
 	const [ rowSelection, setRowSelection ] = useState( {} );
 	const [ columnFilters, setColumnFilters ] = useState<ColumnFiltersState>( [] );
@@ -61,6 +55,10 @@ export default function DataTable( {
 			columnVisibility
 		},
 		columns,
+		meta: {
+			loading,
+			setLoading
+		},
 		getRowId: ( row ) => row.uuid,
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),

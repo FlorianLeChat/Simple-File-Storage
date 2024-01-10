@@ -66,16 +66,16 @@ export default function RowActions( {
 	// Déclaration des constantes.
 	const rename = useRef<HTMLButtonElement>( null );
 	const { toast } = useToast();
+	const isLoading = table.options.meta?.loading.includes( row.id );
 	const selectedRows = table.getFilteredSelectedRowModel();
 
 	// Déclaration des variables d'état.
 	const [ open, setOpen ] = useState( false );
 	const { files, setFiles } = useContext( StorageContext );
-	const [ loading, setLoading ] = useState( false );
 
 	// Filtrage des données d'une ou plusieurs lignes.
 	const rowData = files.filter( ( file ) => file.uuid === row.id );
-	const selectionData =
+	const selectedData =
 		selectedRows.rows.length > 1
 			? files.filter( ( file ) => selectedRows.rows.find( ( value ) => file.uuid === value.id ) )
 			: rowData;
@@ -86,7 +86,7 @@ export default function RowActions( {
 			open={open}
 			onOpenChange={( state ) =>
 			{
-				if ( !loading )
+				if ( !isLoading )
 				{
 					// Ouverture du menu si l'état de chargement est
 					//  inactif.
@@ -101,7 +101,7 @@ export default function RowActions( {
 					"h-8 w-8 p-0"
 				)}
 			>
-				{loading ? (
+				{isLoading ? (
 					<>
 						<span className="sr-only">Mise à jour en cours...</span>
 						<Loader2 className="h-4 w-4 animate-spin" />
@@ -165,11 +165,13 @@ export default function RowActions( {
 									setOpen( false );
 
 									// Activation de l'état de chargement.
-									setLoading( true );
+									table.options.meta?.setLoading(
+										selectedData.map( ( value ) => value.uuid )
+									);
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
-									selectionData.forEach( ( file ) =>
+									selectedData.forEach( ( file ) =>
 									{
 										form.append( "uuid", file.uuid );
 									} );
@@ -185,7 +187,7 @@ export default function RowActions( {
 									if ( state )
 									{
 										// Mise à jour de l'état des fichiers.
-										selectionData.forEach( ( file ) =>
+										selectedData.forEach( ( file ) =>
 										{
 											file.status = "public";
 										} );
@@ -194,7 +196,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									setLoading( false );
+									table.options.meta?.setLoading( [] );
 
 									// Envoi d'une notification.
 									toast( {
@@ -262,11 +264,13 @@ export default function RowActions( {
 									setOpen( false );
 
 									// Activation de l'état de chargement.
-									setLoading( true );
+									table.options.meta?.setLoading(
+										selectedData.map( ( value ) => value.uuid )
+									);
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
-									selectionData.forEach( ( file ) =>
+									selectedData.forEach( ( file ) =>
 									{
 										form.append( "uuid", file.uuid );
 									} );
@@ -282,7 +286,7 @@ export default function RowActions( {
 									if ( state )
 									{
 										// Mise à jour de l'état des fichiers.
-										selectionData.forEach( ( file ) =>
+										selectedData.forEach( ( file ) =>
 										{
 											file.status = "private";
 										} );
@@ -291,7 +295,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									setLoading( false );
+									table.options.meta?.setLoading( [] );
 
 									// Envoi d'une notification.
 									toast( {
@@ -425,7 +429,7 @@ export default function RowActions( {
 							type="text"
 							onInput={( event ) =>
 							{
-								selectionData.forEach( ( file ) =>
+								selectedData.forEach( ( file ) =>
 								{
 									file.name = event.currentTarget.value;
 								} );
@@ -450,15 +454,17 @@ export default function RowActions( {
 								onClick={async () =>
 								{
 									// Activation de l'état de chargement.
-									setLoading( true );
+									table.options.meta?.setLoading(
+										selectedData.map( ( value ) => value.uuid )
+									);
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
-									selectionData.forEach( ( file ) =>
+									selectedData.forEach( ( file ) =>
 									{
 										form.append( "uuid", file.uuid );
 									} );
-									form.append( "name", selectionData[ 0 ].name );
+									form.append( "name", selectedData[ 0 ].name );
 
 									// Envoi de la requête au serveur et
 									//  attente de la réponse.
@@ -477,7 +483,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									setLoading( false );
+									table.options.meta?.setLoading( [] );
 
 									// Envoi d'une notification.
 									toast( {
@@ -490,10 +496,10 @@ export default function RowActions( {
 											: "form.errors.server_error"
 									} );
 								}}
-								disabled={loading}
+								disabled={isLoading}
 								className="max-sm:w-full"
 							>
-								{loading ? (
+								{isLoading ? (
 									<>
 										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 										Mise à jour...
@@ -606,11 +612,13 @@ export default function RowActions( {
 									setOpen( false );
 
 									// Activation de l'état de chargement.
-									setLoading( true );
+									table.options.meta?.setLoading(
+										selectedData.map( ( value ) => value.uuid )
+									);
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
-									selectionData.forEach( ( file ) =>
+									selectedData.forEach( ( file ) =>
 									{
 										form.append( "uuid", file.uuid );
 									} );
@@ -627,7 +635,7 @@ export default function RowActions( {
 										// Suppression des fichiers de la liste.
 										setFiles(
 											files.filter(
-												( file ) => !selectionData.find(
+												( file ) => !selectedData.find(
 													( value ) => value.uuid
 															=== file.uuid
 												)
@@ -636,7 +644,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									setLoading( false );
+									table.options.meta?.setLoading( [] );
 
 									// Envoi d'une notification.
 									toast( {

@@ -19,7 +19,6 @@ import { auth } from "@/utilities/next-auth";
 import { generateMetadata } from "../layout";
 
 // Importation des composants.
-import { columns } from "./components/columns";
 import { Separator } from "../components/ui/separator";
 
 const Header = lazy( () => import( "../components/header" ) );
@@ -134,7 +133,7 @@ export default async function Page( {
 				<Separator className="my-6" />
 
 				{/* Tableau des fichiers téléversés */}
-				<DataTable columns={columns} data={await getFiles()} />
+				<DataTable data={await getFiles()} />
 			</main>
 		</>
 	);
