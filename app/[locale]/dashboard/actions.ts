@@ -15,7 +15,7 @@ import { existsSync, statSync } from "fs";
 import { mkdir, readdir, symlink, unlink, writeFile } from "fs/promises";
 
 //
-// Changement du statut d'un fichier.
+// Changement du statut d'un ou plusieurs fichiers.
 //
 export async function changeFileStatus( formData: FormData )
 {
@@ -30,13 +30,13 @@ export async function changeFileStatus( formData: FormData )
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
 	const validation = z.object( {
-		uuid: z.string().uuid(),
+		uuid: z.array( z.string().uuid() ),
 		status: z.enum( [ "private", "public" ] )
 	} );
 
 	// On tente alors de valider les données du formulaire.
 	const result = validation.safeParse( {
-		uuid: formData.get( "uuid" ),
+		uuid: formData.getAll( "uuid" ),
 		status: formData.get( "status" )
 	} );
 
@@ -49,15 +49,20 @@ export async function changeFileStatus( formData: FormData )
 	{
 		// On met à jour le statut du fichier dans la base de données
 		//  avant de retourner une valeur de succès.
-		await prisma.file.update( {
-			where: {
-				fileId: result.data.uuid,
-				userId: session.user.id
-			},
-			data: {
-				status: result.data.status
-			}
-		} );
+		await Promise.all(
+			result.data.uuid.map( async ( uuid ) =>
+			{
+				await prisma.file.updateMany( {
+					where: {
+						fileId: uuid,
+						userId: session.user.id
+					},
+					data: {
+						status: result.data.status
+					}
+				} );
+			} )
+		);
 
 		return true;
 	}
@@ -70,7 +75,7 @@ export async function changeFileStatus( formData: FormData )
 }
 
 //
-// Renommage du nom d'un fichier.
+// Renommage du nom d'un ou plusieurs fichiers.
 //
 export async function renameFile( formData: FormData )
 {
@@ -87,13 +92,13 @@ export async function renameFile( formData: FormData )
 	//  Note : les validations Zod du nom doivent correspondre à
 	//   celles utilisées lors du téléversement de fichiers.
 	const validation = z.object( {
-		uuid: z.string().uuid(),
+		uuid: z.array( z.string().uuid() ),
 		name: z.string().min( 1 ).max( 100 )
 	} );
 
 	// On tente alors de valider les données du formulaire.
 	const result = validation.safeParse( {
-		uuid: formData.get( "uuid" ),
+		uuid: formData.getAll( "uuid" ),
 		name: formData.get( "name" )
 	} );
 
@@ -104,32 +109,39 @@ export async function renameFile( formData: FormData )
 
 	try
 	{
-		// On récupère après les données du fichier depuis
-		//  la base de données.
-		const file = await prisma.file.findUnique( {
-			where: {
-				fileId: result.data.uuid,
-				userId: session.user.id
-			}
-		} );
+		// On parcourt l'ensemble des fichiers à renommer.
+		await Promise.all(
+			result.data.uuid.map( async ( uuid ) =>
+			{
+				// On récupère après les données du fichier depuis
+				//  la base de données.
+				const file = await prisma.file.findUnique( {
+					where: {
+						fileId: uuid,
+						userId: session.user.id
+					}
+				} );
 
-		if ( !file )
-		{
-			return false;
-		}
+				if ( !file )
+				{
+					return;
+				}
 
-		// On renomme le fichier dans la base de données avant de
-		//  retourner une valeur de succès.
-		await prisma.file.update( {
-			where: {
-				fileId: result.data.uuid,
-				userId: session.user.id
-			},
-			data: {
-				name: result.data.name + parse( file.name ).ext
-			}
-		} );
+				// On renomme le fichier dans la base de données avant de
+				//  retourner une valeur de succès.
+				await prisma.file.update( {
+					where: {
+						fileId: uuid,
+						userId: session.user.id
+					},
+					data: {
+						name: result.data.name + parse( file.name ).ext
+					}
+				} );
+			} )
+		);
 
+		// On retourne une valeur de succès à la fin du traitement.
 		return true;
 	}
 	catch
@@ -141,7 +153,7 @@ export async function renameFile( formData: FormData )
 }
 
 //
-// Téléversement d'un nouveau fichier.
+// Téléversement d'un ou plusieurs nouveaux fichiers.
 //
 export async function uploadFiles(
 	_state: Record<string, unknown>,
@@ -313,7 +325,7 @@ export async function uploadFiles(
 }
 
 //
-// Suppression irréversible d'un fichier.
+// Suppression irréversible d'un ou plusieurs fichiers.
 //
 export async function deleteFile( formData: FormData )
 {
@@ -328,12 +340,12 @@ export async function deleteFile( formData: FormData )
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
 	const validation = z.object( {
-		uuid: z.string().uuid()
+		uuid: z.array( z.string().uuid() )
 	} );
 
 	// On tente alors de valider les données du formulaire.
 	const result = validation.safeParse( {
-		uuid: formData.get( "uuid" )
+		uuid: formData.getAll( "uuid" )
 	} );
 
 	if ( !result.success )
@@ -343,30 +355,36 @@ export async function deleteFile( formData: FormData )
 
 	try
 	{
-		// On supprime après le fichier dans la base de données.
-		const file = await prisma.file.delete( {
-			where: {
-				fileId: result.data.uuid,
-				userId: session.user.id
-			}
-		} );
+		// On parcourt l'ensemble des fichiers à supprimer.
+		await Promise.all(
+			result.data.uuid.map( async ( uuid ) =>
+			{
+				// On supprime après le fichier dans la base de données.
+				const file = await prisma.file.delete( {
+					where: {
+						fileId: uuid,
+						userId: session.user.id
+					}
+				} );
 
-		// On vérifie si le fichier existe dans le système de fichiers.
-		const filePath = join(
-			process.cwd(),
-			"public/files",
-			session.user.id,
-			file.fileId + parse( file.name ).ext
+				// On vérifie si le fichier existe dans le système de fichiers.
+				const filePath = join(
+					process.cwd(),
+					"public/files",
+					session.user.id,
+					file.fileId + parse( file.name ).ext
+				);
+
+				// On supprime le fichier (s'il existe) dans le système de
+				//  fichiers.
+				if ( existsSync( filePath ) )
+				{
+					await unlink( filePath );
+				}
+			} )
 		);
 
-		if ( !existsSync( filePath ) )
-		{
-			return false;
-		}
-
-		// On supprime le fichier avant de retourner une valeur de succès.
-		await unlink( filePath );
-
+		// On retourne une valeur de succès à la fin du traitement.
 		return true;
 	}
 	catch

@@ -6,7 +6,6 @@
 "use client";
 
 import { merge } from "@/utilities/tailwind";
-import type { Row } from "@tanstack/react-table";
 import serverAction from "@/utilities/recaptcha";
 import { Ban,
 	Check,
@@ -23,6 +22,7 @@ import { Ban,
 	MoreHorizontal,
 	TextCursorInput } from "lucide-react";
 import { FileAttributes } from "@/interfaces/File";
+import type { Table, Row } from "@tanstack/react-table";
 import { useContext, useRef, useState } from "react";
 
 import { Input } from "../../components/ui/input";
@@ -55,38 +55,53 @@ import { AlertDialog,
 import { Button, buttonVariants } from "../../components/ui/button";
 import { changeFileStatus, deleteFile, renameFile } from "../actions";
 
-export default function RowActions( { row }: { row: Row<FileAttributes> } )
+export default function RowActions( {
+	table,
+	row
+}: {
+	table: Table<FileAttributes>;
+	row: Row<FileAttributes>;
+} )
 {
 	// Déclaration des constantes.
 	const rename = useRef<HTMLButtonElement>( null );
 	const { toast } = useToast();
+	const selectedRows = table.getFilteredSelectedRowModel();
 
 	// Déclaration des variables d'état.
 	const [ open, setOpen ] = useState( false );
 	const { files, setFiles } = useContext( StorageContext );
-	const [ loading, setLoading ] = useState( "" );
-	const data = files.filter( ( file ) => `${ file.id }` === row.id )[ 0 ];
+	const [ loading, setLoading ] = useState( false );
+
+	// Filtrage des données d'une ou plusieurs lignes.
+	const rowData = files.filter( ( file ) => file.uuid === row.id );
+	const selectionData =
+		selectedRows.rows.length > 1
+			? files.filter( ( file ) => selectedRows.rows.find( ( value ) => file.uuid === value.id ) )
+			: rowData;
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<DropdownMenu open={open} onOpenChange={setOpen}>
+		<DropdownMenu
+			open={open}
+			onOpenChange={( state ) =>
+			{
+				if ( !loading )
+				{
+					// Ouverture du menu si l'état de chargement est
+					//  inactif.
+					setOpen( state );
+				}
+			}}
+		>
 			{/* Bouton d'ouverture du menu */}
 			<DropdownMenuTrigger
-				onClick={( event ) =>
-				{
-					if ( loading === row.id )
-					{
-						// Suppression de l'ouverture du menu si l'état de
-						//  chargement est actif.
-						event.preventDefault();
-					}
-				}}
 				className={merge(
 					buttonVariants( { variant: "ghost" } ),
 					"h-8 w-8 p-0"
 				)}
 			>
-				{loading === row.id ? (
+				{loading ? (
 					<>
 						<span className="sr-only">Mise à jour en cours...</span>
 						<Loader2 className="h-4 w-4 animate-spin" />
@@ -149,18 +164,15 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 									// Fermeture du menu des actions.
 									setOpen( false );
 
-									// Vérification de l'état du fichier.
-									if ( data.status === "public" )
-									{
-										return;
-									}
-
 									// Activation de l'état de chargement.
-									setLoading( row.id );
+									setLoading( true );
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
-									form.append( "uuid", data.uuid );
+									selectionData.forEach( ( file ) =>
+									{
+										form.append( "uuid", file.uuid );
+									} );
 									form.append( "status", "public" );
 
 									// Envoi de la requête au serveur et
@@ -172,14 +184,17 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 
 									if ( state )
 									{
-										// Mise à jour de l'état du fichier.
-										data.status = "public";
+										// Mise à jour de l'état des fichiers.
+										selectionData.forEach( ( file ) =>
+										{
+											file.status = "public";
+										} );
 
 										setFiles( [ ...files ] );
 									}
 
 									// Fin de l'état de chargement.
-									setLoading( "" );
+									setLoading( false );
 
 									// Envoi d'une notification.
 									toast( {
@@ -246,18 +261,15 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 									// Fermeture du menu des actions.
 									setOpen( false );
 
-									// Vérification de l'état du fichier.
-									if ( data.status === "private" )
-									{
-										return;
-									}
-
 									// Activation de l'état de chargement.
-									setLoading( row.id );
+									setLoading( true );
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
-									form.append( "uuid", data.uuid );
+									selectionData.forEach( ( file ) =>
+									{
+										form.append( "uuid", file.uuid );
+									} );
 									form.append( "status", "private" );
 
 									// Envoi de la requête au serveur et
@@ -269,14 +281,17 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 
 									if ( state )
 									{
-										// Mise à jour de l'état du fichier.
-										data.status = "private";
+										// Mise à jour de l'état des fichiers.
+										selectionData.forEach( ( file ) =>
+										{
+											file.status = "private";
+										} );
 
 										setFiles( [ ...files ] );
 									}
 
 									// Fin de l'état de chargement.
-									setLoading( "" );
+									setLoading( false );
 
 									// Envoi d'une notification.
 									toast( {
@@ -410,7 +425,10 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 							type="text"
 							onInput={( event ) =>
 							{
-								data.name = event.currentTarget.value;
+								selectionData.forEach( ( file ) =>
+								{
+									file.name = event.currentTarget.value;
+								} );
 							}}
 							onKeyDown={( event ) =>
 							{
@@ -422,7 +440,7 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 							spellCheck="false"
 							placeholder="john-doe"
 							autoComplete="off"
-							defaultValue={data.name}
+							defaultValue={rowData[ 0 ].name}
 							autoCapitalize="off"
 						/>
 
@@ -432,12 +450,15 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 								onClick={async () =>
 								{
 									// Activation de l'état de chargement.
-									setLoading( row.id );
+									setLoading( true );
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
-									form.append( "uuid", data.uuid );
-									form.append( "name", data.name );
+									selectionData.forEach( ( file ) =>
+									{
+										form.append( "uuid", file.uuid );
+									} );
+									form.append( "name", selectionData[ 0 ].name );
 
 									// Envoi de la requête au serveur et
 									//  attente de la réponse.
@@ -451,12 +472,12 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 										// Fermeture du menu des actions.
 										setOpen( false );
 
-										// Renommage du fichier.
+										// Renommage des fichiers.
 										setFiles( [ ...files ] );
 									}
 
 									// Fin de l'état de chargement.
-									setLoading( "" );
+									setLoading( false );
 
 									// Envoi d'une notification.
 									toast( {
@@ -469,7 +490,7 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 											: "form.errors.server_error"
 									} );
 								}}
-								disabled={loading === row.id}
+								disabled={loading}
 								className="max-sm:w-full"
 							>
 								{loading ? (
@@ -488,7 +509,11 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 					</DialogContent>
 				</Dialog>
 
-				<a rel="noopener noreferrer" href={data.path} target="_blank">
+				<a
+					rel="noopener noreferrer"
+					href={rowData[ 0 ].path}
+					target="_blank"
+				>
 					<DropdownMenuItem>
 						<ArrowUpRight className="mr-2 h-4 w-4" />
 						Accéder à la ressource
@@ -530,7 +555,7 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 
 				<DropdownMenuItem
 					onClick={() => navigator.clipboard.writeText(
-						new URL( data.path, window.location.href ).href
+						new URL( rowData[ 0 ].path, window.location.href ).href
 					)}
 				>
 					<ClipboardCopy className="mr-2 h-4 w-4" />
@@ -581,11 +606,14 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 									setOpen( false );
 
 									// Activation de l'état de chargement.
-									setLoading( row.id );
+									setLoading( true );
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
-									form.append( "uuid", data.uuid );
+									selectionData.forEach( ( file ) =>
+									{
+										form.append( "uuid", file.uuid );
+									} );
 
 									// Envoi de la requête au serveur et
 									//  attente de la réponse.
@@ -596,24 +624,19 @@ export default function RowActions( { row }: { row: Row<FileAttributes> } )
 
 									if ( state )
 									{
-										// Suppression du fichier de la liste
-										//  recomptage des identifiants.
+										// Suppression des fichiers de la liste.
 										setFiles(
-											files
-												.filter(
-													( file ) => file.uuid !== data.uuid
+											files.filter(
+												( file ) => !selectionData.find(
+													( value ) => value.uuid
+															=== file.uuid
 												)
-												.map( ( file, index ) =>
-												{
-													file.id = index;
-
-													return file;
-												} )
+											)
 										);
 									}
 
 									// Fin de l'état de chargement.
-									setLoading( "" );
+									setLoading( false );
 
 									// Envoi d'une notification.
 									toast( {
