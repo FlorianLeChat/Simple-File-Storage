@@ -21,7 +21,10 @@ export const columns: ColumnDef<FileAttributes>[] = [
 		id: "select",
 		header: ( { table } ) => (
 			<Checkbox
-				checked={table.getIsAllPageRowsSelected()}
+				checked={
+					table.getIsAllPageRowsSelected()
+					|| ( table.getIsSomePageRowsSelected() && "indeterminate" )
+				}
 				aria-label="Tout sélectionner"
 				onCheckedChange={( value ) => table.toggleAllPageRowsSelected( !!value )}
 			/>
