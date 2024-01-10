@@ -99,6 +99,6 @@ export const columns: ColumnDef<FileAttributes>[] = [
 	{
 		// Actions disponibles sur le fichier.
 		id: "actions",
-		cell: ( { row } ) => <RowActions row={row} />
+		cell: ( { table, row } ) => <RowActions table={table} row={row} />
 	}
 ];
