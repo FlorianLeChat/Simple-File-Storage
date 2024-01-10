@@ -3,9 +3,6 @@
 //
 import { z } from "zod";
 
-// Taille maximale d'un fichier.
-const MAX_FILE_SIZE = Number( process.env.NEXT_PUBLIC_MAX_QUOTA ?? "0" );
-
 // Types de fichiers acceptés.
 const ACCEPTED_FILE_TYPES =
 	process.env.NEXT_PUBLIC_ACCEPTED_FILE_TYPES?.split( "," ) ?? [];
@@ -20,9 +17,7 @@ const schema = z.object( {
 			"wrong_file_object"
 		)
 		.refine(
-			( files ) => files.every(
-				( file ) => file.size > 0 && file.size <= MAX_FILE_SIZE
-			),
+			( files ) => files.every( ( file ) => file.size > 0 ),
 			"wrong_file_size"
 		)
 		.refine(

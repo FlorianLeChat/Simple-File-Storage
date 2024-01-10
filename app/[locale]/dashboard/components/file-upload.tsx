@@ -7,6 +7,7 @@
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
+import { useSession } from "next-auth/react";
 import type { Table } from "@tanstack/react-table";
 import { formatSize } from "@/utilities/react-table";
 import { useFormState } from "react-dom";
@@ -42,6 +43,7 @@ export default function FileUpload( {
 {
 	// Déclaration des constantes.
 	const files = table.options.meta?.files ?? [];
+	const session = useSession();
 	const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA ?? 0 );
 	const setFiles = useMemo(
 		() => table.options.meta?.setFiles ?? ( () =>
@@ -214,14 +216,21 @@ export default function FileUpload( {
 										/>
 									</FormControl>
 
-									<Progress value={percent} className="h-1" />
+									{session.data?.user?.role !== "admin" && (
+										<>
+											<Progress
+												value={percent}
+												className="h-1"
+											/>
 
-									<FormDescription className="!mt-1 text-sm text-muted-foreground">
-										{percent.toLocaleString()}% du quota
-										actuellement utilisés (
-										{formatSize( quota )} /{" "}
-										{formatSize( maxQuota )})
-									</FormDescription>
+											<FormDescription className="!mt-1 text-sm text-muted-foreground">
+												{percent.toLocaleString()}% du
+												quota actuellement utilisés (
+												{formatSize( quota )} /{" "}
+												{formatSize( maxQuota )})
+											</FormDescription>
+										</>
+									)}
 
 									<FormMessage />
 								</FormItem>
