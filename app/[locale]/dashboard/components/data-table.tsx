@@ -7,6 +7,7 @@
 
 import { X } from "lucide-react";
 import { useState } from "react";
+import { SessionProvider } from "next-auth/react";
 import { flexRender,
 	SortingState,
 	useReactTable,
@@ -72,7 +73,9 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<>
+		<SessionProvider
+			basePath={`${ process.env.__NEXT_ROUTER_BASEPATH }/api/auth`}
+		>
 			{/* Filtrage et tri des données */}
 			<div className="flex items-center gap-2 py-4">
 				{/* Filtrage par nom */}
@@ -164,6 +167,6 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 			<aside className="flex items-center justify-end gap-2 py-4 max-sm:flex-col sm:gap-4 lg:gap-8">
 				<Pagination table={table} />
 			</aside>
-		</>
+		</SessionProvider>
 	);
 }

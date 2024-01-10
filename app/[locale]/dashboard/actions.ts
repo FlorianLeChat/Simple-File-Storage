@@ -225,12 +225,16 @@ export async function uploadFiles(
 
 		// On filtre la liste des fichiers à téléverser pour ne garder que
 		//  ceux qui ne dépassent pas le quota de l'utilisateur.
-		result.data.upload = result.data.upload.filter( ( file ) =>
+		//  Note : cela ne concerne pas les administrateurs.
+		if ( session.user.role !== "admin" )
 		{
-			currentQuota += file.size;
+			result.data.upload = result.data.upload.filter( ( file ) =>
+			{
+				currentQuota += file.size;
 
-			return currentQuota <= maxQuota;
-		} );
+				return currentQuota <= maxQuota;
+			} );
+		}
 
 		// On téléverse chaque fichier dans le système de fichiers.
 		const data = result.data.upload.map( async ( file, index ) =>
