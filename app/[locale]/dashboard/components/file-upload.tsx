@@ -7,10 +7,11 @@
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
+import type { Table } from "@tanstack/react-table";
 import { formatSize } from "@/utilities/react-table";
 import { useFormState } from "react-dom";
+import { useState, useEffect, useMemo } from "react";
 import { type FileAttributes } from "@/interfaces/File";
-import { useState, useEffect, useContext } from "react";
 import { Ban, Loader2, PlusCircleIcon, UploadCloud } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
@@ -31,13 +32,22 @@ import { Dialog,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
-import { StorageContext } from "../../components/storage-provider";
 import { Button, buttonVariants } from "../../components/ui/button";
 
-export default function FileUpload()
+export default function FileUpload( {
+	table
+}: {
+	table: Table<FileAttributes>;
+} )
 {
 	// Déclaration des constantes.
+	const files = table.options.meta?.files ?? [];
 	const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA ?? 0 );
+	const setFiles = useMemo(
+		() => table.options.meta?.setFiles ?? ( () =>
+		{} ),
+		[ table.options.meta ]
+	);
 	const { toast } = useToast();
 	const formState = {
 		success: true,
@@ -46,7 +56,6 @@ export default function FileUpload()
 	};
 
 	// Déclaration des variables d'état.
-	const { files, setFiles } = useContext( StorageContext );
 	const [ quota, setQuota ] = useState(
 		files.reduce( ( previous, current ) => previous + current.size, 0 )
 	);
