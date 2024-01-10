@@ -4,6 +4,7 @@
 //
 import { merge } from "@/utilities/tailwind";
 import type { Table } from "@tanstack/react-table";
+import { FileAttributes } from "@/interfaces/File";
 import { SlidersHorizontal } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 
@@ -14,7 +15,11 @@ import { DropdownMenu,
 	DropdownMenuSeparator,
 	DropdownMenuCheckboxItem } from "../../components/ui/dropdown-menu";
 
-export default function ColumnToggle<File>( { table }: { table: Table<File> } )
+export default function ColumnToggle( {
+	table
+}: {
+	table: Table<FileAttributes>;
+} )
 {
 	// Affichage du rendu HTML du composant.
 	return (
