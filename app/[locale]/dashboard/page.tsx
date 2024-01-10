@@ -59,7 +59,7 @@ async function getFiles(): Promise<FileAttributes[]>
 	//  à travers une promesse pour les opérations de la base
 	//  de données.
 	return Promise.all(
-		( await readdir( userFolder ) ).map( async ( file, index ) =>
+		( await readdir( userFolder ) ).map( async ( file ) =>
 		{
 			// On retourne enfin les propriétés de chaque fichier
 			//  associé avec leur nom d'origine.
@@ -71,7 +71,6 @@ async function getFiles(): Promise<FileAttributes[]>
 			} );
 
 			return {
-				id: index,
 				uuid: result?.fileId ?? parse( file ).name,
 				name: parse( result?.name ?? file ).name,
 				type: mime.getType( file ) ?? "application/octet-stream",

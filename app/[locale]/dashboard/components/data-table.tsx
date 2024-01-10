@@ -61,6 +61,7 @@ export default function DataTable( {
 			columnVisibility
 		},
 		columns,
+		getRowId: ( row ) => row.uuid,
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
