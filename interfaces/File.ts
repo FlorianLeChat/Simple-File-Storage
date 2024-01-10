@@ -2,9 +2,6 @@
 // Interface des attributs des fichiers utilisateurs.
 //
 export interface FileAttributes {
-	// Identifiant incrémental du fichier.
-	id: number;
-
 	// Identifiant unique du fichier.
 	uuid: string;
 
