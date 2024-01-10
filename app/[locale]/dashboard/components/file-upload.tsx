@@ -106,7 +106,6 @@ export default function FileUpload()
 
 				// Ajout du fichier à la liste des fichiers téléversés.
 				uploaded.push( {
-					id: json.id,
 					uuid: json.uuid,
 					name: json.name,
 					type: json.type,
