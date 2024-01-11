@@ -54,29 +54,51 @@ async function getFiles(): Promise<FileAttributes[]>
 		return [];
 	}
 
-	// On récupère enfin tous les fichiers de l'utilisateur
-	//  à travers une promesse pour les opérations de la base
-	//  de données.
+	// On récupère tous les fichiers de l'utilisateur à travers
+	//  une promesse pour les opérations asynchrones.
 	return Promise.all(
-		( await readdir( userStorage ) ).map( async ( file ) =>
+		( await readdir( userStorage ) ).flatMap( async ( object ) =>
 		{
-			// On retourne enfin les propriétés de chaque fichier
-			//  associé avec leur nom d'origine.
-			const stats = await stat( join( userStorage, file ) );
-			const result = await prisma.file.findUnique( {
+			// On tente de récupérer également les informations
+			//  de la dernière version du fichier.
+			const result = await prisma.version.findFirst( {
 				where: {
-					id: parse( file ).name
+					fileId: object
+				},
+				include: {
+					file: true
+				},
+				orderBy: {
+					createdAt: "desc"
 				}
 			} );
 
+			if ( !result )
+			{
+				// Si ce n'est pas le cas, on retourne un tableau vide.
+				//  Note : même si la base de données est vide, React
+				//   Table est capable de supporter un tableau vide d'où
+				//   la modification du type de retour.
+				return [] as unknown as FileAttributes;
+			}
+
+			// Dans le cas contraire, on récupère enfin les informations
+			//  du fichier avant de les retourner.
+			const info = parse( result.file.name );
+			const stats = await stat(
+				join( userStorage, object, result.id + info.ext )
+			);
+
 			return {
-				uuid: result?.id ?? parse( file ).name,
-				name: parse( result?.name ?? file ).name,
-				type: mime.getType( file ) ?? "application/octet-stream",
+				uuid: result.id,
+				name: info.name,
+				type:
+					mime.getType( result.file.name )
+					?? "application/octet-stream",
 				size: stats.size,
 				date: stats.birthtime.toISOString(),
-				path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ result?.id }`,
-				status: result?.status ?? "public"
+				path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ result.id }`,
+				status: result.file.status ?? "public"
 			} as FileAttributes;
 		} )
 	);
