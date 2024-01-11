@@ -1,6 +1,12 @@
 //
 // Composant de restauration des versions précédentes d'un fichier.
 //
+
+"use client";
+
+import { formatSize } from "@/utilities/react-table";
+import type { Table, Row } from "@tanstack/react-table";
+import type { FileAttributes } from "@/interfaces/File";
 import { Ban, Check, History, ArrowUpRight } from "lucide-react";
 
 import { Separator } from "../../components/ui/separator";
@@ -16,40 +22,51 @@ import { AlertDialog,
 	AlertDialogTrigger,
 	AlertDialogDescription } from "../../components/ui/alert-dialog";
 
-const tags = Array.from( { length: 9 } ).map(
-	( _, i, a ) => `Version du ${ a.length - i }/08/2023 - ${ i + 1 }0h${ i + 1 }0`
-);
-
-export default function FileHistory()
+export default function FileHistory( {
+	table,
+	row
+}: {
+	table: Table<FileAttributes>;
+	row: Row<FileAttributes>;
+} )
 {
+	// Déclaration des constantes.
+	const files = table.options.meta?.files ?? [];
+	const file = files.filter( ( value ) => value.uuid === row.id )[ 0 ];
+	const { versions } = file;
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<ScrollArea className="h-72 rounded-md border">
+			{/* Aucune version précédente */}
+			{!versions && (
+				<p className="inline-block p-4 text-sm text-muted-foreground">
+					Aucune révision précédente n&lsquo;est disponible pour ce
+					fichier.
+				</p>
+			)}
+
 			{/* Liste des révisions */}
 			<ul className="p-4">
-				{tags.map( ( tag ) => (
-					<li key={tag} className="text-sm">
+				{versions?.map( ( version, index ) => (
+					<li key={version.id} className="text-sm">
 						{/* Nom de la révision */}
-						<h3>{tag}</h3>
+						<h3>Version du {version.date}</h3>
 
 						{/* Taille et différence de la révision */}
-						<p className="inline-block text-sm text-muted-foreground">
-							{Math.floor( Math.random() * 500 )} Mo
+						<p className="inline-block text-muted-foreground">
+							{formatSize( version.size )}
 						</p>
 
-						<p className="ml-2 inline-block text-sm font-extrabold text-primary">
+						<p className="ml-2 inline-block font-extrabold text-primary">
 							-{Math.floor( Math.random() * 100 )} Ko
-						</p>
-
-						<p className="ml-2 inline-block text-sm font-extrabold text-destructive">
-							+{Math.floor( Math.random() * 100 )} Ko
 						</p>
 
 						{/* Actions sur la révision */}
 						<div className="my-2 flex items-center gap-2">
 							<a
 								rel="noreferrer noopener"
-								href="https://www.google.fr/"
+								href={version.path}
 								target="_blank"
 								className={buttonVariants()}
 							>
@@ -104,7 +121,9 @@ export default function FileHistory()
 						</div>
 
 						{/* Séparateur horizontal */}
-						<Separator className="my-4" />
+						{index !== versions.length - 1 && (
+							<Separator className="my-4" />
+						)}
 					</li>
 				) )}
 			</ul>
