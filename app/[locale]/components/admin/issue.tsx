@@ -8,7 +8,7 @@ import { List,
 	NumberField,
 	ReferenceField } from "react-admin";
 
-// Affichage des sessions.
+// Affichage des signalements.
 export function IssueList()
 {
 	return (

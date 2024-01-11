@@ -146,8 +146,9 @@ export function UserList()
 
 				{/* Date de création */}
 				<DateField
-					source="emailVerified"
 					label="Date de vérification"
+					source="emailVerified"
+					showTime
 				/>
 
 				{/* Lien de l'avatar */}
