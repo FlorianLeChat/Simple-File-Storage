@@ -6,6 +6,13 @@
 "use client";
 
 // Importation des dépendances.
+import { Bug,
+	Save,
+	User,
+	KeyRound,
+	FileArchive,
+	SquareStack,
+	ExternalLink } from "lucide-react";
 import frenchMessages from "ra-language-french";
 import englishMessages from "ra-language-english";
 import { dataProvider } from "ra-data-simple-prisma";
@@ -22,11 +29,12 @@ import { Title,
 	resolveBrowserLocale,
 	withLifecycleCallbacks } from "react-admin";
 import type { CoreLayoutProps } from "ra-core";
-import { Bug, ExternalLink, KeyRound, Save, User } from "lucide-react";
 
 // Importation des composants.
+import { FileList } from "./admin/file";
 import { IssueList } from "./admin/issue";
 import { TokenList } from "./admin/verification-token";
+import { VersionList } from "./admin/version";
 import { AccountList } from "./admin/account";
 import { SessionList } from "./admin/session";
 import { UserCreate, UserEdit, UserList } from "./admin/user";
@@ -159,6 +167,22 @@ export default function Administration()
 				name="account"
 				list={AccountList}
 				options={{ label: "Comptes OAuth" }}
+			/>
+
+			{/* Fichiers téléversés */}
+			<Resource
+				icon={FileArchive}
+				name="file"
+				list={FileList}
+				options={{ label: "Fichiers téléversés" }}
+			/>
+
+			{/* Versions de fichiers */}
+			<Resource
+				icon={SquareStack}
+				name="version"
+				list={VersionList}
+				options={{ label: "Versions de fichiers" }}
 			/>
 
 			{/* Sessions */}

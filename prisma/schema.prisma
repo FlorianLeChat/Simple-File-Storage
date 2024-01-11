@@ -51,8 +51,15 @@ model File {
 	userId       String
 	name         String
 	status	     String
+	versions     Version[]
+}
+
+model Version {
+	id           String     @id @default(uuid())
+	file         File       @relation(fields: [fileId], references: [id], onDelete: Cascade)
+	fileId       String
 	hash         String
-	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+	createdAt    DateTime   @default(now())
 }
 
 model User {
