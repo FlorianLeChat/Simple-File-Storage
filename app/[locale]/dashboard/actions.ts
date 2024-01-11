@@ -10,9 +10,9 @@ import crypto from "crypto";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
+import { existsSync } from "fs";
 import { join, parse } from "path";
-import { existsSync, statSync } from "fs";
-import { mkdir, readdir, symlink, unlink, writeFile } from "fs/promises";
+import { mkdir, stat, symlink, unlink, writeFile } from "fs/promises";
 
 //
 // Changement du statut d'un ou plusieurs fichiers.
@@ -211,17 +211,17 @@ export async function uploadFiles(
 	try
 	{
 		// On créé le dossier de l'utilisateur si celui-ci n'existe pas.
-		const userFolder = join( process.cwd(), "public/files", session.user.id );
+		const userStorage = join(
+			process.cwd(),
+			"public/files",
+			session.user.id
+		);
 
-		await mkdir( userFolder, { recursive: true } );
+		await mkdir( userStorage, { recursive: true } );
 
 		// On récupère après le quota actuel et maximal de l'utilisateur.
-		const currentFiles = await readdir( userFolder );
 		const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA );
-		let currentQuota = currentFiles.reduce(
-			( previous, current ) => previous + statSync( join( userFolder, current ) ).size,
-			0
-		);
+		let currentQuota = ( await stat( userStorage ) ).size;
 
 		// On filtre la liste des fichiers à téléverser pour ne garder que
 		//  ceux qui ne dépassent pas le quota de l'utilisateur.
@@ -237,7 +237,7 @@ export async function uploadFiles(
 		}
 
 		// On téléverse chaque fichier dans le système de fichiers.
-		const data = result.data.upload.map( async ( file, index ) =>
+		const data = result.data.upload.map( async ( file ) =>
 		{
 			// On génère une chaîne de hachage unique représentant les
 			//  données du fichier.
@@ -245,48 +245,87 @@ export async function uploadFiles(
 			const hash = crypto.createHash( "sha256" );
 			hash.update( buffer );
 
-			// On vérifie si ce fichier semble être une duplication d'un
-			//  autre fichier déjà téléversé.
+			// On vérifie si ce fichier semble être une duplication d'une
+			//  autre version d'un fichier déjà téléversé par un autre
+			//  utilisateur.
 			const digest = hash.digest( "hex" );
-			const duplication = await prisma.file.findFirst( {
+			const duplication = await prisma.version.findFirst( {
 				where: {
 					hash: digest
+				},
+				include: {
+					file: true
 				}
 			} );
 
-			// On insère le nom du fichier et son statut dans la base de
-			//  données afin de générer un identifiant unique.
-			const identifier = (
-				await prisma.file.create( {
+			// On vérifie si un fichier existe déjà avec le même nom
+			//  dans le dossier de l'utilisateur.
+			const exists = await prisma.file.findFirst( {
+				where: {
+					name: file.name,
+					userId: user.id
+				}
+			} );
+
+			// On vérifie alors si le fichier dupliqué est bien le même
+			//  que le fichier existant pour éviter de créer une nouvelle
+			//  version d'un fichier déjà existant.
+			if ( exists && duplication && exists?.id === duplication?.fileId )
+			{
+				return "{}";
+			}
+
+			// On récupère l'identifiant unique du nouveau fichier ou du
+			//  fichier existant avant de créer une nouvelle version.
+			const identifier = !exists
+				? (
+					await prisma.file.create( {
+						data: {
+							name: file.name,
+							userId: user.id,
+							status: "private"
+						}
+					} )
+				).id
+				: exists.id;
+
+			const version = (
+				await prisma.version.create( {
 					data: {
-						name: file.name,
 						hash: digest,
-						userId: user.id,
-						status: "private"
+						fileId: identifier
 					}
 				} )
-			).fileId;
+			).id;
+
+			// Une fois la version créée, on créé le dossier de l'objet
+			//  dans le système de fichiers.
+			const objectFolder = join( userStorage, identifier );
+
+			await mkdir( objectFolder, { recursive: true } );
 
 			if ( duplication )
 			{
-				// Si c'est une duplication, on créé un lien symbolique
-				//  vers le fichier original pour économiser de l'espace
-				//  disque.
+				// Si une duplication a été détectée précédemment, on créé
+				//  un lien symbolique vers le fichier dupliqué afin de
+				//  réduire l'espace disque utilisé.
 				await symlink(
 					join(
-						userFolder,
-						`${ duplication.fileId + parse( duplication.name ).ext }`
+						process.cwd(),
+						"public/files",
+						duplication.file.userId,
+						duplication.fileId,
+						duplication.id + parse( duplication.file.name ).ext
 					),
-					join( userFolder, `${ identifier + parse( file.name ).ext }` )
+					join( objectFolder, `${ version + parse( file.name ).ext }` )
 				);
 			}
 			else
 			{
-				// Dans le cas contraire, on écrit le fichier dans le
-				//  système de fichiers avec l'identifiant unique généré
-				//  précédemment.
+				// Dans le cas contraire, on créé le fichier dans le système
+				//  de fichiers comme d'habitude.
 				await writeFile(
-					join( userFolder, `${ identifier + parse( file.name ).ext }` ),
+					join( objectFolder, `${ version + parse( file.name ).ext }` ),
 					buffer
 				);
 			}
@@ -296,7 +335,6 @@ export async function uploadFiles(
 			//  à travers le réseau vers les composants clients.
 			//  Source : https://github.com/vercel/next.js/issues/47447
 			return JSON.stringify( {
-				id: currentFiles.length + index,
 				uuid: identifier,
 				name: parse( file.name ).name,
 				size: file.size,
