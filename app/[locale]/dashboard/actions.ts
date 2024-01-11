@@ -272,7 +272,7 @@ export async function uploadFiles(
 			//  version d'un fichier déjà existant.
 			if ( exists && duplication && exists?.id === duplication?.fileId )
 			{
-				return "{}";
+				return [];
 			}
 
 			// On récupère l'identifiant unique du nouveau fichier ou du
@@ -352,7 +352,7 @@ export async function uploadFiles(
 				currentQuota > maxQuota
 					? "form.errors.quota_exceeded"
 					: "form.info.upload_success",
-			data: await Promise.all( data )
+			data: ( await Promise.all( data ) ).flat()
 		};
 	}
 	catch ( error )
@@ -369,6 +369,10 @@ export async function uploadFiles(
 //
 // Suppression irréversible d'un ou plusieurs fichiers.
 //
+
+// checker si fichier est associé à un symlink
+// supprimer dossier si plus de fichiers (user + version)
+
 export async function deleteFile( formData: FormData )
 {
 	// On récupère d'abord la session de l'utilisateur.
