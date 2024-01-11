@@ -29,24 +29,25 @@ model Account {
 
 model Session {
 	sessionToken String   @unique
+	user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 	userId       String
 	expires      DateTime
-	user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Issue {
-	issueId      Int        @id @default(autoincrement())
+	id           Int        @id @default(autoincrement())
+	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 	userId       String
 	area         String
 	severity     String
 	subject      String
 	description  String
 	createdAt    DateTime   @default(now())
-	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model File {
-	fileId       String     @id @default(uuid())
+	id           String     @id @default(uuid())
+	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 	userId       String
 	name         String
 	status	     String
