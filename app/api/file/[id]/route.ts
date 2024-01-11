@@ -5,34 +5,48 @@
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
 import { parse } from "path";
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-	request: Request,
+	request: NextRequest,
 	{ params }: { params: { id: string } }
 )
 {
 	// On récupère d'abord les informations du fichier
 	//  à partir de son identifiant dans la base de données.
-	const file = await prisma.file.findUnique( {
+	const version = await prisma.version.findFirst( {
 		where: {
-			id: params.id
+			fileId: params.id
+		},
+		include: {
+			file: true
+		},
+		orderBy: {
+			createdAt: "desc"
 		}
 	} );
 
-	if ( !file )
+	if ( !version )
 	{
 		// Si le fichier n'existe pas, on retourne une erreur 404.
 		return new NextResponse( null, { status: 404 } );
 	}
 
-	// Dans le cas contraire, on vérifie le statut de partage
-	//  du fichier pour savoir si on peut y accéder.
+	// On tente de récupérer l'identifiant unique de la version
+	//  à partir des paramètres de l'URL ou via la dernière version
+	//  du fichier fournie par la base de données.
+	const identifier =
+		request.nextUrl.searchParams.get( "version" ) ?? version.id;
+	const { file } = version;
 	const url = new URL(
-		`/files/${ file.userId }/${ file.id + parse( file.name ).ext }`,
+		`${ process.env.__NEXT_ROUTER_BASEPATH }/files/${ file.userId }/${
+			file.id
+		}/${ identifier + parse( file.name ).ext }`,
 		request.url
 	).href;
 
+	// On vérifie le statut de partage du fichier pour savoir s'il
+	//  est possible d'y accéder.
 	switch ( file.status )
 	{
 		case "public": {
