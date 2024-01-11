@@ -60,7 +60,7 @@ async function getFiles(): Promise<FileAttributes[]>
 	{
 		// On tente de récupérer également les informations
 		//  de la dernière version du fichier.
-		const result = await prisma.version.findFirst( {
+		const result = await prisma.version.findMany( {
 			where: {
 				fileId: object
 			},
@@ -72,7 +72,7 @@ async function getFiles(): Promise<FileAttributes[]>
 			}
 		} );
 
-		if ( !result )
+		if ( result.length === 0 )
 		{
 			// Si ce n'est pas le cas, on retourne un tableau vide.
 			return [];
@@ -80,19 +80,25 @@ async function getFiles(): Promise<FileAttributes[]>
 
 		// Dans le cas contraire, on récupère les informations du fichier
 		//  avant de les retourner.
-		const info = parse( result.file.name );
+		const latest = result[ 0 ];
+		const info = parse( latest.file.name );
 		const stats = await stat(
-			join( userStorage, object, result.id + info.ext )
+			join( userStorage, object, latest.id + info.ext )
 		);
 
 		return {
-			uuid: result.id,
+			uuid: latest.id,
 			name: info.name,
-			type: mime.getType( result.file.name ) ?? "application/octet-stream",
+			type: mime.getType( latest.file.name ) ?? "application/octet-stream",
 			size: stats.size,
 			date: stats.birthtime.toISOString(),
-			path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ result.id }`,
-			status: result.file.status ?? "public"
+			path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ latest.id }`,
+			status: latest.file.status ?? "public",
+			versions: result.map( ( version ) => ( {
+				id: version.id,
+				size: version.size,
+				date: version.createdAt.toLocaleString()
+			} ) )
 		} as FileAttributes;
 	} );
 

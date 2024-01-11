@@ -123,7 +123,8 @@ export default function FileUpload( {
 					size: json.size,
 					date: new Date().toISOString(),
 					path: new URL( json.path, window.location.href ).href,
-					status: "private"
+					status: "private",
+					versions: json.versions
 				} );
 			} );
 
@@ -180,8 +181,9 @@ export default function FileUpload( {
 						de téléversement dépend de votre connexion Internet et
 						des capacités matérielles de votre ordinateur.{" "}
 						<strong>
-							La taille maximale du téléversement ne doit pas
-							dépasser votre quota individuel.
+							Si un fichier du même nom existe déjà, il sera
+							remplacé et une nouvelle révision sera créée pour
+							être restaurée ultérieurement si besoin.
 						</strong>
 					</DialogDescription>
 				</DialogHeader>

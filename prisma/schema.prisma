@@ -58,6 +58,7 @@ model Version {
 	id           String     @id @default(uuid())
 	file         File       @relation(fields: [fileId], references: [id], onDelete: Cascade)
 	fileId       String
+	size 	     String
 	hash         String
 	createdAt    DateTime   @default(now())
 }

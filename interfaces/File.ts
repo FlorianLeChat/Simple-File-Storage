@@ -22,4 +22,16 @@ export interface FileAttributes {
 
 	// Statut de partage du fichier.
 	status: "public" | "private" | "shared";
+
+	// Liste des versions du fichier.
+	versions?: {
+		// Identifiant unique de la version.
+		id: string;
+
+		// Poids de la version en octets.
+		size: string;
+
+		// Date de création de la version.
+		date: string;
+	}[];
 }

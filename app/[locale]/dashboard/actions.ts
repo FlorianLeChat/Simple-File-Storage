@@ -245,7 +245,7 @@ export async function uploadFiles(
 			const hash = crypto.createHash( "sha256" );
 			hash.update( buffer );
 
-			// On vérifie si ce fichier semble être une duplication d'une
+			// On détermine si ce fichier semble être une duplication d'une
 			//  autre version d'un fichier déjà téléversé par un autre
 			//  utilisateur.
 			const digest = hash.digest( "hex" );
@@ -277,7 +277,7 @@ export async function uploadFiles(
 
 			// On récupère l'identifiant unique du nouveau fichier ou du
 			//  fichier existant avant de créer une nouvelle version.
-			const identifier = !exists
+			const fileId = !exists
 				? (
 					await prisma.file.create( {
 						data: {
@@ -289,18 +289,19 @@ export async function uploadFiles(
 				).id
 				: exists.id;
 
-			const version = (
+			const versionId = (
 				await prisma.version.create( {
 					data: {
 						hash: digest,
-						fileId: identifier
+						size: `${ file.size }`,
+						fileId
 					}
 				} )
 			).id;
 
 			// Une fois la version créée, on créé le dossier de l'objet
 			//  dans le système de fichiers.
-			const objectFolder = join( userStorage, identifier );
+			const objectFolder = join( userStorage, fileId );
 
 			await mkdir( objectFolder, { recursive: true } );
 
@@ -317,7 +318,7 @@ export async function uploadFiles(
 						duplication.fileId,
 						duplication.id + parse( duplication.file.name ).ext
 					),
-					join( objectFolder, `${ version + parse( file.name ).ext }` )
+					join( objectFolder, `${ versionId + parse( file.name ).ext }` )
 				);
 			}
 			else
@@ -325,7 +326,7 @@ export async function uploadFiles(
 				// Dans le cas contraire, on créé le fichier dans le système
 				//  de fichiers comme d'habitude.
 				await writeFile(
-					join( objectFolder, `${ version + parse( file.name ).ext }` ),
+					join( objectFolder, `${ versionId + parse( file.name ).ext }` ),
 					buffer
 				);
 			}
@@ -335,11 +336,25 @@ export async function uploadFiles(
 			//  à travers le réseau vers les composants clients.
 			//  Source : https://github.com/vercel/next.js/issues/47447
 			return JSON.stringify( {
-				uuid: identifier,
+				uuid: fileId,
 				name: parse( file.name ).name,
 				size: file.size,
 				type: file.type,
-				path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ identifier }`
+				path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ fileId }`,
+				versions: (
+					await prisma.version.findMany( {
+						where: {
+							fileId
+						},
+						orderBy: {
+							createdAt: "asc"
+						}
+					} )
+				).map( ( version ) => ( {
+					uuid: version.id,
+					size: version.size,
+					date: version.createdAt.toLocaleString()
+				} ) )
 			} );
 		} );
 
@@ -369,10 +384,6 @@ export async function uploadFiles(
 //
 // Suppression irréversible d'un ou plusieurs fichiers.
 //
-
-// checker si fichier est associé à un symlink
-// supprimer dossier si plus de fichiers (user + version)
-
 export async function deleteFile( formData: FormData )
 {
 	// On récupère d'abord la session de l'utilisateur.
