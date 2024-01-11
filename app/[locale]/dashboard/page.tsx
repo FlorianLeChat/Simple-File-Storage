@@ -81,23 +81,25 @@ async function getFiles(): Promise<FileAttributes[]>
 		// Dans le cas contraire, on récupère les informations du fichier
 		//  avant de les retourner.
 		const latest = result[ 0 ];
+		const path = `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ latest.file.id }`;
 		const info = parse( latest.file.name );
 		const stats = await stat(
 			join( userStorage, object, latest.id + info.ext )
 		);
 
 		return {
-			uuid: latest.id,
+			uuid: latest.file.id,
 			name: info.name,
 			type: mime.getType( latest.file.name ) ?? "application/octet-stream",
 			size: stats.size,
 			date: stats.birthtime.toISOString(),
-			path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ latest.id }`,
+			path,
 			status: latest.file.status ?? "public",
 			versions: result.map( ( version ) => ( {
 				id: version.id,
-				size: version.size,
-				date: version.createdAt.toLocaleString()
+				size: Number( version.size ),
+				date: version.createdAt.toLocaleString(),
+				path: `${ path }?v=${ version.id }`
 			} ) )
 		} as FileAttributes;
 	} );

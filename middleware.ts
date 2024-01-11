@@ -26,7 +26,7 @@ export default async function middleware( request: NextRequest )
 			//  du fichier à partir de son identifiant.
 			const data = await fetch(
 				new URL(
-					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/file/${ identifier }`,
+					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/file/${ identifier }/${ request.nextUrl.search }`,
 					request.url
 				),
 				{ headers: request.headers }
