@@ -56,52 +56,49 @@ async function getFiles(): Promise<FileAttributes[]>
 
 	// On récupère tous les fichiers de l'utilisateur à travers
 	//  une promesse pour les opérations asynchrones.
-	return Promise.all(
-		( await readdir( userStorage ) ).flatMap( async ( object ) =>
-		{
-			// On tente de récupérer également les informations
-			//  de la dernière version du fichier.
-			const result = await prisma.version.findFirst( {
-				where: {
-					fileId: object
-				},
-				include: {
-					file: true
-				},
-				orderBy: {
-					createdAt: "desc"
-				}
-			} );
-
-			if ( !result )
-			{
-				// Si ce n'est pas le cas, on retourne un tableau vide.
-				//  Note : même si la base de données est vide, React
-				//   Table est capable de supporter un tableau vide d'où
-				//   la modification du type de retour.
-				return [] as unknown as FileAttributes;
+	const data = ( await readdir( userStorage ) ).map( async ( object ) =>
+	{
+		// On tente de récupérer également les informations
+		//  de la dernière version du fichier.
+		const result = await prisma.version.findFirst( {
+			where: {
+				fileId: object
+			},
+			include: {
+				file: true
+			},
+			orderBy: {
+				createdAt: "desc"
 			}
+		} );
 
-			// Dans le cas contraire, on récupère enfin les informations
-			//  du fichier avant de les retourner.
-			const info = parse( result.file.name );
-			const stats = await stat(
-				join( userStorage, object, result.id + info.ext )
-			);
+		if ( !result )
+		{
+			// Si ce n'est pas le cas, on retourne un tableau vide.
+			return [];
+		}
 
-			return {
-				uuid: result.id,
-				name: info.name,
-				type:
-					mime.getType( result.file.name )
-					?? "application/octet-stream",
-				size: stats.size,
-				date: stats.birthtime.toISOString(),
-				path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ result.id }`,
-				status: result.file.status ?? "public"
-			} as FileAttributes;
-		} )
-	);
+		// Dans le cas contraire, on récupère les informations du fichier
+		//  avant de les retourner.
+		const info = parse( result.file.name );
+		const stats = await stat(
+			join( userStorage, object, result.id + info.ext )
+		);
+
+		return {
+			uuid: result.id,
+			name: info.name,
+			type: mime.getType( result.file.name ) ?? "application/octet-stream",
+			size: stats.size,
+			date: stats.birthtime.toISOString(),
+			path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ result.id }`,
+			status: result.file.status ?? "public"
+		} as FileAttributes;
+	} );
+
+	// On retourne enfin les données récupérées après avoir supprimé
+	//  les éventuelles valeurs vides.
+	return ( await Promise.all( data ) ).flat();
 }
 
 // Affichage de la page.
