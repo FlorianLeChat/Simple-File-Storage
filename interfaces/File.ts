@@ -29,9 +29,12 @@ export interface FileAttributes {
 		id: string;
 
 		// Poids de la version en octets.
-		size: string;
+		size: number;
 
 		// Date de création de la version.
 		date: string;
+
+		// Chemin d'accès à la version.
+		path: string;
 	}[];
 }

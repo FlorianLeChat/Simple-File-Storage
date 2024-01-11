@@ -35,8 +35,7 @@ export async function GET(
 	// On tente de récupérer l'identifiant unique de la version
 	//  à partir des paramètres de l'URL ou via la dernière version
 	//  du fichier fournie par la base de données.
-	const identifier =
-		request.nextUrl.searchParams.get( "version" ) ?? version.id;
+	const identifier = request.nextUrl.searchParams.get( "v" ) ?? version.id;
 	const { file } = version;
 	const url = new URL(
 		`${ process.env.__NEXT_ROUTER_BASEPATH }/files/${ file.userId }/${
