@@ -73,6 +73,7 @@ export default function RowActions( {
 	const { toast } = useToast();
 	const isLoading = table.options.meta?.loading.includes( row.id );
 	const selectedRows = table.getFilteredSelectedRowModel();
+	const selectedCount = selectedRows.rows.length;
 
 	// Déclaration des variables d'état.
 	const [ open, setOpen ] = useState( false );
@@ -140,8 +141,9 @@ export default function RowActions( {
 								<Globe className="mr-2 inline h-5 w-5" />
 
 								<span className="align-middle">
-									Êtes-vous sûr de vouloir rendre public ce
-									fichier ?
+									Êtes-vous sûr de vouloir rendre public{" "}
+									{selectedCount}
+									fichier(s) ?
 								</span>
 							</AlertDialogTitle>
 
@@ -238,8 +240,9 @@ export default function RowActions( {
 								<FolderLock className="mr-2 inline h-5 w-5" />
 
 								<span className="align-middle">
-									Êtes-vous sûr de vouloir rendre privé ce
-									fichier ?
+									Êtes-vous sûr de vouloir rendre privé{" "}
+									{selectedCount}
+									fichier(s) ?
 								</span>
 							</AlertDialogTitle>
 
@@ -372,7 +375,7 @@ export default function RowActions( {
 
 								<span className="align-middle">
 									Êtes-vous sûr de vouloir supprimer tous les
-									partages du fichier ?
+									partages de {selectedCount} fichier(s) ?
 								</span>
 							</AlertDialogTitle>
 
@@ -417,7 +420,8 @@ export default function RowActions( {
 								<TextCursorInput className="mr-2 inline h-5 w-5" />
 
 								<span className="align-middle">
-									Quel sera le nouveau nom de la ressource ?
+									Quel sera le nouveau nom de {selectedCount}{" "}
+									ressource(s) ?
 								</span>
 							</DialogTitle>
 
@@ -559,7 +563,7 @@ export default function RowActions( {
 							</DialogDescription>
 						</DialogHeader>
 
-						<FileHistory />
+						<FileHistory table={table} row={row} />
 					</DialogContent>
 				</Dialog>
 
@@ -591,8 +595,8 @@ export default function RowActions( {
 								<Trash className="mr-2 inline h-5 w-5" />
 
 								<span className="align-middle">
-									Êtes-vous sûr de vouloir supprimer ce
-									fichier ?
+									Êtes-vous sûr de vouloir supprimer{" "}
+									{selectedCount} fichier(s) ?
 								</span>
 							</AlertDialogTitle>
 
