@@ -16,7 +16,7 @@ export async function GET(
 	//  à partir de son identifiant dans la base de données.
 	const file = await prisma.file.findUnique( {
 		where: {
-			fileId: params.id
+			id: params.id
 		}
 	} );
 
@@ -29,7 +29,7 @@ export async function GET(
 	// Dans le cas contraire, on vérifie le statut de partage
 	//  du fichier pour savoir si on peut y accéder.
 	const url = new URL(
-		`/files/${ file.userId }/${ file.fileId + parse( file.name ).ext }`,
+		`/files/${ file.userId }/${ file.id + parse( file.name ).ext }`,
 		request.url
 	).href;
 

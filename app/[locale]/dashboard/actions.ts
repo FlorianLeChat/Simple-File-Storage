@@ -54,7 +54,7 @@ export async function changeFileStatus( formData: FormData )
 			{
 				await prisma.file.updateMany( {
 					where: {
-						fileId: uuid,
+						id: uuid,
 						userId: session.user.id
 					},
 					data: {
@@ -117,7 +117,7 @@ export async function renameFile( formData: FormData )
 				//  la base de données.
 				const file = await prisma.file.findUnique( {
 					where: {
-						fileId: uuid,
+						id: uuid,
 						userId: session.user.id
 					}
 				} );
@@ -131,7 +131,7 @@ export async function renameFile( formData: FormData )
 				//  retourner une valeur de succès.
 				await prisma.file.update( {
 					where: {
-						fileId: uuid,
+						id: uuid,
 						userId: session.user.id
 					},
 					data: {
@@ -366,7 +366,7 @@ export async function deleteFile( formData: FormData )
 				// On supprime après le fichier dans la base de données.
 				const file = await prisma.file.delete( {
 					where: {
-						fileId: uuid,
+						id: uuid,
 						userId: session.user.id
 					}
 				} );
@@ -376,7 +376,7 @@ export async function deleteFile( formData: FormData )
 					process.cwd(),
 					"public/files",
 					session.user.id,
-					file.fileId + parse( file.name ).ext
+					file.id + parse( file.name ).ext
 				);
 
 				// On supprime le fichier (s'il existe) dans le système de

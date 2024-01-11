@@ -47,9 +47,9 @@ async function getFiles(): Promise<FileAttributes[]>
 	await mkdir( folderPath, { recursive: true } );
 
 	// On vérifie après l'existence du dossier de l'utilisateur.
-	const userFolder = join( folderPath, session.user.id );
+	const userStorage = join( folderPath, session.user.id );
 
-	if ( !existsSync( userFolder ) )
+	if ( !existsSync( userStorage ) )
 	{
 		return [];
 	}
@@ -58,24 +58,24 @@ async function getFiles(): Promise<FileAttributes[]>
 	//  à travers une promesse pour les opérations de la base
 	//  de données.
 	return Promise.all(
-		( await readdir( userFolder ) ).map( async ( file ) =>
+		( await readdir( userStorage ) ).map( async ( file ) =>
 		{
 			// On retourne enfin les propriétés de chaque fichier
 			//  associé avec leur nom d'origine.
-			const stats = await stat( join( userFolder, file ) );
+			const stats = await stat( join( userStorage, file ) );
 			const result = await prisma.file.findUnique( {
 				where: {
-					fileId: parse( file ).name
+					id: parse( file ).name
 				}
 			} );
 
 			return {
-				uuid: result?.fileId ?? parse( file ).name,
+				uuid: result?.id ?? parse( file ).name,
 				name: parse( result?.name ?? file ).name,
 				type: mime.getType( file ) ?? "application/octet-stream",
 				size: stats.size,
 				date: stats.birthtime.toISOString(),
-				path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ result?.fileId }`,
+				path: `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ result?.id }`,
 				status: result?.status ?? "public"
 			} as FileAttributes;
 		} )

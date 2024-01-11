@@ -107,22 +107,6 @@ export const customDataProvider = withLifecycleCallbacks(
 			}
 		},
 		{
-			// Signalements de bogues.
-			resource: "issue",
-			beforeGetList: async ( data ) =>
-			{
-				data.sort.field = "issueId";
-
-				return data;
-			},
-			afterRead: ( data ) =>
-			{
-				data.id = data.issueId;
-
-				return data;
-			}
-		},
-		{
 			// Jetons de vérification.
 			resource: "verificationToken",
 			beforeGetList: async ( data ) =>
