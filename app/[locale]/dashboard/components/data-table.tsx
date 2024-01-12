@@ -47,6 +47,12 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 	// Définition des tableaux.
 	const table = useReactTable( {
 		data: files,
+		meta: {
+			files,
+			loading,
+			setFiles,
+			setLoading
+		},
 		state: {
 			sorting,
 			rowSelection,
@@ -54,12 +60,6 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 			columnVisibility
 		},
 		columns,
-		meta: {
-			files,
-			loading,
-			setFiles,
-			setLoading
-		},
 		getRowId: ( row ) => row.uuid,
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
