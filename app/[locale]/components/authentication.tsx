@@ -39,16 +39,18 @@ export default function Authentification()
 {
 	// Déclaration des constantes.
 	const { toast } = useToast();
-	const formState = {
-		success: true,
-		reason: ""
-	};
 
 	// Déclaration des variables d'état.
 	const [ focused, setFocused ] = useState( false );
 	const [ loading, setLoading ] = useState( false );
-	const [ signUpState, signUpAction ] = useFormState( signUpAccount, formState );
-	const [ signInState, signInAction ] = useFormState( signInAccount, formState );
+	const [ signUpState, signUpAction ] = useFormState( signUpAccount, {
+		success: true,
+		reason: ""
+	} );
+	const [ signInState, signInAction ] = useFormState( signInAccount, {
+		success: true,
+		reason: ""
+	} );
 	const [ passwordType, setPasswordType ] = useState( "password" );
 
 	// Déclaration du formulaire.
@@ -60,7 +62,7 @@ export default function Authentification()
 		}
 	} );
 
-	// Affichage des erreurs en provenance du serveur.
+	// Détection de la response du serveur après l'envoi du formulaire.
 	useEffect( () =>
 	{
 		// On vérifie d'abord si les deux variables d'état liées aux actions

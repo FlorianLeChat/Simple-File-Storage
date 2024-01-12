@@ -33,15 +33,14 @@ export default function Profile( { session }: { session: Session } )
 {
 	// Déclaration des constantes.
 	const maxAvatarSize = Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE ?? 0 );
-	const { toast } = useToast();
-	const formState = {
-		success: true,
-		reason: ""
-	};
 
 	// Déclaration des variables d'état.
+	const { toast } = useToast();
 	const [ loading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( updateProfile, formState );
+	const [ updateState, updateAction ] = useFormState( updateProfile, {
+		success: true,
+		reason: ""
+	} );
 
 	// Déclaration du formulaire.
 	const form = useForm( {
@@ -51,7 +50,7 @@ export default function Profile( { session }: { session: Session } )
 		}
 	} );
 
-	// Affichage des erreurs en provenance du serveur.
+	// Détection de la response du serveur après l'envoi du formulaire.
 	useEffect( () =>
 	{
 		// On vérifie d'abord si la variable d'état liée à l'action

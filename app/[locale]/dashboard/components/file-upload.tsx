@@ -6,13 +6,13 @@
 
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 import serverAction from "@/utilities/recaptcha";
 import { useSession } from "next-auth/react";
-import type { Table } from "@tanstack/react-table";
 import { formatSize } from "@/utilities/react-table";
 import { useFormState } from "react-dom";
-import { useState, useEffect, useMemo } from "react";
 import { type FileAttributes } from "@/interfaces/File";
+import type { Table, TableMeta } from "@tanstack/react-table";
 import { Ban, Loader2, PlusCircleIcon, UploadCloud } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
@@ -42,31 +42,26 @@ export default function FileUpload( {
 } )
 {
 	// Déclaration des constantes.
-	const files = table.options.meta?.files ?? [];
-	const session = useSession();
+	const states = table.options.meta as TableMeta<FileAttributes>;
 	const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA ?? 0 );
-	const setFiles = useMemo(
-		() => table.options.meta?.setFiles ?? ( () =>
-		{} ),
-		[ table.options.meta ]
-	);
-	const { toast } = useToast();
-	const formState = {
-		success: true,
-		reason: "",
-		data: []
-	};
 
 	// Déclaration des variables d'état.
+	const session = useSession();
+	const loading = states.loading.length !== 0;
+	const { toast } = useToast();
+	const [ open, setOpen ] = useState( false );
 	const [ quota, setQuota ] = useState(
-		files.reduce(
+		states.files.reduce(
 			( total, file ) => total
 				+ file.versions.reduce( ( size, version ) => size + version.size, 0 ),
 			0
 		)
 	);
-	const [ loading, setLoading ] = useState( false );
-	const [ uploadState, uploadAction ] = useFormState( uploadFiles, formState );
+	const [ uploadState, uploadAction ] = useFormState( uploadFiles, {
+		success: true,
+		reason: "",
+		data: []
+	} );
 
 	// Déclaration du formulaire.
 	const percent = Number( ( ( quota / maxQuota ) * 100 ).toFixed( 2 ) );
@@ -76,7 +71,7 @@ export default function FileUpload( {
 		}
 	} );
 
-	// Affichage des erreurs en provenance du serveur.
+	// Vérification de la response du serveur après l'envoi du formulaire.
 	useEffect( () =>
 	{
 		// On vérifie d'abord si la variable d'état liée à l'action
@@ -85,7 +80,7 @@ export default function FileUpload( {
 		{
 			// Si ce n'est pas le cas, quelque chose s'est mal passé au
 			//  niveau du serveur.
-			setLoading( false );
+			states.setLoading( [ "modal" ] );
 
 			toast( {
 				title: "form.errors.update_failed",
@@ -96,12 +91,9 @@ export default function FileUpload( {
 			return;
 		}
 
-		// On récupère également une possible raison d'échec ainsi que
+		// On récupère ensuite une possible raison d'échec ainsi que
 		//  l'état associé.
 		const { success, reason, data } = uploadState;
-
-		// On informe ensuite que le traitement est terminé.
-		setLoading( false );
 
 		// On vérifie également si le serveur a renvoyé la liste des
 		//  fichiers téléversés avec succès.
@@ -135,7 +127,7 @@ export default function FileUpload( {
 			//  fichiers et le quota utilisateur.
 			let newFiles: FileAttributes[] = [];
 
-			setFiles( ( previous ) =>
+			states.setFiles( ( previous ) =>
 			{
 				newFiles = [
 					...previous.filter(
@@ -160,17 +152,15 @@ export default function FileUpload( {
 			);
 		}
 
-		// On réinitialise après une partie du formulaire
-		//  en cas de succès.
-		if ( success )
-		{
-			form.reset();
-		}
-
-		// On affiche enfin le message correspondant si une raison
-		//  a été fournie.
+		// On affiche après le message correspondant si une raison
+		//  a été fournie avant d'indiquer que le traitement est terminé.
 		if ( reason !== "" )
 		{
+			uploadState.reason = "";
+			uploadState.data = undefined;
+
+			states.setLoading( [] );
+
 			toast( {
 				title: success
 					? "form.info.upload_success"
@@ -179,11 +169,20 @@ export default function FileUpload( {
 				description: reason
 			} );
 		}
-	}, [ setFiles, toast, form, uploadState ] );
+
+		// On réinitialise enfin une partie du formulaire en cas
+		//  de succès avant de le fermer.
+		if ( success )
+		{
+			form.reset();
+
+			setOpen( false );
+		}
+	}, [ form, states, uploadState, toast ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger
 				className={buttonVariants( { variant: "default" } )}
 				aria-controls="file-upload"
@@ -220,7 +219,7 @@ export default function FileUpload( {
 				<Form {...form}>
 					<form
 						action={( formData ) => serverAction( uploadAction, formData )}
-						onSubmit={() => setLoading( true )}
+						onSubmit={() => states.setLoading( [ "modal" ] )}
 						className="space-y-6"
 					>
 						<FormField
