@@ -7,7 +7,7 @@ const units = [ "B", "KB", "MB", "GB", "TB" ];
 export function formatSize( raw: number ): string
 {
 	let index = 0;
-	let size = raw;
+	let size = Math.abs( raw );
 
 	while ( size >= 1024 && index < units.length - 1 )
 	{
