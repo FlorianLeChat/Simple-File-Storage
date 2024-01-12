@@ -53,13 +53,13 @@ export const columns: ColumnDef<FileAttributes>[] = [
 		// Taille du fichier (en octets).
 		accessorKey: "size",
 		header: ( { column } ) => <ColumnHeader column={column} title="Taille" />,
-		cell: ( { row } ) => formatSize( Number( row.getValue( "size" ) ) )
+		cell: ( { row } ) => formatSize( row.original.versions[ 0 ].size )
 	},
 	{
 		// Date de téléversement du fichier.
 		accessorKey: "date",
 		header: ( { column } ) => <ColumnHeader column={column} title="Date" />,
-		cell: ( { row } ) => ( row.getValue( "date" ) as Date ).toLocaleDateString()
+		cell: ( { row } ) => row.original.versions[ 0 ].date.toLocaleDateString()
 	},
 	{
 		// Statut de partage du fichier.

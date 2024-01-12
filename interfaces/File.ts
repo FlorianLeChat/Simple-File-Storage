@@ -11,12 +11,6 @@ export interface FileAttributes {
 	// Type MIME du fichier.
 	type: string;
 
-	// Poids total des versions du fichier en octets.
-	size: number;
-
-	// Date de création de la dernière version du fichier.
-	date: Date;
-
 	// Chemin d'accès au fichier.
 	path: string;
 

@@ -61,11 +61,6 @@ async function getFiles(): Promise<FileAttributes[]>
 				uuid: file.id,
 				name: parse( file.name ).name,
 				type: mime.getType( file.name ) ?? "application/octet-stream",
-				size: file.versions.reduce(
-					( previous, current ) => previous + Number( current.size ),
-					0
-				),
-				date: file.versions[ 0 ].createdAt,
 				path,
 				status: file.status ?? "public",
 				versions: file.versions.map( ( version ) => ( {

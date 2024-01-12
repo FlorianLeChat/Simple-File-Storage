@@ -332,7 +332,7 @@ export async function uploadFiles(
 					fileId
 				},
 				orderBy: {
-					createdAt: "asc"
+					createdAt: "desc"
 				}
 			} );
 
@@ -344,7 +344,6 @@ export async function uploadFiles(
 					( previous, current ) => previous + Number( current.size ),
 					0
 				),
-				date: versions[ 0 ].createdAt,
 				path,
 				versions: versions.map( ( version ) => ( {
 					uuid: version.id,
