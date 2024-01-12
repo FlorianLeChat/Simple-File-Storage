@@ -31,15 +31,16 @@ export default function FileHistory( {
 } )
 {
 	// Déclaration des constantes.
-	const files = table.options.meta?.files ?? [];
-	const file = files.filter( ( value ) => value.uuid === row.id )[ 0 ];
-	const { versions } = file;
+	const file = table.options.meta?.files.filter(
+		( value ) => value.uuid === row.id
+	)[ 0 ];
+	const count = file?.versions.length ?? 0;
 
 	// Affichage du rendu HTML du composant.
 	return (
 		<ScrollArea className="h-72 rounded-md border">
 			{/* Aucune version précédente */}
-			{!versions && (
+			{count === 0 && (
 				<p className="inline-block p-4 text-sm text-muted-foreground">
 					Aucune révision précédente n&lsquo;est disponible pour ce
 					fichier.
@@ -48,84 +49,117 @@ export default function FileHistory( {
 
 			{/* Liste des révisions */}
 			<ul className="p-4">
-				{versions?.map( ( version, index ) => (
-					<li key={version.id} className="text-sm">
-						{/* Nom de la révision */}
-						<h3>Version du {version.date}</h3>
+				{file?.versions.map( ( version, index ) =>
+				{
+					// Calcul de la différence de taille entre la version
+					//  actuelle et la version précédente.
+					const size =
+						version.size
+						- file.versions[ Math.min( index + 1, count - 1 ) ].size;
 
-						{/* Taille et différence de la révision */}
-						<p className="inline-block text-muted-foreground">
-							{formatSize( version.size )}
-						</p>
+					// Définition de la couleur en fonction de la différence de
+					//  taille (rouge si négatif, vert si positif, gris si nul).
+					const color =
+						size === 0
+							? "text-gray-600"
+							: ( size < 0 && "text-destructive" )
+								|| "text-green-600";
 
-						<p className="ml-2 inline-block font-extrabold text-primary">
-							-{Math.floor( Math.random() * 100 )} Ko
-						</p>
+					// Mise en forme de la différence de taille.
+					const offset =
+						size < 0
+							? `-${ formatSize( size ) }`
+							: `+${ formatSize( size ) }`;
 
-						{/* Actions sur la révision */}
-						<div className="my-2 flex items-center gap-2">
-							<a
-								rel="noreferrer noopener"
-								href={version.path}
-								target="_blank"
-								className={buttonVariants()}
+					return (
+						<li key={version.uuid} className="text-sm">
+							{/* Nom de la révision */}
+							<h3>
+								Version du {version.date.toLocaleString()}{" "}
+								{index === 0 ? "(actuelle)" : ""}
+							</h3>
+
+							{/* Taille et différence de la révision */}
+							<p className="inline-block text-muted-foreground">
+								{formatSize( version.size )}
+							</p>
+
+							<p
+								className={`ml-2 inline-block font-extrabold ${ color }`}
 							>
-								{/* Accès au fichier */}
-								<ArrowUpRight className="mr-2 h-4 w-4" />
-								Accéder
-							</a>
+								{index === file.versions.length - 1
+									? ""
+									: offset}
+							</p>
 
-							<AlertDialog>
-								<AlertDialogTrigger
-									className={buttonVariants( {
-										variant: "secondary"
-									} )}
+							{/* Actions sur la révision */}
+							<div className="my-2 flex items-center gap-2">
+								<a
+									rel="noreferrer noopener"
+									href={version.path}
+									target="_blank"
+									className={buttonVariants()}
 								>
-									{/* Restauration de la version */}
-									<History className="mr-2 h-4 w-4" />
-									Restaurer
-								</AlertDialogTrigger>
+									{/* Accès au fichier */}
+									<ArrowUpRight className="mr-2 h-4 w-4" />
+									Accéder
+								</a>
 
-								<AlertDialogContent>
-									<AlertDialogHeader>
-										<AlertDialogTitle>
-											<History className="mr-2 inline h-5 w-5" />
+								<AlertDialog>
+									<AlertDialogTrigger
+										disabled={index === 0}
+										className={buttonVariants( {
+											variant: "secondary"
+										} )}
+									>
+										{/* Restauration de la version */}
+										<History className="mr-2 h-4 w-4" />
+										Restaurer
+									</AlertDialogTrigger>
 
-											<span className="align-middle">
-												Êtes-vous sûr de vouloir
-												restaurer cette version du
-												fichier ?
-											</span>
-										</AlertDialogTitle>
+									<AlertDialogContent>
+										<AlertDialogHeader>
+											<AlertDialogTitle>
+												<History className="mr-2 inline h-5 w-5" />
 
-										<AlertDialogDescription>
-											La version actuelle du fichier sera
-											sauvegardée et remplacée par la
-											version sélectionnée.
-										</AlertDialogDescription>
-									</AlertDialogHeader>
+												<span className="align-middle">
+													Êtes-vous sûr de vouloir
+													restaurer cette version du
+													fichier ?
+												</span>
+											</AlertDialogTitle>
 
-									<AlertDialogFooter>
-										<AlertDialogCancel>
-											<Ban className="mr-2 h-4 w-4" />
-											Annuler
-										</AlertDialogCancel>
+											<AlertDialogDescription>
+												La version actuelle du fichier
+												sera sauvegardée sous forme
+												d&lsquo;une nouvelle version et
+												remplacée par la version
+												sélectionnée.
+											</AlertDialogDescription>
+										</AlertDialogHeader>
 
-										<AlertDialogAction>
-											<Check className="mr-2 h-4 w-4" />
-											Confirmer
-										</AlertDialogAction>
-									</AlertDialogFooter>
-								</AlertDialogContent>
-							</AlertDialog>
-						</div>
+										<AlertDialogFooter>
+											<AlertDialogCancel>
+												<Ban className="mr-2 h-4 w-4" />
+												Annuler
+											</AlertDialogCancel>
 
-						{/* Séparateur horizontal */}
-						{index !== versions.length - 1 && (
-							<Separator className="my-4" />
-						)}
-					</li>
-				) )}
+											<AlertDialogAction>
+												<Check className="mr-2 h-4 w-4" />
+												Confirmer
+											</AlertDialogAction>
+										</AlertDialogFooter>
+									</AlertDialogContent>
+								</AlertDialog>
+							</div>
+
+							{/* Séparateur horizontal */}
+							{index !== file.versions.length - 1 && (
+								<Separator className="my-4" />
+							)}
+						</li>
+					);
+				} )}
 			</ul>
 		</ScrollArea>
 	);
