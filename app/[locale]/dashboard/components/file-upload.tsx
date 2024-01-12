@@ -59,7 +59,11 @@ export default function FileUpload( {
 
 	// Déclaration des variables d'état.
 	const [ quota, setQuota ] = useState(
-		files.reduce( ( previous, current ) => previous + current.size, 0 )
+		files.reduce(
+			( total, file ) => total
+				+ file.versions.reduce( ( size, version ) => size + version.size, 0 ),
+			0
+		)
 	);
 	const [ loading, setLoading ] = useState( false );
 	const [ uploadState, uploadAction ] = useFormState( uploadFiles, formState );
@@ -117,30 +121,43 @@ export default function FileUpload( {
 					uuid: json.uuid,
 					name: json.name,
 					type: json.type,
-					size: json.size,
-					date: json.date,
 					path: new URL( json.path, window.location.href ).href,
 					status: "private",
-					versions: json.versions
+					versions: json.versions.map( ( version ) => ( {
+						...version,
+						date: new Date( version.date )
+					} ) )
 				} );
 			} );
 
-			setFiles( ( initial ) =>
+			// On filtre les fichiers déjà existants pour éviter
+			//  les doublons avant de mettre à jour la liste des
+			//  fichiers et le quota utilisateur.
+			let newFiles: FileAttributes[] = [];
+
+			setFiles( ( previous ) =>
 			{
-				// Assemblage de la liste des fichiers.
-				const newFiles = [ ...initial, ...uploaded ];
+				newFiles = [
+					...previous.filter(
+						( value ) => uploaded.filter( ( file ) => file.uuid === value.uuid )
+							.length === 0
+					),
+					...uploaded
+				];
 
-				// Recomptage du quota utilisateur.
-				setQuota(
-					newFiles.reduce(
-						( previous, current ) => previous + current.size,
-						0
-					)
-				);
-
-				// Mise à jour de la liste des fichiers.
 				return newFiles;
 			} );
+
+			setQuota(
+				newFiles.reduce(
+					( total, file ) => total
+						+ file.versions.reduce(
+							( size, version ) => size + version.size,
+							0
+						),
+					0
+				)
+			);
 		}
 
 		// On réinitialise après une partie du formulaire
