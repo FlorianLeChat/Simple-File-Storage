@@ -12,7 +12,7 @@ import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
 import { existsSync } from "fs";
 import { join, parse } from "path";
-import { mkdir, stat, symlink, unlink, writeFile } from "fs/promises";
+import { rm, mkdir, stat, readdir, symlink, writeFile } from "fs/promises";
 
 //
 // Changement du statut d'un ou plusieurs fichiers.
@@ -202,17 +202,13 @@ export async function uploadFiles(
 	try
 	{
 		// On créé le dossier de l'utilisateur si celui-ci n'existe pas.
-		const userStorage = join(
-			process.cwd(),
-			"public/files",
-			session.user.id
-		);
+		const userFolder = join( process.cwd(), "public/files", session.user.id );
 
-		await mkdir( userStorage, { recursive: true } );
+		await mkdir( userFolder, { recursive: true } );
 
 		// On récupère après le quota actuel et maximal de l'utilisateur.
 		const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA );
-		let currentQuota = ( await stat( userStorage ) ).size;
+		let currentQuota = ( await stat( userFolder ) ).size;
 
 		// On filtre la liste des fichiers à téléverser pour ne garder que
 		//  ceux qui ne dépassent pas le quota de l'utilisateur.
@@ -290,11 +286,11 @@ export async function uploadFiles(
 				} )
 			).id;
 
-			// Une fois la version créée, on créé le dossier de l'objet
+			// Une fois la version créée, on créé le dossier du fichier
 			//  dans le système de fichiers.
-			const objectFolder = join( userStorage, fileId );
+			const fileFolder = join( userFolder, fileId );
 
-			await mkdir( objectFolder, { recursive: true } );
+			await mkdir( fileFolder, { recursive: true } );
 
 			if ( duplication )
 			{
@@ -309,7 +305,7 @@ export async function uploadFiles(
 						duplication.fileId,
 						duplication.id + parse( duplication.file.name ).ext
 					),
-					join( objectFolder, `${ versionId + parse( file.name ).ext }` )
+					join( fileFolder, `${ versionId + parse( file.name ).ext }` )
 				);
 			}
 			else
@@ -317,7 +313,7 @@ export async function uploadFiles(
 				// Dans le cas contraire, on créé le fichier dans le système
 				//  de fichiers comme d'habitude.
 				await writeFile(
-					join( objectFolder, `${ versionId + parse( file.name ).ext }` ),
+					join( fileFolder, `${ versionId + parse( file.name ).ext }` ),
 					buffer
 				);
 			}
@@ -366,13 +362,13 @@ export async function uploadFiles(
 			data: ( await Promise.all( data ) ).flat()
 		};
 	}
-	catch ( error )
+	catch
 	{
-		// Si une erreur survient lors de la mise à jour de l'avatar,
+		// Si une erreur survient lors du téléversement des fichiers,
 		//  on affiche enfin un message d'erreur générique.
 		return {
 			success: false,
-			reason: "form.errors.file_system"
+			reason: "form.errors.upload_failed"
 		};
 	}
 }
@@ -409,6 +405,8 @@ export async function deleteFile( formData: FormData )
 	try
 	{
 		// On parcourt l'ensemble des fichiers à supprimer.
+		const userFolder = join( process.cwd(), "public/files", session.user.id );
+
 		await Promise.all(
 			result.data.uuid.map( async ( uuid ) =>
 			{
@@ -420,19 +418,20 @@ export async function deleteFile( formData: FormData )
 					}
 				} );
 
-				// On vérifie si le fichier existe dans le système de fichiers.
-				const filePath = join(
-					process.cwd(),
-					"public/files",
-					session.user.id,
-					file.id + parse( file.name ).ext
-				);
+				// On supprime le fichier et le dossier associé dans le
+				//  système de fichiers.
+				const fileFolder = join( userFolder, file.id );
 
-				// On supprime le fichier (s'il existe) dans le système de
-				//  fichiers.
-				if ( existsSync( filePath ) )
+				if ( existsSync( fileFolder ) )
 				{
-					await unlink( filePath );
+					await rm( fileFolder, { recursive: true, force: true } );
+				}
+
+				// On supprime également le dossier de l'utilisateur si
+				//  celui-ci est vide.
+				if ( ( await readdir( userFolder ) ).length === 0 )
+				{
+					await rm( userFolder, { recursive: true, force: true } );
 				}
 			} )
 		);
