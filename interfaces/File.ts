@@ -11,11 +11,11 @@ export interface FileAttributes {
 	// Type MIME du fichier.
 	type: string;
 
-	// Taille du fichier en octets.
+	// Poids total des versions du fichier en octets.
 	size: number;
 
-	// Date de création du fichier.
-	date: string;
+	// Date de création de la dernière version du fichier.
+	date: Date;
 
 	// Chemin d'accès au fichier.
 	path: string;
@@ -24,7 +24,7 @@ export interface FileAttributes {
 	status: "public" | "private" | "shared";
 
 	// Liste des versions du fichier.
-	versions?: {
+	versions: {
 		// Identifiant unique de la version.
 		id: string;
 
@@ -32,7 +32,7 @@ export interface FileAttributes {
 		size: number;
 
 		// Date de création de la version.
-		date: string;
+		date: Date;
 
 		// Chemin d'accès à la version.
 		path: string;

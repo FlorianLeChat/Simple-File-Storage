@@ -112,23 +112,35 @@ export default function FileUpload( {
 				// Transformation de la chaîne JSON en objet.
 				const json = JSON.parse( file ) as FileAttributes;
 
-				// Mise à jour du quota utilisateur.
-				setQuota( ( previous ) => previous + json.size );
-
 				// Ajout du fichier à la liste des fichiers téléversés.
 				uploaded.push( {
 					uuid: json.uuid,
 					name: json.name,
 					type: json.type,
 					size: json.size,
-					date: new Date().toISOString(),
+					date: json.date,
 					path: new URL( json.path, window.location.href ).href,
 					status: "private",
 					versions: json.versions
 				} );
 			} );
 
-			setFiles( ( previous ) => [ ...previous, ...uploaded ] );
+			setFiles( ( initial ) =>
+			{
+				// Assemblage de la liste des fichiers.
+				const newFiles = [ ...initial, ...uploaded ];
+
+				// Recomptage du quota utilisateur.
+				setQuota(
+					newFiles.reduce(
+						( previous, current ) => previous + current.size,
+						0
+					)
+				);
+
+				// Mise à jour de la liste des fichiers.
+				return newFiles;
+			} );
 		}
 
 		// On réinitialise après une partie du formulaire
