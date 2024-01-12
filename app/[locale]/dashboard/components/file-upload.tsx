@@ -114,7 +114,7 @@ export default function FileUpload( {
 					name: json.name,
 					type: json.type,
 					path: new URL( json.path, window.location.href ).href,
-					status: "private",
+					status: json.status,
 					versions: json.versions.map( ( version ) => ( {
 						...version,
 						date: new Date( version.date )

@@ -341,6 +341,7 @@ export async function uploadFiles(
 					0
 				),
 				path,
+				status: exists?.status ?? "private",
 				versions: versions.map( ( version ) => ( {
 					uuid: version.id,
 					size: Number( version.size ),
