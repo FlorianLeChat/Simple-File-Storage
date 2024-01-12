@@ -142,8 +142,7 @@ export default function RowActions( {
 
 								<span className="align-middle">
 									Êtes-vous sûr de vouloir rendre public{" "}
-									{selectedCount}
-									fichier(s) ?
+									{selectedCount} fichier(s) ?
 								</span>
 							</AlertDialogTitle>
 
@@ -241,8 +240,7 @@ export default function RowActions( {
 
 								<span className="align-middle">
 									Êtes-vous sûr de vouloir rendre privé{" "}
-									{selectedCount}
-									fichier(s) ?
+									{selectedCount} fichier(s) ?
 								</span>
 							</AlertDialogTitle>
 

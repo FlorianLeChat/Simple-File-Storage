@@ -65,6 +65,7 @@ async function getFiles(): Promise<FileAttributes[]>
 					( previous, current ) => previous + Number( current.size ),
 					0
 				),
+				date: file.versions[ 0 ].createdAt,
 				path,
 				status: file.status ?? "public",
 				versions: file.versions.map( ( version ) => ( {

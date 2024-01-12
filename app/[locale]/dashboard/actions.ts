@@ -327,26 +327,29 @@ export async function uploadFiles(
 			//  à travers le réseau vers les composants clients.
 			//  Source : https://github.com/vercel/next.js/issues/47447
 			const path = `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ fileId }`;
+			const versions = await prisma.version.findMany( {
+				where: {
+					fileId
+				},
+				orderBy: {
+					createdAt: "asc"
+				}
+			} );
 
 			return JSON.stringify( {
 				uuid: fileId,
 				name: parse( file.name ).name,
-				size: file.size,
 				type: file.type,
+				size: versions.reduce(
+					( previous, current ) => previous + Number( current.size ),
+					0
+				),
+				date: versions[ 0 ].createdAt,
 				path,
-				versions: (
-					await prisma.version.findMany( {
-						where: {
-							fileId
-						},
-						orderBy: {
-							createdAt: "asc"
-						}
-					} )
-				).map( ( version ) => ( {
+				versions: versions.map( ( version ) => ( {
 					uuid: version.id,
 					size: Number( version.size ),
-					date: version.createdAt.toLocaleString(),
+					date: version.createdAt,
 					path: `${ path }?v=${ version.id }`
 				} ) )
 			} );
@@ -440,9 +443,8 @@ export async function deleteFile( formData: FormData )
 	}
 	catch
 	{
-		// Si une erreur s'est produite lors de la transaction avec la
-		//  base de données ou avec le système de fichiers, on retourne
-		//  enfin une valeur d'échec.
+		// Si une erreur s'est produite lors de la transaction avec le
+		//  système de fichiers, on retourne enfin une valeur d'échec.
 		return false;
 	}
 }

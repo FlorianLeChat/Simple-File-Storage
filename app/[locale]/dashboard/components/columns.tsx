@@ -59,11 +59,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 		// Date de téléversement du fichier.
 		accessorKey: "date",
 		header: ( { column } ) => <ColumnHeader column={column} title="Date" />,
-		cell: ( { row } ) =>
-		{
-			const date = new Date( row.getValue( "date" ) );
-			return date.toLocaleDateString();
-		}
+		cell: ( { row } ) => ( row.getValue( "date" ) as Date ).toLocaleDateString()
 	},
 	{
 		// Statut de partage du fichier.
