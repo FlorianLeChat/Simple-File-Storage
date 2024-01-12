@@ -107,49 +107,40 @@ export async function renameFile( formData: FormData )
 		return false;
 	}
 
-	try
-	{
-		// On parcourt l'ensemble des fichiers à renommer.
-		await Promise.all(
-			result.data.uuid.map( async ( uuid ) =>
-			{
-				// On récupère après les données du fichier depuis
-				//  la base de données.
-				const file = await prisma.file.findUnique( {
-					where: {
-						id: uuid,
-						userId: session.user.id
-					}
-				} );
-
-				if ( !file )
-				{
-					return;
+	// On parcourt l'ensemble des fichiers à renommer.
+	await Promise.all(
+		result.data.uuid.map( async ( uuid ) =>
+		{
+			// On récupère après les données du fichier depuis
+			//  la base de données.
+			const file = await prisma.file.findUnique( {
+				where: {
+					id: uuid,
+					userId: session.user.id
 				}
+			} );
 
-				// On renomme le fichier dans la base de données avant de
-				//  retourner une valeur de succès.
-				await prisma.file.update( {
-					where: {
-						id: uuid,
-						userId: session.user.id
-					},
-					data: {
-						name: result.data.name + parse( file.name ).ext
-					}
-				} );
-			} )
-		);
+			if ( !file )
+			{
+				return;
+			}
 
-		// On retourne une valeur de succès à la fin du traitement.
-		return true;
-	}
-	catch
-	{
-		// En cas d'erreur lors de la transaction avec la base de données,
-		//  on retourne enfin une valeur d'échec.
-		return false;
-	}
+			// On renomme le fichier dans la base de données avant de
+			//  retourner une valeur de succès.
+			await prisma.file.update( {
+				where: {
+					id: uuid,
+					userId: session.user.id
+				},
+				data: {
+					name: result.data.name + parse( file.name ).ext
+				}
+			} );
+		} )
+	);
+
+	// On retourne enfin une valeur de succès à la fin du traitement.
+	return true;
 }
 
 //
