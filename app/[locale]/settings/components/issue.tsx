@@ -36,16 +36,13 @@ import { createIssue } from "../issue/actions";
 
 export default function Account()
 {
-	// Déclaration des constantes.
+	// Déclaration des variables d'état.
 	const { toast } = useToast();
-	const formState = {
+	const [ loading, setLoading ] = useState( false );
+	const [ updateState, updateAction ] = useFormState( createIssue, {
 		success: true,
 		reason: ""
-	};
-
-	// Déclaration des variables d'état.
-	const [ loading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( createIssue, formState );
+	} );
 
 	// Déclaration du formulaire.
 	const form = useForm( {
@@ -57,7 +54,7 @@ export default function Account()
 		}
 	} );
 
-	// Affichage des erreurs en provenance du serveur.
+	// Détection de la response du serveur après l'envoi du formulaire.
 	useEffect( () =>
 	{
 		// On vérifie d'abord si la variable d'état liée à l'action

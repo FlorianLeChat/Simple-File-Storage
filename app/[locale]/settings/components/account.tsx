@@ -43,27 +43,23 @@ const languages = [
 export default function Account( { session }: { session: Session } )
 {
 	// Déclaration des constantes.
-	const { toast } = useToast();
-	const formState = {
-		success: true,
-		reason: ""
-	};
-
-	// Déclaration des variables d'état.
-	const [ loading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( updateAccount, formState );
-	const [ passwordType, setPasswordType ] = useState( "text" );
-
-	// Déclaration des constantes.
-	const locale = useLocale();
 	const characters =
 		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
+
+	// Déclaration des variables d'état.
+	const { toast } = useToast();
+	const [ loading, setLoading ] = useState( false );
+	const [ updateState, updateAction ] = useFormState( updateAccount, {
+		success: true,
+		reason: ""
+	} );
+	const [ passwordType, setPasswordType ] = useState( "text" );
 
 	// Déclaration du formulaire.
 	const form = useForm( {
 		defaultValues: {
 			username: session.user.name ?? "",
-			language: locale,
+			language: useLocale(),
 			password: ""
 		}
 	} );
@@ -86,7 +82,7 @@ export default function Account( { session }: { session: Session } )
 		);
 	};
 
-	// Affichage des erreurs en provenance du serveur.
+	// Détection de la response du serveur après l'envoi du formulaire.
 	useEffect( () =>
 	{
 		// On vérifie d'abord si la variable d'état liée à l'action

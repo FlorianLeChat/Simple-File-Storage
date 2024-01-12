@@ -26,20 +26,16 @@ import { updateNotifications } from "../notifications/actions";
 export default function Notifications( { session }: { session: Session } )
 {
 	// Déclaration des constantes.
-	const { toast } = useToast();
-	const formState = {
-		success: true,
-		reason: ""
-	};
 	const notifications = session.user.notifications.split( "+" );
 
 	// Déclaration des variables d'état.
+	const { toast } = useToast();
 	const [ push, setPush ] = useState( notifications[ 0 ] !== "off" );
 	const [ loading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState(
-		updateNotifications,
-		formState
-	);
+	const [ updateState, updateAction ] = useFormState( updateNotifications, {
+		success: true,
+		reason: ""
+	} );
 
 	// Déclaration du formulaire.
 	const form = useForm( {
@@ -49,7 +45,7 @@ export default function Notifications( { session }: { session: Session } )
 		}
 	} );
 
-	// Affichage des erreurs en provenance du serveur.
+	// Détection de la response du serveur après l'envoi du formulaire.
 	useEffect( () =>
 	{
 		// On vérifie d'abord si la variable d'état liée à l'action

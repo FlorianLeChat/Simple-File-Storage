@@ -22,8 +22,8 @@ import { Ban,
 	MoreHorizontal,
 	TextCursorInput } from "lucide-react";
 import { FileAttributes } from "@/interfaces/File";
-import type { Table, Row } from "@tanstack/react-table";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import type { Table, Row, TableMeta } from "@tanstack/react-table";
 
 import { Input } from "../../components/ui/input";
 import FileHistory from "./file-history";
@@ -63,26 +63,21 @@ export default function RowActions( {
 } )
 {
 	// Déclaration des constantes.
-	const files = table.options.meta?.files ?? [];
-	const rename = useRef<HTMLButtonElement>( null );
-	const setFiles = useMemo(
-		() => table.options.meta?.setFiles ?? ( () =>
-		{} ),
-		[ table.options.meta ]
-	);
-	const { toast } = useToast();
-	const isLoading = table.options.meta?.loading.includes( row.id );
-	const selectedRows = table.getFilteredSelectedRowModel();
-	const selectedCount = selectedRows.rows.length;
+	const model = table.getFilteredSelectedRowModel();
+	const count = Math.max( model.rows.length, 1 );
+	const states = table.options.meta as TableMeta<FileAttributes>;
 
 	// Déclaration des variables d'état.
+	const rename = useRef<HTMLButtonElement>( null );
+	const loading = states.loading.includes( row.id );
+	const { toast } = useToast();
 	const [ open, setOpen ] = useState( false );
 
 	// Filtrage des données d'une ou plusieurs lignes.
-	const rowData = files.filter( ( file ) => file.uuid === row.id );
+	const rowData = states.files.filter( ( file ) => file.uuid === row.id );
 	const selectedData =
-		selectedRows.rows.length > 1
-			? files.filter( ( file ) => selectedRows.rows.find( ( value ) => file.uuid === value.id ) )
+		model.rows.length > 1
+			? states.files.filter( ( file ) => model.rows.find( ( value ) => file.uuid === value.id ) )
 			: rowData;
 
 	// Affichage du rendu HTML du composant.
@@ -91,7 +86,7 @@ export default function RowActions( {
 			open={open}
 			onOpenChange={( state ) =>
 			{
-				if ( !isLoading )
+				if ( !loading )
 				{
 					// Ouverture du menu si l'état de chargement est
 					//  inactif.
@@ -106,7 +101,7 @@ export default function RowActions( {
 					"h-8 w-8 p-0"
 				)}
 			>
-				{isLoading ? (
+				{loading ? (
 					<>
 						<span className="sr-only">Mise à jour en cours...</span>
 						<Loader2 className="h-4 w-4 animate-spin" />
@@ -142,7 +137,7 @@ export default function RowActions( {
 
 								<span className="align-middle">
 									Êtes-vous sûr de vouloir rendre public{" "}
-									{selectedCount} fichier(s) ?
+									{count} fichier(s) ?
 								</span>
 							</AlertDialogTitle>
 
@@ -170,7 +165,7 @@ export default function RowActions( {
 									setOpen( false );
 
 									// Activation de l'état de chargement.
-									table.options.meta?.setLoading(
+									states.setLoading(
 										selectedData.map( ( value ) => value.uuid )
 									);
 
@@ -197,11 +192,11 @@ export default function RowActions( {
 											file.status = "public";
 										} );
 
-										setFiles( [ ...files ] );
+										states.setFiles( [ ...states.files ] );
 									}
 
 									// Fin de l'état de chargement.
-									table.options.meta?.setLoading( [] );
+									states.setLoading( [] );
 
 									// Envoi d'une notification.
 									toast( {
@@ -240,7 +235,7 @@ export default function RowActions( {
 
 								<span className="align-middle">
 									Êtes-vous sûr de vouloir rendre privé{" "}
-									{selectedCount} fichier(s) ?
+									{count} fichier(s) ?
 								</span>
 							</AlertDialogTitle>
 
@@ -269,7 +264,7 @@ export default function RowActions( {
 									setOpen( false );
 
 									// Activation de l'état de chargement.
-									table.options.meta?.setLoading(
+									states.setLoading(
 										selectedData.map( ( value ) => value.uuid )
 									);
 
@@ -296,11 +291,11 @@ export default function RowActions( {
 											file.status = "private";
 										} );
 
-										setFiles( [ ...files ] );
+										states.setFiles( [ ...states.files ] );
 									}
 
 									// Fin de l'état de chargement.
-									table.options.meta?.setLoading( [] );
+									states.setLoading( [] );
 
 									// Envoi d'une notification.
 									toast( {
@@ -373,7 +368,7 @@ export default function RowActions( {
 
 								<span className="align-middle">
 									Êtes-vous sûr de vouloir supprimer tous les
-									partages de {selectedCount} fichier(s) ?
+									partages de {count} fichier(s) ?
 								</span>
 							</AlertDialogTitle>
 
@@ -418,7 +413,7 @@ export default function RowActions( {
 								<TextCursorInput className="mr-2 inline h-5 w-5" />
 
 								<span className="align-middle">
-									Quel sera le nouveau nom de {selectedCount}{" "}
+									Quel sera le nouveau nom de {count}{" "}
 									ressource(s) ?
 								</span>
 							</DialogTitle>
@@ -435,6 +430,7 @@ export default function RowActions( {
 							type="text"
 							onInput={( event ) =>
 							{
+								// Mise à jour de l'entrée utilisateur.
 								selectedData.forEach( ( file ) =>
 								{
 									file.name = event.currentTarget.value;
@@ -442,7 +438,10 @@ export default function RowActions( {
 							}}
 							onKeyDown={( event ) =>
 							{
-								if ( event.key === "Enter" )
+								// Soumission du formulaire par clavier.
+								const { key } = event;
+
+								if ( key === "Enter" || key === "NumpadEnter" )
 								{
 									rename.current?.click();
 								}
@@ -460,7 +459,7 @@ export default function RowActions( {
 								onClick={async () =>
 								{
 									// Activation de l'état de chargement.
-									table.options.meta?.setLoading(
+									states.setLoading(
 										selectedData.map( ( value ) => value.uuid )
 									);
 
@@ -485,11 +484,11 @@ export default function RowActions( {
 										setOpen( false );
 
 										// Renommage des fichiers.
-										setFiles( [ ...files ] );
+										states.setFiles( [ ...states.files ] );
 									}
 
 									// Fin de l'état de chargement.
-									table.options.meta?.setLoading( [] );
+									states.setLoading( [] );
 
 									// Envoi d'une notification.
 									toast( {
@@ -502,10 +501,10 @@ export default function RowActions( {
 											: "form.errors.server_error"
 									} );
 								}}
-								disabled={isLoading}
+								disabled={loading}
 								className="max-sm:w-full"
 							>
-								{isLoading ? (
+								{loading ? (
 									<>
 										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 										Mise à jour...
@@ -593,8 +592,8 @@ export default function RowActions( {
 								<Trash className="mr-2 inline h-5 w-5" />
 
 								<span className="align-middle">
-									Êtes-vous sûr de vouloir supprimer{" "}
-									{selectedCount} fichier(s) ?
+									Êtes-vous sûr de vouloir supprimer {count}{" "}
+									fichier(s) ?
 								</span>
 							</AlertDialogTitle>
 
@@ -618,7 +617,7 @@ export default function RowActions( {
 									setOpen( false );
 
 									// Activation de l'état de chargement.
-									table.options.meta?.setLoading(
+									states.setLoading(
 										selectedData.map( ( value ) => value.uuid )
 									);
 
@@ -639,8 +638,8 @@ export default function RowActions( {
 									if ( state )
 									{
 										// Suppression des fichiers de la liste.
-										setFiles(
-											files.filter(
+										states.setFiles(
+											states.files.filter(
 												( file ) => !selectedData.find(
 													( value ) => value.uuid
 															=== file.uuid
@@ -650,7 +649,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									table.options.meta?.setLoading( [] );
+									states.setLoading( [] );
 
 									// Envoi d'une notification.
 									toast( {
