@@ -64,7 +64,7 @@ async function getFiles(): Promise<FileAttributes[]>
 				path,
 				status: file.status ?? "public",
 				versions: file.versions.map( ( version ) => ( {
-					id: version.id,
+					uuid: version.id,
 					size: Number( version.size ),
 					date: version.createdAt,
 					path: `${ path }?v=${ version.id }`

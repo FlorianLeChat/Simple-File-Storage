@@ -20,7 +20,7 @@ export interface FileAttributes {
 	// Liste des versions du fichier.
 	versions: {
 		// Identifiant unique de la version.
-		id: string;
+		uuid: string;
 
 		// Poids de la version en octets.
 		size: number;
