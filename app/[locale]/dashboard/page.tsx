@@ -6,12 +6,10 @@
 import mime from "mime";
 import prisma from "@/utilities/prisma";
 import { lazy } from "react";
+import { parse } from "path";
 import { redirect } from "next/navigation";
-import { existsSync } from "fs";
-import { join, parse } from "path";
 import type { Metadata } from "next";
 import type { FileAttributes } from "@/interfaces/File";
-import { mkdir, readdir, stat } from "fs/promises";
 import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
@@ -41,72 +39,43 @@ async function getFiles(): Promise<FileAttributes[]>
 		return [];
 	}
 
-	// On créé ensuite le dossier de stockage si celui-ci n'existe pas.
-	const folderPath = join( process.cwd(), "public/files" );
-
-	await mkdir( folderPath, { recursive: true } );
-
-	// On vérifie après l'existence du dossier de l'utilisateur.
-	const userStorage = join( folderPath, session.user.id );
-
-	if ( !existsSync( userStorage ) )
-	{
-		return [];
-	}
-
-	// On récupère tous les fichiers de l'utilisateur à travers
-	//  une promesse pour les opérations asynchrones.
-	const data = ( await readdir( userStorage ) ).map( async ( object ) =>
-	{
-		// On tente de récupérer également les informations
-		//  de la dernière version du fichier.
-		const result = await prisma.version.findMany( {
-			where: {
-				fileId: object
-			},
-			include: {
-				file: true
-			},
-			orderBy: {
-				createdAt: "desc"
-			}
-		} );
-
-		if ( result.length === 0 )
-		{
-			// Si ce n'est pas le cas, on retourne un tableau vide.
-			return [];
+	// On récupère ensuite tous les fichiers de l'utilisateur
+	//  enregistrés dans la base de données.
+	const files = await prisma.file.findMany( {
+		where: {
+			userId: session.user.id
+		},
+		include: {
+			versions: true
 		}
-
-		// Dans le cas contraire, on récupère les informations du fichier
-		//  avant de les retourner.
-		const latest = result[ 0 ];
-		const path = `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ latest.file.id }`;
-		const info = parse( latest.file.name );
-		const stats = await stat(
-			join( userStorage, object, latest.id + info.ext )
-		);
-
-		return {
-			uuid: latest.file.id,
-			name: info.name,
-			type: mime.getType( latest.file.name ) ?? "application/octet-stream",
-			size: stats.size,
-			date: stats.birthtime.toISOString(),
-			path,
-			status: latest.file.status ?? "public",
-			versions: result.map( ( version ) => ( {
-				id: version.id,
-				size: Number( version.size ),
-				date: version.createdAt.toLocaleString(),
-				path: `${ path }?v=${ version.id }`
-			} ) )
-		} as FileAttributes;
 	} );
 
-	// On retourne enfin les données récupérées après avoir supprimé
-	//  les éventuelles valeurs vides.
-	return ( await Promise.all( data ) ).flat();
+	// On retourne enfin une promesse contenant la liste des
+	//  des fichiers de l'utilisateur.
+	return Promise.all(
+		files.map( async ( file ) =>
+		{
+			const path = `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ file.id }`;
+
+			return {
+				uuid: file.id,
+				name: parse( file.name ).name,
+				type: mime.getType( file.name ) ?? "application/octet-stream",
+				size: file.versions.reduce(
+					( previous, current ) => previous + Number( current.size ),
+					0
+				),
+				path,
+				status: file.status ?? "public",
+				versions: file.versions.map( ( version ) => ( {
+					id: version.id,
+					size: Number( version.size ),
+					date: version.createdAt,
+					path: `${ path }?v=${ version.id }`
+				} ) )
+			} as FileAttributes;
+		} )
+	);
 }
 
 // Affichage de la page.
