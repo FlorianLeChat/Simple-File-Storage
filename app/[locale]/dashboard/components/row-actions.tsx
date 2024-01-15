@@ -638,12 +638,24 @@ export default function RowActions( {
 									if ( state )
 									{
 										// Suppression des fichiers de la liste.
-										states.setFiles(
-											states.files.filter(
-												( file ) => !selectedData.find(
-													( value ) => value.uuid
-															=== file.uuid
-												)
+										const newFiles = states.files.filter(
+											( file ) => !selectedData.find(
+												( value ) => value.uuid
+														=== file.uuid
+											)
+										);
+
+										states.setFiles( newFiles );
+
+										// Mise à jour du quota utilisateur.
+										states.setQuota(
+											newFiles.reduce(
+												( total, file ) => total
+													+ file.versions.reduce(
+														( size, version ) => size + version.size,
+														0
+													),
+												0
 											)
 										);
 									}

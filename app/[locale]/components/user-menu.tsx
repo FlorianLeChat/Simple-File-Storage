@@ -53,12 +53,12 @@ export default function UserMenu( { session }: { session: Session } )
 {
 	// Déclaration des constantes.
 	const admin = session.user.role === "admin";
-	const router = useRouter();
 	const fullName = session.user.name;
 	const { email } = session.user;
 	const shortName = ( fullName ?? email )?.slice( 0, 2 ).toUpperCase() ?? "SFS";
 
 	// Déclaration des variables d'état.
+	const router = useRouter();
 	const [ open, setOpen ] = useState( false );
 
 	// Capture et support des combinaisons de touches.

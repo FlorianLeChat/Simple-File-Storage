@@ -14,7 +14,7 @@ import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function Navigation()
 {
-	// Déclaration des constantes.
+	// Déclaration des variables d'état.
 	const pathname = usePathname();
 
 	// Affichage du rendu HTML du composant.

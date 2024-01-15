@@ -37,10 +37,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 export default function Authentification()
 {
-	// Déclaration des constantes.
-	const { toast } = useToast();
-
 	// Déclaration des variables d'état.
+	const { toast } = useToast();
 	const [ focused, setFocused ] = useState( false );
 	const [ loading, setLoading ] = useState( false );
 	const [ signUpState, signUpAction ] = useFormState( signUpAccount, {
