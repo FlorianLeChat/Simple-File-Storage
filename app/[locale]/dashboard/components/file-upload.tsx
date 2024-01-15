@@ -50,13 +50,6 @@ export default function FileUpload( {
 	const loading = states.loading.length !== 0;
 	const { toast } = useToast();
 	const [ open, setOpen ] = useState( false );
-	const [ quota, setQuota ] = useState(
-		states.files.reduce(
-			( total, file ) => total
-				+ file.versions.reduce( ( size, version ) => size + version.size, 0 ),
-			0
-		)
-	);
 	const [ uploadState, uploadAction ] = useFormState( uploadFiles, {
 		success: true,
 		reason: "",
@@ -64,7 +57,7 @@ export default function FileUpload( {
 	} );
 
 	// Déclaration du formulaire.
-	const percent = Number( ( ( quota / maxQuota ) * 100 ).toFixed( 2 ) );
+	const percent = Number( ( ( states.quota / maxQuota ) * 100 ).toFixed( 2 ) );
 	const form = useForm( {
 		defaultValues: {
 			upload: ""
@@ -140,7 +133,7 @@ export default function FileUpload( {
 				return newFiles;
 			} );
 
-			setQuota(
+			states.setQuota(
 				newFiles.reduce(
 					( total, file ) => total
 						+ file.versions.reduce(
@@ -256,7 +249,7 @@ export default function FileUpload( {
 											<FormDescription className="!mt-1 text-sm text-muted-foreground">
 												{percent.toLocaleString()}% du
 												quota actuellement utilisés (
-												{formatSize( quota )} /{" "}
+												{formatSize( states.quota )} /{" "}
 												{formatSize( maxQuota )})
 											</FormDescription>
 										</>
