@@ -145,7 +145,16 @@ export default function FileUpload( {
 			);
 		}
 
-		// On affiche après le message correspondant si une raison
+		// On réinitialise après une partie du formulaire en cas
+		//  de succès avant de le fermer.
+		if ( success )
+		{
+			form.reset();
+
+			setOpen( false );
+		}
+
+		// On affiche enfin le message correspondant si une raison
 		//  a été fournie avant d'indiquer que le traitement est terminé.
 		if ( reason !== "" )
 		{
@@ -161,15 +170,6 @@ export default function FileUpload( {
 				variant: success ? "default" : "destructive",
 				description: reason
 			} );
-		}
-
-		// On réinitialise enfin une partie du formulaire en cas
-		//  de succès avant de le fermer.
-		if ( success )
-		{
-			form.reset();
-
-			setOpen( false );
 		}
 	}, [ form, states, uploadState, toast ] );
 
