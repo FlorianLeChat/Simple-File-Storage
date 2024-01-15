@@ -12,7 +12,8 @@ import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
 import { existsSync } from "fs";
 import { join, parse } from "path";
-import { rm, mkdir, stat, readdir, link, writeFile } from "fs/promises";
+import { getDirectorySize } from "@/utilities/file-system";
+import { rm, mkdir, readdir, link, writeFile } from "fs/promises";
 
 //
 // Changement du statut d'un ou plusieurs fichiers.
@@ -208,7 +209,7 @@ export async function uploadFiles(
 
 		// On récupère après le quota actuel et maximal de l'utilisateur.
 		const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA );
-		let currentQuota = ( await stat( userFolder ) ).size;
+		let currentQuota = await getDirectorySize( userFolder );
 
 		// On filtre la liste des fichiers à téléverser pour ne garder que
 		//  ceux qui ne dépassent pas le quota de l'utilisateur.
