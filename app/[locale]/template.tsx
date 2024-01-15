@@ -14,7 +14,7 @@ import { useToast } from "./components/ui/use-toast";
 
 export default function Template( { children }: { children: ReactNode } )
 {
-	// Déclaration des constantes.
+	// Déclaration des variables d'état.
 	const { toast } = useToast();
 
 	// Affichage automatique des messages d'erreur.

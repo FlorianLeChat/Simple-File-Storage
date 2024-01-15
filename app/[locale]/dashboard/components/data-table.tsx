@@ -36,6 +36,13 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 {
 	// Déclaration des variables d'état.
 	const [ files, setFiles ] = useState( data );
+	const [ quota, setQuota ] = useState(
+		files.reduce(
+			( total, file ) => total
+				+ file.versions.reduce( ( size, version ) => size + version.size, 0 ),
+			0
+		)
+	);
 	const [ loading, setLoading ] = useState<string[]>( [] );
 	const [ sorting, setSorting ] = useState<SortingState>( [] );
 	const [ rowSelection, setRowSelection ] = useState( {} );
@@ -49,8 +56,10 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 		data: files,
 		meta: {
 			files,
+			quota,
 			loading,
 			setFiles,
+			setQuota,
 			setLoading
 		},
 		state: {
