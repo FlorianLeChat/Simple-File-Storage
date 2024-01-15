@@ -12,7 +12,7 @@ import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
 import { existsSync } from "fs";
 import { join, parse } from "path";
-import { rm, mkdir, stat, readdir, symlink, writeFile } from "fs/promises";
+import { rm, mkdir, stat, readdir, link, writeFile } from "fs/promises";
 
 //
 // Changement du statut d'un ou plusieurs fichiers.
@@ -297,7 +297,7 @@ export async function uploadFiles(
 				// Si une duplication a été détectée précédemment, on créé
 				//  un lien symbolique vers le fichier dupliqué afin de
 				//  réduire l'espace disque utilisé.
-				await symlink(
+				await link(
 					join(
 						process.cwd(),
 						"public/files",
