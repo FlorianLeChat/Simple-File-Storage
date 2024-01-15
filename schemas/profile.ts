@@ -20,7 +20,7 @@ const schema = z.object( {
 		.custom<File>( ( file ) => file instanceof File )
 		.refine(
 			// Taille de l'image.
-			( file ) => file.size > 0 || file.size <= MAX_FILE_SIZE,
+			( file ) => file.size > 0 && file.size <= MAX_FILE_SIZE,
 			"wrong_file_size"
 		)
 		.refine(
