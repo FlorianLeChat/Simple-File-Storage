@@ -10,9 +10,8 @@ import crypto from "crypto";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
-import { existsSync } from "fs";
 import { join, parse } from "path";
-import { getDirectorySize } from "@/utilities/file-system";
+import { existsSync, statSync } from "fs";
 import { rm, mkdir, readdir, link, writeFile, copyFile } from "fs/promises";
 
 //
@@ -208,8 +207,13 @@ export async function uploadFiles(
 		await mkdir( userFolder, { recursive: true } );
 
 		// On récupère après le quota actuel et maximal de l'utilisateur.
+		const files = await readdir( userFolder, { recursive: true } );
 		const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA );
-		let currentQuota = await getDirectorySize( userFolder );
+		let currentQuota = files.reduce( ( previous, current ) =>
+		{
+			const { size } = statSync( join( userFolder, current ) );
+			return previous + size;
+		}, 0 );
 
 		// On filtre la liste des fichiers à téléverser pour ne garder que
 		//  ceux qui ne dépassent pas le quota de l'utilisateur.
