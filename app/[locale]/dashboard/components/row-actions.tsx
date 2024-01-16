@@ -173,7 +173,7 @@ export default function RowActions( {
 									const form = new FormData();
 									selectedData.forEach( ( file ) =>
 									{
-										form.append( "uuid", file.uuid );
+										form.append( "fileId", file.uuid );
 									} );
 									form.append( "status", "public" );
 
@@ -272,7 +272,7 @@ export default function RowActions( {
 									const form = new FormData();
 									selectedData.forEach( ( file ) =>
 									{
-										form.append( "uuid", file.uuid );
+										form.append( "fileId", file.uuid );
 									} );
 									form.append( "status", "private" );
 
@@ -467,7 +467,7 @@ export default function RowActions( {
 									const form = new FormData();
 									selectedData.forEach( ( file ) =>
 									{
-										form.append( "uuid", file.uuid );
+										form.append( "fileId", file.uuid );
 									} );
 									form.append( "name", selectedData[ 0 ].name );
 
@@ -625,7 +625,7 @@ export default function RowActions( {
 									const form = new FormData();
 									selectedData.forEach( ( file ) =>
 									{
-										form.append( "uuid", file.uuid );
+										form.append( "fileId", file.uuid );
 									} );
 
 									// Envoi de la requête au serveur et
