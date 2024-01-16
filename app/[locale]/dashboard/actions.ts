@@ -526,18 +526,23 @@ export async function deleteFile( formData: FormData )
 
 				// On supprime le fichier et le dossier associé dans le
 				//  système de fichiers.
-				const fileFolder = join( userFolder, file.id );
-
-				if ( existsSync( fileFolder ) )
+				if ( existsSync( userFolder ) )
 				{
-					await rm( fileFolder, { recursive: true, force: true } );
-				}
+					// On supprime le dossier où se trouve les versions du
+					//  fichier.
+					const fileFolder = join( userFolder, file.id );
 
-				// On supprime également le dossier de l'utilisateur si
-				//  celui-ci est vide.
-				if ( ( await readdir( userFolder ) ).length === 0 )
-				{
-					await rm( userFolder, { recursive: true, force: true } );
+					if ( existsSync( fileFolder ) )
+					{
+						await rm( fileFolder, { recursive: true, force: true } );
+					}
+
+					// On supprime de la même manière le dossier de l'utilisateur
+					//  si celui-ci est vide après la suppression du fichier.
+					if ( ( await readdir( userFolder ) ).length === 0 )
+					{
+						await rm( userFolder, { recursive: true, force: true } );
+					}
 				}
 			} )
 		);

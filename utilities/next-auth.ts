@@ -37,15 +37,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 				session.user.oauth = !user.password && !user.emailVerified;
 				session.user.notifications = user.notifications;
 
-				// Définition de l'avatar personnalisé de l'utilisateur.
-				const avatars = join( process.cwd(), "public", "avatars" );
+				// Vérification de l'existence du dossier d'enregistrement
+				//  des avatars utilisateurs.
+				const avatars = join( process.cwd(), "public/avatars" );
 
-				if ( existsSync( avatars ) )
+				if ( !existsSync( avatars ) )
 				{
+					// Vérification de l'existence d'un avatar personnalisé.
 					const avatar = ( await readdir( avatars ) ).find( ( file ) => file.includes( user.id ) );
 
 					if ( avatar )
 					{
+						// Définition de l'avatar personnalisé de l'utilisateur.
 						session.user.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }`;
 					}
 				}
