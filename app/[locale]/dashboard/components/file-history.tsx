@@ -14,6 +14,7 @@ import serverAction from "@/utilities/recaptcha";
 import { useToast } from "../../components/ui/use-toast";
 import { Separator } from "../../components/ui/separator";
 import { ScrollArea } from "../../components/ui/scroll-area";
+import { restoreVersion } from "../actions";
 import { buttonVariants } from "../../components/ui/button";
 import { AlertDialog,
 	AlertDialogTitle,
@@ -24,7 +25,6 @@ import { AlertDialog,
 	AlertDialogHeader,
 	AlertDialogTrigger,
 	AlertDialogDescription } from "../../components/ui/alert-dialog";
-import { restoreVersion } from "../actions";
 
 export default function FileHistory( {
 	table,
@@ -37,12 +37,12 @@ export default function FileHistory( {
 	// Déclaration des constantes.
 	const states = table.options.meta as TableMeta<FileAttributes>;
 	const file = states.files.filter( ( value ) => value.uuid === row.id )[ 0 ];
-	const count = file?.versions.length ?? 0;
+	const count = file.versions.length ?? 0;
 
 	// Déclaration des variables d'état.
 	const loading = states.loading.length !== 0;
 	const { toast } = useToast();
-	const [ open, setOpen ] = useState( false );
+	const [ identifier, setIdentifier ] = useState( "" );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -57,7 +57,7 @@ export default function FileHistory( {
 
 			{/* Liste des révisions */}
 			<ul className="p-4">
-				{file?.versions.map( ( version, index ) =>
+				{file.versions.map( ( version, index ) =>
 				{
 					// Calcul de la différence de taille entre la version
 					//  actuelle et la version précédente.
@@ -83,9 +83,12 @@ export default function FileHistory( {
 						<li key={version.uuid} className="text-sm">
 							{/* Nom de la révision */}
 							<h3>
-								Version du {version.date.toLocaleString()}{" "}
-								{index === 0 ? "(actuelle)" : ""}
-								{index === count - 1 ? "(initiale)" : ""}
+								Version{" "}
+								{index === 0
+									? "actuelle"
+									: ( index === count - 1 && "initiale" )
+										|| "antérieure"}{" "}
+								du {version.date.toLocaleString()}
 							</h3>
 
 							{/* Taille et différence de la révision */}
@@ -114,12 +117,13 @@ export default function FileHistory( {
 									Accéder
 								</a>
 
-								<AlertDialog open={open} onOpenChange={setOpen}>
+								<AlertDialog>
 									<AlertDialogTrigger
 										disabled={index === 0 || loading}
 										className={buttonVariants( {
 											variant: "secondary"
 										} )}
+										onClick={() => setIdentifier( version.uuid )}
 									>
 										{/* Restauration de la version */}
 										<History className="mr-2 h-4 w-4" />
@@ -158,9 +162,6 @@ export default function FileHistory( {
 											<AlertDialogAction
 												onClick={async () =>
 												{
-													// Fermeture du menu des actions.
-													setOpen( false );
-
 													// Activation de l'état de chargement.
 													states.setLoading( [
 														"history"
@@ -174,20 +175,49 @@ export default function FileHistory( {
 													);
 													form.append(
 														"versionId",
-														version.uuid
+														identifier
 													);
 
 													// Envoi de la requête au serveur et
 													//  attente de la réponse.
-													const state =
+													const data =
 														( await serverAction(
 															restoreVersion,
 															form
-														) ) as boolean;
+														) ) as string;
 
-													if ( state )
+													if ( data )
 													{
-														//
+														// Sélection de la version sélectionnée
+														//  pour être restaurée.
+														const selectedVersion =
+															file.versions.find(
+																( value ) => value.uuid
+																	=== identifier
+															);
+
+														if ( !selectedVersion )
+														{
+															return;
+														}
+
+														// Copie et modification de l'identifiant
+														//  de la version sélectionnée.
+														const newVersion = {
+															...selectedVersion
+														};
+														newVersion.uuid = data;
+
+														// Ajout de la nouvelle version à la liste
+														//  des versions du fichier.
+														file.versions.unshift(
+															newVersion
+														);
+
+														// Mise à jour de la liste des fichiers.
+														states.setFiles(
+															states.files
+														);
 													}
 
 													// Fin de l'état de chargement.
@@ -196,10 +226,10 @@ export default function FileHistory( {
 													// Envoi d'une notification.
 													toast( {
 														title: "form.info.action_success",
-														variant: state
+														variant: data
 															? "default"
 															: "destructive",
-														description: state
+														description: data
 															? "form.info.version_restored"
 															: "form.errors.server_error"
 													} );

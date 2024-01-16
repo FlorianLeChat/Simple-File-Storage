@@ -357,7 +357,7 @@ export async function restoreVersion( formData: FormData )
 
 	if ( !session )
 	{
-		return false;
+		return "";
 	}
 
 	// On créé ensuite un schéma de validation personnalisé pour
@@ -375,7 +375,7 @@ export async function restoreVersion( formData: FormData )
 
 	if ( !result.success )
 	{
-		return false;
+		return "";
 	}
 
 	// On récupère toutes les versions du fichier depuis la base de
@@ -387,13 +387,17 @@ export async function restoreVersion( formData: FormData )
 			userId: session.user.id
 		},
 		include: {
-			versions: true
+			versions: {
+				orderBy: {
+					createdAt: "desc"
+				}
+			}
 		}
 	} );
 
 	if ( !file || file.versions[ 0 ].id === result.data.versionId )
 	{
-		return false;
+		return "";
 	}
 
 	// On vérifie si le dossier de l'utilisateur existe bien.
@@ -406,7 +410,7 @@ export async function restoreVersion( formData: FormData )
 
 	if ( !existsSync( userFolder ) )
 	{
-		return false;
+		return "";
 	}
 
 	// On tente après de récupérer la version à restaurer.
@@ -416,7 +420,7 @@ export async function restoreVersion( formData: FormData )
 
 	if ( !targetVersion )
 	{
-		return false;
+		return "";
 	}
 
 	// On créé également une nouvelle version à partir de la version
@@ -440,14 +444,15 @@ export async function restoreVersion( formData: FormData )
 			join( userFolder, newVersion.id + extension )
 		);
 
-		// On retourne une valeur de succès à la fin du traitement.
-		return true;
+		// On retourne l'identifiant de la nouvelle version à restaurer
+		//  à la fin du traitement.
+		return newVersion.id;
 	}
 	catch
 	{
 		// Si une erreur s'est produite lors de l'opération avec le
-		//  système de fichiers, on retourne enfin une valeur d'échec.
-		return false;
+		//  système de fichiers, on retourne enfin une valeur vide.
+		return "";
 	}
 }
 
