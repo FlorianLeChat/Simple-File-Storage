@@ -46,7 +46,11 @@ async function getFiles(): Promise<FileAttributes[]>
 			userId: session.user.id
 		},
 		include: {
-			versions: true
+			versions: {
+				orderBy: {
+					createdAt: "desc"
+				}
+			}
 		}
 	} );
 
