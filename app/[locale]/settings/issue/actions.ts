@@ -47,29 +47,11 @@ export async function createIssue(
 		};
 	}
 
-	// On vérifie après si un utilisateur existe avec l'adresse e-mail
-	//  de la session.
-	const user = await prisma.user.findUnique( {
-		where: {
-			email: session.user.email as string
-		}
-	} );
-
-	if ( !user )
-	{
-		// Si l'utilisateur n'existe pas, on affiche un message d'erreur
-		//  dans le formulaire.
-		return {
-			success: false,
-			reason: "form.errors.unknown_user"
-		};
-	}
-
 	// Dans le cas contraire, on vérifie également si l'utilisateur
 	//  n'a pas déjà signalé un bogue dans les dernières 24 heures.
 	const issue = await prisma.issue.findFirst( {
 		where: {
-			userId: user.id,
+			userId: session.user.id,
 			createdAt: {
 				gte: new Date( Date.now() - 86400000 )
 			}
@@ -90,7 +72,7 @@ export async function createIssue(
 	await prisma.issue.create( {
 		data: {
 			area: result.data.area,
-			userId: user.id,
+			userId: session.user.id,
 			subject: result.data.subject,
 			severity: result.data.severity,
 			description: result.data.description
