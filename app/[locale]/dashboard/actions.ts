@@ -12,7 +12,7 @@ import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
 import { join, parse } from "path";
 import { existsSync, statSync } from "fs";
-import { rm, mkdir, readdir, link, writeFile, copyFile } from "fs/promises";
+import { rm, mkdir, readdir, link, writeFile } from "fs/promises";
 
 //
 // Changement du statut d'un ou plusieurs fichiers.
@@ -435,7 +435,7 @@ export async function restoreVersion( formData: FormData )
 		//  version dans le système de fichiers.
 		const extension = parse( file.name ).ext;
 
-		copyFile(
+		link(
 			join( userFolder, targetVersion.id + extension ),
 			join( userFolder, newVersion.id + extension )
 		);
