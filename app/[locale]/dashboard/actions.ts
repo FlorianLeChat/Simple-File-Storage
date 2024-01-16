@@ -13,7 +13,7 @@ import { auth } from "@/utilities/next-auth";
 import { existsSync } from "fs";
 import { join, parse } from "path";
 import { getDirectorySize } from "@/utilities/file-system";
-import { rm, mkdir, readdir, link, writeFile } from "fs/promises";
+import { rm, mkdir, readdir, link, writeFile, copyFile } from "fs/promises";
 
 //
 // Changement du statut d'un ou plusieurs fichiers.
@@ -31,13 +31,13 @@ export async function changeFileStatus( formData: FormData )
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
 	const validation = z.object( {
-		uuid: z.array( z.string().uuid() ),
+		fileIds: z.array( z.string().uuid() ),
 		status: z.enum( [ "private", "public" ] )
 	} );
 
 	// On tente alors de valider les données du formulaire.
 	const result = validation.safeParse( {
-		uuid: formData.getAll( "uuid" ),
+		fileIds: formData.getAll( "fileId" ),
 		status: formData.get( "status" )
 	} );
 
@@ -51,11 +51,11 @@ export async function changeFileStatus( formData: FormData )
 		// On met à jour le statut du fichier dans la base de données
 		//  avant de retourner une valeur de succès.
 		await Promise.all(
-			result.data.uuid.map( async ( uuid ) =>
+			result.data.fileIds.map( async ( id ) =>
 			{
 				await prisma.file.updateMany( {
 					where: {
-						id: uuid,
+						id,
 						userId: session.user.id
 					},
 					data: {
@@ -93,13 +93,13 @@ export async function renameFile( formData: FormData )
 	//  Note : les validations Zod du nom doivent correspondre à
 	//   celles utilisées lors du téléversement de fichiers.
 	const validation = z.object( {
-		uuid: z.array( z.string().uuid() ),
+		fileIds: z.array( z.string().uuid() ),
 		name: z.string().min( 1 ).max( 100 )
 	} );
 
 	// On tente alors de valider les données du formulaire.
 	const result = validation.safeParse( {
-		uuid: formData.getAll( "uuid" ),
+		fileIds: formData.getAll( "fileId" ),
 		name: formData.get( "name" )
 	} );
 
@@ -110,13 +110,13 @@ export async function renameFile( formData: FormData )
 
 	// On parcourt l'ensemble des fichiers à renommer.
 	await Promise.all(
-		result.data.uuid.map( async ( uuid ) =>
+		result.data.fileIds.map( async ( id ) =>
 		{
 			// On récupère après les données du fichier depuis
 			//  la base de données.
 			const file = await prisma.file.findUnique( {
 				where: {
-					id: uuid,
+					id,
 					userId: session.user.id
 				}
 			} );
@@ -130,7 +130,7 @@ export async function renameFile( formData: FormData )
 			//  retourner une valeur de succès.
 			await prisma.file.update( {
 				where: {
-					id: uuid,
+					id,
 					userId: session.user.id
 				},
 				data: {
@@ -376,6 +376,110 @@ export async function uploadFiles(
 }
 
 //
+// Restauration d'une version précédente d'un fichier.
+//
+export async function restoreVersion( formData: FormData )
+{
+	// On récupère d'abord la session de l'utilisateur.
+	const session = await auth();
+
+	if ( !session )
+	{
+		return false;
+	}
+
+	// On créé ensuite un schéma de validation personnalisé pour
+	//  les données du formulaire.
+	const validation = z.object( {
+		fileId: z.string().uuid(),
+		versionId: z.string().uuid()
+	} );
+
+	// On tente alors de valider les données du formulaire.
+	const result = validation.safeParse( {
+		fileId: formData.get( "fileId" ),
+		versionId: formData.get( "versionId" )
+	} );
+
+	if ( !result.success )
+	{
+		return false;
+	}
+
+	// On récupère toutes les versions du fichier depuis la base de
+	//  données pour vérifier si la version à restaurer existe bien
+	//  et si elle est différente de la version actuelle.
+	const file = await prisma.file.findUnique( {
+		where: {
+			id: result.data.fileId,
+			userId: session.user.id
+		},
+		include: {
+			versions: true
+		}
+	} );
+
+	if ( !file || file.versions[ 0 ].id === result.data.versionId )
+	{
+		return false;
+	}
+
+	// On vérifie si le dossier de l'utilisateur existe bien.
+	const userFolder = join(
+		process.cwd(),
+		"public/files",
+		session.user.id,
+		result.data.fileId
+	);
+
+	if ( !existsSync( userFolder ) )
+	{
+		return false;
+	}
+
+	// On tente après de récupérer la version à restaurer.
+	const targetVersion = file.versions.find(
+		( version ) => version.id === result.data.versionId
+	);
+
+	if ( !targetVersion )
+	{
+		return false;
+	}
+
+	// On créé également une nouvelle version à partir de la version
+	//  à restaurer.
+	const newVersion = await prisma.version.create( {
+		data: {
+			hash: targetVersion.hash,
+			size: targetVersion.size,
+			fileId: result.data.fileId
+		}
+	} );
+
+	try
+	{
+		// On copie le fichier de la version à restaurer vers la nouvelle
+		//  version dans le système de fichiers.
+		const extension = parse( file.name ).ext;
+
+		copyFile(
+			join( userFolder, targetVersion.id + extension ),
+			join( userFolder, newVersion.id + extension )
+		);
+
+		// On retourne une valeur de succès à la fin du traitement.
+		return true;
+	}
+	catch
+	{
+		// Si une erreur s'est produite lors de l'opération avec le
+		//  système de fichiers, on retourne enfin une valeur d'échec.
+		return false;
+	}
+}
+
+//
 // Suppression irréversible d'un ou plusieurs fichiers.
 //
 export async function deleteFile( formData: FormData )
@@ -391,12 +495,12 @@ export async function deleteFile( formData: FormData )
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
 	const validation = z.object( {
-		uuid: z.array( z.string().uuid() )
+		fileIds: z.array( z.string().uuid() )
 	} );
 
 	// On tente alors de valider les données du formulaire.
 	const result = validation.safeParse( {
-		uuid: formData.getAll( "uuid" )
+		fileIds: formData.getAll( "fileId" )
 	} );
 
 	if ( !result.success )
@@ -410,12 +514,12 @@ export async function deleteFile( formData: FormData )
 		const userFolder = join( process.cwd(), "public/files", session.user.id );
 
 		await Promise.all(
-			result.data.uuid.map( async ( uuid ) =>
+			result.data.fileIds.map( async ( id ) =>
 			{
 				// On supprime après le fichier dans la base de données.
 				const file = await prisma.file.delete( {
 					where: {
-						id: uuid,
+						id,
 						userId: session.user.id
 					}
 				} );
@@ -443,7 +547,7 @@ export async function deleteFile( formData: FormData )
 	}
 	catch
 	{
-		// Si une erreur s'est produite lors de la transaction avec le
+		// Si une erreur s'est produite lors des opérations avec le
 		//  système de fichiers, on retourne enfin une valeur d'échec.
 		return false;
 	}

@@ -4,11 +4,14 @@
 
 "use client";
 
+import { useState } from "react";
 import { formatSize } from "@/utilities/react-table";
-import type { Table, Row } from "@tanstack/react-table";
+import type { Table, Row, TableMeta } from "@tanstack/react-table";
 import type { FileAttributes } from "@/interfaces/File";
 import { Ban, Check, History, ArrowUpRight } from "lucide-react";
 
+import serverAction from "@/utilities/recaptcha";
+import { useToast } from "../../components/ui/use-toast";
 import { Separator } from "../../components/ui/separator";
 import { ScrollArea } from "../../components/ui/scroll-area";
 import { buttonVariants } from "../../components/ui/button";
@@ -21,6 +24,7 @@ import { AlertDialog,
 	AlertDialogHeader,
 	AlertDialogTrigger,
 	AlertDialogDescription } from "../../components/ui/alert-dialog";
+import { restoreVersion } from "../actions";
 
 export default function FileHistory( {
 	table,
@@ -31,10 +35,14 @@ export default function FileHistory( {
 } )
 {
 	// Déclaration des constantes.
-	const file = table.options.meta?.files.filter(
-		( value ) => value.uuid === row.id
-	)[ 0 ];
+	const states = table.options.meta as TableMeta<FileAttributes>;
+	const file = states.files.filter( ( value ) => value.uuid === row.id )[ 0 ];
 	const count = file?.versions.length ?? 0;
+
+	// Déclaration des variables d'état.
+	const loading = states.loading.length !== 0;
+	const { toast } = useToast();
+	const [ open, setOpen ] = useState( false );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -58,12 +66,12 @@ export default function FileHistory( {
 						- file.versions[ Math.min( index + 1, count - 1 ) ].size;
 
 					// Définition de la couleur en fonction de la différence de
-					//  taille (rouge si négatif, vert si positif, gris si nul).
+					//  taille (vert si négatif, rouge si positif, gris si nul).
 					const color =
 						size === 0
 							? "text-gray-600"
-							: ( size < 0 && "text-destructive" )
-								|| "text-green-600";
+							: ( size < 0 && "text-green-600" )
+								|| "text-destructive";
 
 					// Mise en forme de la différence de taille.
 					const offset =
@@ -77,6 +85,7 @@ export default function FileHistory( {
 							<h3>
 								Version du {version.date.toLocaleString()}{" "}
 								{index === 0 ? "(actuelle)" : ""}
+								{index === count - 1 ? "(initiale)" : ""}
 							</h3>
 
 							{/* Taille et différence de la révision */}
@@ -105,9 +114,9 @@ export default function FileHistory( {
 									Accéder
 								</a>
 
-								<AlertDialog>
+								<AlertDialog open={open} onOpenChange={setOpen}>
 									<AlertDialogTrigger
-										disabled={index === 0}
+										disabled={index === 0 || loading}
 										className={buttonVariants( {
 											variant: "secondary"
 										} )}
@@ -139,12 +148,64 @@ export default function FileHistory( {
 										</AlertDialogHeader>
 
 										<AlertDialogFooter>
-											<AlertDialogCancel>
+											<AlertDialogCancel
+												disabled={loading}
+											>
 												<Ban className="mr-2 h-4 w-4" />
 												Annuler
 											</AlertDialogCancel>
 
-											<AlertDialogAction>
+											<AlertDialogAction
+												onClick={async () =>
+												{
+													// Fermeture du menu des actions.
+													setOpen( false );
+
+													// Activation de l'état de chargement.
+													states.setLoading( [
+														"history"
+													] );
+
+													// Création d'un formulaire de données.
+													const form = new FormData();
+													form.append(
+														"fileId",
+														file.uuid
+													);
+													form.append(
+														"versionId",
+														version.uuid
+													);
+
+													// Envoi de la requête au serveur et
+													//  attente de la réponse.
+													const state =
+														( await serverAction(
+															restoreVersion,
+															form
+														) ) as boolean;
+
+													if ( state )
+													{
+														//
+													}
+
+													// Fin de l'état de chargement.
+													states.setLoading( [] );
+
+													// Envoi d'une notification.
+													toast( {
+														title: "form.info.action_success",
+														variant: state
+															? "default"
+															: "destructive",
+														description: state
+															? "form.info.version_restored"
+															: "form.errors.server_error"
+													} );
+												}}
+												disabled={loading}
+											>
 												<Check className="mr-2 h-4 w-4" />
 												Confirmer
 											</AlertDialogAction>
