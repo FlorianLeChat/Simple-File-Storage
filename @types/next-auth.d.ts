@@ -21,7 +21,7 @@ declare module "@auth/core/adapters" {
 		id: string;
 		email: string;
 		password: string;
-		emailVerified: Date | null;
+		emailVerified?: Date;
 
 		// Propriétés personnalisées.
 		role: string;

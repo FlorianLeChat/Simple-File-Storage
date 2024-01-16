@@ -45,33 +45,21 @@ export async function changeFileStatus( formData: FormData )
 		return false;
 	}
 
-	try
-	{
-		// On met à jour le statut du fichier dans la base de données
-		//  avant de retourner une valeur de succès.
-		await Promise.all(
-			result.data.fileIds.map( async ( id ) =>
-			{
-				await prisma.file.updateMany( {
-					where: {
-						id,
-						userId: session.user.id
-					},
-					data: {
-						status: result.data.status
-					}
-				} );
-			} )
-		);
+	// On met à jour le statut du fichier dans la base de données
+	//  avant de retourner une valeur de succès.
+	await prisma.file.updateMany( {
+		where: {
+			id: {
+				in: result.data.fileIds
+			},
+			userId: session.user.id
+		},
+		data: {
+			status: result.data.status
+		}
+	} );
 
-		return true;
-	}
-	catch
-	{
-		// En cas d'erreur lors de la transaction avec la base de données,
-		//  on retourne enfin une valeur d'échec.
-		return false;
-	}
+	return true;
 }
 
 //
@@ -107,37 +95,35 @@ export async function renameFile( formData: FormData )
 		return false;
 	}
 
-	// On parcourt l'ensemble des fichiers à renommer.
-	await Promise.all(
-		result.data.fileIds.map( async ( id ) =>
-		{
-			// On récupère après les données du fichier depuis
-			//  la base de données.
-			const file = await prisma.file.findUnique( {
-				where: {
-					id,
-					userId: session.user.id
-				}
-			} );
+	// On récupère après les données du premier fichier dans
+	//  la base de données qui doit être renommé.
+	const file = await prisma.file.findFirst( {
+		where: {
+			id: {
+				in: result.data.fileIds
+			},
+			userId: session.user.id
+		}
+	} );
 
-			if ( !file )
-			{
-				return;
-			}
+	if ( !file )
+	{
+		return false;
+	}
 
-			// On renomme le fichier dans la base de données avant de
-			//  retourner une valeur de succès.
-			await prisma.file.update( {
-				where: {
-					id,
-					userId: session.user.id
-				},
-				data: {
-					name: result.data.name + parse( file.name ).ext
-				}
-			} );
-		} )
-	);
+	// On renomme alors les fichiers dans la base de données
+	//  avant de retourner une valeur de succès.
+	await prisma.file.updateMany( {
+		where: {
+			id: {
+				in: result.data.fileIds
+			},
+			userId: session.user.id
+		},
+		data: {
+			name: result.data.name + parse( file.name ).ext
+		}
+	} );
 
 	// On retourne enfin une valeur de succès à la fin du traitement.
 	return true;
@@ -178,24 +164,6 @@ export async function uploadFiles(
 		return {
 			success: false,
 			reason: `zod.errors.${ code === "custom" ? message : code }`
-		};
-	}
-
-	// On vérifie si un utilisateur existe avec l'adresse électronique
-	//  de la session.
-	const user = await prisma.user.findUnique( {
-		where: {
-			email: session.user.email as string
-		}
-	} );
-
-	if ( !user )
-	{
-		// Si l'utilisateur n'existe pas, on affiche un message d'erreur
-		//  dans le formulaire.
-		return {
-			success: false,
-			reason: "form.errors.unknown_user"
 		};
 	}
 
@@ -255,7 +223,7 @@ export async function uploadFiles(
 			const exists = await prisma.file.findFirst( {
 				where: {
 					name: file.name,
-					userId: user.id
+					userId: session.user.id
 				}
 			} );
 
@@ -274,7 +242,7 @@ export async function uploadFiles(
 					await prisma.file.create( {
 						data: {
 							name: file.name,
-							userId: user.id,
+							userId: session.user.id,
 							status: "private"
 						}
 					} )
@@ -512,6 +480,16 @@ export async function deleteFile( formData: FormData )
 		return false;
 	}
 
+	// On supprime après les fichiers dans la base de données.
+	await prisma.file.deleteMany( {
+		where: {
+			id: {
+				in: result.data.fileIds
+			},
+			userId: session.user.id
+		}
+	} );
+
 	try
 	{
 		// On parcourt l'ensemble des fichiers à supprimer.
@@ -520,21 +498,13 @@ export async function deleteFile( formData: FormData )
 		await Promise.all(
 			result.data.fileIds.map( async ( id ) =>
 			{
-				// On supprime après le fichier dans la base de données.
-				const file = await prisma.file.delete( {
-					where: {
-						id,
-						userId: session.user.id
-					}
-				} );
-
 				// On supprime le fichier et le dossier associé dans le
 				//  système de fichiers.
 				if ( existsSync( userFolder ) )
 				{
 					// On supprime le dossier où se trouve les versions du
 					//  fichier.
-					const fileFolder = join( userFolder, file.id );
+					const fileFolder = join( userFolder, id );
 
 					if ( existsSync( fileFolder ) )
 					{
