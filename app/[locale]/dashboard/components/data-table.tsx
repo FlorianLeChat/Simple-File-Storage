@@ -83,7 +83,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 	// Affichage du rendu HTML du composant.
 	return (
 		<SessionProvider
-			basePath={`${ process.env.__NEXT_ROUTER_BASEPATH }/api/auth`}
+			basePath={`${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`}
 		>
 			{/* Filtrage et tri des données */}
 			<div className="flex items-center gap-2 py-4">
