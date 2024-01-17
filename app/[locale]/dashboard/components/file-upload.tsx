@@ -88,6 +88,11 @@ export default function FileUpload( {
 		//  l'état associé.
 		const { success, reason, data } = uploadState;
 
+		if ( reason === "" )
+		{
+			return;
+		}
+
 		// On vérifie également si le serveur a renvoyé la liste des
 		//  fichiers téléversés avec succès.
 		if ( data && data.length > 0 )
@@ -154,23 +159,20 @@ export default function FileUpload( {
 			setOpen( false );
 		}
 
-		// On affiche enfin le message correspondant si une raison
-		//  a été fournie avant d'indiquer que le traitement est terminé.
-		if ( reason !== "" )
-		{
-			uploadState.reason = "";
-			uploadState.data = undefined;
+		// On affiche enfin le message correspondant avant
+		//  d'indiquer que le traitement est terminé.
+		uploadState.reason = "";
+		uploadState.data = undefined;
 
-			states.setLoading( [] );
+		states.setLoading( [] );
 
-			toast( {
-				title: success
-					? "form.info.upload_success"
-					: "form.errors.upload_failed",
-				variant: success ? "default" : "destructive",
-				description: reason
-			} );
-		}
+		toast( {
+			title: success
+				? "form.info.upload_success"
+				: "form.errors.upload_failed",
+			variant: success ? "default" : "destructive",
+			description: reason
+		} );
 	}, [ form, states, uploadState, toast ] );
 
 	// Affichage du rendu HTML du composant.
