@@ -8,6 +8,7 @@ import prisma from "@/utilities/prisma";
 import schema from "@/schemas/profile";
 import { join } from "path";
 import { auth } from "@/utilities/next-auth";
+import { fileTypeFromBuffer } from "file-type";
 import { mkdir, readdir, rm, writeFile } from "fs/promises";
 
 //
@@ -49,6 +50,42 @@ export async function updateProfile(
 		};
 	}
 
+	// On récupère le tampon du fichier téléversé pour vérifier son type
+	//  au travers des nombres magiques.
+	const info = await fileTypeFromBuffer(
+		new Uint8Array( await result.data.avatar.arrayBuffer() )
+	);
+
+	if ( !info )
+	{
+		// Si les informations du fichier ne sont pas disponibles, on
+		//  indique que le type de fichier est incorrect ou qu'il contient
+		//  des données textuelles.
+		return {
+			success: false,
+			reason: "zod.errors.wrong_file_type"
+		};
+	}
+
+	// On parcourt l'ensemble des types d'avatars acceptés pour vérifier
+	//  si le type du fichier téléversé correspond à l'un d'entre eux.
+	const types = process.env.NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES?.split( "," );
+	const state = types?.some( ( type ) =>
+	{
+		const acceptedType = type.trim().slice( 0, -1 );
+		return info.mime.startsWith( acceptedType );
+	} );
+
+	if ( !state )
+	{
+		// Si le type du fichier ne correspond à aucun type d'avatar
+		//  accepté, on indique que le type de fichier est incorrect.
+		return {
+			success: false,
+			reason: "zod.errors.wrong_file_type"
+		};
+	}
+
 	// On vérifie après si l'adresse électronique fournie est différente
 	//  de celle enregistrée dans la base de données.
 	if ( session.user.email !== result.data.email )
@@ -77,7 +114,6 @@ export async function updateProfile(
 		{
 			// Si un fichier d'avatar a bien été fourni, on créé le
 			//  dossier d'enregistrement des avatars s'il n'existe pas.
-			const extension = avatar.type.split( "/" )[ 1 ];
 			const folderPath = join( process.cwd(), "public/avatars" );
 
 			await mkdir( folderPath, { recursive: true } );
@@ -94,7 +130,7 @@ export async function updateProfile(
 
 			// On écrit alors le nouvel avatar dans le système de fichiers.
 			await writeFile(
-				join( folderPath, `${ session.user.id }.${ extension }` ),
+				join( folderPath, `${ session.user.id }.${ info.ext }` ),
 				new Uint8Array( await avatar.arrayBuffer() )
 			);
 		}

@@ -11,6 +11,7 @@ import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
 import { join, parse } from "path";
+import { fileTypeFromBuffer } from "file-type";
 import { existsSync, statSync } from "fs";
 import { rm, mkdir, readdir, link, writeFile } from "fs/promises";
 
@@ -197,11 +198,35 @@ export async function uploadFiles(
 		}
 
 		// On téléverse chaque fichier dans le système de fichiers.
+		const types = process.env.NEXT_PUBLIC_ACCEPTED_FILE_TYPES?.split( "," );
 		const data = result.data.upload.map( async ( file ) =>
 		{
+			// On tente de récupérer le tampon du fichier téléversé pour vérifier
+			//  son type au travers des nombres magiques.
+			const buffer = new Uint8Array( await file.arrayBuffer() );
+			const info = await fileTypeFromBuffer( buffer );
+
+			if ( info )
+			{
+				// Si les informations du fichier sont disponibles, on vérifie
+				//  si le type du fichier correspond à l'un des types de fichiers
+				//  acceptés.
+				const state = types?.some( ( type ) =>
+				{
+					const acceptedType = type.trim().slice( 0, -1 );
+					return info.mime.startsWith( acceptedType );
+				} );
+
+				if ( !state )
+				{
+					// Si le type du fichier ne correspond à aucun type de fichier
+					//  accepté, on retourne une liste vide.
+					return [];
+				}
+			}
+
 			// On génère une chaîne de hachage unique représentant les
 			//  données du fichier.
-			const buffer = new Uint8Array( await file.arrayBuffer() );
 			const hash = crypto.createHash( "sha256" );
 			hash.update( buffer );
 
@@ -261,6 +286,7 @@ export async function uploadFiles(
 
 			// Une fois la version créée, on créé le dossier du fichier
 			//  dans le système de fichiers.
+			const extension = info?.ext ?? parse( file.name ).ext;
 			const fileFolder = join( userFolder, fileId );
 
 			await mkdir( fileFolder, { recursive: true } );
@@ -278,7 +304,7 @@ export async function uploadFiles(
 						duplication.fileId,
 						duplication.id + parse( duplication.file.name ).ext
 					),
-					join( fileFolder, `${ versionId + parse( file.name ).ext }` )
+					join( fileFolder, `${ versionId + extension }` )
 				);
 			}
 			else
@@ -286,7 +312,7 @@ export async function uploadFiles(
 				// Dans le cas contraire, on créé le fichier dans le système
 				//  de fichiers comme d'habitude.
 				await writeFile(
-					join( fileFolder, `${ versionId + parse( file.name ).ext }` ),
+					join( fileFolder, `${ versionId + extension }` ),
 					buffer
 				);
 			}
