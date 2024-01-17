@@ -4,12 +4,15 @@
 
 "use client";
 
+import { z } from "zod";
+import schema from "@/schemas/file-upload";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import serverAction from "@/utilities/recaptcha";
 import { useSession } from "next-auth/react";
 import { formatSize } from "@/utilities/react-table";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { type FileAttributes } from "@/interfaces/File";
 import type { Table, TableMeta } from "@tanstack/react-table";
@@ -44,6 +47,12 @@ export default function FileUpload( {
 	// Déclaration des constantes.
 	const states = table.options.meta as TableMeta<FileAttributes>;
 	const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA ?? 0 );
+	const fileSchema = schema.omit( { upload: true } ).extend( {
+		// Modification de la vérification du fichier pour prendre en compte
+		//  la différence entre les données côté client et celles envoyées
+		//  côté serveur.
+		upload: z.string()
+	} );
 
 	// Déclaration des variables d'état.
 	const session = useSession();
@@ -58,7 +67,8 @@ export default function FileUpload( {
 
 	// Déclaration du formulaire.
 	const percent = Number( ( ( states.quota / maxQuota ) * 100 ).toFixed( 2 ) );
-	const form = useForm( {
+	const form = useForm<z.infer<typeof fileSchema>>( {
+		resolver: zodResolver( fileSchema ),
 		defaultValues: {
 			upload: ""
 		}
@@ -213,8 +223,22 @@ export default function FileUpload( {
 
 				<Form {...form}>
 					<form
-						action={( formData ) => serverAction( uploadAction, formData )}
-						onSubmit={() => states.setLoading( [ "modal" ] )}
+						action={async ( formData: FormData ) =>
+						{
+							// Vérifications côté client.
+							const state = await form.trigger();
+
+							if ( !state )
+							{
+								return false;
+							}
+
+							// Activation de l'état de chargement.
+							states.setLoading( [ "modal" ] );
+
+							// Exécution de l'action côté serveur.
+							return serverAction( uploadAction, formData );
+						}}
 						className="space-y-6"
 					>
 						<FormField

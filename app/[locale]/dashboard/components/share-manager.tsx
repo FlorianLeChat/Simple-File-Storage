@@ -317,7 +317,6 @@ export default function ShareManager()
 					value={search}
 					onChange={( event ) => setSearch( event.target.value )}
 					disabled={isLoading}
-					minLength={1}
 					maxLength={50}
 					className="mt-3"
 					spellCheck="false"
