@@ -50,42 +50,6 @@ export async function updateProfile(
 		};
 	}
 
-	// On récupère le tampon du fichier téléversé pour vérifier son type
-	//  au travers des nombres magiques.
-	const info = await fileTypeFromBuffer(
-		new Uint8Array( await result.data.avatar.arrayBuffer() )
-	);
-
-	if ( !info )
-	{
-		// Si les informations du fichier ne sont pas disponibles, on
-		//  indique que le type de fichier est incorrect ou qu'il contient
-		//  des données textuelles.
-		return {
-			success: false,
-			reason: "zod.errors.wrong_file_type"
-		};
-	}
-
-	// On parcourt l'ensemble des types d'avatars acceptés pour vérifier
-	//  si le type du fichier téléversé correspond à l'un d'entre eux.
-	const types = process.env.NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES?.split( "," );
-	const state = types?.some( ( type ) =>
-	{
-		const acceptedType = type.trim().slice( 0, -1 );
-		return info.mime.startsWith( acceptedType );
-	} );
-
-	if ( !state )
-	{
-		// Si le type du fichier ne correspond à aucun type d'avatar
-		//  accepté, on indique que le type de fichier est incorrect.
-		return {
-			success: false,
-			reason: "zod.errors.wrong_file_type"
-		};
-	}
-
 	// On vérifie après si l'adresse électronique fournie est différente
 	//  de celle enregistrée dans la base de données.
 	if ( session.user.email !== result.data.email )
@@ -110,10 +74,45 @@ export async function updateProfile(
 		&& avatar.type !== "application/octet-stream"
 	)
 	{
+		// Si c'est le cas, on récupère le tampon de l'avatar téléversé
+		//   pour vérifier son type au travers des nombres magiques.
+		const info = await fileTypeFromBuffer(
+			new Uint8Array( await result.data.avatar.arrayBuffer() )
+		);
+
+		if ( !info )
+		{
+			// Si les informations de l'avatar ne sont pas disponibles,
+			//  on indique que le type de fichier est incorrect ou qu'il
+			//  contient des données textuelles.
+			return {
+				success: false,
+				reason: "zod.errors.wrong_file_type"
+			};
+		}
+
+		// On parcourt l'ensemble des types d'avatars acceptés pour
+		//  vérifier si le type de l'avatar correspond à l'un d'entre eux.
+		const types = process.env.NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES?.split( "," );
+		const state = types?.some( ( type ) =>
+		{
+			const acceptedType = type.trim().slice( 0, -1 );
+			return info.mime.startsWith( acceptedType );
+		} );
+
+		if ( !state )
+		{
+			// Si le type du fichier ne correspond à aucun type d'avatar
+			//  accepté, on indique que le type de fichier est incorrect.
+			return {
+				success: false,
+				reason: "zod.errors.wrong_file_type"
+			};
+		}
+
 		try
 		{
-			// Si un fichier d'avatar a bien été fourni, on créé le
-			//  dossier d'enregistrement des avatars s'il n'existe pas.
+			// On créé le dossier des avatar s'il n'existe pas.
 			const folderPath = join( process.cwd(), "public/avatars" );
 
 			await mkdir( folderPath, { recursive: true } );
