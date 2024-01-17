@@ -56,7 +56,7 @@ export default async function middleware( request: NextRequest )
 	{
 		const data = await fetch(
 			new URL(
-				`${ process.env.__NEXT_ROUTER_BASEPATH }/api/session`,
+				`${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/session`,
 				request.url
 			),
 			{ headers: request.headers }
@@ -134,7 +134,7 @@ export default async function middleware( request: NextRequest )
 export const config = {
 	matcher: [
 		"/",
-		"/((?!api/admin|api/auth|api/file|api/session|assets|locales|_next|_vercel|manifest.webmanifest).*)"
+		"/((?!api/admin|api/user|api/file|assets|locales|_next|_vercel|manifest.webmanifest).*)"
 	]
 };
 
