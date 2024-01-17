@@ -5,10 +5,12 @@
 "use client";
 
 import Link from "next/link";
+import { z } from "zod";
 import schema from "@/schemas/authentication";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -52,7 +54,8 @@ export default function Authentification()
 	const [ passwordType, setPasswordType ] = useState( "password" );
 
 	// Déclaration du formulaire.
-	const form = useForm( {
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema ),
 		defaultValues: {
 			email: "",
 			password: "",
@@ -137,8 +140,22 @@ export default function Authentification()
 
 				<Form {...form}>
 					<form
-						action={( formData ) => serverAction( signUpAction, formData )}
-						onSubmit={() => setLoading( true )}
+						action={async ( formData: FormData ) =>
+						{
+							// Vérifications côté client.
+							const state = await form.trigger();
+
+							if ( !state )
+							{
+								return false;
+							}
+
+							// Activation de l'état de chargement.
+							setLoading( true );
+
+							// Exécution de l'action côté serveur.
+							return serverAction( signUpAction, formData );
+						}}
 						className="space-y-6"
 					>
 						{/* Adresse électronique */}
@@ -156,10 +173,6 @@ export default function Authentification()
 											{...field}
 											type="email"
 											disabled={loading}
-											minLength={
-												schema.shape.email
-													.minLength as number
-											}
 											maxLength={
 												schema.shape.email
 													.maxLength as number
@@ -233,10 +246,6 @@ export default function Authentification()
 											{...field}
 											type="email"
 											disabled={loading}
-											minLength={
-												schema.shape.email
-													.minLength as number
-											}
 											maxLength={
 												schema.shape.email
 													.maxLength as number
@@ -285,11 +294,6 @@ export default function Authentification()
 															? "opacity-25"
 															: ""
 													}`}
-													minLength={
-														schema.shape.password
-															._def.options[ 0 ]
-															.minLength as number
-													}
 													maxLength={
 														schema.shape.password
 															._def.options[ 0 ]
@@ -424,8 +428,22 @@ export default function Authentification()
 
 			{/* Fournisseurs d'authentification externes */}
 			<form
-				action={( formData ) => serverAction( signInAction, formData )}
-				onSubmit={() => setLoading( true )}
+				action={async ( formData: FormData ) =>
+				{
+					// Vérifications côté client.
+					const state = await form.trigger();
+
+					if ( !state )
+					{
+						return false;
+					}
+
+					// Activation de l'état de chargement.
+					setLoading( true );
+
+					// Exécution de l'action côté serveur.
+					return serverAction( signInAction, formData );
+				}}
 			>
 				<input type="hidden" name="provider" value="google" />
 

@@ -4,6 +4,7 @@
 
 "use client";
 
+import * as z from "zod";
 import schema from "@/schemas/issue";
 import { List,
 	Send,
@@ -13,6 +14,7 @@ import { List,
 	ShieldAlert } from "lucide-react";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { useState, useEffect } from "react";
 
@@ -45,7 +47,8 @@ export default function Account()
 	} );
 
 	// Déclaration du formulaire.
-	const form = useForm( {
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema ),
 		defaultValues: {
 			area: "account",
 			subject: "",
@@ -106,8 +109,22 @@ export default function Account()
 	return (
 		<Form {...form}>
 			<form
-				action={( formData ) => serverAction( updateAction, formData )}
-				onSubmit={() => setLoading( true )}
+				action={async ( formData: FormData ) =>
+				{
+					// Vérifications côté client.
+					const state = await form.trigger();
+
+					if ( !state )
+					{
+						return false;
+					}
+
+					// Activation de l'état de chargement.
+					setLoading( true );
+
+					// Exécution de l'action côté serveur.
+					return serverAction( updateAction, formData );
+				}}
 				className="space-y-8"
 			>
 				<div className="flex gap-4 max-sm:flex-col">
@@ -241,9 +258,6 @@ export default function Account()
 									{...field}
 									id="subject"
 									disabled={loading}
-									minLength={
-										schema.shape.subject.minLength as number
-									}
 									maxLength={
 										schema.shape.subject.maxLength as number
 									}
@@ -276,10 +290,6 @@ export default function Account()
 									{...field}
 									id="description"
 									disabled={loading}
-									minLength={
-										schema.shape.description
-											.minLength as number
-									}
 									maxLength={
 										schema.shape.description
 											.maxLength as number

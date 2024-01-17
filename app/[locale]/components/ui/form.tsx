@@ -175,7 +175,7 @@ const FormMessage = forwardRef<
 >( ( { className, children, ...props }, ref ) =>
 {
 	const { error, formMessageId } = useFormField();
-	const body = error ? String( error?.message ) : children;
+	const body = error ? String( error?.type ) : children;
 
 	if ( !body )
 	{

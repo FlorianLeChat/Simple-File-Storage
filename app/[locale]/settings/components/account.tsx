@@ -4,10 +4,12 @@
 
 "use client";
 
+import * as z from "zod";
 import schema from "@/schemas/account";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useLocale } from "next-intl";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
 import { useState, useEffect } from "react";
@@ -56,10 +58,11 @@ export default function Account( { session }: { session: Session } )
 	const [ passwordType, setPasswordType ] = useState( "text" );
 
 	// Déclaration du formulaire.
-	const form = useForm( {
+	const form = useForm<z.infer<typeof schema>>( {
+		resolver: zodResolver( schema ),
 		defaultValues: {
 			username: session.user.name ?? "",
-			language: useLocale(),
+			language: useLocale() as "en" | "fr",
 			password: ""
 		}
 	} );
@@ -134,8 +137,22 @@ export default function Account( { session }: { session: Session } )
 	return (
 		<Form {...form}>
 			<form
-				action={( formData ) => serverAction( updateAction, formData )}
-				onSubmit={() => setLoading( true )}
+				action={async ( formData: FormData ) =>
+				{
+					// Vérifications côté client.
+					const state = await form.trigger();
+
+					if ( !state )
+					{
+						return false;
+					}
+
+					// Activation de l'état de chargement.
+					setLoading( true );
+
+					// Exécution de l'action côté serveur.
+					return serverAction( updateAction, formData );
+				}}
 				className="space-y-8"
 			>
 				{/* Nom d'affichage */}
@@ -152,10 +169,6 @@ export default function Account( { session }: { session: Session } )
 							<FormControl>
 								<Input
 									{...field}
-									minLength={
-										schema.shape.username
-											.minLength as number
-									}
 									maxLength={
 										schema.shape.username
 											.maxLength as number
@@ -250,11 +263,6 @@ export default function Account( { session }: { session: Session } )
 											{...field}
 											type={passwordType}
 											onKeyDown={() => setPasswordType( "password" )}
-											minLength={
-												schema.shape.password._def
-													.options[ 0 ]
-													.minLength as number
-											}
 											maxLength={
 												schema.shape.password._def
 													.options[ 0 ]
