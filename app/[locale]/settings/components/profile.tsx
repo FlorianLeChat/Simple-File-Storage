@@ -4,6 +4,7 @@
 
 "use client";
 
+import * as z from "zod";
 import schema from "@/schemas/profile";
 import { AtSign,
 	Loader2,
@@ -12,6 +13,7 @@ import { AtSign,
 	Fingerprint } from "lucide-react";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
 import { useState, useEffect } from "react";
@@ -32,6 +34,12 @@ import { updateProfile } from "../profile/actions";
 export default function Profile( { session }: { session: Session } )
 {
 	// Déclaration des constantes.
+	const emailSchema = schema.omit( { avatar: true } ).extend( {
+		// Modification de la vérification de l'avatar pour prendre en compte
+		//  la différence entre les données côté client et celles envoyées
+		//  côté serveur.
+		avatar: z.string().optional()
+	} );
 	const maxAvatarSize = Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE ?? 0 );
 
 	// Déclaration des variables d'état.
@@ -43,7 +51,8 @@ export default function Profile( { session }: { session: Session } )
 	} );
 
 	// Déclaration du formulaire.
-	const form = useForm( {
+	const form = useForm<z.infer<typeof emailSchema>>( {
+		resolver: zodResolver( emailSchema ),
 		defaultValues: {
 			email: session.user.email ?? "",
 			avatar: ""
@@ -102,8 +111,22 @@ export default function Profile( { session }: { session: Session } )
 	return (
 		<Form {...form}>
 			<form
-				action={( formData ) => serverAction( updateAction, formData )}
-				onSubmit={() => setLoading( true )}
+				action={async ( formData: FormData ) =>
+				{
+					// Vérifications côté client.
+					const state = await form.trigger();
+
+					if ( !state )
+					{
+						return false;
+					}
+
+					// Activation de l'état de chargement.
+					setLoading( true );
+
+					// Exécution de l'action côté serveur.
+					return serverAction( updateAction, formData );
+				}}
 				className="space-y-8"
 			>
 				{/* Nom d'utilisateur */}
@@ -147,9 +170,6 @@ export default function Profile( { session }: { session: Session } )
 								<Input
 									{...field}
 									disabled={loading}
-									minLength={
-										schema.shape.email.minLength as number
-									}
 									maxLength={
 										schema.shape.email.maxLength as number
 									}
