@@ -1,11 +1,19 @@
 //
 // Mécanisme de routage pour les pages de l'application.
 //
+import { Prisma } from "@prisma/client";
 import createIntlMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
 import { getLanguages } from "./utilities/i18n";
 import type { RecaptchaResponse } from "./interfaces/Recaptcha";
+
+// Typage des fichiers provenant de la base de données.
+type FileWithVersions = Prisma.FileGetPayload<{
+	include: {
+		versions: true;
+	};
+}>;
 
 export default async function middleware( request: NextRequest )
 {
@@ -26,7 +34,7 @@ export default async function middleware( request: NextRequest )
 			//  du fichier à partir de son identifiant.
 			const data = await fetch(
 				new URL(
-					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/file/${ identifier }/${ request.nextUrl.search }`,
+					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/files/${ identifier }/${ request.nextUrl.search }`,
 					request.url
 				),
 				{ headers: request.headers }
@@ -35,8 +43,19 @@ export default async function middleware( request: NextRequest )
 			if ( data.ok )
 			{
 				// Si l'API semble avoir traitée la requête avec succès,
-				//  on retourne une redirection vers le fichier.
-				return NextResponse.rewrite( await data.text() );
+				//  on génère une URL de redirection vers le fichier.
+				const file = ( await data.json() ) as FileWithVersions;
+				const extension = file.name
+					.replace( /^.*[/\\]/, "" )
+					.replace( /^.*\./, "" )
+					.toLowerCase();
+
+				return NextResponse.rewrite(
+					new URL(
+						`${ process.env.__NEXT_ROUTER_BASEPATH }/files/${ file.userId }/${ file.id }/${ file.versions[ 0 ].id }.${ extension }`,
+						request.url
+					).href
+				);
 			}
 		}
 	}
@@ -134,7 +153,7 @@ export default async function middleware( request: NextRequest )
 export const config = {
 	matcher: [
 		"/",
-		"/((?!api/admin|api/user|api/file|assets|locales|_next|_vercel|manifest.webmanifest).*)"
+		"/((?!api/admin|api/user|api/files|assets|locales|_next|_vercel|manifest.webmanifest).*)"
 	]
 };
 
