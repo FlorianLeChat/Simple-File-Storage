@@ -41,7 +41,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 				//  des avatars utilisateurs.
 				const avatars = join( process.cwd(), "public/avatars" );
 
-				if ( !existsSync( avatars ) )
+				if ( existsSync( avatars ) )
 				{
 					// Vérification de l'existence d'un avatar personnalisé.
 					const avatar = ( await readdir( avatars ) ).find( ( file ) => file.includes( user.id ) );
