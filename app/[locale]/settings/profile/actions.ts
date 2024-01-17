@@ -8,7 +8,7 @@ import prisma from "@/utilities/prisma";
 import schema from "@/schemas/profile";
 import { join } from "path";
 import { auth } from "@/utilities/next-auth";
-import { mkdir, writeFile } from "fs/promises";
+import { mkdir, readdir, rm, writeFile } from "fs/promises";
 
 //
 // Mise à jour des informations du profil utilisateur.
@@ -75,22 +75,30 @@ export async function updateProfile(
 	{
 		try
 		{
-			// Si un fichier d'avatar a bien été fourni, on le met à jour
-			//  dans le système de fichiers.
+			// Si un fichier d'avatar a bien été fourni, on créé le
+			//  dossier d'enregistrement des avatars s'il n'existe pas.
 			const extension = avatar.type.split( "/" )[ 1 ];
 			const folderPath = join( process.cwd(), "public/avatars" );
-			const filePath = join(
-				folderPath,
-				`${ session.user.id }.${ extension }`
-			);
 
 			await mkdir( folderPath, { recursive: true } );
+
+			// On supprime l'ancien avatar de l'utilisateur s'il existe
+			//  dans le système de fichiers.
+			const avatars = await readdir( folderPath );
+			const savedAvatar = avatars.find( ( file ) => file.includes( session.user.id ) );
+
+			if ( savedAvatar )
+			{
+				await rm( join( folderPath, savedAvatar ), { force: true } );
+			}
+
+			// On écrit alors le nouvel avatar dans le système de fichiers.
 			await writeFile(
-				filePath,
+				join( folderPath, `${ session.user.id }.${ extension }` ),
 				new Uint8Array( await avatar.arrayBuffer() )
 			);
 		}
-		catch ( error )
+		catch
 		{
 			// Si une erreur survient lors de la mise à jour de l'avatar,
 			//  on affiche un message d'erreur générique.
