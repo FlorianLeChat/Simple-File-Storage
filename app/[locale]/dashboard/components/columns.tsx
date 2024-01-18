@@ -2,9 +2,6 @@
 // Composant des colonnes d'un tableau de données.
 //  Source : https://ui.shadcn.com/docs/components/data-table
 //
-
-"use client";
-
 import { ColumnDef } from "@tanstack/react-table";
 import { formatSize } from "@/utilities/react-table";
 import { FileAttributes } from "@/interfaces/File";
