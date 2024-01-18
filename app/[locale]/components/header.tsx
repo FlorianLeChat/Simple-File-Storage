@@ -6,7 +6,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Bell, User, KeyRound, Palette, Bug } from "lucide-react";
+import { Bell, User, KeyRound, Palette, Cctv, Bug } from "lucide-react";
 
 import GitHubDark from "../../../public/assets/images/github-dark.png";
 import GitHubLight from "../../../public/assets/images/github-light.png";
@@ -45,6 +45,17 @@ export const routes: {
 		href: "/settings/account",
 		description:
 			"Modification des informations de votre compte utilisateur."
+	},
+	{
+		title: (
+			<>
+				<Cctv className="mr-2 inline" />
+				Confidentialité
+			</>
+		),
+		href: "/settings/privacy",
+		description:
+			"Gestion des données personnelles collectées par le site Internet."
 	},
 	{
 		title: (
