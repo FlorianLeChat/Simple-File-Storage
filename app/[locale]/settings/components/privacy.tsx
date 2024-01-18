@@ -4,13 +4,13 @@
 
 "use client";
 
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useFormState } from "react-dom";
 import { useState, useEffect } from "react";
 import { Files, KeyRound, Scale, Trash, Loader2 } from "lucide-react";
 
-import Link from "next/link";
 import { Label } from "../../components/ui/label";
 import { Switch } from "../../components/ui/switch";
 import { Button } from "../../components/ui/button";
@@ -21,14 +21,14 @@ import { Form,
 	FormField,
 	FormControl,
 	FormDescription } from "../../components/ui/form";
-import { createIssue } from "../issue/actions";
+import { deleteUserData } from "../privacy/actions";
 
 export default function Privacy()
 {
 	// Déclaration des variables d'état.
 	const { toast } = useToast();
 	const [ loading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( createIssue, {
+	const [ deleteState, deleteAction ] = useFormState( deleteUserData, {
 		success: true,
 		reason: ""
 	} );
@@ -46,14 +46,14 @@ export default function Privacy()
 	{
 		// On vérifie d'abord si la variable d'état liée à l'action
 		//  du formulaire est encore définie.
-		if ( !updateState )
+		if ( !deleteState )
 		{
 			// Si ce n'est pas le cas, quelque chose s'est mal passé au
 			//  niveau du serveur.
 			setLoading( false );
 
 			toast( {
-				title: "form.errors.update_failed",
+				title: "form.errors.deletion_failed",
 				variant: "destructive",
 				description: "form.errors.server_error"
 			} );
@@ -63,7 +63,7 @@ export default function Privacy()
 
 		// On récupère également une possible raison d'échec ainsi que
 		//  l'état associé.
-		const { success, reason } = updateState;
+		const { success, reason } = deleteState;
 
 		// On informe ensuite que le traitement est terminé.
 		setLoading( false );
@@ -87,7 +87,7 @@ export default function Privacy()
 				description: reason
 			} );
 		}
-	}, [ toast, form, updateState ] );
+	}, [ toast, form, deleteState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -107,7 +107,7 @@ export default function Privacy()
 					setLoading( true );
 
 					// Exécution de l'action côté serveur.
-					return serverAction( updateAction, formData );
+					return serverAction( deleteAction, formData );
 				}}
 				className="space-y-8"
 			>
@@ -183,6 +183,7 @@ export default function Privacy()
 								<div className="flex items-center space-x-2">
 									<Switch
 										id="files"
+										name="files"
 										checked={field.value}
 										disabled={loading}
 										onCheckedChange={field.onChange}
@@ -242,13 +243,14 @@ export default function Privacy()
 								fichiers, les versions antérieures, les données
 								de partage à d&lsquo;autres utilisateurs, les
 								notifications, les signalements de bogues, les
-								données de session, etc.).
+								données de session, l&lsquo;avatar, etc.).
 							</FormDescription>
 
 							<FormControl>
 								<div className="flex items-center space-x-2">
 									<Switch
 										id="account"
+										name="account"
 										checked={field.value}
 										disabled={loading}
 										onCheckedChange={( value ) =>
