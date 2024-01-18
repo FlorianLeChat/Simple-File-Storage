@@ -25,7 +25,7 @@ export default function Footer()
 							rel="noopener noreferrer"
 							href="https://policies.google.com/privacy"
 							target="_blank"
-							className="underline underline-offset-4 hover:text-primary"
+							className="underline decoration-dotted underline-offset-4 dark:hover:text-primary-foreground"
 						>
 							politiques de confidentialité
 						</a>{" "}
@@ -34,7 +34,7 @@ export default function Footer()
 							rel="noopener noreferrer"
 							href="https://policies.google.com/terms"
 							target="_blank"
-							className="underline underline-offset-4 hover:text-primary"
+							className="underline decoration-dotted underline-offset-4 dark:hover:text-primary-foreground"
 						>
 							conditions d&lsquo;utilisation
 						</a>{" "}

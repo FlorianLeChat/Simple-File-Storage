@@ -492,15 +492,17 @@ export default function Authentification()
 			<p className="px-8 text-center text-sm text-muted-foreground">
 				En continuant, vous acceptez nos{" "}
 				<Link
-					href="/terms"
-					className="underline underline-offset-4 hover:text-primary"
+					href="/legal/terms"
+					target="_blank"
+					className="underline decoration-dotted underline-offset-4 dark:hover:text-primary-foreground"
 				>
 					conditions d&lsquo;utilisation
 				</Link>{" "}
 				et notre{" "}
 				<Link
-					href="/privacy"
-					className="underline underline-offset-4 hover:text-primary"
+					href="/legal/privacy"
+					target="_blank"
+					className="underline decoration-dotted underline-offset-4 dark:hover:text-primary-foreground"
 				>
 					politique de confidentialité
 				</Link>
