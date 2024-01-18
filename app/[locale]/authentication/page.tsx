@@ -10,6 +10,7 @@ import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
+import { generateMetadata } from "../layout";
 
 // Importation des composants.
 const Authentication = lazy( () => import( "../components/authentication" ) );
@@ -29,9 +30,11 @@ export default async function Page( {
 	// Définition de la langue de la page.
 	unstable_setRequestLocale( locale );
 
-	// Vérification de la session utilisateur.
+	// Déclaration des constantes.
 	const session = await auth();
+	const { title } = await generateMetadata();
 
+	// Vérification de la session utilisateur.
 	if ( session )
 	{
 		redirect( "/dashboard" );
@@ -42,9 +45,7 @@ export default async function Page( {
 		<>
 			<header className="mt-auto p-4 text-center">
 				{/* Titre du site */}
-				<h1 className="text-2xl font-semibold">
-					💾 Simple File Storage
-				</h1>
+				<h1 className="text-2xl font-semibold">💾 {title as string}</h1>
 			</header>
 
 			{/* Contenu de la page */}
