@@ -88,9 +88,11 @@ export default async function Page( {
 	// Définition de la langue de la page.
 	unstable_setRequestLocale( locale );
 
-	// Vérification de la session utilisateur.
+	// Déclaration des constantes.
+	const meta = await generateMetadata();
 	const session = await auth();
 
+	// Vérification de la session utilisateur.
 	if ( !session )
 	{
 		redirect( "/" );
@@ -103,11 +105,11 @@ export default async function Page( {
 				<div className="align-center flex items-center gap-2 max-md:flex-col md:gap-4">
 					{/* Titre du site */}
 					<h1 className="text-xl font-semibold">
-						💾 Simple File Storage
+						💾 {meta.title as string}
 					</h1>
 
 					{/* Éléments de navigation */}
-					<Header source={( await generateMetadata() ).source} />
+					<Header source={meta.source} />
 				</div>
 
 				{/* Menu utilisateur */}
