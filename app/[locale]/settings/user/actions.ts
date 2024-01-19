@@ -1,20 +1,22 @@
 //
-// Actions du serveur pour les paramètres du profil utilisateur.
+// Actions du serveur pour les paramètres utilisateur.
 //
 
 "use server";
 
+import bcrypt from "bcrypt";
 import prisma from "@/utilities/prisma";
-import schema from "@/schemas/profile";
+import schema from "@/schemas/user";
 import { join } from "path";
 import { auth } from "@/utilities/next-auth";
+import { cookies } from "next/headers";
 import { fileTypeFromBuffer } from "file-type";
 import { mkdir, readdir, rm, writeFile } from "fs/promises";
 
 //
-// Mise à jour des informations du profil utilisateur.
+// Mise à jour des informations utilisateur.
 //
-export async function updateProfile(
+export async function updateUser(
 	_state: Record<string, unknown>,
 	formData: FormData
 )
@@ -34,7 +36,10 @@ export async function updateProfile(
 
 	// On tente ensuite de valider les données du formulaire.
 	const result = schema.safeParse( {
+		username: formData.get( "username" ),
 		email: formData.get( "email" ),
+		password: formData.get( "password" ),
+		language: formData.get( "language" ),
 		avatar: formData.get( "avatar" )
 	} );
 
@@ -50,8 +55,23 @@ export async function updateProfile(
 		};
 	}
 
-	// On vérifie après si l'adresse électronique fournie est différente
-	//  de celle enregistrée dans la base de données.
+	// On vérifie après si le nom d'utilisateur est différent de celui
+	//  enregistré dans la base de données.
+	if ( session.user.name !== result.data.username )
+	{
+		// Dans ce cas, on la met à jour dans la base de données.
+		await prisma.user.update( {
+			where: {
+				id: session.user.id
+			},
+			data: {
+				name: result.data.username
+			}
+		} );
+	}
+
+	// On vérifie si l'adresse électronique fournie est différente de
+	//  celle enregistrée dans la base de données.
 	if ( session.user.email !== result.data.email )
 	{
 		// Dans ce cas, on la met à jour dans la base de données.
@@ -64,6 +84,24 @@ export async function updateProfile(
 			}
 		} );
 	}
+
+	// On met à jour par la même occasion le mot de passe de l'utilisateur
+	//  si celui-ci a été fourni.
+	if ( result.data.password )
+	{
+		await prisma.user.update( {
+			where: {
+				id: session.user.id
+			},
+			data: {
+				password: await bcrypt.hash( result.data.password, 13 )
+			}
+		} );
+	}
+
+	// On modifie la langue sélectionnée par l'utilisateur dans les
+	//  cookies de son navigateur.
+	cookies().set( "NEXT_LOCALE", result.data.language );
 
 	// On vérifie également si un avatar a été fourni.
 	const avatar = result.data.avatar as File;
@@ -147,6 +185,6 @@ export async function updateProfile(
 	// On retourne enfin un message de succès.
 	return {
 		success: true,
-		reason: "settings.profile.success"
+		reason: "settings.user.success"
 	};
 }

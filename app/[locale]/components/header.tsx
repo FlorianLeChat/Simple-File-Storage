@@ -29,11 +29,12 @@ export const routes: {
 		title: (
 			<>
 				<User className="mr-2 inline" />
-				Profil utilisateur
+				Utilisateur
 			</>
 		),
-		href: "/settings/profile",
-		description: "Gestion des informations de votre profil utilisateur."
+		href: "/settings/user",
+		description:
+			"Gestion des informations de votre profil et de votre compte."
 	},
 	{
 		title: (
@@ -49,28 +50,6 @@ export const routes: {
 	{
 		title: (
 			<>
-				<Cctv className="mr-2 inline" />
-				Confidentialité
-			</>
-		),
-		href: "/settings/privacy",
-		description:
-			"Gestion des données personnelles collectées par le site Internet."
-	},
-	{
-		title: (
-			<>
-				<Bell className="mr-2 inline" />
-				Notifications
-			</>
-		),
-		href: "/settings/notifications",
-		description:
-			"Ajustement des notifications reçues par courriel ou sur le site Internet."
-	},
-	{
-		title: (
-			<>
 				<Palette className="mr-2 inline" />
 				Apparence
 			</>
@@ -81,12 +60,34 @@ export const routes: {
 	{
 		title: (
 			<>
+				<Bell className="mr-2 inline" />
+				Notifications
+			</>
+		),
+		href: "/settings/notifications",
+		description:
+			"Gestion des notifications reçues par courriel ou sur le site Internet."
+	},
+	{
+		title: (
+			<>
 				<Bug className="mr-2 inline" />
 				Bogues
 			</>
 		),
 		href: "/settings/issue",
 		description: "Signalement d'un bogue rencontré sur le site Internet."
+	},
+	{
+		title: (
+			<>
+				<Cctv className="mr-2 inline" />
+				Confidentialité
+			</>
+		),
+		href: "/settings/privacy",
+		description:
+			"Gestion des données personnelles collectées par le site Internet."
 	}
 ];
 
