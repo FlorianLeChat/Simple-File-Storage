@@ -3,6 +3,7 @@
 //
 
 // Importation des dépendances.
+import Link from "next/link";
 import { lazy } from "react";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
@@ -45,7 +46,9 @@ export default async function Page( {
 		<>
 			<header className="mt-auto p-4 text-center">
 				{/* Titre du site */}
-				<h1 className="text-2xl font-semibold">💾 {title as string}</h1>
+				<h1 className="text-2xl font-semibold">
+					<Link href="/">💾 {title as string}</Link>
+				</h1>
 			</header>
 
 			{/* Contenu de la page */}

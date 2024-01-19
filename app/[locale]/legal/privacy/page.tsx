@@ -77,20 +77,20 @@ export default async function Page( {
 				<p>
 					Lorsque vous visitez le {title}, nous recueillons
 					automatiquement certaines informations sur votre appareil,
-					notamment des informations sur votre navigateur web, votre
+					notamment des informations sur votre navigateur, votre
 					adresse IP, votre fuseau horaire et certains des cookies
 					installés sur votre appareil. En outre, lorsque vous
 					naviguez sur le site, nous recueillons des informations sur
-					les pages web ou les produits individuels que vous
-					consultez, sur les sites web ou les termes de recherche qui
-					vous ont renvoyé au site et sur la manière dont vous
-					interagissez avec le site. Nous désignons ces informations
-					collectées automatiquement par le terme « informations sur
-					les appareils ». En outre, nous pourrions collecter les
-					données personnelles que vous nous fournissez (y compris,
-					mais sans s&lsquo;y limiter, le nom, le prénom,
-					l&lsquo;adresse, les informations de paiement, etc.) lors de
-					l&lsquo;inscription afin de pouvoir exécuter le contrat.
+					les pages ou les produits individuels que vous consultez,
+					sur les sites Internet ou les termes de recherche qui vous
+					ont renvoyé au site et sur la manière dont vous interagissez
+					avec le site. Nous désignons ces informations collectées
+					automatiquement par le terme « informations sur les
+					appareils ». En outre, nous pourrions collecter les données
+					personnelles que vous nous fournissez (y compris, mais sans
+					s&lsquo;y limiter, le nom, le prénom, l&lsquo;adresse, les
+					informations de paiement, etc.) lors de l&lsquo;inscription
+					afin de pouvoir exécuter le contrat.
 				</p>
 				<h3 className="text-2xl font-bold tracking-tight">
 					Pourquoi traitons-nous vos données ?
@@ -169,14 +169,14 @@ export default async function Page( {
 					compris au Canada et aux États-Unis.
 				</p>
 				<h3 className="text-2xl font-bold tracking-tight">
-					Liens vers d&lsquo;autres sites web :
+					Liens vers d&lsquo;autres sites Internet :
 				</h3>
 				<p>
 					Notre site Internet peut contenir des liens vers
-					d&lsquo;autres sites web qui ne sont pas détenus ou
+					d&lsquo;autres sites Internet qui ne sont pas détenus ou
 					contrôlés par nous. Sachez que nous ne sommes pas
-					responsables de ces autres sites web ou des pratiques de
-					confidentialité des tiers. Nous vous encourageons à être
+					responsables de ces autres sites Internet ou des pratiques
+					de confidentialité des tiers. Nous vous encourageons à être
 					attentif lorsque vous quittez notre site Internet et à lire
 					les déclarations de confidentialité de chaque site Internet
 					susceptible de collecter des informations personnelles.

@@ -3,6 +3,7 @@
 //
 
 // Importation des dépendances.
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { lazy, type ReactNode } from "react";
@@ -52,7 +53,7 @@ export default async function Layout( {
 				<div className="align-center flex items-center gap-2 max-md:flex-col md:gap-4">
 					{/* Titre du site */}
 					<h1 className="text-xl font-semibold">
-						💾 {meta.title as string}
+						<Link href="/">💾 {meta.title as string}</Link>
 					</h1>
 
 					{/* Éléments de navigation */}
