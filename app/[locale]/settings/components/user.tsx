@@ -1,11 +1,18 @@
 //
-// Composant de paramétrage du compte utilisateur.
+// Composant de paramétrage des informations utilisateur.
 //
 
 "use client";
 
 import * as z from "zod";
-import schema from "@/schemas/account";
+import schema from "@/schemas/user";
+import { Lock,
+	AtSign,
+	Contact,
+	Loader2,
+	RefreshCw,
+	FileImage,
+	Languages } from "lucide-react";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useLocale } from "next-intl";
@@ -13,27 +20,28 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
 import { useState, useEffect } from "react";
-import { Languages, Lock, Contact, Loader2, RefreshCw } from "lucide-react";
 
+import { formatSize } from "@/utilities/react-table";
 import { Input } from "../../components/ui/input";
+import { useToast } from "../../components/ui/use-toast";
 import { Select,
 	SelectItem,
 	SelectValue,
 	SelectContent,
 	SelectTrigger } from "../../components/ui/select";
-import { useToast } from "../../components/ui/use-toast";
+
 import { Tooltip,
 	TooltipTrigger,
 	TooltipContent,
 	TooltipProvider } from "../../components/ui/tooltip";
 import { Form,
 	FormItem,
-	FormField,
 	FormLabel,
+	FormField,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
-import { updateAccount } from "../account/actions";
+import { updateUser } from "../user/actions";
 import { Button, buttonVariants } from "../../components/ui/button";
 
 // Déclaration des langues disponibles.
@@ -42,28 +50,37 @@ const languages = [
 	{ label: "Français", value: "fr" }
 ] as const;
 
-export default function Account( { session }: { session: Session } )
+export default function User( { session }: { session: Session } )
 {
 	// Déclaration des constantes.
 	const characters =
 		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
+	const userSchema = schema.omit( { avatar: true } ).extend( {
+		// Modification de la vérification de l'avatar pour prendre en compte
+		//  la différence entre les données côté client et celles envoyées
+		//  côté serveur.
+		avatar: z.string().optional()
+	} );
+	const maxAvatarSize = Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE ?? 0 );
 
 	// Déclaration des variables d'état.
 	const { toast } = useToast();
 	const [ loading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( updateAccount, {
+	const [ updateState, updateAction ] = useFormState( updateUser, {
 		success: true,
 		reason: ""
 	} );
 	const [ passwordType, setPasswordType ] = useState( "text" );
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
+	const form = useForm<z.infer<typeof userSchema>>( {
+		resolver: zodResolver( userSchema ),
 		defaultValues: {
 			username: session.user.name ?? "",
+			email: session.user.email ?? "",
+			password: "",
 			language: useLocale() as "en" | "fr",
-			password: ""
+			avatar: ""
 		}
 	} );
 
@@ -116,7 +133,7 @@ export default function Account( { session }: { session: Session } )
 		//  en cas de succès.
 		if ( success )
 		{
-			form.resetField( "password" );
+			form.resetField( "avatar" );
 		}
 
 		// On affiche enfin le message correspondant si une raison
@@ -155,7 +172,7 @@ export default function Account( { session }: { session: Session } )
 				}}
 				className="space-y-8"
 			>
-				{/* Nom d'affichage */}
+				{/* Nom d'utilisateur */}
 				<FormField
 					name="username"
 					control={form.control}
@@ -169,6 +186,7 @@ export default function Account( { session }: { session: Session } )
 							<FormControl>
 								<Input
 									{...field}
+									disabled={loading}
 									maxLength={
 										schema.shape.username
 											.maxLength as number
@@ -193,6 +211,117 @@ export default function Account( { session }: { session: Session } )
 					)}
 				/>
 
+				{/* Adresse électronique */}
+				<FormField
+					name="email"
+					control={form.control}
+					render={( { field } ) => (
+						<FormItem
+							className={session.user.oauth ? "hidden" : ""}
+						>
+							<FormLabel htmlFor="email">
+								<AtSign className="mr-2 inline h-6 w-6" />
+								Adresse électronique
+							</FormLabel>
+
+							<FormControl>
+								<Input
+									{...field}
+									disabled={loading}
+									maxLength={
+										schema.shape.email.maxLength as number
+									}
+									spellCheck="false"
+									placeholder="name@example.com"
+									autoComplete="email"
+									autoCapitalize="off"
+								/>
+							</FormControl>
+
+							<FormDescription>
+								Ceci est l&lsquo;adresse électronique associée à
+								votre compte. Elle est indispensable pour vous
+								connecter à votre compte et recevoir les
+								notifications via courriel.
+							</FormDescription>
+
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
+				{/* Mot de passe */}
+				<FormField
+					name="password"
+					control={form.control}
+					render={( { field } ) => (
+						<FormItem
+							className={session.user.oauth ? "hidden" : ""}
+						>
+							<FormLabel>
+								<Lock className="mr-2 inline h-6 w-6" />
+								Mot de passe
+							</FormLabel>
+
+							<FormControl>
+								<div className="flex gap-2">
+									<TooltipProvider>
+										<Input
+											{...field}
+											type={passwordType}
+											disabled={loading}
+											onKeyDown={() => setPasswordType( "password" )}
+											maxLength={
+												schema.shape.password._def
+													.options[ 0 ]
+													.maxLength as number
+											}
+											spellCheck="false"
+											placeholder="password"
+											autoComplete="new-password"
+											autoCapitalize="off"
+										/>
+
+										<Tooltip>
+											<TooltipTrigger
+												type="button"
+												disabled={loading}
+												className={buttonVariants( {
+													size: "icon",
+													variant: "outline"
+												} )}
+												onClick={() =>
+												{
+													// Génération d'un nouveau mot de passe.
+													form.setValue(
+														"password",
+														generateRandomPassword()
+													);
+												}}
+											>
+												<RefreshCw className="h-4 w-4" />
+											</TooltipTrigger>
+
+											<TooltipContent>
+												Générer un mot de passe sécurisé
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
+								</div>
+							</FormControl>
+
+							<FormDescription>
+								Ceci est le mot de passe qui sera utilisé pour
+								vous connecter à votre compte si vous ne
+								souhaitez pas utiliser les liens
+								d&lsquo;authentification envoyés par courriel.
+							</FormDescription>
+
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+
 				{/* Langue préférée */}
 				<FormField
 					name="language"
@@ -207,6 +336,7 @@ export default function Account( { session }: { session: Session } )
 							<FormControl>
 								<Select
 									{...field}
+									disabled={loading}
 									defaultValue={field.value}
 									onValueChange={field.onChange}
 								>
@@ -243,80 +373,39 @@ export default function Account( { session }: { session: Session } )
 					)}
 				/>
 
-				{/* Mot de passe */}
+				{/* Avatar */}
 				<FormField
-					name="password"
+					name="avatar"
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel>
-								<Lock className="mr-2 inline h-6 w-6" />
-								Mot de passe
+							<FormLabel htmlFor="email">
+								<FileImage className="mr-2 inline h-6 w-6" />
+								Avatar
 							</FormLabel>
 
-							<FormControl
-								className={session.user.oauth ? "hidden" : ""}
-							>
-								<div className="flex gap-2">
-									<TooltipProvider>
-										<Input
-											{...field}
-											type={passwordType}
-											onKeyDown={() => setPasswordType( "password" )}
-											maxLength={
-												schema.shape.password._def
-													.options[ 0 ]
-													.maxLength as number
-											}
-											spellCheck="false"
-											placeholder="password"
-											autoComplete="new-password"
-											autoCapitalize="off"
-										/>
-
-										<Tooltip>
-											<TooltipTrigger
-												type="button"
-												className={buttonVariants( {
-													size: "icon",
-													variant: "outline"
-												} )}
-												onClick={() =>
-												{
-													// Génération d'un nouveau mot de passe.
-													form.setValue(
-														"password",
-														generateRandomPassword()
-													);
-												}}
-											>
-												<RefreshCw className="h-4 w-4" />
-											</TooltipTrigger>
-
-											<TooltipContent>
-												Générer un mot de passe sécurisé
-											</TooltipContent>
-										</Tooltip>
-									</TooltipProvider>
-								</div>
+							<FormControl>
+								<Input
+									{...field}
+									type="file"
+									accept={
+										process.env
+											.NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES
+									}
+									disabled={loading}
+									className="file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
+								/>
 							</FormControl>
 
-							{session.user.oauth ? (
-								<FormDescription className="font-extrabold text-destructive">
-									Ce paramètre ne peut pas être modifié en
-									raison de l&lsquo;utilisation d&lsquo;un
-									fournisseur d&lsquo;authentification externe
-									pour vous connecter au site.
-								</FormDescription>
-							) : (
-								<FormDescription>
-									Ceci est le mot de passe qui sera utilisé
-									pour vous connecter à votre compte si vous
-									ne souhaitez pas utiliser les liens
-									d&lsquo;authentification envoyés par
-									courriel.
-								</FormDescription>
-							)}
+							<FormDescription>
+								Vous pouvez mettre à jour l&lsquo;avatar utilisé
+								pour votre compte utilisateur.{" "}
+								<strong>
+									Les avatars ne doivent pas dépasser{" "}
+									{formatSize( maxAvatarSize )} et doivent être
+									au format PNG, JPEG ou WEBP.
+								</strong>
+							</FormDescription>
 
 							<FormMessage />
 						</FormItem>

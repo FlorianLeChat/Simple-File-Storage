@@ -1,5 +1,5 @@
 //
-// Route vers la page de paramétrage du profil utilisateur.
+// Route vers la page de paramétrage des informations utilisateur.
 //
 
 // Importation des dépendances.
@@ -13,7 +13,7 @@ import { auth } from "@/utilities/next-auth";
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
 
-const Profile = lazy( () => import( "../components/profile" ) );
+const User = lazy( () => import( "../components/user" ) );
 
 // Affichage de la page.
 export default async function Page( {
@@ -30,7 +30,7 @@ export default async function Page( {
 		<>
 			{/* En-tête de la page */}
 			<header>
-				<h3 className="text-lg font-medium">Profil utilisateur</h3>
+				<h3 className="text-lg font-medium">Utilisateur</h3>
 
 				<p className="text-sm text-muted-foreground">
 					Contrôler la façon dont vous apparaissez sur le site.
@@ -41,7 +41,7 @@ export default async function Page( {
 			<Separator />
 
 			{/* Formulaire de modification du profil utilisateur */}
-			<Profile session={( await auth() ) as Session} />
+			<User session={( await auth() ) as Session} />
 		</>
 	);
 }
