@@ -100,24 +100,17 @@ export async function GET(
 			//  a téléversé le fichier.
 			const session = await auth();
 
-			if ( !session )
+			if ( !session || session.user.id !== file.userId )
 			{
-				// Lorsque la session n'existe pas, on retourne une
-				//  erreur d'authentification.
+				// Lorsque la session n'existe pas ou que l'utilisateur
+				//  n'est pas le propriétaire du fichier, on retourne
+				//  une erreur d'authentification.
 				return new NextResponse( null, { status: 403 } );
 			}
 
-			if ( session.user.id === file.userId )
-			{
-				// Lorsque la session existe et que l'utilisateur
-				//  est bien le propriétaire du fichier, on retourne
-				//  les données du fichier comme une réponse JSON.
-				return NextResponse.json( file );
-			}
-
-			// Dans le cas contraire, on retourne une erreur
-			//  d'authentification.
-			return new NextResponse( null, { status: 403 } );
+			// Dans le cas contraire, on retourne les données du fichier
+			//  comme une réponse JSON.
+			return NextResponse.json( file );
 		}
 
 		default: {
