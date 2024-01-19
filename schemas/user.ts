@@ -1,5 +1,5 @@
 //
-// Schéma de validation pour les paramètres du profil utilisateur.
+// Schéma de validation pour les paramètres des informations utilisateur.
 //
 import { z } from "zod";
 
@@ -11,8 +11,17 @@ const ACCEPTED_FILE_TYPES =
 	process.env.NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES?.split( "," ) ?? [];
 
 const schema = z.object( {
+	// Nom d'utilisateur.
+	username: z.string().min( 10 ).max( 50 ),
+
 	// Adresse électronique.
 	email: z.string().min( 10 ).max( 100 ).email(),
+
+	// Mot de passe.
+	password: z.string().min( 10 ).max( 100 ).or( z.literal( "" ) ),
+
+	// Langue préférée.
+	language: z.enum( [ "en", "fr" ] ),
 
 	// Image de l'avatar.
 	//  Source : https://github.com/colinhacks/zod/issues/387
