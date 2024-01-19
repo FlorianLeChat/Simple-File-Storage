@@ -4,6 +4,7 @@
 
 // Importation des dépendances.
 import mime from "mime";
+import Link from "next/link";
 import prisma from "@/utilities/prisma";
 import { lazy } from "react";
 import { parse } from "path";
@@ -105,7 +106,7 @@ export default async function Page( {
 				<div className="align-center flex items-center gap-2 max-md:flex-col md:gap-4">
 					{/* Titre du site */}
 					<h1 className="text-xl font-semibold">
-						💾 {meta.title as string}
+						<Link href="/">💾 {meta.title as string}</Link>
 					</h1>
 
 					{/* Éléments de navigation */}
