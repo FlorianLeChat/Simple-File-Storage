@@ -31,8 +31,9 @@ export default function Page( {
 				</h3>
 
 				<p className="text-sm text-muted-foreground">
-					Vous voulez effacer vos traces ? C&lsquo;est ici que ça se
-					passe.
+					Vous voulez effacer vos traces et faire comme si vous
+					n&lsquo;aviez jamais utilisé le site ? C&lsquo;est ici que
+					ça se passe !
 				</p>
 			</header>
 
