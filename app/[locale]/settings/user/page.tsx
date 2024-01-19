@@ -33,7 +33,9 @@ export default async function Page( {
 				<h3 className="text-lg font-medium">Utilisateur</h3>
 
 				<p className="text-sm text-muted-foreground">
-					Contrôler la façon dont vous apparaissez sur le site.
+					Vous voulez montrez qui vous êtes ? Modifier votre nom
+					d&lsquo;utilisateur ? Changer votre mot de passe ? Vous êtes
+					au bon endroit !
 				</p>
 			</header>
 
