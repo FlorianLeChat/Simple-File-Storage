@@ -31,7 +31,9 @@ export default function Page( {
 				</h3>
 
 				<p className="text-sm text-muted-foreground">
-					Vous avez trouvé un bogue ? Signalez-le ici.
+					Vous avez trouvé un bogue ? Quelque chose ne fonctionne pas
+					comme prévu ? Vous êtes au bon endroit pour nous le signaler
+					!
 				</p>
 			</header>
 

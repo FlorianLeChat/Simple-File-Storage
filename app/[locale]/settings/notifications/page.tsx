@@ -33,8 +33,9 @@ export default async function Page( {
 				<h3 className="text-lg font-medium">Notifications</h3>
 
 				<p className="text-sm text-muted-foreground">
-					Choisissez les notifications que vous souhaitez recevoir par
-					courriel ou directement sur le site Internet.
+					Marre de recevoir des notifications ? Envie de recevoir des
+					courriels de sécurité ou de rappel ? Vous êtes au bon
+					endroit !
 				</p>
 			</header>
 
