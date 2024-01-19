@@ -49,7 +49,7 @@ export default async function Page( {
 			<header className="mb-auto flex items-center justify-between gap-2 p-4 max-sm:flex-col">
 				{/* Titre du site */}
 				<h1 className="text-2xl font-semibold">
-					💾 {meta.title as string}
+					<Link href="/">💾 {meta.title as string}</Link>
 				</h1>
 
 				{/* Bouton vers l'authentification */}
@@ -155,8 +155,8 @@ export default async function Page( {
 
 						<p className="text-muted-foreground">
 							Vos données sont stockées sur des serveurs basés en
-							Europe conforme au RGPD pour garantir une intégrité
-							et une confidentialité totale.
+							Europe conformément au RGPD pour garantir une
+							intégrité et une confidentialité totale.
 						</p>
 					</article>
 
