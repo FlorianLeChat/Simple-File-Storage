@@ -51,7 +51,7 @@ export default function FileUpload( {
 		// Modification de la vérification du fichier pour prendre en compte
 		//  la différence entre les données côté client et celles envoyées
 		//  côté serveur.
-		upload: z.string()
+		upload: z.string().min( 1 )
 	} );
 
 	// Déclaration des variables d'état.
@@ -259,7 +259,6 @@ export default function FileUpload( {
 													.NEXT_PUBLIC_ACCEPTED_FILE_TYPES
 											}
 											multiple
-											required
 											disabled={loading}
 											className="!mt-0 file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
 										/>
