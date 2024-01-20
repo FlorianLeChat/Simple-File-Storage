@@ -162,11 +162,15 @@ export default function Layout( {
 		// On informe ensuite que le traitement est terminé.
 		setLoading( false );
 
-		// On réinitialise après la totalité du formulaire
-		//  en cas de succès.
+		// On met à jour après les attributs du document HTML pour
+		//  refléter les changements.
 		if ( success )
 		{
-			form.reset();
+			const element = document.documentElement;
+			element.style.colorScheme = form.getValues( "theme" );
+			element.className = `${ form.getValues( "font" ) } ${ form.getValues(
+				"color"
+			) } ${ form.getValues( "theme" ) }`;
 		}
 
 		// On affiche enfin le message correspondant si une raison
