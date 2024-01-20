@@ -110,7 +110,10 @@ export default async function Page( {
 					</h1>
 
 					{/* Éléments de navigation */}
-					<Header source={meta.source} />
+					<Header
+						theme={session.user.preferences.theme}
+						source={meta.source}
+					/>
 				</div>
 
 				{/* Menu utilisateur */}
