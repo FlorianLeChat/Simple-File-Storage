@@ -1,10 +1,14 @@
 //
-// Route vers la page de l'apparence du site.
+// Route vers la page de paramétrage de l'apparence.
 //
 
 // Importation des dépendances.
 import { lazy } from "react";
+import type { Session } from "next-auth";
 import { unstable_setRequestLocale } from "next-intl/server";
+
+// Importation des fonctions utilitaires.
+import { auth } from "@/utilities/next-auth";
 
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
@@ -12,7 +16,7 @@ import { Separator } from "../../components/ui/separator";
 const Layout = lazy( () => import( "../components/layout" ) );
 
 // Affichage de la page.
-export default function Page( {
+export default async function Page( {
 	params: { locale }
 }: {
 	params: { locale: string };
@@ -20,6 +24,12 @@ export default function Page( {
 {
 	// Définition de la langue de la page.
 	unstable_setRequestLocale( locale );
+
+	// Récupération de la session utilisateur.
+	//  Note : la page n'est accessible qu'aux utilisateurs authentifiés
+	//   donc on peut se permettre d'éviter une énième vérification déjà
+	//   présente dans le « layout » principal.
+	const session = ( await auth() ) as Session;
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -39,7 +49,7 @@ export default function Page( {
 			<Separator />
 
 			{/* Formulaire de modification de l'apparence */}
-			<Layout />
+			<Layout preferences={session.user.preferences} />
 		</>
 	);
 }
