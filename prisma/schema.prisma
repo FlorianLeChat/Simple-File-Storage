@@ -63,6 +63,14 @@ model Version {
 	createdAt    DateTime   @default(now())
 }
 
+model Preference {
+	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+	userId       String		@id
+	font		 String     @default("inter")
+	theme        String     @default("light")
+	color        String     @default("blue")
+}
+
 model User {
 	id            String    @id @default(uuid())
 	name          String?
@@ -76,6 +84,7 @@ model User {
 	sessions      Session[]
 	issues        Issue[]
 	files         File[]
+	preferences   Preference[]
 }
 
 model VerificationToken {
