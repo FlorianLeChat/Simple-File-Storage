@@ -6,11 +6,18 @@
 
 import * as z from "zod";
 import schema from "@/schemas/layout";
-import { Check, SunMoon, CaseUpper, RefreshCw, Paintbrush } from "lucide-react";
+import { Check,
+	SunMoon,
+	Loader2,
+	CaseUpper,
+	RefreshCw,
+	Paintbrush } from "lucide-react";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
+import serverAction from "@/utilities/recaptcha";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, type CSSProperties } from "react";
+import { useFormState } from "react-dom";
+import { useState, useEffect, type CSSProperties } from "react";
 
 import { Button } from "../../components/ui/button";
 import { Select,
@@ -18,7 +25,7 @@ import { Select,
 	SelectValue,
 	SelectContent,
 	SelectTrigger } from "../../components/ui/select";
-import { useLayout } from "../../components/layout-provider";
+import { useToast } from "../../components/ui/use-toast";
 import { Tooltip,
 	TooltipTrigger,
 	TooltipContent,
@@ -30,6 +37,7 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
+import { updateLayout } from "../layout/actions";
 import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 
 // Déclaration des polices de caractères disponibles.
@@ -103,43 +111,104 @@ const colors = [
 	}
 ] as const;
 
-export default function Layout()
+export default function Layout( {
+	preferences
+}: {
+	preferences: Record<string, string>;
+} )
 {
 	// Déclaration des variables d'état.
-	const { font, theme, color, setFont, setTheme, setColor } = useLayout();
+	const { toast } = useToast();
+	const [ loading, setLoading ] = useState( false );
+	const [ updateState, updateAction ] = useFormState( updateLayout, {
+		success: true,
+		reason: ""
+	} );
 
 	// Déclaration du formulaire.
 	const form = useForm<z.infer<typeof schema>>( {
 		resolver: zodResolver( schema ),
 		defaultValues: {
-			font: "inter",
-			color: "blue",
-			theme: "light"
+			font: preferences.font as ( typeof fonts )[number]["value"],
+			color: preferences.color as ( typeof colors )[number]["name"],
+			theme: preferences.theme as "light" | "dark"
 		}
 	} );
 
-	// Mise à jour des informations.
-	const updateLayout = ( data: z.infer<typeof schema> ) =>
-	{
-		setFont( data.font );
-		setTheme( data.theme );
-		setColor( data.color );
-	};
-
-	// Mise à jour de l'état de montage du composant.
-	//  Source : https://www.npmjs.com/package/next-themes#avoid-hydration-mismatch
+	// Détection de la response du serveur après l'envoi du formulaire.
 	useEffect( () =>
 	{
-		form.setValue( "font", font as "inter" );
-		form.setValue( "theme", theme as "light" );
-		form.setValue( "color", color as "blue" );
-	}, [ form, font, theme, color ] );
+		// On vérifie d'abord si la variable d'état liée à l'action
+		//  du formulaire est encore définie.
+		if ( !updateState )
+		{
+			// Si ce n'est pas le cas, quelque chose s'est mal passé au
+			//  niveau du serveur.
+			setLoading( false );
+
+			toast( {
+				title: "form.errors.update_failed",
+				variant: "destructive",
+				description: "form.errors.server_error"
+			} );
+
+			return;
+		}
+
+		// On récupère également une possible raison d'échec ainsi que
+		//  l'état associé.
+		const { success, reason } = updateState;
+
+		// On informe ensuite que le traitement est terminé.
+		setLoading( false );
+
+		// On réinitialise après la totalité du formulaire
+		//  en cas de succès.
+		if ( success )
+		{
+			form.reset();
+		}
+
+		// On affiche enfin le message correspondant si une raison
+		//  a été fournie.
+		if ( reason !== "" )
+		{
+			toast( {
+				title: success
+					? "form.info.update_success"
+					: "form.errors.update_failed",
+				variant: success ? "default" : "destructive",
+				description: reason
+			} );
+		}
+	}, [ toast, form, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
 		<Form {...form}>
 			<form
-				onSubmit={form.handleSubmit( updateLayout )}
+				action={async () =>
+				{
+					// Vérifications côté client.
+					const state = await form.trigger();
+
+					if ( !state )
+					{
+						return false;
+					}
+
+					// Activation de l'état de chargement.
+					setLoading( true );
+
+					// Récupération des données du formulaire.
+					const formData = new FormData();
+					formData.append( "font", form.getValues( "font" ) );
+					formData.append( "color", form.getValues( "color" ) );
+					formData.append( "theme", form.getValues( "theme" ) );
+
+					// Exécution de l'action côté serveur.
+					return serverAction( updateAction, formData );
+				}}
 				className="space-y-8"
 			>
 				{/* Police de caractère */}
@@ -156,6 +225,7 @@ export default function Layout()
 							<FormControl>
 								<Select
 									{...field}
+									disabled={loading}
 									defaultValue={field.value}
 									onValueChange={field.onChange}
 								>
@@ -215,11 +285,8 @@ export default function Layout()
 												onClick={() =>
 												{
 													field.onChange( value.name );
-
-													form.handleSubmit(
-														updateLayout
-													);
 												}}
+												disabled={loading}
 												className={merge(
 													"relative inline-flex h-9 w-9 flex-col items-center justify-center rounded-full border-2 text-xs",
 													field.value === value.name
@@ -287,6 +354,7 @@ export default function Layout()
 
 							<RadioGroup
 								value={field.value}
+								disabled={loading}
 								className="grid grid-cols-1 gap-8 pt-2 sm:max-w-md sm:grid-cols-2"
 								onValueChange={field.onChange}
 							>
@@ -318,10 +386,6 @@ export default function Layout()
 												onClick={() =>
 												{
 													field.onChange( "light" );
-
-													form.handleSubmit(
-														updateLayout
-													);
 												}}
 											/>
 										</FormControl>
@@ -372,10 +436,6 @@ export default function Layout()
 												onClick={() =>
 												{
 													field.onChange( "dark" );
-
-													form.handleSubmit(
-														updateLayout
-													);
 												}}
 											/>
 										</FormControl>
@@ -403,9 +463,18 @@ export default function Layout()
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button className="max-sm:w-full">
-					<RefreshCw className="mr-2 h-4 w-4" />
-					Mettre à jour
+				<Button disabled={loading} className="max-sm:w-full">
+					{loading ? (
+						<>
+							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							Veuillez patienter...
+						</>
+					) : (
+						<>
+							<RefreshCw className="mr-2 h-4 w-4" />
+							Mettre à jour
+						</>
+					)}
 				</Button>
 			</form>
 		</Form>
