@@ -18,6 +18,7 @@ import { mkdir, readFile, writeFile } from "fs/promises";
 import { Suspense, lazy, type ReactNode, type CSSProperties } from "react";
 
 // Importation des fonctions utilitaires.
+import { auth } from "@/utilities/next-auth";
 import { getLanguages } from "@/utilities/i18n";
 
 // Importation des types.
@@ -25,12 +26,10 @@ import type { Metadata, Viewport } from "next";
 
 // Importation des composants.
 import Footer from "./components/footer";
-import { LayoutUpdater } from "./components/layout-provider";
 
 const Toaster = lazy( () => import( "./components/ui/toaster" ) );
 const Recaptcha = lazy( () => import( "./components/recaptcha" ) );
 const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
-const LayoutProvider = lazy( () => import( "./components/layout-provider" ) );
 
 // Déclaration des paramètres d'affichage.
 export const viewport: Viewport = {
@@ -199,7 +198,7 @@ const roboto = Roboto( {
 	display: "swap"
 } );
 
-export default function Layout( {
+export default async function Layout( {
 	children,
 	params: { locale }
 }: {
@@ -216,6 +215,12 @@ export default function Layout( {
 		return null;
 	}
 
+	// Récupération des préférences de l'utilisateur.
+	const session = await auth();
+	const font = session?.user.preferences.font ?? "inter";
+	const theme = session?.user.preferences.theme ?? "light";
+	const color = session?.user.preferences.color ?? "blue";
+
 	// Affichage du rendu HTML de la page.
 	return (
 		<html
@@ -227,13 +232,8 @@ export default function Layout( {
 					"--roboto-font": roboto.style.fontFamily
 				} as CSSProperties
 			}
+			className={`${ font } ${ theme } ${ color }`}
 		>
-			{/* En-tête de la page */}
-			<head>
-				{/* Mise à jour de l'apparence */}
-				<LayoutUpdater />
-			</head>
-
 			{/* Corps de la page */}
 			<body className="flex min-h-screen flex-col">
 				{/* Écran de chargement de la page */}
@@ -251,23 +251,20 @@ export default function Layout( {
 						/>
 					</video>
 
-					{/* Mise à jour de l'apparence */}
-					<LayoutProvider>
-						{/* Composant enfant */}
-						{children}
+					{/* Composant enfant */}
+					{children}
 
-						{/* Consentement des cookies */}
-						<CookieConsent />
+					{/* Consentement des cookies */}
+					<CookieConsent />
 
-						{/* Google reCAPTCHA */}
-						<Recaptcha />
+					{/* Google reCAPTCHA */}
+					<Recaptcha />
 
-						{/* Composant des notifications */}
-						<Toaster />
+					{/* Composant des notifications */}
+					<Toaster />
 
-						{/* Pied de page */}
-						<Footer />
-					</LayoutProvider>
+					{/* Pied de page */}
+					<Footer />
 				</Suspense>
 			</body>
 		</html>

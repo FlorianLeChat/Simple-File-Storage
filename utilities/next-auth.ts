@@ -35,6 +35,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 				session.user.id = user.id;
 				session.user.role = user.role;
 				session.user.oauth = !user.password && !user.emailVerified;
+				session.user.preferences = user.preferences ?? {
+					font: "inter",
+					theme: "light",
+					color: "blue"
+				};
 				session.user.notifications = user.notifications;
 
 				// Vérification de l'existence du dossier d'enregistrement
