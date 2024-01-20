@@ -32,10 +32,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 			if ( session )
 			{
 				// Ajout de propriétés personnalisées à la session.
+				const preferences = await prisma.preference.findUnique( {
+					where: {
+						userId: user.id
+					}
+				} );
+
 				session.user.id = user.id;
 				session.user.role = user.role;
 				session.user.oauth = !user.password && !user.emailVerified;
-				session.user.preferences = user.preferences ?? {
+				session.user.preferences = preferences ?? {
 					font: "inter",
 					theme: "light",
 					color: "blue"
