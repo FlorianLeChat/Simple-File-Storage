@@ -26,9 +26,7 @@ export default function Page( {
 		<>
 			{/* En-tête de la page */}
 			<header>
-				<h3 className="text-lg font-medium">
-					Gestion de la confidentialité
-				</h3>
+				<h3 className="text-lg font-medium">Confidentialité</h3>
 
 				<p className="text-sm text-muted-foreground">
 					Vous voulez effacer vos traces et faire comme si vous

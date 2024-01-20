@@ -10,7 +10,6 @@ import { Bell, User, KeyRound, Palette, Cctv, Bug } from "lucide-react";
 
 import GitHubDark from "../../../public/assets/images/github-dark.png";
 import GitHubLight from "../../../public/assets/images/github-light.png";
-import { useLayout } from "./layout-provider";
 import { buttonVariants } from "./ui/button";
 import { NavigationMenu,
 	NavigationMenuItem,
@@ -91,11 +90,14 @@ export const routes: {
 	}
 ];
 
-export default function Header( { source }: { source: string } )
+export default function Header( {
+	theme,
+	source
+}: {
+	theme: string;
+	source: string;
+} )
 {
-	// Déclaration des variables d'état.
-	const { theme } = useLayout();
-
 	// Affichage du rendu HTML du composant.
 	return (
 		<NavigationMenu>

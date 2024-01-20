@@ -57,7 +57,10 @@ export default async function Layout( {
 					</h1>
 
 					{/* Éléments de navigation */}
-					<Header source={meta.source} />
+					<Header
+						theme={session.user.preferences.theme}
+						source={meta.source}
+					/>
 				</div>
 
 				{/* Menu utilisateur */}
