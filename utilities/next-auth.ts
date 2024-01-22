@@ -44,7 +44,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 				session.user.preferences = preferences ?? {
 					font: "inter",
 					theme: "light",
-					color: "blue"
+					color: "blue",
+					public: false,
+					extension: false,
+					versions: true
 				};
 				session.user.notifications = user.notifications;
 

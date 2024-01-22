@@ -8,7 +8,14 @@ declare module "@auth/core/types" {
 			id: string;
 			role: string;
 			oauth: boolean;
-			preferences: Record<string, string>;
+			preferences: {
+				font: string;
+				theme: string;
+				color: string;
+				public: boolean;
+				extension: boolean;
+				versions: boolean;
+			};
 			notifications: string;
 		} & DefaultSession["user"];
 	}
@@ -26,7 +33,14 @@ declare module "@auth/core/adapters" {
 
 		// Propriétés personnalisées.
 		role: string;
-		preferences?: Record<string, string>;
+		preferences?: {
+			font: string;
+			theme: string;
+			color: string;
+			public: boolean;
+			extension: boolean;
+			versions: boolean;
+		};
 		notifications: string;
 	}
 }

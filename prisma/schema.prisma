@@ -69,6 +69,9 @@ model Preference {
 	font		 String     @default("inter")
 	theme        String     @default("light")
 	color        String     @default("blue")
+	public       Boolean    @default(false)
+	extension    Boolean    @default(false)
+	versions     Boolean	@default(true)
 }
 
 model User {
