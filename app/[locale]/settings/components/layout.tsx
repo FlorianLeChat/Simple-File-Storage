@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
+import type { Session } from "next-auth";
 import { useState, useEffect, type CSSProperties } from "react";
 
 import { Button } from "../../components/ui/button";
@@ -111,11 +112,7 @@ const colors = [
 	}
 ] as const;
 
-export default function Layout( {
-	preferences
-}: {
-	preferences: Record<string, string>;
-} )
+export default function Layout( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
 	const { toast } = useToast();
@@ -129,9 +126,11 @@ export default function Layout( {
 	const form = useForm<z.infer<typeof schema>>( {
 		resolver: zodResolver( schema ),
 		defaultValues: {
-			font: preferences.font as ( typeof fonts )[number]["value"],
-			color: preferences.color as ( typeof colors )[number]["name"],
-			theme: preferences.theme as "light" | "dark"
+			font: session.user.preferences
+				.font as ( typeof fonts )[number]["value"],
+			color: session.user.preferences
+				.color as ( typeof colors )[number]["name"],
+			theme: session.user.preferences.theme as "light" | "dark"
 		}
 	} );
 
