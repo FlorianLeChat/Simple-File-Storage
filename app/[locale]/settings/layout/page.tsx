@@ -25,12 +25,6 @@ export default async function Page( {
 	// Définition de la langue de la page.
 	unstable_setRequestLocale( locale );
 
-	// Récupération de la session utilisateur.
-	//  Note : la page n'est accessible qu'aux utilisateurs authentifiés
-	//   donc on peut se permettre d'éviter une énième vérification déjà
-	//   présente dans le « layout » principal.
-	const session = ( await auth() ) as Session;
-
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
@@ -49,7 +43,7 @@ export default async function Page( {
 			<Separator />
 
 			{/* Formulaire de modification de l'apparence */}
-			<Layout preferences={session.user.preferences} />
+			<Layout session={( await auth() ) as Session} />
 		</>
 	);
 }
