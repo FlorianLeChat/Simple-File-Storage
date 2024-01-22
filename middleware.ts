@@ -26,7 +26,9 @@ export default async function middleware( request: NextRequest )
 	{
 		// Si c'est le cas, on récupère l'identifiant du fichier
 		//  à partir de l'URL de la requête.
-		const identifier = request.nextUrl.pathname.split( "/d/" )[ 1 ];
+		const identifier = request.nextUrl.pathname
+			.split( "/d/" )[ 1 ]
+			.replace( /\.[^/.]+$/, "" );
 
 		if ( identifier )
 		{
