@@ -40,9 +40,8 @@ export default async function Page( {
 				</h2>
 
 				<p className="text-muted-foreground">
-					Consulter les conditions d&lsquo;utilisation du site pour en
-					apprendre plus sur les aspects légaux de l&lsquo;utilisation
-					de nos services.
+					Curieux de connaître les conditions d&lsquo;utilisation du
+					site ? C&lsquo;est par ici !
 				</p>
 			</header>
 
@@ -50,7 +49,7 @@ export default async function Page( {
 			<Separator className="my-6" />
 
 			{/* Contenu principal */}
-			<main className="flex flex-col space-y-6 text-justify">
+			<main className="flex flex-col space-y-6 text-justify text-sm">
 				<h3 className="text-2xl font-bold tracking-tight">
 					Définitions
 				</h3>
