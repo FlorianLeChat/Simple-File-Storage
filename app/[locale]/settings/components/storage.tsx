@@ -7,6 +7,7 @@
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useFormState } from "react-dom";
+import type { Session } from "next-auth";
 import { useState, useEffect } from "react";
 import { Globe, Link2, RefreshCw, Loader2, History } from "lucide-react";
 
@@ -20,14 +21,14 @@ import { Form,
 	FormField,
 	FormControl,
 	FormDescription } from "../../components/ui/form";
-import { deleteUserData } from "../privacy/actions";
+import { updateStorage } from "../storage/actions";
 
-export default function Storage()
+export default function Storage( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
 	const { toast } = useToast();
 	const [ loading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( deleteUserData, {
+	const [ updateState, updateAction ] = useFormState( updateStorage, {
 		success: true,
 		reason: ""
 	} );
@@ -35,9 +36,9 @@ export default function Storage()
 	// Déclaration du formulaire.
 	const form = useForm( {
 		defaultValues: {
-			public: false,
-			extension: false,
-			versions: true
+			public: session.user.preferences.public,
+			extension: session.user.preferences.extension,
+			versions: session.user.preferences.versions
 		}
 	} );
 
@@ -53,7 +54,7 @@ export default function Storage()
 			setLoading( false );
 
 			toast( {
-				title: "form.errors.deletion_failed",
+				title: "form.errors.update_failed",
 				variant: "destructive",
 				description: "form.errors.server_error"
 			} );
@@ -67,13 +68,6 @@ export default function Storage()
 
 		// On informe ensuite que le traitement est terminé.
 		setLoading( false );
-
-		// On réinitialise après la totalité du formulaire
-		//  en cas de succès.
-		if ( success )
-		{
-			form.reset();
-		}
 
 		// On affiche enfin le message correspondant si une raison
 		//  a été fournie.
