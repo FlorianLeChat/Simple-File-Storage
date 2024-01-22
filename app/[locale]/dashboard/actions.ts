@@ -198,6 +198,7 @@ export async function uploadFiles(
 		}
 
 		// On téléverse chaque fichier dans le système de fichiers.
+		const { preferences } = session.user;
 		const types = process.env.NEXT_PUBLIC_ACCEPTED_FILE_TYPES?.split( "," );
 		const data = result.data.upload.map( async ( file ) =>
 		{
@@ -249,6 +250,9 @@ export async function uploadFiles(
 				where: {
 					name: file.name,
 					userId: session.user.id
+				},
+				include: {
+					versions: true
 				}
 			} );
 
@@ -261,7 +265,8 @@ export async function uploadFiles(
 			}
 
 			// On récupère l'identifiant unique du nouveau fichier ou du
-			//  fichier existant avant de créer une nouvelle version.
+			//  fichier existant avant de créer une nouvelle version en
+			//  fonction des préférences de l'utilisateur.
 			const fileId = !exists
 				? (
 					await prisma.file.create( {
@@ -275,8 +280,17 @@ export async function uploadFiles(
 				: exists.id;
 
 			const versionId = (
-				await prisma.version.create( {
-					data: {
+				await prisma.version.upsert( {
+					where: {
+						id:
+							exists && !preferences.versions
+								? exists.versions[ 0 ].id
+								: ""
+					},
+					update: {
+						createdAt: new Date()
+					},
+					create: {
 						hash: digest,
 						size: `${ file.size }`,
 						fileId
@@ -286,16 +300,19 @@ export async function uploadFiles(
 
 			// Une fois la version créée, on créé le dossier du fichier
 			//  dans le système de fichiers.
-			const extension = info?.ext ?? parse( file.name ).ext;
 			const fileFolder = join( userFolder, fileId );
+			const extension = `.${ info?.ext }` ?? parse( file.name ).ext;
 
 			await mkdir( fileFolder, { recursive: true } );
 
 			if ( duplication )
 			{
-				// Si une duplication a été détectée précédemment, on créé
-				//  un lien symbolique vers le fichier dupliqué afin de
-				//  réduire l'espace disque utilisé.
+				// Si une duplication a été détectée précédemment, on supprime
+				//  le fichier existant et on créé un lien symbolique vers le
+				//  fichier dupliqué afin de réduire l'espace disque utilisé.
+				const filePath = join( fileFolder, `${ versionId + extension }` );
+
+				await rm( filePath, { force: true } );
 				await link(
 					join(
 						process.cwd(),
@@ -304,7 +321,7 @@ export async function uploadFiles(
 						duplication.fileId,
 						duplication.id + parse( duplication.file.name ).ext
 					),
-					join( fileFolder, `${ versionId + extension }` )
+					filePath
 				);
 			}
 			else
@@ -321,7 +338,10 @@ export async function uploadFiles(
 			//  fichiers sous format JSON pour pouvoir les envoyer
 			//  à travers le réseau vers les composants clients.
 			//  Source : https://github.com/vercel/next.js/issues/47447
-			const path = `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ fileId }`;
+			const path = `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ fileId }${
+				preferences.extension ? extension : ""
+			}`;
+			const status = preferences.public ? "public" : "private";
 			const versions = await prisma.version.findMany( {
 				where: {
 					fileId
@@ -340,7 +360,7 @@ export async function uploadFiles(
 					0
 				),
 				path,
-				status: exists?.status ?? "private",
+				status: exists?.status ?? status,
 				versions: versions.map( ( version ) => ( {
 					uuid: version.id,
 					size: Number( version.size ),
