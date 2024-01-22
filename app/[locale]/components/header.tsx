@@ -6,7 +6,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Bell, User, KeyRound, Palette, Cctv, Bug } from "lucide-react";
+import { Bell, User, Files, Palette, Cctv, Bug } from "lucide-react";
 
 import GitHubDark from "../../../public/assets/images/github-dark.png";
 import GitHubLight from "../../../public/assets/images/github-light.png";
@@ -38,13 +38,13 @@ export const routes: {
 	{
 		title: (
 			<>
-				<KeyRound className="mr-2 inline" />
-				Compte utilisateur
+				<Files className="mr-2 inline" />
+				Stockage
 			</>
 		),
-		href: "/settings/account",
+		href: "/settings/storage",
 		description:
-			"Modification des informations de votre compte utilisateur."
+			"Personnalisation du mécanisme de téléversement des fichiers."
 	},
 	{
 		title: (
