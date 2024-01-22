@@ -46,58 +46,24 @@ export async function updateLayout(
 		};
 	}
 
-	// On vérifie après si les préférences de l'utilisateur sont
-	//  différentes de celles enregistrées dans la base de données.
-	if ( session.user.preferences.font !== result.data.font )
-	{
-		// Police de caractères
-		await prisma.preference.upsert( {
-			where: {
-				userId: session.user.id
-			},
-			update: {
-				font: result.data.font
-			},
-			create: {
-				userId: session.user.id,
-				font: result.data.font
-			}
-		} );
-	}
-
-	if ( session.user.preferences.color !== result.data.color )
-	{
-		// Couleur d'accentuation.
-		await prisma.preference.upsert( {
-			where: {
-				userId: session.user.id
-			},
-			update: {
-				color: result.data.color
-			},
-			create: {
-				userId: session.user.id,
-				color: result.data.color
-			}
-		} );
-	}
-
-	if ( session.user.preferences.theme !== result.data.theme )
-	{
-		// Thème de couleur.
-		await prisma.preference.upsert( {
-			where: {
-				userId: session.user.id
-			},
-			update: {
-				theme: result.data.theme
-			},
-			create: {
-				userId: session.user.id,
-				theme: result.data.theme
-			}
-		} );
-	}
+	// On créé ou on met à jour après les préférences de l'utilisateur dans la
+	//  base de données.
+	await prisma.preference.upsert( {
+		where: {
+			userId: session.user.id
+		},
+		update: {
+			font: result.data.font,
+			color: result.data.color,
+			theme: result.data.theme
+		},
+		create: {
+			userId: session.user.id,
+			font: result.data.font,
+			color: result.data.color,
+			theme: result.data.theme
+		}
+	} );
 
 	// On retourne enfin un message de succès.
 	return {

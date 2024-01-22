@@ -55,49 +55,20 @@ export async function updateUser(
 		};
 	}
 
-	// On vérifie après si le nom d'utilisateur est différent de celui
-	//  enregistré dans la base de données.
-	if ( session.user.name !== result.data.username )
-	{
-		// Dans ce cas, on la met à jour dans la base de données.
-		await prisma.user.update( {
-			where: {
-				id: session.user.id
-			},
-			data: {
-				name: result.data.username
-			}
-		} );
-	}
-
-	// On vérifie si l'adresse électronique fournie est différente de
-	//  celle enregistrée dans la base de données.
-	if ( session.user.email !== result.data.email )
-	{
-		// Dans ce cas, on la met à jour dans la base de données.
-		await prisma.user.update( {
-			where: {
-				email: session.user.email as string
-			},
-			data: {
-				email: result.data.email
-			}
-		} );
-	}
-
-	// On met à jour par la même occasion le mot de passe de l'utilisateur
-	//  si celui-ci a été fourni.
-	if ( result.data.password )
-	{
-		await prisma.user.update( {
-			where: {
-				id: session.user.id
-			},
-			data: {
-				password: await bcrypt.hash( result.data.password, 13 )
-			}
-		} );
-	}
+	// On met à jour après le nom d'utilisateur et l'adresse électronique
+	//  de l'utilisateur dans la base de données.
+	await prisma.user.update( {
+		where: {
+			id: session.user.id
+		},
+		data: {
+			name: result.data.username,
+			email: result.data.email,
+			password: result.data.password
+				? await bcrypt.hash( result.data.password, 13 )
+				: undefined
+		}
+	} );
 
 	// On modifie la langue sélectionnée par l'utilisateur dans les
 	//  cookies de son navigateur.
