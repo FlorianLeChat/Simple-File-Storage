@@ -57,14 +57,19 @@ async function getFiles(): Promise<FileAttributes[]>
 
 	// On retourne enfin une promesse contenant la liste des
 	//  des fichiers de l'utilisateur.
+	const { extension } = session.user.preferences;
+
 	return Promise.all(
 		files.map( async ( file ) =>
 		{
-			const path = `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ file.id }`;
+			const info = parse( file.name );
+			const path = `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ file.id }${
+				extension ? info.ext : ""
+			}`;
 
 			return {
 				uuid: file.id,
-				name: parse( file.name ).name,
+				name: info.name,
 				type: mime.getType( file.name ) ?? "application/octet-stream",
 				path,
 				status: file.status ?? "public",
