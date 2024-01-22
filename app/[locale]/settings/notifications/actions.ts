@@ -45,25 +45,21 @@ export async function updateNotifications(
 		};
 	}
 
-	// On vérifie après si le niveau de notifications fourni est différent
-	//  de celui enregistré dans la base de données.
+	// On met à jour après le niveau de notifications de l'utilisateur dans la
+	//  base de données.
 	const notifications =
 		result.data.push && result.data.level !== "off"
 			? `${ result.data.level }+mail`
 			: result.data.level;
 
-	if ( session.user.notifications !== notifications )
-	{
-		// Dans ce cas, on le met à jour dans la base de données.
-		await prisma.user.update( {
-			where: {
-				email: session.user.email as string
-			},
-			data: {
-				notifications
-			}
-		} );
-	}
+	await prisma.user.update( {
+		where: {
+			email: session.user.email as string
+		},
+		data: {
+			notifications
+		}
+	} );
 
 	// On retourne enfin un message de succès.
 	return {
