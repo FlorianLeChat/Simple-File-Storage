@@ -326,11 +326,19 @@ export async function uploadFiles(
 			}
 			else
 			{
-				// Dans le cas contraire, on créé le fichier dans le système
-				//  de fichiers comme d'habitude.
+				// Dans le cas contraire, on génère un vecteur d'initialisation
+				//  puis on chiffre le fichier avec l'algorithme AES-256-CTR
+				//  avant de l'écrire dans le système de fichiers.
+				const iv = crypto.randomBytes( 16 );
+				const cipher = crypto.createCipheriv(
+					"aes-256-ctr",
+					Buffer.from( process.env.AUTH_SECRET ?? "", "base64" ),
+					iv
+				);
+
 				await writeFile(
-					join( fileFolder, `${ versionId + extension }` ),
-					buffer
+					join( fileFolder, `${ `${ versionId }${ extension }` }` ),
+					Buffer.concat( [ iv, cipher.update( buffer ), cipher.final() ] )
 				);
 			}
 
