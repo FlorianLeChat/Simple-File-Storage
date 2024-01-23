@@ -267,13 +267,14 @@ export async function uploadFiles(
 			// On récupère l'identifiant unique du nouveau fichier ou du
 			//  fichier existant avant de créer une nouvelle version en
 			//  fonction des préférences de l'utilisateur.
+			const status = preferences.public ? "public" : "private";
 			const fileId = !exists
 				? (
 					await prisma.file.create( {
 						data: {
 							name: file.name,
 							userId: session.user.id,
-							status: "private"
+							status
 						}
 					} )
 				).id
@@ -349,7 +350,6 @@ export async function uploadFiles(
 			const path = `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ fileId }${
 				preferences.extension ? extension : ""
 			}`;
-			const status = preferences.public ? "public" : "private";
 			const versions = await prisma.version.findMany( {
 				where: {
 					fileId
