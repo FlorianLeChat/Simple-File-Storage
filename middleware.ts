@@ -36,7 +36,7 @@ export default async function middleware( request: NextRequest )
 			//  du fichier à partir de son identifiant.
 			const data = await fetch(
 				new URL(
-					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/files/${ identifier }/${ request.nextUrl.search }`,
+					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/file/${ identifier }/${ request.nextUrl.search }`,
 					request.url
 				),
 				{ headers: request.headers }
@@ -155,7 +155,7 @@ export default async function middleware( request: NextRequest )
 export const config = {
 	matcher: [
 		"/",
-		"/((?!api/admin|api/user|api/files|assets|locales|_next|_vercel|manifest.webmanifest).*)"
+		"/((?!api/admin|api/user|api/version|api/versions|api/file|api/files|assets|locales|_next|_vercel|manifest.webmanifest).*)"
 	]
 };
 
