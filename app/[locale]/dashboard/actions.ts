@@ -6,7 +6,6 @@
 "use server";
 
 import { z } from "zod";
-import crypto from "crypto";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
@@ -228,16 +227,17 @@ export async function uploadFiles(
 
 			// On génère une chaîne de hachage unique représentant les
 			//  données du fichier.
-			const hash = crypto.createHash( "sha256" );
-			hash.update( buffer );
+			const digest = await crypto.subtle.digest( "SHA-256", buffer );
+			const hash = Array.from( new Uint8Array( digest ) )
+				.map( ( byte ) => byte.toString( 16 ).padStart( 2, "0" ) )
+				.join( "" );
 
 			// On détermine si ce fichier semble être une duplication d'une
 			//  autre version d'un fichier déjà téléversé par un autre
 			//  utilisateur.
-			const digest = hash.digest( "hex" );
 			const duplication = await prisma.version.findFirst( {
 				where: {
-					hash: digest
+					hash
 				},
 				include: {
 					file: true
@@ -292,7 +292,7 @@ export async function uploadFiles(
 						createdAt: new Date()
 					},
 					create: {
-						hash: digest,
+						hash,
 						size: `${ file.size }`,
 						fileId
 					}
@@ -328,18 +328,35 @@ export async function uploadFiles(
 			else
 			{
 				// Dans le cas contraire, on génère un vecteur d'initialisation
-				//  puis on chiffre le fichier avec l'algorithme AES-256-CTR
+				//  puis on chiffre le fichier avec l'algorithme AES-256-GCM
 				//  avant de l'écrire dans le système de fichiers.
-				const iv = crypto.randomBytes( 16 );
-				const cipher = crypto.createCipheriv(
-					"aes-256-ctr",
+				const iv = crypto.getRandomValues( new Uint8Array( 16 ) );
+				const cipher = await crypto.subtle.importKey(
+					"raw",
 					Buffer.from( process.env.AUTH_SECRET ?? "", "base64" ),
-					iv
+					{
+						name: "AES-GCM",
+						length: 256
+					},
+					true,
+					[ "encrypt", "decrypt" ]
 				);
 
 				await writeFile(
 					join( fileFolder, `${ `${ versionId }${ extension }` }` ),
-					Buffer.concat( [ iv, cipher.update( buffer ), cipher.final() ] )
+					Buffer.concat( [
+						iv,
+						new Uint8Array(
+							await crypto.subtle.encrypt(
+								{
+									iv,
+									name: "AES-GCM"
+								},
+								cipher,
+								buffer
+							)
+						)
+					] )
 				);
 			}
 
