@@ -8,19 +8,42 @@ import { z } from "zod";
 import schema from "@/schemas/file-upload";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
 import serverAction from "@/utilities/recaptcha";
+import { enGB, fr } from "date-fns/locale";
+import { Ban,
+	Loader2,
+	ShieldCheck,
+	UploadCloud,
+	CalendarDays,
+	PlusCircleIcon } from "lucide-react";
+import { useLocale } from "next-intl";
 import { useSession } from "next-auth/react";
 import { formatSize } from "@/utilities/react-table";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
+import { addDays, format } from "date-fns";
+import { useEffect, useState } from "react";
 import { type FileAttributes } from "@/interfaces/File";
 import type { Table, TableMeta } from "@tanstack/react-table";
-import { Ban, Loader2, PlusCircleIcon, UploadCloud } from "lucide-react";
 
+import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
+import { Switch } from "../../components/ui/switch";
+import { Dialog,
+	DialogClose,
+	DialogTrigger,
+	DialogContent } from "../../components/ui/dialog";
 import { Progress } from "../../components/ui/progress";
 import { useToast } from "../../components/ui/use-toast";
+import { Calendar } from "../../components/ui/calendar";
+import { Select,
+	SelectItem,
+	SelectValue,
+	SelectTrigger,
+	SelectContent } from "../../components/ui/select";
+import { Popover,
+	PopoverTrigger,
+	PopoverContent } from "../../components/ui/popover";
 import { Form,
 	FormItem,
 	FormField,
@@ -29,13 +52,6 @@ import { Form,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
 import { uploadFiles } from "../actions";
-import { Dialog,
-	DialogClose,
-	DialogTitle,
-	DialogHeader,
-	DialogTrigger,
-	DialogContent,
-	DialogDescription } from "../../components/ui/dialog";
 import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function FileUpload( {
@@ -45,8 +61,12 @@ export default function FileUpload( {
 } )
 {
 	// Déclaration des constantes.
+	const today = new Date();
+	const locale = useLocale();
 	const states = table.options.meta as TableMeta<FileAttributes>;
+	const oneYear = addDays( today, 365 );
 	const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA ?? 0 );
+	const dateFormat = locale === "fr" ? fr : enGB;
 	const fileSchema = schema.omit( { upload: true } ).extend( {
 		// Modification de la vérification du fichier pour prendre en compte
 		//  la différence entre les données côté client et celles envoyées
@@ -70,7 +90,9 @@ export default function FileUpload( {
 	const form = useForm<z.infer<typeof fileSchema>>( {
 		resolver: zodResolver( fileSchema ),
 		defaultValues: {
-			upload: ""
+			upload: "",
+			encryption: false,
+			expiration: ""
 		}
 	} );
 
@@ -199,28 +221,7 @@ export default function FileUpload( {
 				</span>
 			</DialogTrigger>
 
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>
-						<UploadCloud className="mr-2 inline h-5 w-5" />
-
-						<span className="align-middle">
-							Téléversement de fichiers
-						</span>
-					</DialogTitle>
-
-					<DialogDescription>
-						Tous les formats de fichiers sont acceptés. La vitesse
-						de téléversement dépend de votre connexion Internet et
-						des capacités matérielles de votre ordinateur.{" "}
-						<strong>
-							Si un fichier du même nom existe déjà, il sera
-							remplacé et une nouvelle révision sera créée pour
-							être restaurée ultérieurement si besoin.
-						</strong>
-					</DialogDescription>
-				</DialogHeader>
-
+			<DialogContent className="h-1/2 overflow-auto">
 				<Form {...form}>
 					<form
 						action={async ( formData: FormData ) =>
@@ -236,19 +237,42 @@ export default function FileUpload( {
 							// Activation de l'état de chargement.
 							states.setLoading( [ "modal" ] );
 
+							// Récupération des données du formulaire.
+							formData.set(
+								"expiration",
+								form.getValues( "expiration" )
+							);
+
 							// Exécution de l'action côté serveur.
 							return serverAction( uploadAction, formData );
 						}}
-						className="space-y-6"
+						className="space-y-8"
 					>
+						{/* Fichier(s) à téléverser */}
 						<FormField
 							name="upload"
 							control={form.control}
 							render={( { field } ) => (
 								<FormItem>
-									<FormLabel className="sr-only">
-										Fichiers à téléverser
+									<FormLabel>
+										<UploadCloud className="mr-2 inline h-6 w-6" />
+										Téléversement de fichiers
 									</FormLabel>
+
+									<FormDescription>
+										Tous les formats de fichiers sont
+										acceptés. La vitesse de téléversement
+										dépend de votre connexion Internet et
+										des capacités matérielles de votre
+										ordinateur.{" "}
+										<strong>
+											Si un fichier du même nom existe
+											déjà, il sera remplacé et une
+											nouvelle révision sera créée pour
+											être restaurée ultérieurement si
+											besoin.
+										</strong>
+									</FormDescription>
 
 									<FormControl>
 										<Input
@@ -260,7 +284,7 @@ export default function FileUpload( {
 											}
 											multiple
 											disabled={loading}
-											className="!mt-0 file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
+											className="file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
 										/>
 									</FormControl>
 
@@ -279,6 +303,178 @@ export default function FileUpload( {
 											</FormDescription>
 										</>
 									)}
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{/* Chiffrement renforcé */}
+						<FormField
+							name="encryption"
+							control={form.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormLabel>
+										<ShieldCheck className="mr-2 inline h-6 w-6" />
+										Chiffrement renforcé{" "}
+										<em>(optionnel)</em>
+									</FormLabel>
+
+									<FormDescription>
+										Les fichiers sont chiffrés avec une clé
+										de chiffrement connue uniquement par le
+										serveur. Si vous activez cette option,
+										le fichier sera chiffré avec une clé
+										générée aléatoirement et ne sera pas
+										enregistrée sur le serveur.{" "}
+										<strong>
+											Attention, une fois le fichier
+											téléversé, une clé de déchiffrement
+											sera affichée et vous devrez la
+											conserver afin de pouvoir accéder au
+											fichier. Si vous perdez cette clé,
+											vous ne pourrez plus accéder au
+											fichier.
+										</strong>
+									</FormDescription>
+
+									<FormControl>
+										<div className="flex items-center space-x-2">
+											<Switch
+												id="encryption"
+												name="encryption"
+												checked={field.value}
+												disabled={loading}
+												onCheckedChange={field.onChange}
+											/>
+
+											<Label
+												htmlFor="encryption"
+												className="leading-5"
+											>
+												Activer le chiffrement renforcé
+											</Label>
+										</div>
+									</FormControl>
+
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						{/* Date d'expiration */}
+						<FormField
+							name="expiration"
+							control={form.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormLabel>
+										<CalendarDays className="mr-2 inline h-6 w-6" />
+										Date d&lsquo;expiration{" "}
+										<em>(optionnel)</em>
+									</FormLabel>
+
+									<FormDescription>
+										Les nouveaux fichiers téléversés
+										n&lsquo;ont pas de date
+										d&lsquo;expiration par défaut. Si vous
+										souhaitez que le fichier soit supprimé
+										automatiquement après une certaine
+										durée, entrez une date
+										d&lsquo;expiration ici.{" "}
+										<strong>
+											Attention, une fois le fichier
+											téléversé, vous ne pourrez plus
+											changer sa date d&lsquo;expiration.
+											La suppression du fichier sera
+											effectuée à minuit le jour de
+											l&lsquo;expiration.
+										</strong>
+									</FormDescription>
+
+									<FormControl>
+										<Popover>
+											<PopoverTrigger asChild>
+												<Button
+													variant="outline"
+													disabled={loading}
+													className={merge(
+														"w-full justify-start text-left font-normal",
+														!field.value
+															&& "text-muted-foreground"
+													)}
+												>
+													<CalendarDays className="mr-2 h-4 w-4" />
+
+													{field.value ? (
+														format(
+															new Date(
+																field.value
+															),
+															"PPP",
+															{
+																locale: dateFormat
+															}
+														)
+													) : (
+														<span>
+															Sélectionner une
+															date
+														</span>
+													)}
+												</Button>
+											</PopoverTrigger>
+
+											<PopoverContent className="flex w-auto flex-col space-y-2 p-2">
+												<Select
+													onValueChange={( value ) => field.onChange(
+														addDays(
+															new Date(),
+															Number( value )
+														).toISOString()
+													)}
+												>
+													<SelectTrigger>
+														<SelectValue placeholder="Sélectionner une présélection" />
+													</SelectTrigger>
+
+													<SelectContent position="popper">
+														<SelectItem value="1">
+															Demain
+														</SelectItem>
+
+														<SelectItem value="3">
+															Dans trois jours
+														</SelectItem>
+
+														<SelectItem value="7">
+															Dans une semaine
+														</SelectItem>
+
+														<SelectItem value="31">
+															Dans un mois
+														</SelectItem>
+													</SelectContent>
+												</Select>
+
+												<Calendar
+													mode="single"
+													locale={dateFormat}
+													selected={
+														new Date( field.value )
+													}
+													disabled={( date ) => date > oneYear
+														|| date < today}
+													onSelect={( value ) => field.onChange(
+														value?.toISOString()
+													)}
+													className="rounded-md border"
+													initialFocus
+												/>
+											</PopoverContent>
+										</Popover>
+									</FormControl>
 
 									<FormMessage />
 								</FormItem>
