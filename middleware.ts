@@ -44,20 +44,66 @@ export default async function middleware( request: NextRequest )
 
 			if ( data.ok )
 			{
-				// Si l'API semble avoir traitée la requête avec succès,
-				//  on génère une URL de redirection vers le fichier.
+				// On récupère les informations du fichier à partir
+				//  de la réponse sous format JSON avant de déterminer
+				//  son extension.
 				const file = ( await data.json() ) as FileWithVersions;
 				const extension = file.name
 					.replace( /^.*[/\\]/, "" )
 					.replace( /^.*\./, "" )
 					.toLowerCase();
 
-				return NextResponse.rewrite(
+				// On récupère le contenu du fichier à partir du système
+				//  de fichiers du serveur.
+				const content = await fetch(
 					new URL(
 						`${ process.env.__NEXT_ROUTER_BASEPATH }/files/${ file.userId }/${ file.id }/${ file.versions[ 0 ].id }.${ extension }`,
 						request.url
-					).href
+					).href,
+					{ headers: request.headers }
 				);
+
+				if ( !content.ok )
+				{
+					return new NextResponse( null, { status: 400 } );
+				}
+
+				try
+				{
+					// On récupère le tampon de données du fichier ainsi que
+					//  la clé de chiffrement.
+					const buffer = new Uint8Array( await content.arrayBuffer() );
+					const cipher = await crypto.subtle.importKey(
+						"raw",
+						Buffer.from( process.env.AUTH_SECRET ?? "", "base64" ),
+						{
+							name: "AES-GCM",
+							length: 256
+						},
+						true,
+						[ "encrypt", "decrypt" ]
+					);
+
+					// Une fois récupérés, on déchiffre le contenu du fichier
+					//  avec son vecteur d'initialisation et on retourne le
+					//  résultat comme une réponse classique.
+					return new NextResponse(
+						await crypto.subtle.decrypt(
+							{
+								iv: buffer.subarray( 0, 16 ),
+								name: "AES-GCM"
+							},
+							cipher,
+							buffer.subarray( 16 )
+						)
+					);
+				}
+				catch
+				{
+					// Si une erreur survient lors du déchiffrement du contenu
+					//  du fichier, on retourne une erreur.
+					return new NextResponse( null, { status: 400 } );
+				}
 			}
 		}
 	}
