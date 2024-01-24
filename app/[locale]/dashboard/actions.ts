@@ -152,7 +152,9 @@ export async function uploadFiles(
 
 	// On tente ensuite de valider les données du formulaire.
 	const result = schema.safeParse( {
-		upload: formData.getAll( "upload" )
+		upload: formData.getAll( "upload" ),
+		encryption: formData.get( "encryption" ) === "on",
+		expiration: formData.get( "expiration" )
 	} );
 
 	if ( !result.success )
@@ -274,7 +276,11 @@ export async function uploadFiles(
 						data: {
 							name: file.name,
 							userId: session.user.id,
-							status
+							status,
+							expiration:
+								result.data.expiration !== ""
+									? new Date( result.data.expiration )
+									: null
 						}
 					} )
 				).id
@@ -300,9 +306,13 @@ export async function uploadFiles(
 			).id;
 
 			// Une fois la version créée, on créé le dossier du fichier
-			//  dans le système de fichiers.
+			//  dans le système de fichiers ainsi qu'une clé de chiffrement
+			//  aléatoire indépendante de celle du serveur.
 			const fileFolder = join( userFolder, fileId );
 			const extension = `.${ info?.ext }` ?? parse( file.name ).ext;
+			const key = Buffer.from(
+				crypto.getRandomValues( new Uint8Array( 32 ) )
+			).toString( "base64" );
 
 			await mkdir( fileFolder, { recursive: true } );
 
@@ -333,7 +343,12 @@ export async function uploadFiles(
 				const iv = crypto.getRandomValues( new Uint8Array( 16 ) );
 				const cipher = await crypto.subtle.importKey(
 					"raw",
-					Buffer.from( process.env.AUTH_SECRET ?? "", "base64" ),
+					Buffer.from(
+						result.data.encryption
+							? key
+							: process.env.AUTH_SECRET ?? "",
+						"base64"
+					),
 					{
 						name: "AES-GCM",
 						length: 256
@@ -377,6 +392,7 @@ export async function uploadFiles(
 			} );
 
 			return JSON.stringify( {
+				key,
 				uuid: fileId,
 				name: parse( file.name ).name,
 				type: file.type,

@@ -33,7 +33,13 @@ const schema = z.object( {
 				return file.type.startsWith( acceptedType );
 			} ) ),
 			"wrong_file_type"
-		)
+		),
+
+	// Chiffrement renforcé.
+	encryption: z.boolean(),
+
+	// Date d'expiration du fichier.
+	expiration: z.string().datetime( { offset: true } ).or( z.literal( "" ) )
 } );
 
 export default schema;

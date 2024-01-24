@@ -51,6 +51,7 @@ model File {
 	userId       String
 	name         String
 	status	     String
+	expiration   DateTime?
 	versions     Version[]
 }
 
