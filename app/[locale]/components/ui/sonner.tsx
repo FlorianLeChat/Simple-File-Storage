@@ -14,7 +14,6 @@ function Toaster( { ...props }: ToasterProps )
 {
 	return (
 		<Sonner
-			position="bottom-center"
 			className="toaster group"
 			richColors
 			closeButton
