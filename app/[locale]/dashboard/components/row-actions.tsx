@@ -18,6 +18,7 @@ import { Ban,
 	History,
 	RefreshCw,
 	FolderLock,
+	ShieldCheck,
 	ArrowUpRight,
 	ClipboardCopy,
 	MoreHorizontal,
@@ -69,8 +70,10 @@ export default function RowActions( {
 
 	// Déclaration des variables d'état.
 	const rename = useRef<HTMLButtonElement>( null );
+	const access = useRef<HTMLButtonElement>( null );
 	const loading = states.loading.includes( row.id );
 	const [ open, setOpen ] = useState( false );
+	const [ password, setPassword ] = useState( "" );
 
 	// Filtrage des données d'une ou plusieurs lignes.
 	const rowData = states.files.filter( ( file ) => file.uuid === row.id );
@@ -533,7 +536,7 @@ export default function RowActions( {
 										);
 									}
 								}}
-								disabled={loading}
+								disabled={loading || !selectedData[ 0 ].name}
 								className="max-sm:w-full"
 							>
 								{loading ? (
@@ -552,16 +555,111 @@ export default function RowActions( {
 					</DialogContent>
 				</Dialog>
 
-				<a
-					rel="noopener noreferrer"
-					href={rowData[ 0 ].path}
-					target="_blank"
-				>
-					<DropdownMenuItem>
-						<ArrowUpRight className="mr-2 h-4 w-4" />
-						Accéder à la ressource
-					</DropdownMenuItem>
-				</a>
+				{rowData[ 0 ].encrypted ? (
+					<Dialog>
+						<DialogTrigger asChild>
+							<DropdownMenuItem
+								// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+								onSelect={( event ) => event.preventDefault()}
+							>
+								<ArrowUpRight className="mr-2 h-4 w-4" />
+								Accéder à la ressource
+							</DropdownMenuItem>
+						</DialogTrigger>
+
+						<DialogContent>
+							<DialogHeader>
+								<DialogTitle>
+									<ShieldCheck className="mr-2 inline h-5 w-5" />
+
+									<span className="align-middle">
+										Veuillez saisir la clé de déchiffrement.
+									</span>
+								</DialogTitle>
+
+								<DialogDescription>
+									Ce fichier est chiffré par une clé que le
+									serveur ne possède pas. Pour accéder à la
+									ressource, veuillez saisir la clé de
+									déchiffrement qui vous a été fournie lors du
+									téléversement du fichier.{" "}
+									<strong>
+										En cas de perte, vous ne pourrez plus
+										accéder à la ressource. Si c&lsquo;est
+										le cas, supprimez le fichier et
+										téléversez-le à nouveau.
+										L&lsquo;assistance technique ne pourra
+										pas vous aider car elle ne possède pas
+										la clé de déchiffrement.
+									</strong>
+								</DialogDescription>
+							</DialogHeader>
+
+							<Input
+								type="text"
+								onInput={( event ) =>
+								{
+									// Mise à jour de l'entrée utilisateur.
+									setPassword( event.currentTarget.value );
+								}}
+								onKeyDown={( event ) =>
+								{
+									// Soumission du formulaire par clavier.
+									const { key } = event;
+
+									if (
+										key === "Enter"
+										|| key === "NumpadEnter"
+									)
+									{
+										access.current?.click();
+									}
+								}}
+								spellCheck="false"
+								placeholder="your_key"
+								autoComplete="off"
+								autoCapitalize="off"
+							/>
+
+							<DialogFooter>
+								<Button
+									ref={access}
+									onClick={() =>
+									{
+										// Ouverture de la ressource dans un nouvel onglet.
+										window.open(
+											new URL(
+												`${ rowData[ 0 ].path }?key=${ password }`,
+												window.location.href
+											).href,
+											"_blank",
+											"noopener,noreferrer"
+										);
+
+										// Fermeture du menu des actions.
+										setOpen( false );
+									}}
+									disabled={loading || !password}
+									className="max-sm:w-full"
+								>
+									<ArrowUpRight className="mr-2 h-4 w-4" />
+									Accéder
+								</Button>
+							</DialogFooter>
+						</DialogContent>
+					</Dialog>
+				) : (
+					<a
+						rel="noopener noreferrer"
+						href={rowData[ 0 ].path}
+						target="_blank"
+					>
+						<DropdownMenuItem>
+							<ArrowUpRight className="mr-2 h-4 w-4" />
+							Accéder à la ressource
+						</DropdownMenuItem>
+					</a>
+				)}
 
 				<DropdownMenuSeparator />
 
