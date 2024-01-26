@@ -27,7 +27,7 @@ import type { Metadata, Viewport } from "next";
 // Importation des composants.
 import Footer from "./components/footer";
 
-const Toaster = lazy( () => import( "./components/ui/toaster" ) );
+const Sonner = lazy( () => import( "./components/ui/sonner" ) );
 const Recaptcha = lazy( () => import( "./components/recaptcha" ) );
 const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
 
@@ -261,7 +261,7 @@ export default async function Layout( {
 					<Recaptcha />
 
 					{/* Composant des notifications */}
-					<Toaster />
+					<Sonner />
 
 					{/* Pied de page */}
 					<Footer />
