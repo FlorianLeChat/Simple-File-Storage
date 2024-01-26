@@ -13,17 +13,17 @@ import { Lock,
 	RefreshCw,
 	FileImage,
 	Languages } from "lucide-react";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useLocale } from "next-intl";
+import { formatSize } from "@/utilities/react-table";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
 import { useState, useEffect } from "react";
 
-import { formatSize } from "@/utilities/react-table";
 import { Input } from "../../components/ui/input";
-import { useToast } from "../../components/ui/use-toast";
 import { Select,
 	SelectItem,
 	SelectValue,
@@ -64,7 +64,6 @@ export default function User( { session }: { session: Session } )
 	const maxAvatarSize = Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE ?? 0 );
 
 	// Déclaration des variables d'état.
-	const { toast } = useToast();
 	const [ loading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateUser, {
 		success: true,
@@ -113,9 +112,7 @@ export default function User( { session }: { session: Session } )
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast( {
-				title: "form.errors.update_failed",
-				variant: "destructive",
+			toast.error( "form.errors.update_failed", {
 				description: "form.errors.server_error"
 			} );
 
@@ -140,15 +137,20 @@ export default function User( { session }: { session: Session } )
 		//  a été fournie.
 		if ( reason !== "" )
 		{
-			toast( {
-				title: success
-					? "form.info.update_success"
-					: "form.errors.update_failed",
-				variant: success ? "default" : "destructive",
-				description: reason
-			} );
+			if ( success )
+			{
+				toast.success( "form.info.update_success", {
+					description: reason
+				} );
+			}
+			else
+			{
+				toast.error( "form.errors.update_failed", {
+					description: reason
+				} );
+			}
 		}
-	}, [ toast, form, updateState ] );
+	}, [ form, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (

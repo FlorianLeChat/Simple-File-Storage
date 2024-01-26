@@ -4,6 +4,7 @@
 
 "use client";
 
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useFormState } from "react-dom";
@@ -14,7 +15,6 @@ import { Globe, Link2, RefreshCw, Loader2, History } from "lucide-react";
 import { Label } from "../../components/ui/label";
 import { Switch } from "../../components/ui/switch";
 import { Button } from "../../components/ui/button";
-import { useToast } from "../../components/ui/use-toast";
 import { Form,
 	FormItem,
 	FormLabel,
@@ -26,7 +26,6 @@ import { updateStorage } from "../storage/actions";
 export default function Storage( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
-	const { toast } = useToast();
 	const [ loading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateStorage, {
 		success: true,
@@ -53,9 +52,7 @@ export default function Storage( { session }: { session: Session } )
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast( {
-				title: "form.errors.update_failed",
-				variant: "destructive",
+			toast.error( "form.errors.update_failed", {
 				description: "form.errors.server_error"
 			} );
 
@@ -73,15 +70,20 @@ export default function Storage( { session }: { session: Session } )
 		//  a été fournie.
 		if ( reason !== "" )
 		{
-			toast( {
-				title: success
-					? "form.info.update_success"
-					: "form.errors.update_failed",
-				variant: success ? "default" : "destructive",
-				description: reason
-			} );
+			if ( success )
+			{
+				toast.success( "form.info.update_success", {
+					description: reason
+				} );
+			}
+			else
+			{
+				toast.error( "form.errors.update_failed", {
+					description: reason
+				} );
+			}
 		}
-	}, [ toast, form, updateState ] );
+	}, [ form, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (

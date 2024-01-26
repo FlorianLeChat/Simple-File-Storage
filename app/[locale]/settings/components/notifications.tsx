@@ -4,6 +4,7 @@
 
 "use client";
 
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import type { Session } from "next-auth";
@@ -13,7 +14,6 @@ import { Loader2, RefreshCw, Bell, User2, EyeOff, Mail } from "lucide-react";
 
 import { Switch } from "../../components/ui/switch";
 import { Button } from "../../components/ui/button";
-import { useToast } from "../../components/ui/use-toast";
 import { Form,
 	FormItem,
 	FormField,
@@ -29,7 +29,6 @@ export default function Notifications( { session }: { session: Session } )
 	const notifications = session.user.notifications.split( "+" );
 
 	// Déclaration des variables d'état.
-	const { toast } = useToast();
 	const [ push, setPush ] = useState( notifications[ 0 ] !== "off" );
 	const [ loading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateNotifications, {
@@ -56,9 +55,7 @@ export default function Notifications( { session }: { session: Session } )
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast( {
-				title: "form.errors.update_failed",
-				variant: "destructive",
+			toast.error( "form.errors.update_failed", {
 				description: "form.errors.server_error"
 			} );
 
@@ -76,15 +73,20 @@ export default function Notifications( { session }: { session: Session } )
 		//  a été fournie.
 		if ( reason !== "" )
 		{
-			toast( {
-				title: success
-					? "form.info.update_success"
-					: "form.errors.update_failed",
-				variant: success ? "default" : "destructive",
-				description: reason
-			} );
+			if ( success )
+			{
+				toast.success( "form.info.update_success", {
+					description: reason
+				} );
+			}
+			else
+			{
+				toast.error( "form.errors.update_failed", {
+					description: reason
+				} );
+			}
 		}
-	}, [ toast, form, updateState ] );
+	}, [ form, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
