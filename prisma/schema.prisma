@@ -51,6 +51,7 @@ model File {
 	userId       String
 	name         String
 	status	     String
+	encrypted    Boolean    @default(false)
 	expiration   DateTime?
 	versions     Version[]
 }
