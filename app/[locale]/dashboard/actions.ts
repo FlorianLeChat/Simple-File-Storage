@@ -392,7 +392,7 @@ export async function uploadFiles(
 			} );
 
 			return JSON.stringify( {
-				key,
+				key: result.data.encryption ? key : undefined,
 				uuid: fileId,
 				name: parse( file.name ).name,
 				type: file.type,
