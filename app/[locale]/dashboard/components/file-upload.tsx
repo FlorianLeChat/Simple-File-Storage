@@ -133,7 +133,32 @@ export default function FileUpload( {
 			data.forEach( ( file ) =>
 			{
 				// Transformation de la chaîne JSON en objet.
-				const json = JSON.parse( file ) as FileAttributes;
+				const json = JSON.parse( file ) as FileAttributes & {
+					key?: string;
+				};
+
+				// Récupération de la clé de chiffrement si elle existe.
+				if ( json.key )
+				{
+					toast.warning( "form.info.upload_encrypted", {
+						action: {
+							label: "Copier",
+							onClick: ( event ) =>
+							{
+								// Suppression de la fermeture automatique.
+								event.preventDefault();
+
+								// Copie dans le presse-papier.
+								navigator.clipboard.writeText(
+									json.key as string
+								);
+							}
+						},
+						duration: 60 * 1000, // 1 minute.
+						dismissible: false,
+						description: "form.info.encryption_success"
+					} );
+				}
 
 				// Ajout du fichier à la liste des fichiers téléversés.
 				uploaded.push( {
