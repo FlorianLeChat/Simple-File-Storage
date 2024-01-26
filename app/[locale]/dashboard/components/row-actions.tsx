@@ -5,6 +5,7 @@
 
 "use client";
 
+import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import serverAction from "@/utilities/recaptcha";
 import { Ban,
@@ -28,7 +29,6 @@ import type { Table, Row, TableMeta } from "@tanstack/react-table";
 import { Input } from "../../components/ui/input";
 import FileHistory from "./file-history";
 import ShareManager from "./share-manager";
-import { useToast } from "../../components/ui/use-toast";
 import { Dialog,
 	DialogTitle,
 	DialogHeader,
@@ -70,7 +70,6 @@ export default function RowActions( {
 	// Déclaration des variables d'état.
 	const rename = useRef<HTMLButtonElement>( null );
 	const loading = states.loading.includes( row.id );
-	const { toast } = useToast();
 	const [ open, setOpen ] = useState( false );
 
 	// Filtrage des données d'une ou plusieurs lignes.
@@ -199,15 +198,26 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									toast( {
-										title: "form.info.update_success",
-										variant: state
-											? "default"
-											: "destructive",
-										description: state
-											? "form.info.status_updated"
-											: "form.errors.server_error"
-									} );
+									if ( state )
+									{
+										toast.success(
+											"form.info.update_success",
+											{
+												description:
+													"form.info.status_updated"
+											}
+										);
+									}
+									else
+									{
+										toast.error(
+											"form.errors.update_failed",
+											{
+												description:
+													"form.errors.server_error"
+											}
+										);
+									}
 								}}
 							>
 								<Check className="mr-2 h-4 w-4" />
@@ -298,15 +308,26 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									toast( {
-										title: "form.info.update_success",
-										variant: state
-											? "default"
-											: "destructive",
-										description: state
-											? "form.info.status_updated"
-											: "form.errors.server_error"
-									} );
+									if ( state )
+									{
+										toast.success(
+											"form.info.update_success",
+											{
+												description:
+													"form.info.status_updated"
+											}
+										);
+									}
+									else
+									{
+										toast.error(
+											"form.errors.update_failed",
+											{
+												description:
+													"form.errors.server_error"
+											}
+										);
+									}
 								}}
 							>
 								<Check className="mr-2 h-4 w-4" />
@@ -491,15 +512,26 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									toast( {
-										title: "form.info.update_success",
-										variant: state
-											? "default"
-											: "destructive",
-										description: state
-											? "form.info.name_updated"
-											: "form.errors.server_error"
-									} );
+									if ( state )
+									{
+										toast.success(
+											"form.info.update_success",
+											{
+												description:
+													"form.info.name_updated"
+											}
+										);
+									}
+									else
+									{
+										toast.error(
+											"form.errors.update_failed",
+											{
+												description:
+													"form.errors.server_error"
+											}
+										);
+									}
 								}}
 								disabled={loading}
 								className="max-sm:w-full"
@@ -664,15 +696,26 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									toast( {
-										title: "form.info.action_success",
-										variant: state
-											? "default"
-											: "destructive",
-										description: state
-											? "form.info.file_deleted"
-											: "form.errors.server_error"
-									} );
+									if ( state )
+									{
+										toast.success(
+											"form.info.action_success",
+											{
+												description:
+													"form.info.name_updated"
+											}
+										);
+									}
+									else
+									{
+										toast.error(
+											"form.errors.file_deleted",
+											{
+												description:
+													"form.errors.server_error"
+											}
+										);
+									}
 								}}
 							>
 								<Check className="mr-2 h-4 w-4" />

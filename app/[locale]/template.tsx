@@ -6,17 +6,11 @@
 "use client";
 
 // Importation des dépendances.
-import { useEffect } from "react";
-import type { ReactNode } from "react";
-
-// Importation des composants.
-import { useToast } from "./components/ui/use-toast";
+import { toast } from "sonner";
+import { type ReactNode, useEffect } from "react";
 
 export default function Template( { children }: { children: ReactNode } )
 {
-	// Déclaration des variables d'état.
-	const { toast } = useToast();
-
 	// Affichage automatique des messages d'erreur.
 	useEffect( () =>
 	{
@@ -30,14 +24,12 @@ export default function Template( { children }: { children: ReactNode } )
 		{
 			setTimeout( () =>
 			{
-				toast( {
-					title: "Erreur interne",
-					variant: "destructive",
+				toast.error( "Erreur interne", {
 					description: error
 				} );
 			}, 0 );
 		}
-	}, [ toast ] );
+	}, [] );
 
 	// Affichage du rendu HTML de la page.
 	return children;

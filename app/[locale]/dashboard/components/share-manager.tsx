@@ -21,7 +21,6 @@ import { Select,
 	SelectValue,
 	SelectTrigger,
 	SelectContent } from "../../components/ui/select";
-import { useToast } from "../../components/ui/use-toast";
 import { Avatar,
 	AvatarImage,
 	AvatarFallback } from "../../components/ui/avatar";
@@ -57,33 +56,14 @@ const users = [
 
 export default function ShareManager()
 {
-	// Déclaration des constantes.
-	const { toast } = useToast();
-
 	// Déclaration des variables d'état.
 	const [ search, setSearch ] = useState( "" );
 	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Met à jour les informations de partage d'un utilisateur.
-	const updateSharing = ( data: string ) =>
+	const updateSharing = () =>
 	{
 		setIsLoading( true );
-
-		setTimeout( () =>
-		{
-			toast( {
-				title: "Vous avez soumis les informations suivantes :",
-				description: (
-					<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-						<code className="text-white">
-							{JSON.stringify( data, null, 4 )}
-						</code>
-					</pre>
-				)
-			} );
-
-			setIsLoading( false );
-		}, 3000 );
 	};
 
 	// Affichage du rendu HTML du composant.

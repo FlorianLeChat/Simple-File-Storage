@@ -6,6 +6,7 @@
 
 import { z } from "zod";
 import schema from "@/schemas/file-upload";
+import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
@@ -34,7 +35,6 @@ import { Dialog,
 	DialogTrigger,
 	DialogContent } from "../../components/ui/dialog";
 import { Progress } from "../../components/ui/progress";
-import { useToast } from "../../components/ui/use-toast";
 import { Calendar } from "../../components/ui/calendar";
 import { Select,
 	SelectItem,
@@ -77,7 +77,6 @@ export default function FileUpload( {
 	// Déclaration des variables d'état.
 	const session = useSession();
 	const loading = states.loading.length !== 0;
-	const { toast } = useToast();
 	const [ open, setOpen ] = useState( false );
 	const [ uploadState, uploadAction ] = useFormState( uploadFiles, {
 		success: true,
@@ -107,9 +106,7 @@ export default function FileUpload( {
 			//  niveau du serveur.
 			states.setLoading( [ "modal" ] );
 
-			toast( {
-				title: "form.errors.update_failed",
-				variant: "destructive",
+			toast.error( "form.errors.update_failed", {
 				description: "form.errors.server_error"
 			} );
 
@@ -198,14 +195,19 @@ export default function FileUpload( {
 
 		states.setLoading( [] );
 
-		toast( {
-			title: success
-				? "form.info.upload_success"
-				: "form.errors.upload_failed",
-			variant: success ? "default" : "destructive",
-			description: reason
-		} );
-	}, [ form, states, uploadState, toast ] );
+		if ( success )
+		{
+			toast.success( "form.info.upload_success", {
+				description: reason
+			} );
+		}
+		else
+		{
+			toast.error( "form.errors.upload_failed", {
+				description: reason
+			} );
+		}
+	}, [ form, states, uploadState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (

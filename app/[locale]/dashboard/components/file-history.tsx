@@ -4,6 +4,7 @@
 
 "use client";
 
+import { toast } from "sonner";
 import { useState } from "react";
 import { formatSize } from "@/utilities/react-table";
 import type { Table, Row, TableMeta } from "@tanstack/react-table";
@@ -11,7 +12,6 @@ import type { FileAttributes } from "@/interfaces/File";
 import { Ban, Check, History, ArrowUpRight } from "lucide-react";
 
 import serverAction from "@/utilities/recaptcha";
-import { useToast } from "../../components/ui/use-toast";
 import { Separator } from "../../components/ui/separator";
 import { ScrollArea } from "../../components/ui/scroll-area";
 import { restoreVersion } from "../actions";
@@ -41,7 +41,6 @@ export default function FileHistory( {
 
 	// Déclaration des variables d'état.
 	const loading = states.loading.length !== 0;
-	const { toast } = useToast();
 	const [ identifier, setIdentifier ] = useState( "" );
 
 	// Affichage du rendu HTML du composant.
@@ -224,15 +223,26 @@ export default function FileHistory( {
 													states.setLoading( [] );
 
 													// Envoi d'une notification.
-													toast( {
-														title: "form.info.action_success",
-														variant: data
-															? "default"
-															: "destructive",
-														description: data
-															? "form.info.version_restored"
-															: "form.errors.server_error"
-													} );
+													if ( data )
+													{
+														toast.success(
+															"form.info.action_success",
+															{
+																description:
+																	"form.info.version_restored"
+															}
+														);
+													}
+													else
+													{
+														toast.error(
+															"form.errors.action_failed",
+															{
+																description:
+																	"form.errors.server_error"
+															}
+														);
+													}
 												}}
 												disabled={loading}
 											>
