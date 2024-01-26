@@ -221,7 +221,7 @@ export default function FileUpload( {
 				</span>
 			</DialogTrigger>
 
-			<DialogContent className="h-1/2 overflow-auto">
+			<DialogContent className="h-fit max-h-full overflow-auto">
 				<Form {...form}>
 					<form
 						action={async ( formData: FormData ) =>
@@ -246,7 +246,6 @@ export default function FileUpload( {
 							// Exécution de l'action côté serveur.
 							return serverAction( uploadAction, formData );
 						}}
-						className="space-y-8"
 					>
 						{/* Fichier(s) à téléverser */}
 						<FormField
@@ -309,177 +308,195 @@ export default function FileUpload( {
 							)}
 						/>
 
-						{/* Chiffrement renforcé */}
-						<FormField
-							name="encryption"
-							control={form.control}
-							render={( { field } ) => (
-								<FormItem>
-									<FormLabel>
-										<ShieldCheck className="mr-2 inline h-6 w-6" />
-										Chiffrement renforcé{" "}
-										<em>(optionnel)</em>
-									</FormLabel>
+						{/* Paramètres avancés */}
+						<details className="my-4">
+							<summary className="cursor-pointer text-sm">
+								Cliquez ici pour afficher les paramètres avancés
+							</summary>
 
-									<FormDescription>
-										Les fichiers sont chiffrés avec une clé
-										de chiffrement connue uniquement par le
-										serveur. Si vous activez cette option,
-										le fichier sera chiffré avec une clé
-										générée aléatoirement et ne sera pas
-										enregistrée sur le serveur.{" "}
-										<strong>
-											Attention, une fois le fichier
-											téléversé, une clé de déchiffrement
-											sera affichée et vous devrez la
-											conserver afin de pouvoir accéder au
-											fichier. Si vous perdez cette clé,
-											vous ne pourrez plus accéder au
-											fichier.
-										</strong>
-									</FormDescription>
+							{/* Chiffrement renforcé */}
+							<FormField
+								name="encryption"
+								control={form.control}
+								render={( { field } ) => (
+									<FormItem className="mt-4">
+										<FormLabel>
+											<ShieldCheck className="mr-2 inline h-6 w-6" />
+											Chiffrement renforcé{" "}
+											<em>(optionnel)</em>
+										</FormLabel>
 
-									<FormControl>
-										<div className="flex items-center space-x-2">
-											<Switch
-												id="encryption"
-												name="encryption"
-												checked={field.value}
-												disabled={loading}
-												onCheckedChange={field.onChange}
-											/>
+										<FormDescription>
+											Les fichiers sont chiffrés avec une
+											clé de chiffrement connue uniquement
+											par le serveur. Si vous activez
+											cette option, le fichier sera
+											chiffré avec une clé générée
+											aléatoirement et ne sera pas
+											enregistrée sur le serveur.{" "}
+											<strong>
+												Attention, une fois le fichier
+												téléversé, une clé de
+												déchiffrement sera affichée et
+												vous devrez la conserver afin de
+												pouvoir accéder au fichier. Si
+												vous perdez cette clé, vous ne
+												pourrez plus accéder au fichier.
+											</strong>
+										</FormDescription>
 
-											<Label
-												htmlFor="encryption"
-												className="leading-5"
-											>
-												Activer le chiffrement renforcé
-											</Label>
-										</div>
-									</FormControl>
-
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						{/* Date d'expiration */}
-						<FormField
-							name="expiration"
-							control={form.control}
-							render={( { field } ) => (
-								<FormItem>
-									<FormLabel>
-										<CalendarDays className="mr-2 inline h-6 w-6" />
-										Date d&lsquo;expiration{" "}
-										<em>(optionnel)</em>
-									</FormLabel>
-
-									<FormDescription>
-										Les nouveaux fichiers téléversés
-										n&lsquo;ont pas de date
-										d&lsquo;expiration par défaut. Si vous
-										souhaitez que le fichier soit supprimé
-										automatiquement après une certaine
-										durée, entrez une date
-										d&lsquo;expiration ici.{" "}
-										<strong>
-											Attention, une fois le fichier
-											téléversé, vous ne pourrez plus
-											changer sa date d&lsquo;expiration.
-											La suppression du fichier sera
-											effectuée à minuit le jour de
-											l&lsquo;expiration.
-										</strong>
-									</FormDescription>
-
-									<FormControl>
-										<Popover>
-											<PopoverTrigger asChild>
-												<Button
-													variant="outline"
+										<FormControl>
+											<div className="flex items-center space-x-2">
+												<Switch
+													id="encryption"
+													name="encryption"
+													checked={field.value}
 													disabled={loading}
-													className={merge(
-														"w-full justify-start text-left font-normal",
-														!field.value
-															&& "text-muted-foreground"
-													)}
-												>
-													<CalendarDays className="mr-2 h-4 w-4" />
+													onCheckedChange={
+														field.onChange
+													}
+												/>
 
-													{field.value ? (
-														format(
+												<Label
+													htmlFor="encryption"
+													className="leading-5"
+												>
+													Activer le chiffrement
+													renforcé
+												</Label>
+											</div>
+										</FormControl>
+
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+
+							{/* Date d'expiration */}
+							<FormField
+								name="expiration"
+								control={form.control}
+								render={( { field } ) => (
+									<FormItem className="mt-4">
+										<FormLabel>
+											<CalendarDays className="mr-2 inline h-6 w-6" />
+											Date d&lsquo;expiration{" "}
+											<em>(optionnel)</em>
+										</FormLabel>
+
+										<FormDescription>
+											Les nouveaux fichiers téléversés
+											n&lsquo;ont pas de date
+											d&lsquo;expiration par défaut. Si
+											vous souhaitez que le fichier soit
+											supprimé automatiquement après une
+											certaine durée, entrez une date
+											d&lsquo;expiration ici.{" "}
+											<strong>
+												Attention, une fois le fichier
+												téléversé, vous ne pourrez plus
+												changer sa date
+												d&lsquo;expiration. La
+												suppression du fichier sera
+												effectuée à minuit le jour de
+												l&lsquo;expiration.
+											</strong>
+										</FormDescription>
+
+										<FormControl>
+											<Popover>
+												<PopoverTrigger asChild>
+													<Button
+														variant="outline"
+														disabled={loading}
+														className={merge(
+															"w-full justify-start text-left font-normal",
+															!field.value
+																&& "text-muted-foreground"
+														)}
+													>
+														<CalendarDays className="mr-2 h-4 w-4" />
+
+														{field.value ? (
+															format(
+																new Date(
+																	field.value
+																),
+																"PPP",
+																{
+																	locale: dateFormat
+																}
+															)
+														) : (
+															<span>
+																Sélectionner une
+																date
+															</span>
+														)}
+													</Button>
+												</PopoverTrigger>
+
+												<PopoverContent className="flex w-auto flex-col space-y-2 p-2">
+													<Select
+														onValueChange={(
+															value
+														) => field.onChange(
+															addDays(
+																new Date(),
+																Number(
+																	value
+																)
+															).toISOString()
+														)}
+													>
+														<SelectTrigger>
+															<SelectValue placeholder="Sélectionner une présélection" />
+														</SelectTrigger>
+
+														<SelectContent position="popper">
+															<SelectItem value="1">
+																Demain
+															</SelectItem>
+
+															<SelectItem value="3">
+																Dans trois jours
+															</SelectItem>
+
+															<SelectItem value="7">
+																Dans une semaine
+															</SelectItem>
+
+															<SelectItem value="31">
+																Dans un mois
+															</SelectItem>
+														</SelectContent>
+													</Select>
+
+													<Calendar
+														mode="single"
+														locale={dateFormat}
+														selected={
 															new Date(
 																field.value
-															),
-															"PPP",
-															{
-																locale: dateFormat
-															}
-														)
-													) : (
-														<span>
-															Sélectionner une
-															date
-														</span>
-													)}
-												</Button>
-											</PopoverTrigger>
+															)
+														}
+														disabled={( date ) => date > oneYear
+															|| date < today}
+														onSelect={( value ) => field.onChange(
+															value?.toISOString()
+														)}
+														className="rounded-md border"
+														initialFocus
+													/>
+												</PopoverContent>
+											</Popover>
+										</FormControl>
 
-											<PopoverContent className="flex w-auto flex-col space-y-2 p-2">
-												<Select
-													onValueChange={( value ) => field.onChange(
-														addDays(
-															new Date(),
-															Number( value )
-														).toISOString()
-													)}
-												>
-													<SelectTrigger>
-														<SelectValue placeholder="Sélectionner une présélection" />
-													</SelectTrigger>
-
-													<SelectContent position="popper">
-														<SelectItem value="1">
-															Demain
-														</SelectItem>
-
-														<SelectItem value="3">
-															Dans trois jours
-														</SelectItem>
-
-														<SelectItem value="7">
-															Dans une semaine
-														</SelectItem>
-
-														<SelectItem value="31">
-															Dans un mois
-														</SelectItem>
-													</SelectContent>
-												</Select>
-
-												<Calendar
-													mode="single"
-													locale={dateFormat}
-													selected={
-														new Date( field.value )
-													}
-													disabled={( date ) => date > oneYear
-														|| date < today}
-													onSelect={( value ) => field.onChange(
-														value?.toISOString()
-													)}
-													className="rounded-md border"
-													initialFocus
-												/>
-											</PopoverContent>
-										</Popover>
-									</FormControl>
-
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</details>
 
 						{/* Bouton de validation du formulaire */}
 						<Button
