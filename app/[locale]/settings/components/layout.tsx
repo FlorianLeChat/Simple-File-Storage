@@ -12,6 +12,7 @@ import { Check,
 	CaseUpper,
 	RefreshCw,
 	Paintbrush } from "lucide-react";
+import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
@@ -26,7 +27,6 @@ import { Select,
 	SelectValue,
 	SelectContent,
 	SelectTrigger } from "../../components/ui/select";
-import { useToast } from "../../components/ui/use-toast";
 import { Tooltip,
 	TooltipTrigger,
 	TooltipContent,
@@ -115,7 +115,6 @@ const colors = [
 export default function Layout( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
-	const { toast } = useToast();
 	const [ loading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateLayout, {
 		success: true,
@@ -145,9 +144,7 @@ export default function Layout( { session }: { session: Session } )
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast( {
-				title: "form.errors.update_failed",
-				variant: "destructive",
+			toast.error( "form.errors.update_failed", {
 				description: "form.errors.server_error"
 			} );
 
@@ -176,15 +173,20 @@ export default function Layout( { session }: { session: Session } )
 		//  a été fournie.
 		if ( reason !== "" )
 		{
-			toast( {
-				title: success
-					? "form.info.update_success"
-					: "form.errors.update_failed",
-				variant: success ? "default" : "destructive",
-				description: reason
-			} );
+			if ( success )
+			{
+				toast.success( "form.info.update_success", {
+					description: reason
+				} );
+			}
+			else
+			{
+				toast.error( "form.errors.update_failed", {
+					description: reason
+				} );
+			}
 		}
-	}, [ toast, form, updateState ] );
+	}, [ form, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (

@@ -7,6 +7,7 @@
 import Link from "next/link";
 import { z } from "zod";
 import schema from "@/schemas/authentication";
+import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
@@ -20,7 +21,6 @@ import { Eye, EyeOff, Loader2, Mail, KeyRound } from "lucide-react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
-import { useToast } from "./ui/use-toast";
 import { Separator } from "./ui/separator";
 import { Form,
 	FormItem,
@@ -40,7 +40,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 export default function Authentification()
 {
 	// Déclaration des variables d'état.
-	const { toast } = useToast();
 	const [ focused, setFocused ] = useState( false );
 	const [ loading, setLoading ] = useState( false );
 	const [ signUpState, signUpAction ] = useFormState( signUpAccount, {
@@ -74,9 +73,7 @@ export default function Authentification()
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast( {
-				title: "form.errors.auth_failed",
-				variant: "destructive",
+			toast.error( "form.errors.auth_failed", {
 				description: "form.errors.server_error"
 			} );
 
@@ -104,15 +101,20 @@ export default function Authentification()
 		//  a été fournie.
 		if ( reason !== "" )
 		{
-			toast( {
-				title: success
-					? "form.info.email_validation"
-					: "form.errors.auth_failed",
-				variant: success ? "default" : "destructive",
-				description: reason
-			} );
+			if ( success )
+			{
+				toast.info( "form.info.email_validation", {
+					description: reason
+				} );
+			}
+			else
+			{
+				toast.error( "form.errors.auth_failed", {
+					description: reason
+				} );
+			}
 		}
-	}, [ toast, form, signUpState, signInState ] );
+	}, [ form, signUpState, signInState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
