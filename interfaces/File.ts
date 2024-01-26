@@ -17,6 +17,9 @@ export interface FileAttributes {
 	// Statut de partage du fichier.
 	status: "public" | "private" | "shared";
 
+	// État de chiffrement du fichier.
+	encrypted: boolean;
+
 	// Liste des versions du fichier.
 	versions: {
 		// Identifiant unique de la version.

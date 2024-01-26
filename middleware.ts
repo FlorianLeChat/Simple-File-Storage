@@ -72,10 +72,14 @@ export default async function middleware( request: NextRequest )
 				{
 					// On récupère le tampon de données du fichier ainsi que
 					//  la clé de chiffrement.
+					const key = request.nextUrl.searchParams.get( "key" );
 					const buffer = new Uint8Array( await content.arrayBuffer() );
 					const cipher = await crypto.subtle.importKey(
 						"raw",
-						Buffer.from( process.env.AUTH_SECRET ?? "", "base64" ),
+						Buffer.from(
+							key ?? process.env.AUTH_SECRET ?? "",
+							"base64"
+						),
 						{
 							name: "AES-GCM",
 							length: 256

@@ -73,6 +73,7 @@ async function getFiles(): Promise<FileAttributes[]>
 				type: mime.getType( file.name ) ?? "application/octet-stream",
 				path,
 				status: file.status ?? "public",
+				encrypted: file.encrypted,
 				versions: file.versions.map( ( version ) => ( {
 					uuid: version.id,
 					size: Number( version.size ),
