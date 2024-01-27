@@ -32,25 +32,25 @@ export default async function Layout( {
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			{session && (
-				<header className="flex min-h-[4rem] flex-wrap justify-center gap-2 border-b p-4 max-md:flex-col">
-					<div className="align-center flex items-center gap-2 max-md:flex-col md:gap-4">
-						{/* Titre du site */}
-						<h1 className="text-xl font-semibold">
-							<Link href="/">💾 {meta.title as string}</Link>
-						</h1>
+			<header className="flex min-h-[4rem] flex-wrap justify-center gap-2 border-b p-4 max-md:flex-col">
+				<div className="align-center flex items-center gap-2 max-md:flex-col md:gap-4">
+					{/* Titre du site */}
+					<h1 className="text-xl font-semibold">
+						<Link href="/">💾 {meta.title as string}</Link>
+					</h1>
 
-						{/* Éléments de navigation */}
+					{/* Éléments de navigation */}
+					{session && (
 						<Header
 							theme={session.user.preferences.theme}
 							source={meta.source}
 						/>
-					</div>
+					)}
+				</div>
 
-					{/* Menu utilisateur */}
-					<UserMenu session={session} />
-				</header>
-			)}
+				{/* Menu utilisateur */}
+				{session && <UserMenu session={session} />}
+			</header>
 
 			{children}
 		</>
