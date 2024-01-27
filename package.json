@@ -11,11 +11,6 @@
   "bugs": {
     "url": "https://github.com/FlorianLeChat/Simple-File-Storage/issues"
   },
-  "overrides": {
-    "next-intl": {
-      "next": "$next"
-    }
-  },
   "scripts": {
     "dev": "next dev",
     "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
