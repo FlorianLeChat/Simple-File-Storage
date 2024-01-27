@@ -54,6 +54,7 @@ model File {
 	encrypted    Boolean    @default(false)
 	expiration   DateTime?
 	versions     Version[]
+	shares       Share[]
 }
 
 model Version {
@@ -76,6 +77,15 @@ model Preference {
 	versions     Boolean	@default(true)
 }
 
+model Share {
+	id           Int        @id @default(autoincrement())
+	file         File       @relation(fields: [fileId], references: [id], onDelete: Cascade)
+	fileId       String
+	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+	userId       String
+	status       String
+}
+
 model User {
 	id            String    @id @default(uuid())
 	name          String?
@@ -90,6 +100,7 @@ model User {
 	issues        Issue[]
 	files         File[]
 	preferences   Preference[]
+	shares        Share[]
 }
 
 model VerificationToken {
