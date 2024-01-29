@@ -5,7 +5,7 @@
 
 "use client";
 
-import { merge } from "@/utilities/tailwind";
+import useSWR from "swr";
 import { useState } from "react";
 import { Trash,
 	Users,
@@ -13,10 +13,12 @@ import { Trash,
 	UserCog,
 	UserPlus,
 	ClipboardCopy } from "lucide-react";
+import type { User } from "next-auth";
 import type { FileAttributes } from "@/interfaces/File";
 import type { Table, Row, TableMeta } from "@tanstack/react-table";
 
 import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
 import { Select,
 	SelectItem,
 	SelectValue,
@@ -27,10 +29,6 @@ import { Avatar,
 	AvatarFallback } from "../../components/ui/avatar";
 import { Separator } from "../../components/ui/separator";
 import { ScrollArea } from "../../components/ui/scroll-area";
-import { HoverCard,
-	HoverCardContent,
-	HoverCardTrigger } from "../../components/ui/hover-card";
-import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function ShareManager( {
 	table,
@@ -41,12 +39,19 @@ export default function ShareManager( {
 } )
 {
 	// Déclaration des constantes.
+	const fetcher = ( url: string ) => fetch( url ).then( ( res ) => res.json() ) as Promise<User[]>;
 	const states = table.options.meta as TableMeta<FileAttributes>;
 	const file = states.files.filter( ( value ) => value.uuid === row.id )[ 0 ];
 
 	// Déclaration des variables d'état.
 	const loading = states.loading.length !== 0;
 	const [ search, setSearch ] = useState( "" );
+	const { data, error, isLoading } = useSWR<User[]>(
+		search !== ""
+			? `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/search/${ search }`
+			: null,
+		fetcher
+	);
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -99,46 +104,9 @@ export default function ShareManager( {
 								</AvatarFallback>
 							</Avatar>
 
-							{/* Informations complètes de l'utilisateur */}
+							{/* Informations de l'utilisateur */}
 							<div>
-								<HoverCard>
-									<HoverCardTrigger
-										className={merge(
-											buttonVariants( { variant: "link" } ),
-											"h-auto cursor-pointer p-0 text-secondary-foreground"
-										)}
-									>
-										{share.user.name}
-									</HoverCardTrigger>
-
-									<HoverCardContent className="flex justify-between space-x-4">
-										<Avatar>
-											<AvatarImage
-												src={share.user.image ?? ""}
-												alt={share.user.name ?? ""}
-											/>
-
-											<AvatarFallback>
-												{(
-													share.user.name
-													?? share.user.email
-												)
-													?.slice( 0, 2 )
-													.toUpperCase() ?? "SFS"}
-											</AvatarFallback>
-										</Avatar>
-
-										<div className="space-y-1">
-											<h4 className="text-sm font-medium leading-none">
-												{share.user.name}
-											</h4>
-
-											<p className="text-sm text-muted-foreground">
-												{share.user.email}
-											</p>
-										</div>
-									</HoverCardContent>
-								</HoverCard>
+								<p className="text-sm">{share.user.name}</p>
 
 								<p className="text-sm text-muted-foreground">
 									{share.user.email}
@@ -224,87 +192,73 @@ export default function ShareManager( {
 				/>
 
 				<p className="mt-4 text-sm text-muted-foreground">
-					<strong>{file.shares.length}</strong> résultat(s) trouvé(s)
+					<strong>{data?.length ?? 0}</strong> résultat(s) trouvé(s)
 					dans la base de données.
 				</p>
 
+				{/* Message d'erreur de la recherche */}
+				{error && !isLoading && (
+					<p className="mt-4 text-sm font-bold text-destructive">
+						Une erreur est survenue lors de la recherche. Veuillez
+						réessayer.
+					</p>
+				)}
+
+				{/* État de chargement des résultats */}
+				{isLoading && (
+					<p className="mt-4 text-sm text-muted-foreground">
+						<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
+						Chargement des résultats...
+					</p>
+				)}
+
 				{/* Résultats de la recherche */}
 				<ScrollArea>
-					<ul>
-						{file.shares.map( ( share, index ) => (
-							<li
-								key={share.user.uuid}
-								className="flex flex-wrap items-center gap-3 max-sm:justify-center"
-							>
-								{/* Avatar de l'utilisateur */}
-								<Avatar>
-									<AvatarImage src="/avatars/05.png" />
-									<AvatarFallback>IN</AvatarFallback>
-								</Avatar>
-
-								{/* Informations complètes de l'utilisateur */}
-								<div>
-									<HoverCard>
-										<HoverCardTrigger
-											className={merge(
-												buttonVariants( {
-													variant: "link"
-												} ),
-												"h-auto cursor-pointer p-0 text-secondary-foreground"
-											)}
-										>
-											{share.user.name}
-										</HoverCardTrigger>
-
-										<HoverCardContent className="flex justify-between space-x-4">
-											<Avatar>
-												<AvatarImage
-													src={share.user.image ?? ""}
-													alt={share.user.name ?? ""}
-												/>
-
-												<AvatarFallback>
-													{(
-														share.user.name
-														?? share.user.email
-													)
-														?.slice( 0, 2 )
-														.toUpperCase() ?? "SFS"}
-												</AvatarFallback>
-											</Avatar>
-
-											<div className="space-y-1">
-												<h4 className="text-sm font-medium leading-none">
-													{share.user.name}
-												</h4>
-
-												<p className="text-sm text-muted-foreground">
-													{share.user.email}
-												</p>
-											</div>
-										</HoverCardContent>
-									</HoverCard>
-
-									<p className="text-sm text-muted-foreground">
-										{share.user.email}
-									</p>
-								</div>
-
-								{/* Bouton d'ajout de l'utilisateur */}
-								<Button
-									disabled={loading}
-									className="mr-4 sm:ml-auto"
+					<ul className={data && data.length > 0 ? "mt-4" : ""}>
+						{data
+							&& data.map( ( user, index ) => (
+								<li
+									key={user.id}
+									className="flex flex-wrap items-center gap-3 max-sm:justify-center"
 								>
-									<UserPlus className="mr-2 h-4 w-4" />
-									Ajouter
-								</Button>
+									{/* Avatar de l'utilisateur */}
+									<Avatar>
+										<AvatarImage
+											src={user.image ?? ""}
+											alt={user.name ?? ""}
+										/>
 
-								{/* Séparateur horizontal */}
-								{index !== file.shares.length - 1 && (
-									<Separator className="mb-3 mt-1" />
-								)}
-							</li>
-						) )}
+										<AvatarFallback>
+											{( user.name ?? user.email )
+												?.slice( 0, 2 )
+												.toUpperCase() ?? "SFS"}
+										</AvatarFallback>
+									</Avatar>
+
+									{/* Informations de l'utilisateur */}
+									<div>
+										<p className="text-sm">{user.name}</p>
+
+										<p className="text-sm text-muted-foreground">
+											{user.email}
+										</p>
+									</div>
+
+									{/* Bouton d'ajout de l'utilisateur */}
+									<Button
+										disabled={loading}
+										className="mr-4 sm:ml-auto"
+									>
+										<UserPlus className="mr-2 h-4 w-4" />
+										Ajouter
+									</Button>
+
+									{/* Séparateur horizontal */}
+									{index !== data.length - 1 && (
+										<Separator className="mb-3 mt-1" />
+									)}
+								</li>
+							) )}
 					</ul>
 				</ScrollArea>
 			</section>

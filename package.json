@@ -23,6 +23,7 @@
     "lint-staged": "lint-staged"
   },
   "dependencies": {
+    "swr": "~2.2",
     "zod": "~3.22",
     "mime": "~4.0",
     "cmdk": "~0.2",
