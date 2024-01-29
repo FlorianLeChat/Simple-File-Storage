@@ -354,7 +354,7 @@ export default function RowActions( {
 						</DropdownMenuItem>
 					</DialogTrigger>
 
-					<DialogContent>
+					<DialogContent className="h-fit max-h-full overflow-auto">
 						<DialogHeader>
 							<DialogTitle>
 								<Share2 className="mr-2 inline h-5 w-5" />
@@ -370,7 +370,7 @@ export default function RowActions( {
 							</DialogDescription>
 						</DialogHeader>
 
-						<ShareManager />
+						<ShareManager table={table} row={row} />
 					</DialogContent>
 				</Dialog>
 
