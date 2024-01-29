@@ -1,6 +1,8 @@
 //
 // Interface des attributs des fichiers utilisateurs.
 //
+import type { User } from "next-auth";
+
 export interface FileAttributes {
 	// Identifiant unique du fichier.
 	uuid: string;
@@ -16,6 +18,27 @@ export interface FileAttributes {
 
 	// Statut de partage du fichier.
 	status: "public" | "private" | "shared";
+
+	// Partage du fichier.
+	shares: {
+		// Utilisateur en partage.
+		user: {
+			// Identifiant unique.
+			uuid: User["id"];
+
+			// Nom d'affichage.
+			name: User["name"];
+
+			// Adresse électronique.
+			email: User["email"];
+
+			// Image de profil.
+			image: User["image"];
+		};
+
+		// Type de partage du fichier avec l'utilisateur.
+		status: "read" | "write" | "admin";
+	}[];
 
 	// État de chiffrement du fichier.
 	encrypted: boolean;
