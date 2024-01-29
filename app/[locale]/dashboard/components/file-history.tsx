@@ -7,8 +7,8 @@
 import { toast } from "sonner";
 import { useState } from "react";
 import { formatSize } from "@/utilities/react-table";
-import type { Table, Row, TableMeta } from "@tanstack/react-table";
 import type { FileAttributes } from "@/interfaces/File";
+import type { Table, Row, TableMeta } from "@tanstack/react-table";
 import { Ban, Check, History, ArrowUpRight } from "lucide-react";
 
 import serverAction from "@/utilities/recaptcha";

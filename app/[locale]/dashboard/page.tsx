@@ -47,6 +47,8 @@ async function getFiles(): Promise<FileAttributes[]>
 			userId: session.user.id
 		},
 		include: {
+			user: true,
+			shares: true,
 			versions: {
 				orderBy: {
 					createdAt: "desc"
@@ -73,6 +75,15 @@ async function getFiles(): Promise<FileAttributes[]>
 				type: mime.getType( file.name ) ?? "application/octet-stream",
 				path,
 				status: file.status ?? "public",
+				shares: file.shares.map( ( share ) => ( {
+					user: {
+						uuid: file.user.id,
+						name: file.user.name,
+						email: file.user.email,
+						image: file.user.image
+					},
+					status: share.status
+				} ) ),
 				encrypted: file.encrypted,
 				versions: file.versions.map( ( version ) => ( {
 					uuid: version.id,

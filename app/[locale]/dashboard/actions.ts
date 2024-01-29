@@ -254,6 +254,8 @@ export async function uploadFiles(
 					userId: session.user.id
 				},
 				include: {
+					user: true,
+					shares: true,
 					versions: true
 				}
 			} );
@@ -402,6 +404,15 @@ export async function uploadFiles(
 				),
 				path,
 				status: exists?.status ?? status,
+				shares: exists?.shares.map( ( share ) => ( {
+					user: {
+						uuid: exists.user.id,
+						name: exists.user.name,
+						email: exists.user.email,
+						image: exists.user.image
+					},
+					status: share.status
+				} ) ),
 				versions: versions.map( ( version ) => ( {
 					uuid: version.id,
 					size: Number( version.size ),
