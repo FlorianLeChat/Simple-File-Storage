@@ -167,6 +167,7 @@ export default function FileUpload( {
 					type: json.type,
 					path: new URL( json.path, window.location.href ).href,
 					status: json.status,
+					shares: json.shares,
 					encrypted: json.encrypted,
 					versions: json.versions.map( ( version ) => ( {
 						...version,
