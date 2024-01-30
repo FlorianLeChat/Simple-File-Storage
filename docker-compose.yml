@@ -2,11 +2,51 @@ name: simple-file-storage
 
 version: "3.8"
 
+networks:
+    simple_file_storage:
+        driver: bridge
+
 services:
+    # https://hub.docker.com/_/mariadb
+    mariadb:
+        image: mariadb:latest
+        restart: always
+        volumes:
+            - ./docker/mysql/database:/var/lib/mysql
+        secrets:
+            - db_password
+            - db_root_password
+        environment:
+            MARIADB_DATABASE: simple_file_storage
+            MARIADB_PORT: 3306
+            MARIADB_USER: simple_file_storage
+            # > Default credentials (for test image)
+            MARIADB_PASSWORD: password
+            MARIADB_ROOT_PASSWORD: password
+            # > Custom credentials with secrets (for production image)
+            # MARIADB_PASSWORD_FILE: /run/secrets/db_password
+            # MARIADB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+        networks:
+            - simple_file_storage
+        healthcheck:
+            test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+            retries: 3
+            timeout: 5s
+        ports:
+            - 3306:3306
+
     # https://github.com/FlorianLeChat/Simple-File-Storage
     node:
         image: simple-file-storage
         restart: always
+        depends_on:
+            - mariadb
+        secrets:
+            - db_password
+        environment:
+            - WAIT_HOSTS=mariadb:3306
+        networks:
+            - simple_file_storage
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:3000"]
             retries: 3
@@ -24,3 +64,9 @@ services:
             dockerfile: ./Dockerfile
         ports:
             - 3000:3000
+
+secrets:
+    db_password:
+        file: ./docker/config/db_password.txt
+    db_root_password:
+        file: ./docker/config/db_root_password.txt
