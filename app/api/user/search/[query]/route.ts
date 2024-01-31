@@ -34,6 +34,13 @@ export async function GET(
 						contains: params.query
 					}
 				}
+			],
+			AND: [
+				{
+					id: {
+						not: session.user.id
+					}
+				}
 			]
 		},
 		take: 10
