@@ -4,8 +4,8 @@
 # https://hub.docker.com/_/node
 FROM node:lts-alpine
 
-# Add cURL for health check
-RUN apk --no-cache add curl
+# Add cURL for health check and OpenSSL for generating random secret
+RUN apk --no-cache add curl openssl
 
 # Set the working directory to the website files
 WORKDIR /usr/src/app
