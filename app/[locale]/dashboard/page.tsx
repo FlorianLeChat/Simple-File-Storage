@@ -48,7 +48,11 @@ async function getFiles(): Promise<FileAttributes[]>
 		},
 		include: {
 			user: true,
-			shares: true,
+			shares: {
+				include: {
+					user: true
+				}
+			},
 			versions: {
 				orderBy: {
 					createdAt: "desc"
@@ -77,10 +81,10 @@ async function getFiles(): Promise<FileAttributes[]>
 				status: file.status ?? "public",
 				shares: file.shares.map( ( share ) => ( {
 					user: {
-						uuid: file.user.id,
-						name: file.user.name,
-						email: file.user.email,
-						image: file.user.image
+						uuid: share.user.id,
+						name: share.user.name,
+						email: share.user.email,
+						image: share.user.image
 					},
 					status: share.status
 				} ) ),
