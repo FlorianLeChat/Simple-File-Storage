@@ -47,7 +47,7 @@ export async function changeFileStatus( formData: FormData )
 
 	// On met à jour le statut du fichier dans la base de données
 	//  avant de retourner une valeur de succès.
-	await prisma.file.updateMany( {
+	const files = await prisma.file.updateMany( {
 		where: {
 			id: {
 				in: result.data.fileIds
@@ -59,7 +59,7 @@ export async function changeFileStatus( formData: FormData )
 		}
 	} );
 
-	return true;
+	return files.count > 0;
 }
 
 //
@@ -583,8 +583,9 @@ export async function deleteFile( formData: FormData )
 		return false;
 	}
 
-	// On supprime après les fichiers dans la base de données.
-	await prisma.file.deleteMany( {
+	// On supprime après les fichiers dans la base de données avant
+	//  de vérifier si l'opération a réussi.
+	const files = await prisma.file.deleteMany( {
 		where: {
 			id: {
 				in: result.data.fileIds
@@ -592,6 +593,11 @@ export async function deleteFile( formData: FormData )
 			userId: session.user.id
 		}
 	} );
+
+	if ( files.count === 0 )
+	{
+		return false;
+	}
 
 	try
 	{
