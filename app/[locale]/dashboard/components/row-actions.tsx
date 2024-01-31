@@ -90,8 +90,8 @@ export default function RowActions( {
 			{
 				if ( !loading )
 				{
-					// Ouverture du menu si l'état de chargement est
-					//  inactif.
+					// Blocage de l'ouverture du menu si l'état de chargement
+					//  est inactif.
 					setOpen( state );
 				}
 			}}
@@ -163,9 +163,6 @@ export default function RowActions( {
 							<AlertDialogAction
 								onClick={async () =>
 								{
-									// Fermeture du menu des actions.
-									setOpen( false );
-
 									// Activation de l'état de chargement.
 									states.setLoading(
 										selectedData.map( ( value ) => value.uuid )
@@ -273,9 +270,6 @@ export default function RowActions( {
 							<AlertDialogAction
 								onClick={async () =>
 								{
-									// Fermeture du menu des actions.
-									setOpen( false );
-
 									// Activation de l'état de chargement.
 									states.setLoading(
 										selectedData.map( ( value ) => value.uuid )
@@ -504,9 +498,6 @@ export default function RowActions( {
 
 									if ( state )
 									{
-										// Fermeture du menu des actions.
-										setOpen( false );
-
 										// Renommage des fichiers.
 										states.setFiles( [ ...states.files ] );
 									}
@@ -635,9 +626,6 @@ export default function RowActions( {
 											"_blank",
 											"noopener,noreferrer"
 										);
-
-										// Fermeture du menu des actions.
-										setOpen( false );
 									}}
 									disabled={loading || !password}
 									className="max-sm:w-full"
@@ -743,9 +731,6 @@ export default function RowActions( {
 							<AlertDialogAction
 								onClick={async () =>
 								{
-									// Fermeture du menu des actions.
-									setOpen( false );
-
 									// Activation de l'état de chargement.
 									states.setLoading(
 										selectedData.map( ( value ) => value.uuid )
