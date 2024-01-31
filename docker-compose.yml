@@ -12,7 +12,7 @@ services:
         image: mariadb:latest
         restart: always
         volumes:
-            - ./docker/mysql/database:/var/lib/mysql
+            - ./docker/database:/var/lib/mysql
         secrets:
             - db_password
             - db_root_password
