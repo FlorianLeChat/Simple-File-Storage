@@ -83,7 +83,7 @@ model Share {
 	fileId       String
 	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 	userId       String
-	status       String
+	status       String     @default("read")
 }
 
 model User {

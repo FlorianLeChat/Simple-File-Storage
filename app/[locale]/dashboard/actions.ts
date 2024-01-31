@@ -644,3 +644,148 @@ export async function deleteFile( formData: FormData )
 		return false;
 	}
 }
+
+//
+// Ajout d'un utilisateur à la liste des partages d'un fichier.
+//
+export async function addSharedUser( formData: FormData )
+{
+	// On récupère d'abord la session de l'utilisateur.
+	const session = await auth();
+
+	if ( !session )
+	{
+		return false;
+	}
+
+	// On créé ensuite un schéma de validation personnalisé pour
+	//  les données du formulaire.
+	const validation = z.object( {
+		fileId: z.string().uuid(),
+		userId: z.string().uuid()
+	} );
+
+	// On tente alors de valider les données du formulaire.
+	const result = validation.safeParse( {
+		fileId: formData.get( "fileId" ),
+		userId: formData.get( "userId" )
+	} );
+
+	if ( !result.success )
+	{
+		return false;
+	}
+
+	// On met à jour également le statut du fichier dans la base
+	//  de données avant de vérifier si l'opération a réussi.
+	const file = await prisma.file.update( {
+		where: {
+			id: result.data.fileId,
+			userId: session.user.id
+		},
+		data: {
+			status: "shared"
+		}
+	} );
+
+	if ( !file )
+	{
+		return false;
+	}
+
+	// On ajoute après l'utilisateur à la liste des partages
+	//  du fichier.
+	await prisma.share.create( {
+		data: {
+			fileId: result.data.fileId,
+			userId: result.data.userId,
+			status: "read"
+		}
+	} );
+
+	// On retourne enfin une valeur de succès à la fin du traitement.
+	return true;
+}
+
+//
+// Suppression d'un utilisateur de la liste des partages d'un fichier.
+//
+export async function deleteSharedUser( formData: FormData )
+{
+	// On récupère d'abord la session de l'utilisateur.
+	const session = await auth();
+
+	if ( !session )
+	{
+		return false;
+	}
+
+	// On créé ensuite un schéma de validation personnalisé pour
+	//  les données du formulaire.
+	const validation = z.object( {
+		fileId: z.string().uuid(),
+		userId: z.string().uuid()
+	} );
+
+	// On tente alors de valider les données du formulaire.
+	const result = validation.safeParse( {
+		fileId: formData.get( "fileId" ),
+		userId: formData.get( "userId" )
+	} );
+
+	if ( !result.success )
+	{
+		return false;
+	}
+
+	// On supprime le partage dans la base de données avant de
+	//  vérifier si l'opération a réussi.
+	const shares = await prisma.share.deleteMany( {
+		where: {
+			fileId: result.data.fileId,
+			userId: result.data.userId
+		}
+	} );
+
+	if ( shares.count === 0 )
+	{
+		return false;
+	}
+
+	// On met à jour également le statut du fichier dans la base
+	//  de données avant de vérifier si l'opération a réussi.
+	const file = await prisma.file.findUnique( {
+		where: {
+			id: result.data.fileId,
+			userId: session.user.id
+		},
+		include: {
+			shares: true
+		}
+	} );
+
+	if ( !file )
+	{
+		return false;
+	}
+
+	// On détermine après si le fichier est toujours partagé avec
+	//  d'autres utilisateurs.
+	if ( file.shares.length === 0 )
+	{
+		// Si le fichier n'est plus partagé avec d'autres utilisateurs,
+		//  on le rend privé.
+		await prisma.file.update( {
+			where: {
+				id: result.data.fileId,
+				userId: session.user.id
+			},
+			data: {
+				status: "private"
+			}
+		} );
+	}
+
+	// On retourne enfin une valeur de succès à la fin du traitement.
+	return true;
+}
