@@ -5,12 +5,14 @@
 "use client";
 
 import { run } from "vanilla-cookieconsent";
+import { usePathname } from "next/navigation";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { useEffect, useState } from "react";
 
 export default function CookieConsent()
 {
 	// Déclaration des variables d'état.
+	const pathname = usePathname();
 	const [ analytics, setAnalytics ] = useState( false );
 
 	// Affichage du consentement des cookies.
@@ -20,7 +22,9 @@ export default function CookieConsent()
 		// Définition de l'environnement de production.
 		run( {
 			// Activation automatique de la fenêtre de consentement.
-			autoShow: process.env.NEXT_PUBLIC_ENV === "production",
+			autoShow:
+				process.env.NEXT_PUBLIC_ENV === "production"
+				&& !pathname.startsWith( "/legal" ),
 
 			// Désactivation de l'interaction avec la page.
 			disablePageInteraction: true,
@@ -93,7 +97,7 @@ export default function CookieConsent()
 				}
 			}
 		} );
-	}, [] );
+	}, [ pathname ] );
 
 	// Affichage conditionnel du rendu HTML du composant.
 	return (

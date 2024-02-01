@@ -674,6 +674,10 @@
 	--cc-font-family: inherit;
 	--cc-btn-border-radius: 0.375rem;
 	--cc-modal-border-radius: var(--radius);
+
+	--cc-footer-bg: var(--cc-bg);
+	--cc-footer-color: var(--cc-secondary-color);
+	--cc-footer-border-color: var(--cc-section-category-border);
 }
 
 #cc-main .pm__section--expandable .pm__section-arrow svg
