@@ -11,10 +11,10 @@ import { join } from "path";
 import { readdir } from "fs/promises";
 import Credentials from "@auth/core/providers/credentials";
 import { existsSync } from "fs";
-import type { Adapter } from "@auth/core/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import sendVerificationRequest from "@/utilities/node-mailer";
-import NextAuth, { type NextAuthConfig } from "next-auth";
+import type { Adapter, AdapterUser } from "@auth/core/adapters";
+import NextAuth, { type Session, type NextAuthConfig } from "next-auth";
 
 export const { handlers, auth, signIn, signOut } = NextAuth( {
 	pages: {
@@ -27,9 +27,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 	callbacks: {
 		// Gestion des rôles d'utilisateurs.
 		//  Source : https://authjs.dev/guides/basics/role-based-access-control#with-database
-		async session( { session, user } )
+		async session( {
+			session,
+			user
+		}: {
+			session: Session;
+			user?: AdapterUser; // https://github.com/nextauthjs/next-auth/issues/9633#issuecomment-1899645783
+		} )
 		{
-			if ( session )
+			if ( session && user )
 			{
 				// Ajout de propriétés personnalisées à la session.
 				const preferences = await prisma.preference.findUnique( {
