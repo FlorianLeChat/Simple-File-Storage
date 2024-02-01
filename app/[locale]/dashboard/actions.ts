@@ -410,7 +410,7 @@ export async function uploadFiles(
 				status: exists?.status ?? status,
 				shares: exists?.shares.map( ( share ) => ( {
 					user: {
-						uuid: share.user.id,
+						uuid: share.userId,
 						name: share.user.name,
 						email: share.user.email,
 						image: share.user.image
