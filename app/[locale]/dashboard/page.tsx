@@ -81,7 +81,7 @@ async function getFiles(): Promise<FileAttributes[]>
 				status: file.status ?? "public",
 				shares: file.shares.map( ( share ) => ( {
 					user: {
-						uuid: share.user.id,
+						uuid: share.userId,
 						name: share.user.name,
 						email: share.user.email,
 						image: share.user.image
