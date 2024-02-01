@@ -17,7 +17,7 @@
     "build": "next build",
     "start": "next start",
     "pretty": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
-    "prepare": "husky install",
+    "prepare": "husky",
     "migrate": "dotenv -e .env.local -e .env prisma db push",
     "cleanup": "tsc scripts/cleanup.ts && node scripts/cleanup.js",
     "lint-staged": "lint-staged"
