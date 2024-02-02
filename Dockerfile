@@ -31,7 +31,7 @@ USER node
 
 # Find and replace some default environment variables
 RUN sed -i "s/NEXT_PUBLIC_ENV=development/NEXT_PUBLIC_ENV=production/g" .env
-RUN sed -i "s/AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/AUTH_SECRET=$(openssl rand -base64 32)/g" .env
+RUN sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env
 RUN sed -i "s/username:password@127.0.0.1:3306/simple_file_storage:password@mariadb:3306/g" .env
 RUN if [ -f "docker/config/db_root_password.txt" ]; then \
 	sed -i "s/simple_file_storage:password/simple_file_storage:$(cat \/usr\/src\/app\/docker\/config\/db_root_password.txt)/" .env; \
