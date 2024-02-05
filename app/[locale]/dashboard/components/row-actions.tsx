@@ -231,6 +231,7 @@ export default function RowActions( {
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+							disabled={rowData[ 0 ].status === "shared"}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<FolderLock className="mr-2 h-4 w-4" />
