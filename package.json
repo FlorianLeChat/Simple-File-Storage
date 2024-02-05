@@ -30,6 +30,7 @@
     "next": "~14.1",
     "sharp": "~0.33",
     "bcrypt": "~5.1",
+    "million": "~3.0",
     "next-intl": "~3.5",
     "deepmerge": "~4.3",
     "file-type": "~19.0",
