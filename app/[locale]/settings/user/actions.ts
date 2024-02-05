@@ -55,8 +55,8 @@ export async function updateUser(
 		};
 	}
 
-	// On met à jour après le nom d'utilisateur et l'adresse électronique
-	//  de l'utilisateur dans la base de données.
+	// On met à jour après le nom d'utilisateur, l'adresse électronique et
+	//  le mot de passe de l'utilisateur dans la base de données.
 	await prisma.user.update( {
 		where: {
 			id: session.user.id
@@ -65,7 +65,7 @@ export async function updateUser(
 			name: result.data.username,
 			email: result.data.email,
 			password: result.data.password
-				? await bcrypt.hash( result.data.password, 13 )
+				? await bcrypt.hash( result.data.password, 15 )
 				: undefined
 		}
 	} );
