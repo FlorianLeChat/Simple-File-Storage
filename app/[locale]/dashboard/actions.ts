@@ -45,20 +45,34 @@ export async function changeFileStatus( formData: FormData )
 		return false;
 	}
 
-	// On met à jour le statut du fichier dans la base de données
-	//  avant de retourner une valeur de succès.
+	// On met à jour le statut du fichier dans la base de données.
 	const files = await prisma.file.updateMany( {
 		where: {
 			id: {
 				in: result.data.fileIds
 			},
-			userId: session.user.id
+			userId: session.user.id,
+			status: result.data.status === "private" ? "public" : undefined
 		},
 		data: {
 			status: result.data.status
 		}
 	} );
 
+	// On réinitialise également les partages des fichiers si ceux-ci
+	//  deviennent publiquement accessibles.
+	if ( result.data.status === "public" )
+	{
+		await prisma.share.deleteMany( {
+			where: {
+				fileId: {
+					in: result.data.fileIds
+				}
+			}
+		} );
+	}
+
+	// On retourne enfin une valeur de succès à la fin du traitement.
 	return files.count > 0;
 }
 
