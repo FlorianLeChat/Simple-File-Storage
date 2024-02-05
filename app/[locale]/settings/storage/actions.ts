@@ -33,13 +33,13 @@ export async function updateStorage(
 	}
 
 	// On tente ensuite de valider les données du formulaire.
-	const schema = z.object( {
+	const validation = z.object( {
 		public: z.boolean(),
 		extension: z.boolean(),
 		versions: z.boolean()
 	} );
 
-	const result = schema.safeParse( {
+	const result = validation.safeParse( {
 		public: formData.get( "public" ) === "on",
 		extension: formData.get( "extension" ) === "on",
 		versions: formData.get( "versions" ) === "on"

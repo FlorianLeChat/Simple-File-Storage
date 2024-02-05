@@ -33,12 +33,12 @@ export async function deleteUserData(
 	}
 
 	// On tente ensuite de valider les données du formulaire.
-	const schema = z.object( {
+	const validation = z.object( {
 		files: z.boolean(),
 		account: z.boolean()
 	} );
 
-	const result = schema.safeParse( {
+	const result = validation.safeParse( {
 		files: formData.get( "files" ) === "on",
 		account: formData.get( "account" ) === "on"
 	} );
