@@ -151,13 +151,24 @@ export default async function middleware( request: NextRequest )
 		&& request.method === "POST"
 	)
 	{
-		// On récupère la requête sous format de formulaire avant de vérifier
-		//  si elle contient un jeton d'authentification.
-		const token = ( await request.formData() ).get( "1_recaptcha" );
+		// On traite les données du formulaire pour récupérer le jeton
+		//  d'authentification reCAPTCHA transmis par l'utilisateur.
+		let token;
+
+		try
+		{
+			token = ( await request.formData() ).get( "1_recaptcha" );
+		}
+		catch
+		{
+			// Une erreur s'est produite lors de la récupération des données
+			//  du formulaire.
+			return new NextResponse( null, { status: 400 } );
+		}
 
 		if ( !token )
 		{
-			// Si ce n'est pas le cas, on bloque la requête courante.
+			// Le jeton d'authentification reCAPTCHA est manquant ou invalide.
 			return new NextResponse( null, { status: 400 } );
 		}
 
