@@ -66,6 +66,15 @@ model Version {
 	createdAt    DateTime   @default(now())
 }
 
+model Notification {
+	id           Int        @id @default(autoincrement())
+	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+	userId       String
+	title        Int
+	message      Int
+	createdAt    DateTime   @default(now())
+}
+
 model Preference {
 	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 	userId       String		@id
@@ -91,7 +100,7 @@ model User {
 	name          String?
 	email         String    @unique
 	password      String?
-	notifications String?   @default("necessary")
+	notification  String?   @default("necessary")
 	emailVerified DateTime?
 	image         String?
 	role          String    @default("user")
@@ -101,6 +110,7 @@ model User {
 	files         File[]
 	preferences   Preference[]
 	shares        Share[]
+	notifications Notification[]
 }
 
 model VerificationToken {

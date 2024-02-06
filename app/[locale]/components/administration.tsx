@@ -10,6 +10,7 @@ import { Bug,
 	Save,
 	User,
 	Share2,
+	BellRing,
 	KeyRound,
 	FileArchive,
 	SquareStack,
@@ -39,6 +40,7 @@ import { TokenList } from "./admin/verification-token";
 import { VersionList } from "./admin/version";
 import { AccountList } from "./admin/account";
 import { SessionList } from "./admin/session";
+import { NotificationList } from "./admin/notification";
 import { UserCreate, UserEdit, UserList } from "./admin/user";
 
 // Basculement entre les traductions.
@@ -169,6 +171,14 @@ export default function Administration()
 				name="account"
 				list={AccountList}
 				options={{ label: "Comptes OAuth" }}
+			/>
+
+			{/* Notifications */}
+			<Resource
+				icon={BellRing}
+				name="notification"
+				list={NotificationList}
+				options={{ label: "Notifications" }}
 			/>
 
 			{/* Fichiers téléversés */}
