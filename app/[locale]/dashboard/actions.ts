@@ -782,14 +782,14 @@ export async function deleteSharedUser( formData: FormData )
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
 	const validation = z.object( {
-		fileId: z.string().uuid(),
-		userId: z.string().uuid()
+		fileId: z.array( z.string().uuid() ),
+		userId: z.string().uuid().optional()
 	} );
 
 	// On tente alors de valider les données du formulaire.
 	const result = validation.safeParse( {
-		fileId: formData.get( "fileId" ),
-		userId: formData.get( "userId" )
+		fileId: formData.getAll( "fileId" ),
+		userId: formData.get( "userId" ) ?? undefined
 	} );
 
 	if ( !result.success )
@@ -797,11 +797,16 @@ export async function deleteSharedUser( formData: FormData )
 		return false;
 	}
 
-	// On supprime le partage dans la base de données avant de
-	//  vérifier si l'opération a réussi.
+	// On supprime également le partage dans la base de données
+	//  avant de vérifier si l'opération a réussi.
 	const shares = await prisma.share.deleteMany( {
 		where: {
-			fileId: result.data.fileId,
+			file: {
+				id: {
+					in: result.data.fileId
+				},
+				userId: session.user.id
+			},
 			userId: result.data.userId
 		}
 	} );
@@ -811,40 +816,23 @@ export async function deleteSharedUser( formData: FormData )
 		return false;
 	}
 
-	// On met à jour également le statut du fichier dans la base
-	//  de données avant de vérifier si l'opération a réussi.
-	const file = await prisma.file.findUnique( {
+	// On met à jour après le statut des fichiers n'ayant plus de
+	//  partages dans la base de données.
+	const files = await prisma.file.updateMany( {
 		where: {
-			id: result.data.fileId,
-			userId: session.user.id
+			id: {
+				in: result.data.fileId
+			},
+			userId: session.user.id,
+			shares: {
+				none: {}
+			}
 		},
-		include: {
-			shares: true
+		data: {
+			status: "private"
 		}
 	} );
 
-	if ( !file )
-	{
-		return false;
-	}
-
-	// On détermine après si le fichier est toujours partagé avec
-	//  d'autres utilisateurs.
-	if ( file.shares.length === 0 )
-	{
-		// Si le fichier n'est plus partagé avec d'autres utilisateurs,
-		//  on le rend privé.
-		await prisma.file.update( {
-			where: {
-				id: result.data.fileId,
-				userId: session.user.id
-			},
-			data: {
-				status: "private"
-			}
-		} );
-	}
-
 	// On retourne enfin une valeur de succès à la fin du traitement.
-	return true;
+	return files.count > 0;
 }
