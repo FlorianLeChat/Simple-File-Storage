@@ -177,16 +177,19 @@ export default function RowActions( {
 									form.append( "status", "public" );
 
 									// Envoi de la requête au serveur et
-									//  attente de la réponse.
-									const state = ( await serverAction(
+									//  traitement de la réponse.
+									const files = ( await serverAction(
 										changeFileStatus,
 										form
-									) ) as boolean;
+									) ) as string[];
+									const processed = selectedData.filter(
+										( file ) => files.includes( file.uuid )
+									);
 
-									if ( state )
+									if ( processed.length > 0 )
 									{
 										// Mise à jour de l'état des fichiers.
-										selectedData.forEach( ( file ) =>
+										processed.forEach( ( file ) =>
 										{
 											file.status = "public";
 										} );
@@ -198,10 +201,20 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									if ( state )
+									if ( files.length === processed.length )
 									{
 										toast.success(
 											"form.info.update_success",
+											{
+												description:
+													"form.info.status_updated"
+											}
+										);
+									}
+									else if ( processed.length > 0 )
+									{
+										toast.warning(
+											"form.info.update_partial",
 											{
 												description:
 													"form.info.status_updated"
@@ -285,16 +298,19 @@ export default function RowActions( {
 									form.append( "status", "private" );
 
 									// Envoi de la requête au serveur et
-									//  attente de la réponse.
-									const state = ( await serverAction(
+									//  traitement de la réponse.
+									const files = ( await serverAction(
 										changeFileStatus,
 										form
-									) ) as boolean;
+									) ) as string[];
+									const processed = selectedData.filter(
+										( file ) => files.includes( file.uuid )
+									);
 
-									if ( state )
+									if ( processed.length > 0 )
 									{
 										// Mise à jour de l'état des fichiers.
-										selectedData.forEach( ( file ) =>
+										processed.forEach( ( file ) =>
 										{
 											file.status = "private";
 										} );
@@ -306,10 +322,20 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									if ( state )
+									if ( files.length === processed.length )
 									{
 										toast.success(
 											"form.info.update_success",
+											{
+												description:
+													"form.info.status_updated"
+											}
+										);
+									}
+									else if ( processed.length > 0 )
+									{
+										toast.warning(
+											"form.info.update_partial",
 											{
 												description:
 													"form.info.status_updated"
@@ -349,7 +375,7 @@ export default function RowActions( {
 						</DropdownMenuItem>
 					</DialogTrigger>
 
-					<DialogContent className="h-fit max-h-full overflow-auto">
+					<DialogContent className="overflow-auto max-sm:max-h-full sm:max-h-[50%]">
 						<DialogHeader>
 							<DialogTitle>
 								<Share2 className="mr-2 inline h-5 w-5" />
@@ -491,26 +517,46 @@ export default function RowActions( {
 									form.append( "name", selectedData[ 0 ].name );
 
 									// Envoi de la requête au serveur et
-									//  attente de la réponse.
-									const state = ( await serverAction(
+									//  traitement de la réponse.
+									const files = ( await serverAction(
 										renameFile,
 										form
-									) ) as boolean;
+									) ) as string[];
+									const processed = selectedData.filter(
+										( file ) => files.includes( file.uuid )
+									);
 
-									if ( state )
+									if ( processed.length > 0 )
 									{
-										// Renommage des fichiers.
-										states.setFiles( [ ...states.files ] );
+										// Renommage des fichiers traités par le serveur.
+										states.setFiles(
+											states.files.filter(
+												( file ) => !processed.find(
+													( value ) => value.uuid
+															=== file.uuid
+												)
+											)
+										);
 									}
 
 									// Fin de l'état de chargement.
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									if ( state )
+									if ( files.length === processed.length )
 									{
 										toast.success(
 											"form.info.update_success",
+											{
+												description:
+													"form.info.name_updated"
+											}
+										);
+									}
+									else if ( processed.length > 0 )
+									{
+										toast.warning(
+											"form.info.update_partial",
 											{
 												description:
 													"form.info.name_updated"
@@ -745,17 +791,21 @@ export default function RowActions( {
 									} );
 
 									// Envoi de la requête au serveur et
-									//  attente de la réponse.
-									const state = ( await serverAction(
+									//  traitement de la réponse.
+									const files = ( await serverAction(
 										deleteFile,
 										form
-									) ) as boolean;
+									) ) as string[];
+									const processed = selectedData.filter(
+										( file ) => files.includes( file.uuid )
+									);
 
-									if ( state )
+									if ( processed.length > 0 )
 									{
-										// Suppression des fichiers de la liste.
+										// Suppression des fichiers traités
+										//  par le serveur dans la liste.
 										const newFiles = states.files.filter(
-											( file ) => !selectedData.find(
+											( file ) => !processed.find(
 												( value ) => value.uuid
 														=== file.uuid
 											)
@@ -780,10 +830,20 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									if ( state )
+									if ( files.length === processed.length )
 									{
 										toast.success(
 											"form.info.action_success",
+											{
+												description:
+													"form.info.name_updated"
+											}
+										);
+									}
+									else if ( processed.length > 0 )
+									{
+										toast.warning(
+											"form.info.action_partial",
 											{
 												description:
 													"form.info.name_updated"
