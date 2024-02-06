@@ -47,7 +47,7 @@ export async function updateNotifications(
 
 	// On met à jour après le niveau de notifications de l'utilisateur dans la
 	//  base de données.
-	const notifications =
+	const notification =
 		result.data.push && result.data.level !== "off"
 			? `${ result.data.level }+mail`
 			: result.data.level;
@@ -57,7 +57,7 @@ export async function updateNotifications(
 			email: session.user.email as string
 		},
 		data: {
-			notifications
+			notification
 		}
 	} );
 
