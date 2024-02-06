@@ -30,6 +30,10 @@ import type { Table, Row, TableMeta } from "@tanstack/react-table";
 import { Input } from "../../components/ui/input";
 import FileHistory from "./file-history";
 import ShareManager from "./share-manager";
+import { deleteFile,
+	renameFile,
+	deleteSharedUser,
+	changeFileStatus } from "../actions";
 import { Dialog,
 	DialogTitle,
 	DialogHeader,
@@ -53,7 +57,6 @@ import { AlertDialog,
 	AlertDialogTrigger,
 	AlertDialogDescription } from "../../components/ui/alert-dialog";
 import { Button, buttonVariants } from "../../components/ui/button";
-import { changeFileStatus, deleteFile, renameFile } from "../actions";
 
 export default function RowActions( {
 	table,
@@ -430,7 +433,65 @@ export default function RowActions( {
 								Annuler
 							</AlertDialogCancel>
 
-							<AlertDialogAction>
+							<AlertDialogAction
+								onClick={async () =>
+								{
+									// Activation de l'état de chargement.
+									states.setLoading(
+										selectedData.map( ( value ) => value.uuid )
+									);
+
+									// Création d'un formulaire de données.
+									const form = new FormData();
+									selectedData.forEach( ( file ) =>
+									{
+										form.append( "fileId", file.uuid );
+									} );
+
+									// Envoi de la requête au serveur et
+									//  traitement de la réponse.
+									const state = ( await serverAction(
+										deleteSharedUser,
+										form
+									) ) as boolean;
+
+									if ( state )
+									{
+										selectedData.forEach( ( file ) =>
+										{
+											file.status = "private";
+											file.shares = [];
+										} );
+
+										states.setFiles( [ ...states.files ] );
+									}
+
+									// Fin de l'état de chargement.
+									states.setLoading( [] );
+
+									// Envoi d'une notification.
+									if ( state )
+									{
+										toast.success(
+											"form.info.action_success",
+											{
+												description:
+													"form.info.sharing_updated"
+											}
+										);
+									}
+									else
+									{
+										toast.error(
+											"form.errors.file_deleted",
+											{
+												description:
+													"form.errors.server_error"
+											}
+										);
+									}
+								}}
+							>
 								<Check className="mr-2 h-4 w-4" />
 								Confirmer
 							</AlertDialogAction>
