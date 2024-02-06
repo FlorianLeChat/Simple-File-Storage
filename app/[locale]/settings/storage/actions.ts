@@ -8,6 +8,7 @@ import { z } from "zod";
 import prisma from "@/utilities/prisma";
 import { rm } from "fs/promises";
 import { auth } from "@/utilities/next-auth";
+import * as Sentry from "@sentry/nextjs";
 import { existsSync } from "fs";
 import { join, parse } from "path";
 
@@ -139,12 +140,11 @@ export async function updateStorage(
 						} )
 					);
 				}
-				catch
+				catch ( error )
 				{
 					// Si une erreur survient dans les opérations du système
-					//  de fichiers, ce n'est pas très important car les
-					//  changements auront déjà été effectués dans la base de
-					//  données.
+					//  de fichiers, on l'envoie tout simplement à Sentry.
+					Sentry.captureException( error );
 				}
 			} )
 		);
