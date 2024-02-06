@@ -8,13 +8,14 @@
 import useSWR from "swr";
 import { toast } from "sonner";
 import { useState } from "react";
+import serverAction from "@/utilities/recaptcha";
 import { Trash,
 	Users,
 	Loader2,
 	UserCog,
 	UserPlus,
-	ClipboardCopy } from "lucide-react";
-import serverAction from "@/utilities/recaptcha";
+	ClipboardCopy,
+	ClipboardCheck } from "lucide-react";
 import type { User } from "next-auth";
 import type { FileAttributes } from "@/interfaces/File";
 import type { Table, Row, TableMeta } from "@tanstack/react-table";
@@ -49,6 +50,7 @@ export default function ShareManager( {
 	// Déclaration des variables d'état.
 	const loading = states.loading.length !== 0;
 	const [ search, setSearch ] = useState( "" );
+	const [ copied, setCopied ] = useState( false );
 	const { data, error, isLoading } = useSWR<User[]>(
 		search !== ""
 			? `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/search/${ search }`
@@ -67,9 +69,33 @@ export default function ShareManager( {
 					readOnly
 				/>
 
-				<Button variant="secondary">
-					<ClipboardCopy className="mr-2 h-4 w-4" />
-					Copier
+				<Button
+					variant="secondary"
+					onClick={() =>
+					{
+						// Déclaration de la copie du lien.
+						setCopied( true );
+
+						// Réinitialisation de l'état de copie.
+						setTimeout( () => setCopied( false ), 1500 );
+
+						// Copie du lien dans le presse-papiers.
+						navigator.clipboard.writeText(
+							new URL( file.path, window.location.href ).href
+						);
+					}}
+				>
+					{copied ? (
+						<>
+							<ClipboardCheck className="mr-2 h-4 w-4" />
+							Copié
+						</>
+					) : (
+						<>
+							<ClipboardCopy className="mr-2 h-4 w-4" />
+							Copier
+						</>
+					)}
 				</Button>
 			</div>
 
