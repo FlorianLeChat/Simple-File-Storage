@@ -9,6 +9,7 @@
 import { Bug,
 	Save,
 	User,
+	Share2,
 	KeyRound,
 	FileArchive,
 	SquareStack,
@@ -33,6 +34,7 @@ import type { CoreLayoutProps } from "ra-core";
 // Importation des composants.
 import { FileList } from "./admin/file";
 import { IssueList } from "./admin/issue";
+import { ShareList } from "./admin/share";
 import { TokenList } from "./admin/verification-token";
 import { VersionList } from "./admin/version";
 import { AccountList } from "./admin/account";
@@ -183,6 +185,14 @@ export default function Administration()
 				name="version"
 				list={VersionList}
 				options={{ label: "Versions de fichiers" }}
+			/>
+
+			{/* Partages de fichiers */}
+			<Resource
+				icon={Share2}
+				name="share"
+				list={ShareList}
+				options={{ label: "Partages de fichiers" }}
 			/>
 
 			{/* Sessions */}
