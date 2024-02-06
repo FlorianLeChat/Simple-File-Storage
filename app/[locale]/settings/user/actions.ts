@@ -10,6 +10,7 @@ import schema from "@/schemas/user";
 import { join } from "path";
 import { auth } from "@/utilities/next-auth";
 import { cookies } from "next/headers";
+import * as Sentry from "@sentry/nextjs";
 import { fileTypeFromBuffer } from "file-type";
 import { mkdir, readdir, rm, writeFile } from "fs/promises";
 
@@ -142,10 +143,12 @@ export async function updateUser(
 				new Uint8Array( await avatar.arrayBuffer() )
 			);
 		}
-		catch
+		catch ( error )
 		{
 			// Si une erreur survient lors de la mise à jour de l'avatar,
-			//  on affiche un message d'erreur générique.
+			//  on l'envoie à Sentry et on affiche un message d'erreur.
+			Sentry.captureException( error );
+
 			return {
 				success: false,
 				reason: "form.errors.file_system"

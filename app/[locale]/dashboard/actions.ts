@@ -9,6 +9,7 @@ import { z } from "zod";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
+import * as Sentry from "@sentry/nextjs";
 import { join, parse } from "path";
 import { fileTypeFromBuffer } from "file-type";
 import { existsSync, statSync } from "fs";
@@ -452,10 +453,12 @@ export async function uploadFiles(
 			data: ( await Promise.all( data ) ).flat()
 		};
 	}
-	catch
+	catch ( error )
 	{
 		// Si une erreur survient lors du téléversement des fichiers,
-		//  on affiche enfin un message d'erreur générique.
+		//  on l'envoie à Sentry et on retourne un message d'erreur
+		Sentry.captureException( error );
+
 		return {
 			success: false,
 			reason: "form.errors.upload_failed"
@@ -564,10 +567,13 @@ export async function restoreVersion( formData: FormData )
 		//  à la fin du traitement.
 		return newVersion.id;
 	}
-	catch
+	catch ( error )
 	{
 		// Si une erreur s'est produite lors de l'opération avec le
-		//  système de fichiers, on retourne enfin une valeur vide.
+		//  système de fichiers, on l'envoie à Sentry avant de retourner
+		//  enfin une valeur vide.
+		Sentry.captureException( error );
+
 		return "";
 	}
 }
@@ -651,11 +657,11 @@ export async function deleteFile( formData: FormData )
 		// On retourne une valeur de succès à la fin du traitement.
 		return true;
 	}
-	catch
+	catch ( error )
 	{
 		// Si une erreur s'est produite lors des opérations avec le
-		//  système de fichiers, on retourne enfin une valeur d'échec.
-		return false;
+		//  système de fichiers, on l'envoie tout simplement à Sentry.
+		Sentry.captureException( error );
 	}
 }
 
