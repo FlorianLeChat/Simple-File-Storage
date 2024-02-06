@@ -46,8 +46,9 @@ export async function changeFileStatus( formData: FormData )
 		return false;
 	}
 
-	// On met à jour le statut du fichier dans la base de données.
-	const files = await prisma.file.updateMany( {
+	// On récupère et on met à jour le statut de tous les fichiers
+	//  qui seront modifiés dans la base de données.
+	const query = {
 		where: {
 			id: {
 				in: result.data.fileIds
@@ -58,23 +59,37 @@ export async function changeFileStatus( formData: FormData )
 		data: {
 			status: result.data.status
 		}
-	} );
+	};
+
+	const [ files ] = await prisma.$transaction( [
+		prisma.file.findMany( {
+			select: {
+				id: true
+			},
+			where: query.where
+		} ),
+
+		prisma.file.updateMany( query )
+	] );
 
 	// On réinitialise également les partages des fichiers si ceux-ci
 	//  deviennent publiquement accessibles.
+	const identifiers = files.map( ( file ) => file.id );
+
 	if ( result.data.status === "public" )
 	{
 		await prisma.share.deleteMany( {
 			where: {
 				fileId: {
-					in: result.data.fileIds
+					in: identifiers
 				}
 			}
 		} );
 	}
 
-	// On retourne enfin une valeur de succès à la fin du traitement.
-	return files.count > 0;
+	// On retourne enfin la liste des identifiants des fichiers modifiés
+	//  à la fin du traitement.
+	return identifiers;
 }
 
 //
@@ -112,7 +127,7 @@ export async function renameFile( formData: FormData )
 
 	// On récupère après les données du premier fichier dans
 	//  la base de données qui doit être renommé.
-	const file = await prisma.file.findFirst( {
+	const first = await prisma.file.findFirst( {
 		where: {
 			id: {
 				in: result.data.fileIds
@@ -121,14 +136,14 @@ export async function renameFile( formData: FormData )
 		}
 	} );
 
-	if ( !file )
+	if ( !first )
 	{
 		return false;
 	}
 
-	// On renomme alors les fichiers dans la base de données
-	//  avant de retourner une valeur de succès.
-	await prisma.file.updateMany( {
+	// On récupère et on renomme alors les fichiers dans la base
+	//  de données.
+	const query = {
 		where: {
 			id: {
 				in: result.data.fileIds
@@ -136,12 +151,24 @@ export async function renameFile( formData: FormData )
 			userId: session.user.id
 		},
 		data: {
-			name: result.data.name + parse( file.name ).ext
+			name: result.data.name + parse( first.name ).ext
 		}
-	} );
+	};
 
-	// On retourne enfin une valeur de succès à la fin du traitement.
-	return true;
+	const [ files ] = await prisma.$transaction( [
+		prisma.file.findMany( {
+			select: {
+				id: true
+			},
+			where: query.where
+		} ),
+
+		prisma.file.updateMany( query )
+	] );
+
+	// On retourne enfin la liste des identifiants des fichiers renommés
+	//  à la fin du traitement.
+	return files.map( ( file ) => file.id );
 }
 
 //
@@ -607,20 +634,31 @@ export async function deleteFile( formData: FormData )
 		return false;
 	}
 
-	// On supprime après les fichiers dans la base de données avant
-	//  de vérifier si l'opération a réussi.
-	const files = await prisma.file.deleteMany( {
-		where: {
-			id: {
-				in: result.data.fileIds
-			},
-			userId: session.user.id
-		}
-	} );
+	// On récupère avant de supprimer après les fichiers dans la base
+	//  de données pour vérifier si l'opération a réussi.
+	const query = {
+		id: {
+			in: result.data.fileIds
+		},
+		userId: session.user.id
+	};
 
-	if ( files.count === 0 )
+	const [ files ] = await prisma.$transaction( [
+		prisma.file.findMany( {
+			select: {
+				id: true
+			},
+			where: query
+		} ),
+
+		prisma.file.deleteMany( { where: query } )
+	] );
+
+	if ( files.length === 0 )
 	{
-		return false;
+		// Si aucun fichier n'a été trouvé dans la base de données,
+		//  on retourne une valeur d'échec.
+		return [];
 	}
 
 	try
@@ -653,9 +691,6 @@ export async function deleteFile( formData: FormData )
 				}
 			} )
 		);
-
-		// On retourne une valeur de succès à la fin du traitement.
-		return true;
 	}
 	catch ( error )
 	{
@@ -663,6 +698,10 @@ export async function deleteFile( formData: FormData )
 		//  système de fichiers, on l'envoie tout simplement à Sentry.
 		Sentry.captureException( error );
 	}
+
+	// On retourne enfin la liste des identifiants des fichiers supprimés
+	//  à la fin du traitement.
+	return files.map( ( file ) => file.id );
 }
 
 //
