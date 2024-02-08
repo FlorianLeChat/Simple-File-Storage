@@ -46,7 +46,12 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 		)
 	);
 	const [ loading, setLoading ] = useState<string[]>( [] );
-	const [ sorting, setSorting ] = useState<SortingState>( [] );
+	const [ sorting, setSorting ] = useState<SortingState>( [
+		{
+			id: parameters.get( "asc" ) ?? parameters.get( "desc" ) ?? "name",
+			desc: parameters.get( "desc" ) !== null
+		}
+	] );
 	const [ rowSelection, setRowSelection ] = useState( {} );
 	const [ columnFilters, setColumnFilters ] = useState<ColumnFiltersState>(
 		parameters.get( "filter" )
@@ -58,9 +63,18 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 			]
 			: []
 	);
-	const [ columnVisibility, setColumnVisibility ] = useState<VisibilityState>(
-		{}
-	);
+	const [ columnVisibility, setColumnVisibility ] = useState<VisibilityState>( {
+		...{
+			date: true,
+			name: true,
+			size: true,
+			type: true,
+			status: true
+		},
+		...Object.fromEntries(
+			parameters.getAll( "hide" ).map( ( option ) => [ option, false ] )
+		)
+	} );
 
 	// Définition des tableaux.
 	const page = Number( parameters.get( "page" ) ?? 1 ) - 1;
