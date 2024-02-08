@@ -2,11 +2,15 @@
 // Composant de pagination d'un tableau de données.
 //  Source : https://ui.shadcn.com/docs/components/data-table#pagination-1
 //
+
+"use client";
+
 import { Table } from "@tanstack/react-table";
 import { ChevronLeft,
 	ChevronRight,
 	ChevronsLeft,
 	ChevronsRight } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 import { Button } from "../../components/ui/button";
 import { Select,
@@ -21,6 +25,9 @@ interface PaginationProps<TData> {
 
 export default function Pagination<TData>( { table }: PaginationProps<TData> )
 {
+	// Déclaration des variables d'état.
+	const parameters = useSearchParams();
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<>
@@ -39,7 +46,15 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 					value={`${ table.getState().pagination.pageSize }`}
 					onValueChange={( value ) =>
 					{
+						// Définition de la limite dans le tableau.
 						table.setPageSize( Number( value ) );
+
+						// Mise à jour de l'URL.
+						const url = new URLSearchParams( parameters );
+						url.set( "limit", value );
+						url.delete( "page" );
+
+						window.history.pushState( null, "", `?${ url }` );
 					}}
 				>
 					<SelectTrigger
@@ -71,7 +86,17 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 
 				<Button
 					variant="outline"
-					onClick={() => table.setPageIndex( 0 )}
+					onClick={() =>
+					{
+						// Définition de la page dans le tableau.
+						table.setPageIndex( 0 );
+
+						// Mise à jour de l'URL.
+						const url = new URLSearchParams( parameters );
+						url.set( "page", "1" );
+
+						window.history.pushState( null, "", `?${ url }` );
+					}}
 					disabled={!table.getCanPreviousPage()}
 					className="hidden h-8 w-8 p-0 lg:flex"
 				>
@@ -82,7 +107,20 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 
 				<Button
 					variant="outline"
-					onClick={() => table.previousPage()}
+					onClick={() =>
+					{
+						// Exécution du changement de page.
+						table.previousPage();
+
+						// Mise à jour de l'URL.
+						const url = new URLSearchParams( parameters );
+						url.set(
+							"page",
+							`${ table.getState().pagination.pageIndex }`
+						);
+
+						window.history.pushState( null, "", `?${ url }` );
+					}}
 					disabled={!table.getCanPreviousPage()}
 					className="h-8 w-8 p-0"
 				>
@@ -93,7 +131,20 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 
 				<Button
 					variant="outline"
-					onClick={() => table.nextPage()}
+					onClick={() =>
+					{
+						// Exécution du changement de page.
+						table.nextPage();
+
+						// Mise à jour de l'URL.
+						const url = new URLSearchParams( parameters );
+						url.set(
+							"page",
+							`${ table.getState().pagination.pageIndex + 2 }`
+						);
+
+						window.history.pushState( null, "", `?${ url }` );
+					}}
 					disabled={!table.getCanNextPage()}
 					className="h-8 w-8 p-0"
 				>
@@ -104,7 +155,17 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 
 				<Button
 					variant="outline"
-					onClick={() => table.setPageIndex( table.getPageCount() - 1 )}
+					onClick={() =>
+					{
+						// Définition de la page dans le tableau.
+						table.setPageIndex( table.getPageCount() - 1 );
+
+						// Mise à jour de l'URL.
+						const url = new URLSearchParams( parameters );
+						url.set( "page", table.getPageCount().toString() );
+
+						window.history.pushState( null, "", `?${ url }` );
+					}}
 					disabled={!table.getCanNextPage()}
 					className="hidden h-8 w-8 p-0 lg:flex"
 				>
