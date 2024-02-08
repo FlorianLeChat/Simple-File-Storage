@@ -7,6 +7,7 @@
 
 import { X } from "lucide-react";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 import { flexRender,
 	SortingState,
@@ -35,6 +36,7 @@ import ColumnToggle from "./column-toggle";
 export default function DataTable( { data }: { data: FileAttributes[] } )
 {
 	// Déclaration des variables d'état.
+	const parameters = useSearchParams();
 	const [ files, setFiles ] = useState( data );
 	const [ quota, setQuota ] = useState(
 		files.reduce(
@@ -46,12 +48,23 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 	const [ loading, setLoading ] = useState<string[]>( [] );
 	const [ sorting, setSorting ] = useState<SortingState>( [] );
 	const [ rowSelection, setRowSelection ] = useState( {} );
-	const [ columnFilters, setColumnFilters ] = useState<ColumnFiltersState>( [] );
+	const [ columnFilters, setColumnFilters ] = useState<ColumnFiltersState>(
+		parameters.get( "filter" )
+			? [
+				{
+					id: "name",
+					value: parameters.get( "filter" ) ?? ""
+				}
+			]
+			: []
+	);
 	const [ columnVisibility, setColumnVisibility ] = useState<VisibilityState>(
 		{}
 	);
 
 	// Définition des tableaux.
+	const page = Number( parameters.get( "page" ) ?? 1 ) - 1;
+	const limit = Number( parameters.get( "limit" ) ?? 10 );
 	const table = useReactTable( {
 		data: files,
 		meta: {
@@ -70,6 +83,15 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 		},
 		columns,
 		getRowId: ( row ) => row.uuid,
+		initialState: {
+			pagination: {
+				pageSize: limit,
+				pageIndex:
+					parameters.get( "filter" ) || files.length / limit <= 1
+						? 0
+						: page
+			}
+		},
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -90,12 +112,31 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 				{/* Filtrage par nom */}
 				<Input
 					value={
-						( table.getColumn( "name" )?.getFilterValue() as string )
+						parameters.get( "filter" )
+						?? ( table.getColumn( "name" )?.getFilterValue() as string )
 						?? ""
 					}
-					onChange={( event ) => table
-						.getColumn( "name" )
-						?.setFilterValue( event.target.value )}
+					onChange={( event ) =>
+					{
+						// Définition du filtre dans le tableau.
+						table
+							.getColumn( "name" )
+							?.setFilterValue( event.target.value );
+
+						// Mise à jour de l'URL.
+						const url = new URLSearchParams( parameters );
+
+						if ( event.target.value.length > 0 )
+						{
+							url.set( "filter", event.target.value );
+						}
+						else
+						{
+							url.delete( "filter" );
+						}
+
+						window.history.pushState( null, "", `?${ url }` );
+					}}
 					className="max-w-sm"
 					placeholder="Filtrer par nom"
 				/>
@@ -104,7 +145,17 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 				{table.getState().columnFilters.length > 0 && (
 					<Button
 						variant="ghost"
-						onClick={() => table.resetColumnFilters()}
+						onClick={() =>
+						{
+							// Réinitialisation du filtre dans le tableau.
+							table.resetColumnFilters();
+
+							// Mise à jour de l'URL.
+							const url = new URLSearchParams( parameters );
+							url.delete( "filter" );
+
+							window.history.pushState( null, "", `?${ url }` );
+						}}
 						className="px-3"
 					>
 						<X className="inline h-4 w-4 sm:mr-2" />
