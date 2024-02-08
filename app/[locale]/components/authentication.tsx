@@ -452,7 +452,9 @@ export default function Authentification()
 				<Button
 					type="submit"
 					variant="outline"
-					disabled={loading}
+					disabled={
+						loading || process.env.AUTH_GOOGLE_ENABLED !== "true"
+					}
 					className="w-full"
 				>
 					{loading ? (
@@ -476,7 +478,9 @@ export default function Authentification()
 				<Button
 					type="submit"
 					variant="outline"
-					disabled={loading}
+					disabled={
+						loading || process.env.AUTH_GITHUB_ENABLED !== "true"
+					}
 					className="w-full"
 				>
 					{loading ? (
