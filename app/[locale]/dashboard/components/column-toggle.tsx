@@ -2,9 +2,13 @@
 // Composant de contrôle de l'affichage des colonnes d'un tableau de données.
 //  Source : https://ui.shadcn.com/docs/components/data-table#column-toggle
 //
+
+"use client";
+
 import { merge } from "@/utilities/tailwind";
 import type { Table } from "@tanstack/react-table";
 import { FileAttributes } from "@/interfaces/File";
+import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal } from "lucide-react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 
@@ -21,6 +25,9 @@ export default function ColumnToggle( {
 	table: Table<FileAttributes>;
 } )
 {
+	// Déclaration des variables d'état.
+	const parameters = useSearchParams();
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<DropdownMenu>
@@ -53,7 +60,25 @@ export default function ColumnToggle( {
 							key={column.id}
 							checked={column.getIsVisible()}
 							className="capitalize"
-							onCheckedChange={( value ) => column.toggleVisibility( !!value )}
+							onCheckedChange={( value ) =>
+							{
+								// Affichage/masquage de la colonne.
+								column.toggleVisibility( !!value );
+
+								// Mise à jour de l'URL.
+								const url = new URLSearchParams( parameters );
+
+								if ( value )
+								{
+									url.delete( "hide", column.id );
+								}
+								else
+								{
+									url.append( "hide", column.id );
+								}
+
+								window.history.pushState( null, "", `?${ url }` );
+							}}
 						>
 							{column.id}
 						</DropdownMenuCheckboxItem>
