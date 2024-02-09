@@ -58,6 +58,12 @@ export default function ShareManager( {
 		fetcher
 	);
 
+	// Filtrage des résultats de la recherche.
+	const result =
+		data?.filter(
+			( user ) => !file.shares.some( ( share ) => share.user.uuid === user.id )
+		) ?? [];
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<>
@@ -365,121 +371,115 @@ export default function ShareManager( {
 				{/* Résultats de la recherche */}
 				<ScrollArea>
 					<ul className={data && data.length > 0 ? "mt-4" : ""}>
-						{data
-							&& data.map( ( user, index ) => (
-								<li
-									key={user.id}
-									className="flex flex-wrap items-center gap-3 max-sm:justify-center"
-								>
-									{/* Avatar de l'utilisateur */}
-									<Avatar>
-										<AvatarImage
-											src={user.image ?? ""}
-											alt={user.name ?? ""}
-										/>
+						{result.map( ( user, index ) => (
+							<li
+								key={user.id}
+								className="flex flex-wrap items-center gap-3 max-sm:justify-center"
+							>
+								{/* Avatar de l'utilisateur */}
+								<Avatar>
+									<AvatarImage
+										src={user.image ?? ""}
+										alt={user.name ?? ""}
+									/>
 
-										<AvatarFallback>
-											{( user.name ?? user.email )
-												?.slice( 0, 2 )
-												.toUpperCase() ?? "SFS"}
-										</AvatarFallback>
-									</Avatar>
+									<AvatarFallback>
+										{( user.name ?? user.email )
+											?.slice( 0, 2 )
+											.toUpperCase() ?? "SFS"}
+									</AvatarFallback>
+								</Avatar>
 
-									{/* Informations de l'utilisateur */}
-									<div>
-										<p className="text-sm">{user.name}</p>
+								{/* Informations de l'utilisateur */}
+								<div>
+									<p className="text-sm">{user.name}</p>
 
-										<p className="text-sm text-muted-foreground">
-											{user.email}
-										</p>
-									</div>
+									<p className="text-sm text-muted-foreground">
+										{user.email}
+									</p>
+								</div>
 
-									{/* Bouton d'ajout de l'utilisateur */}
-									<Button
-										onClick={async () =>
+								{/* Bouton d'ajout de l'utilisateur */}
+								<Button
+									onClick={async () =>
+									{
+										// Activation de l'état de chargement.
+										states.setLoading( [ "modal" ] );
+
+										// Création d'un formulaire de données.
+										const form = new FormData();
+										form.append( "fileId", file.uuid );
+										form.append( "userId", user.id ?? "" );
+
+										// Envoi de la requête au serveur et
+										//  attente de la réponse.
+										const state = ( await serverAction(
+											addSharedUser,
+											form
+										) ) as boolean;
+
+										if ( state )
 										{
-											// Activation de l'état de chargement.
-											states.setLoading( [ "modal" ] );
+											// Réinitialisation de la recherche.
+											setSearch( "" );
 
-											// Création d'un formulaire de données.
-											const form = new FormData();
-											form.append( "fileId", file.uuid );
-											form.append(
-												"userId",
-												user.id ?? ""
+											// Mise à jour de l'état du fichier.
+											file.status = "shared";
+											file.shares.push( {
+												user: {
+													uuid: user.id,
+													name: user.name,
+													email: user.email,
+													image: user.image
+												},
+												status: "read"
+											} );
+
+											states.setFiles( [ ...states.files ] );
+										}
+
+										// Fin de l'état de chargement.
+										states.setLoading( [] );
+
+										// Envoi d'une notification.
+										if ( state )
+										{
+											toast.success(
+												"form.info.update_success",
+												{
+													description:
+														"form.info.sharing_updated"
+												}
 											);
-
-											// Envoi de la requête au serveur et
-											//  attente de la réponse.
-											const state = ( await serverAction(
-												addSharedUser,
-												form
-											) ) as boolean;
-
-											if ( state )
-											{
-												// Réinitialisation de la recherche.
-												setSearch( "" );
-
-												// Mise à jour de l'état du fichier.
-												file.status = "shared";
-												file.shares.push( {
-													user: {
-														uuid: user.id,
-														name: user.name,
-														email: user.email,
-														image: user.image
-													},
-													status: "read"
-												} );
-
-												states.setFiles( [
-													...states.files
-												] );
-											}
-
-											// Fin de l'état de chargement.
-											states.setLoading( [] );
-
-											// Envoi d'une notification.
-											if ( state )
-											{
-												toast.success(
-													"form.info.update_success",
-													{
-														description:
-															"form.info.sharing_updated"
-													}
-												);
-											}
-											else
-											{
-												toast.error(
-													"form.errors.update_failed",
-													{
-														description:
-															"form.errors.server_error"
-													}
-												);
-											}
-										}}
-										disabled={loading}
-										className="sm:ml-auto"
-									>
-										{loading ? (
-											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-										) : (
-											<UserPlus className="mr-2 h-4 w-4" />
-										)}
-										Ajouter
-									</Button>
-
-									{/* Séparateur horizontal */}
-									{index !== data.length - 1 && (
-										<Separator className="mb-3 mt-1" />
+										}
+										else
+										{
+											toast.error(
+												"form.errors.update_failed",
+												{
+													description:
+														"form.errors.server_error"
+												}
+											);
+										}
+									}}
+									disabled={loading}
+									className="sm:ml-auto"
+								>
+									{loading ? (
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									) : (
+										<UserPlus className="mr-2 h-4 w-4" />
 									)}
-								</li>
-							) )}
+									Ajouter
+								</Button>
+
+								{/* Séparateur horizontal */}
+								{index !== result.length - 1 && (
+									<Separator className="mb-3 mt-1" />
+								)}
+							</li>
+						) )}
 					</ul>
 				</ScrollArea>
 			</section>
