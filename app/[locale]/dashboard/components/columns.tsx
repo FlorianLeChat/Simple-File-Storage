@@ -55,6 +55,13 @@ export const columns: ColumnDef<FileAttributes>[] = [
 	{
 		// Date de téléversement du fichier.
 		accessorKey: "date",
+		sortingFn: ( a, b ) =>
+		{
+			const dateA = a.original.versions[ 0 ].date.getTime();
+			const dateB = b.original.versions[ 0 ].date.getTime();
+
+			return dateA > dateB ? 1 : ( dateA < dateB && -1 ) || 0;
+		},
 		header: ( { column } ) => <ColumnHeader column={column} title="Date" />,
 		cell: ( { row } ) =>
 		{
