@@ -1,7 +1,8 @@
 //
 // Interface des attributs des fichiers utilisateurs.
 //
-import type { User } from "next-auth";
+import type { ShareAttributes } from "./Share";
+import type { VersionAttributes } from "./Version";
 
 export interface FileAttributes {
 	// Identifiant unique du fichier.
@@ -20,41 +21,11 @@ export interface FileAttributes {
 	status: "public" | "private" | "shared";
 
 	// Partage du fichier.
-	shares: {
-		// Utilisateur en partage.
-		user: {
-			// Identifiant unique.
-			uuid: User["id"];
-
-			// Nom d'affichage.
-			name: User["name"];
-
-			// Adresse électronique.
-			email: User["email"];
-
-			// Image de profil.
-			image: User["image"];
-		};
-
-		// Type de partage du fichier avec l'utilisateur.
-		status: "read" | "write" | "admin";
-	}[];
+	shares: ShareAttributes[];
 
 	// État de chiffrement du fichier.
 	encrypted: boolean;
 
 	// Liste des versions du fichier.
-	versions: {
-		// Identifiant unique de la version.
-		uuid: string;
-
-		// Poids de la version en octets.
-		size: number;
-
-		// Date de création de la version.
-		date: Date;
-
-		// Chemin d'accès à la version.
-		path: string;
-	}[];
+	versions: VersionAttributes[];
 }
