@@ -406,7 +406,7 @@ export async function uploadFiles(
 				);
 
 				await writeFile(
-					join( fileFolder, `${ `${ versionId }${ extension }` }` ),
+					join( fileFolder, `${ versionId }${ extension }` ),
 					Buffer.concat( [
 						iv,
 						new Uint8Array(
