@@ -32,7 +32,7 @@ import { Avatar,
 	AvatarFallback } from "../../components/ui/avatar";
 import { Separator } from "../../components/ui/separator";
 import { ScrollArea } from "../../components/ui/scroll-area";
-import { addSharedUser, deleteSharedUser } from "../actions";
+import { addSharedUser, updateSharedUser, deleteSharedUser } from "../actions";
 
 export default function ShareManager( {
 	table,
@@ -150,28 +150,79 @@ export default function ShareManager( {
 								<Select
 									disabled={loading}
 									defaultValue={share.status}
+									onValueChange={async ( value ) =>
+									{
+										// Activation de l'état de chargement.
+										states.setLoading( [ "modal" ] );
+
+										// Création d'un formulaire de données.
+										const form = new FormData();
+										form.append( "fileId", file.uuid );
+										form.append(
+											"userId",
+											share.user.uuid ?? ""
+										);
+										form.append( "status", value );
+
+										// Envoi de la requête au serveur et
+										//  attente de la réponse.
+										const state = ( await serverAction(
+											updateSharedUser,
+											form
+										) ) as boolean;
+
+										if ( state )
+										{
+											// Mise à jour de l'état du fichier.
+											share.status = value as
+												| "read"
+												| "write"
+												| "admin";
+
+											states.setFiles( [ ...states.files ] );
+										}
+
+										// Fin de l'état de chargement.
+										states.setLoading( [] );
+
+										// Envoi d'une notification.
+										if ( state )
+										{
+											toast.success(
+												"form.info.update_success",
+												{
+													description:
+														"form.info.sharing_updated"
+												}
+											);
+										}
+										else
+										{
+											toast.error(
+												"form.errors.update_failed",
+												{
+													description:
+														"form.errors.server_error"
+												}
+											);
+										}
+									}}
 								>
-									<SelectTrigger className="ml-auto w-auto">
+									<SelectTrigger className="ml-auto w-auto gap-1">
 										<SelectValue />
 									</SelectTrigger>
 
-									<SelectContent>
-										<SelectItem value="write">
-											<span className="mr-1">
-												Écriture
-											</span>
+									<SelectContent className="gap-1">
+										<SelectItem value="read">
+											Lecture
 										</SelectItem>
 
-										<SelectItem value="read">
-											<span className="mr-1">
-												Lecture
-											</span>
+										<SelectItem value="write">
+											Écriture
 										</SelectItem>
 
 										<SelectItem value="admin">
-											<span className="mr-1">
-												Gestion
-											</span>
+											Gestion
 										</SelectItem>
 									</SelectContent>
 								</Select>
