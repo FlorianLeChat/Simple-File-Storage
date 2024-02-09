@@ -82,6 +82,7 @@ export default async function Page( {
 				<a
 					rel="noopener noreferrer"
 					href={meta.source}
+					title="GitHub"
 					target="_blank"
 					className="group fixed bottom-auto left-auto right-0 top-0 [clip-path:polygon(0_0,100%_0,100%_100%)] max-sm:hidden"
 				>
@@ -108,7 +109,7 @@ export default async function Page( {
 
 			{/* Contenu de la page */}
 			<section className="container mx-auto p-4 text-center">
-				<h2 className="bg-gradient-to-r bg-clip-text text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none dark:from-white dark:to-gray-500 dark:text-transparent">
+				<h2 className="bg-gradient-to-r bg-clip-text text-4xl font-bold tracking-tighter dark:from-white dark:to-gray-500 dark:text-transparent sm:text-5xl xl:text-6xl/none">
 					Découvrez nos fonctionnalités
 				</h2>
 
