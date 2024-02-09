@@ -10,6 +10,7 @@ datasource db {
 
 // Déclaration des modèles de données pour Next Auth.
 model Account {
+	user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 	userId            String
 	type              String
 	provider          String
@@ -21,8 +22,6 @@ model Account {
 	scope             String?
 	id_token          String?
 	session_state     String?
-
-	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
 	@@id([provider, providerAccountId])
 }
@@ -87,12 +86,13 @@ model Preference {
 }
 
 model Share {
-	id           Int        @id @default(autoincrement())
 	file         File       @relation(fields: [fileId], references: [id], onDelete: Cascade)
 	fileId       String
 	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 	userId       String
 	status       String     @default("read")
+
+	@@id([fileId, userId])
 }
 
 model User {
