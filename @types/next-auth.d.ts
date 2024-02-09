@@ -16,7 +16,7 @@ declare module "@auth/core/types" {
 				extension: boolean;
 				versions: boolean;
 			};
-			notifications: string;
+			notification: string;
 		} & DefaultSession["user"];
 	}
 }
@@ -41,6 +41,6 @@ declare module "@auth/core/adapters" {
 			extension: boolean;
 			versions: boolean;
 		};
-		notifications: string;
+		notification: string;
 	}
 }

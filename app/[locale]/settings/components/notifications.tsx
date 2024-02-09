@@ -26,7 +26,7 @@ import { updateNotifications } from "../notifications/actions";
 export default function Notifications( { session }: { session: Session } )
 {
 	// Déclaration des constantes.
-	const notifications = session.user.notifications.split( "+" );
+	const notifications = session.user.notification.split( "+" );
 
 	// Déclaration des variables d'état.
 	const [ push, setPush ] = useState( notifications[ 0 ] !== "off" );

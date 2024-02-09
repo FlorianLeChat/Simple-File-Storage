@@ -55,7 +55,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 					extension: false,
 					versions: true
 				};
-				session.user.notifications = user.notifications;
+				session.user.notification = user.notification;
 
 				// Vérification de l'existence du dossier d'enregistrement
 				//  des avatars utilisateurs.
