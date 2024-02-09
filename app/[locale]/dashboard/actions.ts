@@ -767,6 +767,59 @@ export async function addSharedUser( formData: FormData )
 }
 
 //
+// Mise à jour des permissions d'un utilisateur dans la liste des partages
+//  d'un fichier.
+//
+export async function updateSharedUser( formData: FormData )
+{
+	// On récupère d'abord la session de l'utilisateur.
+	const session = await auth();
+
+	if ( !session )
+	{
+		return false;
+	}
+
+	// On créé ensuite un schéma de validation personnalisé pour
+	//  les données du formulaire.
+	const validation = z.object( {
+		fileId: z.string().uuid(),
+		userId: z.string().uuid(),
+		status: z.enum( [ "read", "write", "admin" ] )
+	} );
+
+	// On tente alors de valider les données du formulaire.
+	const result = validation.safeParse( {
+		fileId: formData.get( "fileId" ),
+		userId: formData.get( "userId" ),
+		status: formData.get( "status" )
+	} );
+
+	if ( !result.success )
+	{
+		return false;
+	}
+
+	// On met à jour également le statut de partage du fichier dans
+	//  la base de données.
+	const share = await prisma.share.updateMany( {
+		where: {
+			file: {
+				id: result.data.fileId,
+				userId: session.user.id
+			},
+			userId: result.data.userId
+		},
+		data: {
+			status: result.data.status
+		}
+	} );
+
+	// On retourne enfin une valeur de succès à la fin du traitement.
+	return share.count > 0;
+}
+
+//
 // Suppression d'un utilisateur de la liste des partages d'un fichier.
 //
 export async function deleteSharedUser( formData: FormData )
