@@ -248,6 +248,10 @@ export default function ShareManager( {
 									variant="destructive"
 									disabled={loading}
 								>
+									<span className="sr-only">
+										Supprimer définitivement
+									</span>
+
 									{loading ? (
 										<Loader2 className="h-4 w-4 animate-spin" />
 									) : (
