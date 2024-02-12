@@ -44,7 +44,18 @@ async function getFiles(): Promise<FileAttributes[]>
 	//  enregistrés dans la base de données.
 	const files = await prisma.file.findMany( {
 		where: {
-			userId: session.user.id
+			OR: [
+				{
+					userId: session.user.id
+				},
+				{
+					shares: {
+						some: {
+							userId: session.user.id
+						}
+					}
+				}
+			]
 		},
 		include: {
 			user: true,

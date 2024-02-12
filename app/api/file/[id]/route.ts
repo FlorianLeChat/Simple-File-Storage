@@ -28,6 +28,7 @@ export async function GET(
 			id: params.id
 		},
 		include: {
+			shares: true,
 			versions: {
 				where: {
 					id: version ?? undefined
@@ -44,7 +45,14 @@ export async function GET(
 		return new NextResponse( null, { status: 400 } );
 	}
 
-	// On vérifie ensuite le statut de partage du fichier pour savoir
+	// On retourne ensuite les données du fichier si l'utilisateur
+	//  semble posséder les autorisations d'accès en partage.
+	if ( file.shares.some( ( share ) => share.userId === session.user.id ) )
+	{
+		return NextResponse.json( file );
+	}
+
+	// On vérifie également le statut de partage du fichier pour savoir
 	//   s'il est possible d'y accéder.
 	switch ( file.status )
 	{
