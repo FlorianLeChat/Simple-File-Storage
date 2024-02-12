@@ -40,6 +40,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 export default function Authentification()
 {
 	// Déclaration des variables d'état.
+	const [ locked, setLocked ] = useState( false );
 	const [ focused, setFocused ] = useState( false );
 	const [ loading, setLoading ] = useState( false );
 	const [ signUpState, signUpAction ] = useFormState( signUpAccount, {
@@ -289,6 +290,11 @@ export default function Authentification()
 														field.value
 															?.length !== 0
 													)}
+													onKeyUp={( event ) => setLocked(
+														event.getModifierState(
+															"CapsLock"
+														)
+													)}
 													onFocus={() => setFocused( true )}
 													disabled={loading}
 													className={`transition-opacity ${
@@ -358,6 +364,14 @@ export default function Authentification()
 							)}
 						/>
 
+						{/* Avertissements pour les majuscules */}
+						{locked && (
+							<p className="text-sm font-bold uppercase text-destructive">
+								Les majuscules ont été activées pour la saisie
+								du mot de passe.
+							</p>
+						)}
+
 						{/* Se souvenir de moi */}
 						<FormField
 							name="remembered"
@@ -421,9 +435,9 @@ export default function Authentification()
 			<div className="flex items-center space-x-2">
 				<Separator className="w-auto flex-grow" />
 
-				<span className="text-xs uppercase text-muted-foreground">
+				<p className="text-xs uppercase text-muted-foreground">
 					Ou continuer avec
-				</span>
+				</p>
 
 				<Separator className="w-auto flex-grow" />
 			</div>
