@@ -120,6 +120,22 @@ export const customDataProvider = withLifecycleCallbacks(
 			}
 		},
 		{
+			// Partage de fichiers.
+			resource: "share",
+			beforeGetList: async ( data ) =>
+			{
+				data.sort.field = "fileId";
+
+				return data;
+			},
+			afterRead: ( data ) =>
+			{
+				data.id = data.fileId;
+
+				return data;
+			}
+		},
+		{
 			// Jetons de vérification.
 			resource: "verificationToken",
 			beforeGetList: async ( data ) =>
