@@ -9,9 +9,6 @@ export function ShareList()
 	return (
 		<List>
 			<Datagrid bulkActionButtons={false}>
-				{/* Identifiant de la version */}
-				<TextField source="id" label="Numéro" />
-
 				{/* Relation avec le fichier */}
 				<ReferenceField
 					label="Fichier"
