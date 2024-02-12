@@ -69,6 +69,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 			name: true,
 			size: true,
 			type: true,
+			owner: true,
 			status: true
 		},
 		...Object.fromEntries(
