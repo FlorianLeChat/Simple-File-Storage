@@ -453,15 +453,16 @@ export async function uploadFiles(
 					exists?.shares && exists?.shares.length > 0
 						? "shared"
 						: exists?.status ?? status,
-				shares: exists?.shares.map( ( share ) => ( {
-					user: {
-						uuid: share.userId,
-						name: share.user.name,
-						email: share.user.email,
-						image: share.user.image
-					},
-					status: share.status
-				} ) ),
+				shares:
+					exists?.shares.map( ( share ) => ( {
+						user: {
+							uuid: share.userId,
+							name: share.user.name,
+							email: share.user.email,
+							image: share.user.image
+						},
+						status: share.status
+					} ) ) ?? [],
 				versions: versions.map( ( version ) => ( {
 					uuid: version.id,
 					size: Number( version.size ),
