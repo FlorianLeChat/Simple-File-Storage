@@ -449,7 +449,10 @@ export async function uploadFiles(
 					0
 				),
 				path,
-				status: exists?.status ?? status,
+				status:
+					exists?.shares && exists?.shares.length > 0
+						? "shared"
+						: exists?.status ?? status,
 				shares: exists?.shares.map( ( share ) => ( {
 					user: {
 						uuid: share.userId,
@@ -731,23 +734,6 @@ export async function addSharedUser( formData: FormData )
 	} );
 
 	if ( !result.success )
-	{
-		return false;
-	}
-
-	// On met à jour également le statut du fichier dans la base
-	//  de données avant de vérifier si l'opération a réussi.
-	const file = await prisma.file.update( {
-		where: {
-			id: result.data.fileId,
-			userId: session.user.id
-		},
-		data: {
-			status: "shared"
-		}
-	} );
-
-	if ( !file )
 	{
 		return false;
 	}

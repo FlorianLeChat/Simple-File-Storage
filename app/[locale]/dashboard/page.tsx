@@ -78,7 +78,7 @@ async function getFiles(): Promise<FileAttributes[]>
 				name: info.name,
 				type: mime.getType( file.name ) ?? "application/octet-stream",
 				path,
-				status: file.status ?? "public",
+				status: file.shares.length > 0 ? "shared" : file.status,
 				shares: file.shares.map( ( share ) => ( {
 					user: {
 						uuid: share.userId,
