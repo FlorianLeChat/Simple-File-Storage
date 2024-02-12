@@ -1,6 +1,7 @@
 //
 // Interface des attributs des fichiers utilisateurs.
 //
+import type { User } from "next-auth";
 import type { ShareAttributes } from "./Share";
 import type { VersionAttributes } from "./Version";
 
@@ -16,6 +17,9 @@ export interface FileAttributes {
 
 	// Chemin d'accès au fichier.
 	path: string;
+
+	// Propriétaire du fichier.
+	owner: User;
 
 	// Statut de partage du fichier.
 	status: "public" | "private" | "shared";

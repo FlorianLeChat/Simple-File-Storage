@@ -449,6 +449,7 @@ export async function uploadFiles(
 					0
 				),
 				path,
+				owner: exists?.user ?? session.user,
 				status:
 					exists?.shares && exists?.shares.length > 0
 						? "shared"

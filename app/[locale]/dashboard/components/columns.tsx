@@ -2,6 +2,10 @@
 // Composant des colonnes d'un tableau de données.
 //  Source : https://ui.shadcn.com/docs/components/data-table
 //
+
+"use client";
+
+import { merge } from "@/utilities/tailwind";
 import { ColumnDef } from "@tanstack/react-table";
 import { formatSize } from "@/utilities/react-table";
 import { FileAttributes } from "@/interfaces/File";
@@ -10,6 +14,13 @@ import { Badge } from "../../components/ui/badge";
 import RowActions from "./row-actions";
 import ColumnHeader from "./column-header";
 import { Checkbox } from "../../components/ui/checkbox";
+import { Avatar,
+	AvatarImage,
+	AvatarFallback } from "../../components/ui/avatar";
+import { HoverCard,
+	HoverCardContent,
+	HoverCardTrigger } from "../../components/ui/hover-card";
+import { buttonVariants } from "../../components/ui/button";
 
 // Déclaration des colonnes du tableau.
 export const columns: ColumnDef<FileAttributes>[] = [
@@ -40,6 +51,61 @@ export const columns: ColumnDef<FileAttributes>[] = [
 		// Nom du fichier.
 		accessorKey: "name",
 		header: ( { column } ) => <ColumnHeader column={column} title="Nom" />
+	},
+	{
+		// Propriétaire du fichier.
+		accessorKey: "owner",
+		header: ( { column } ) => (
+			<ColumnHeader column={column} title="Propriétaire" />
+		),
+		cell: ( { row } ) => (
+			<HoverCard>
+				<HoverCardTrigger
+					className={merge(
+						buttonVariants( { variant: "link" } ),
+						"h-auto cursor-pointer p-0 text-secondary-foreground"
+					)}
+				>
+					{row.original.owner.name ?? row.original.owner.email}
+				</HoverCardTrigger>
+
+				<HoverCardContent className="flex w-auto items-center justify-between space-x-4">
+					<Avatar>
+						<AvatarImage
+							src={row.original.owner.image ?? ""}
+							alt={row.original.owner.name ?? ""}
+						/>
+
+						<AvatarFallback>
+							{(
+								row.original.owner.name
+								?? row.original.owner.email
+							)
+								?.slice( 0, 2 )
+								.toUpperCase() ?? "SFS"}
+						</AvatarFallback>
+					</Avatar>
+
+					<div className="space-y-1 text-sm ">
+						{row.original.owner.name ? (
+							<>
+								<h4 className="font-medium leading-none">
+									{row.original.owner.name}
+								</h4>
+
+								<p className="text-muted-foreground">
+									{row.original.owner.email}
+								</p>
+							</>
+						) : (
+							<h4 className="font-medium leading-none">
+								{row.original.owner.email}
+							</h4>
+						)}
+					</div>
+				</HoverCardContent>
+			</HoverCard>
+		)
 	},
 	{
 		// Type du fichier.
