@@ -15,6 +15,7 @@ import { Bug,
 	FileArchive,
 	SquareStack,
 	ExternalLink } from "lucide-react";
+import { useEffect } from "react";
 import frenchMessages from "ra-language-french";
 import englishMessages from "ra-language-english";
 import { dataProvider } from "ra-data-simple-prisma";
@@ -140,8 +141,11 @@ export const customDataProvider = withLifecycleCallbacks(
 export default function Administration()
 {
 	// Suppression des éléments inutiles.
-	document.querySelector( "video" )?.remove();
-	document.querySelector( "footer" )?.remove();
+	useEffect( () =>
+	{
+		document.querySelector( "video" )?.remove();
+		document.querySelector( "footer" )?.remove();
+	}, [] );
 
 	// Affichage du rendu HTML du composant.
 	return (
