@@ -64,6 +64,7 @@ export default function User( { session }: { session: Session } )
 	const maxAvatarSize = Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE ?? 0 );
 
 	// Déclaration des variables d'état.
+	const [ locked, setLocked ] = useState( false );
 	const [ loading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateUser, {
 		success: true,
@@ -272,6 +273,11 @@ export default function User( { session }: { session: Session } )
 											{...field}
 											type={passwordType}
 											disabled={loading}
+											onKeyUp={( event ) => setLocked(
+												event.getModifierState(
+													"CapsLock"
+												)
+											)}
 											onKeyDown={() => setPasswordType( "password" )}
 											maxLength={
 												schema.shape.password._def
@@ -323,6 +329,14 @@ export default function User( { session }: { session: Session } )
 						</FormItem>
 					)}
 				/>
+
+				{/* Avertissements pour les majuscules */}
+				{locked && (
+					<p className="!mt-4 text-sm font-bold uppercase text-destructive">
+						Les majuscules ont été activées pour la saisie du mot de
+						passe.
+					</p>
+				)}
 
 				{/* Langue préférée */}
 				<FormField
