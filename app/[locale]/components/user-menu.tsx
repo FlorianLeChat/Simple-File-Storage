@@ -133,9 +133,9 @@ export default function UserMenu( { session }: { session: Session } )
 				>
 					<BellRing className="inline h-5 w-5 md:mr-2" />
 
-					<span id="notifications" className="hidden md:inline">
+					<p id="notifications" className="hidden md:inline">
 						Nouvelles notifications
-					</span>
+					</p>
 				</DialogTrigger>
 
 				<DialogContent className="w-[380px]">
@@ -156,7 +156,7 @@ export default function UserMenu( { session }: { session: Session } )
 								key={notification.title}
 								className="grid grid-cols-[25px_1fr]"
 							>
-								<span className="h-2 w-2 translate-y-1 rounded-full bg-primary" />
+								<p className="h-2 w-2 translate-y-1 rounded-full bg-primary" />
 
 								<div className="space-y-1">
 									<h3 className="text-sm font-medium leading-none">
@@ -201,23 +201,31 @@ export default function UserMenu( { session }: { session: Session } )
 				<DropdownMenuContent className="w-56" align="end" forceMount>
 					{/* Informations utilisateur */}
 					<DropdownMenuLabel className="font-normal">
-						<span className="block text-sm font-medium">
-							{fullName ?? session.user.id}
-						</span>
+						{fullName ? (
+							<>
+								<p className="truncate text-sm font-medium">
+									{fullName}
+								</p>
 
-						<span className="block text-xs text-muted-foreground">
-							{email}
-						</span>
+								<p className="truncate text-xs text-muted-foreground">
+									{email}
+								</p>
+							</>
+						) : (
+							<p className="truncate text-sm font-medium">
+								{email}
+							</p>
+						)}
 
-						<span
-							className={`block text-xs font-extrabold ${
+						<p
+							className={`text-xs font-extrabold ${
 								admin ? "text-destructive" : "text-primary"
 							}`}
 						>
 							{admin
 								? "Compte administrateur"
 								: "Compte utilisateur"}
-						</span>
+						</p>
 					</DropdownMenuLabel>
 
 					{/* Barre verticale de séparation */}
