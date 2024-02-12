@@ -86,7 +86,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 						</AvatarFallback>
 					</Avatar>
 
-					<div className="space-y-1 text-sm ">
+					<div className="space-y-1 text-sm">
 						{row.original.owner.name ? (
 							<>
 								<h4 className="font-medium leading-none">
