@@ -25,7 +25,7 @@ export async function changeFileStatus( formData: FormData )
 
 	if ( !session )
 	{
-		return false;
+		return [];
 	}
 
 	// On créé ensuite un schéma de validation personnalisé pour
@@ -43,7 +43,7 @@ export async function changeFileStatus( formData: FormData )
 
 	if ( !result.success )
 	{
-		return false;
+		return [];
 	}
 
 	// On récupère et on met à jour le statut de tous les fichiers
@@ -102,7 +102,7 @@ export async function renameFile( formData: FormData )
 
 	if ( !session )
 	{
-		return false;
+		return [];
 	}
 
 	// On créé ensuite un schéma de validation personnalisé pour
@@ -122,7 +122,7 @@ export async function renameFile( formData: FormData )
 
 	if ( !result.success )
 	{
-		return false;
+		return [];
 	}
 
 	// On récupère après les données du premier fichier dans
@@ -138,7 +138,7 @@ export async function renameFile( formData: FormData )
 
 	if ( !first )
 	{
-		return false;
+		return [];
 	}
 
 	// On récupère et on renomme alors les fichiers dans la base
@@ -488,6 +488,7 @@ export async function uploadFiles(
 		// Si une erreur survient lors du téléversement des fichiers,
 		//  on l'envoie à Sentry et on retourne un message d'erreur
 		Sentry.captureException( error );
+		console.error( error );
 
 		return {
 			success: false,
@@ -618,7 +619,7 @@ export async function deleteFile( formData: FormData )
 
 	if ( !session )
 	{
-		return false;
+		return [];
 	}
 
 	// On créé ensuite un schéma de validation personnalisé pour
@@ -634,7 +635,7 @@ export async function deleteFile( formData: FormData )
 
 	if ( !result.success )
 	{
-		return false;
+		return [];
 	}
 
 	// On récupère avant de supprimer après les fichiers dans la base
