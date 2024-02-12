@@ -204,30 +204,36 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									if ( files.length === processed.length )
+									if ( processed.length > 0 )
 									{
-										toast.success(
-											"form.info.update_success",
-											{
-												description:
-													"form.info.status_updated"
-											}
-										);
-									}
-									else if ( processed.length > 0 )
-									{
-										toast.warning(
-											"form.info.update_partial",
-											{
-												description:
-													"form.info.status_updated"
-											}
-										);
+										if ( files.length === processed.length )
+										{
+											// Mise à jour complète.
+											toast.success(
+												"form.info.action_success",
+												{
+													description:
+														"form.info.status_updated"
+												}
+											);
+										}
+										else
+										{
+											// Mise à jour partielle.
+											toast.warning(
+												"form.info.action_partial",
+												{
+													description:
+														"form.info.status_updated"
+												}
+											);
+										}
 									}
 									else
 									{
+										// Erreur dans la mise à jour.
 										toast.error(
-											"form.errors.update_failed",
+											"form.errors.file_deleted",
 											{
 												description:
 													"form.errors.server_error"
@@ -325,30 +331,36 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									if ( files.length === processed.length )
+									if ( processed.length > 0 )
 									{
-										toast.success(
-											"form.info.update_success",
-											{
-												description:
-													"form.info.status_updated"
-											}
-										);
-									}
-									else if ( processed.length > 0 )
-									{
-										toast.warning(
-											"form.info.update_partial",
-											{
-												description:
-													"form.info.status_updated"
-											}
-										);
+										if ( files.length === processed.length )
+										{
+											// Mise à jour complète.
+											toast.success(
+												"form.info.action_success",
+												{
+													description:
+														"form.info.status_updated"
+												}
+											);
+										}
+										else
+										{
+											// Mise à jour partielle.
+											toast.warning(
+												"form.info.action_partial",
+												{
+													description:
+														"form.info.status_updated"
+												}
+											);
+										}
 									}
 									else
 									{
+										// Erreur dans la mise à jour.
 										toast.error(
-											"form.errors.update_failed",
+											"form.errors.file_deleted",
 											{
 												description:
 													"form.errors.server_error"
@@ -604,30 +616,36 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									if ( files.length === processed.length )
+									if ( processed.length > 0 )
 									{
-										toast.success(
-											"form.info.update_success",
-											{
-												description:
-													"form.info.name_updated"
-											}
-										);
-									}
-									else if ( processed.length > 0 )
-									{
-										toast.warning(
-											"form.info.update_partial",
-											{
-												description:
-													"form.info.name_updated"
-											}
-										);
+										if ( files.length === processed.length )
+										{
+											// Mise à jour complète.
+											toast.success(
+												"form.info.action_success",
+												{
+													description:
+														"form.info.name_updated"
+												}
+											);
+										}
+										else
+										{
+											// Mise à jour partielle.
+											toast.warning(
+												"form.info.action_partial",
+												{
+													description:
+														"form.info.name_updated"
+												}
+											);
+										}
 									}
 									else
 									{
+										// Erreur dans la mise à jour.
 										toast.error(
-											"form.errors.update_failed",
+											"form.errors.file_deleted",
 											{
 												description:
 													"form.errors.server_error"
@@ -891,28 +909,34 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									if ( files.length === processed.length )
+									if ( processed.length > 0 )
 									{
-										toast.success(
-											"form.info.action_success",
-											{
-												description:
-													"form.info.name_updated"
-											}
-										);
-									}
-									else if ( processed.length > 0 )
-									{
-										toast.warning(
-											"form.info.action_partial",
-											{
-												description:
-													"form.info.name_updated"
-											}
-										);
+										if ( files.length === processed.length )
+										{
+											// Mise à jour complète.
+											toast.success(
+												"form.info.action_success",
+												{
+													description:
+														"form.info.file_deleted"
+												}
+											);
+										}
+										else
+										{
+											// Mise à jour partielle.
+											toast.warning(
+												"form.info.action_partial",
+												{
+													description:
+														"form.info.file_deleted"
+												}
+											);
+										}
 									}
 									else
 									{
+										// Erreur dans la mise à jour.
 										toast.error(
 											"form.errors.file_deleted",
 											{
