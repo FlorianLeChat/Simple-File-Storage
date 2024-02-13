@@ -282,6 +282,12 @@ export default function Layout( { session }: { session: Session } )
 											<TooltipTrigger
 												{...field}
 												type="button"
+												title={
+													value.name
+														.charAt( 0 )
+														.toUpperCase()
+													+ value.name.slice( 1 )
+												}
 												style={
 													{
 														"--theme-primary": `hsl(${ value.dark })`
@@ -304,13 +310,6 @@ export default function Layout( { session }: { session: Session } )
 														=== value.name && (
 														<Check className="h-4 w-4 text-white" />
 													)}
-												</span>
-
-												<span className="sr-only">
-													{value.name
-														.charAt( 0 )
-														.toUpperCase()
-														+ value.name.slice( 1 )}
 												</span>
 											</TooltipTrigger>
 

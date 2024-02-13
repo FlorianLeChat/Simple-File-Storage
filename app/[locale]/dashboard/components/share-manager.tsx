@@ -234,6 +234,7 @@ export default function ShareManager( {
 								</Select>
 
 								<Button
+									title="Supprimer définitivement"
 									onClick={async () =>
 									{
 										// Activation de l'état de chargement.
@@ -305,10 +306,6 @@ export default function ShareManager( {
 									variant="destructive"
 									disabled={loading}
 								>
-									<p className="sr-only">
-										Supprimer définitivement
-									</p>
-
 									{loading ? (
 										<Loader2 className="h-4 w-4 animate-spin" />
 									) : (
