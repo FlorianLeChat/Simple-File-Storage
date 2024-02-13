@@ -23,6 +23,7 @@ import { Ban,
 	ClipboardCopy,
 	MoreHorizontal,
 	TextCursorInput } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { FileAttributes } from "@/interfaces/File";
 import { useRef, useState } from "react";
 import type { Table, Row, TableMeta } from "@tanstack/react-table";
@@ -71,6 +72,7 @@ export default function RowActions( {
 	const model = table.getFilteredSelectedRowModel();
 	const count = Math.max( model.rows.length, 1 );
 	const states = table.options.meta as TableMeta<FileAttributes>;
+	const session = useSession();
 
 	// Déclaration des variables d'état.
 	const rename = useRef<HTMLButtonElement>( null );
@@ -81,10 +83,18 @@ export default function RowActions( {
 
 	// Filtrage des données d'une ou plusieurs lignes.
 	const rowData = states.files.filter( ( file ) => file.uuid === row.id );
+	const rowShares = rowData[ 0 ].shares.find(
+		( share ) => share.user.uuid === session.data?.user.id
+	);
 	const selectedData =
 		model.rows.length > 1
 			? states.files.filter( ( file ) => model.rows.find( ( value ) => file.uuid === value.id ) )
 			: rowData;
+
+	// Récupération de l'état d'administration du fichier.
+	//  Note : si l'utilisateur est introuvable dans les partages,
+	//   alors cela signifie qu'il est le propriétaire du fichier.
+	const owner = rowShares ? rowShares.status === "admin" : true;
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -124,6 +134,7 @@ export default function RowActions( {
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+							disabled={!owner}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<Globe className="mr-2 h-4 w-4" />
@@ -184,13 +195,26 @@ export default function RowActions( {
 
 									if ( processed.length > 0 )
 									{
+										// Filtrage des fichiers partagés.
+										const sharedFiles = processed.filter(
+											( value ) => value.owner.id
+												!== session.data?.user.id
+										);
+
 										// Mise à jour de l'état des fichiers.
 										processed.forEach( ( file ) =>
 										{
 											file.status = "public";
 										} );
 
-										states.setFiles( [ ...states.files ] );
+										states.setFiles(
+											states.files.filter(
+												( file ) => !sharedFiles.find(
+													( value ) => value.uuid
+														=== file.uuid
+												)
+											)
+										);
 									}
 
 									// Fin de l'état de chargement.
@@ -373,6 +397,7 @@ export default function RowActions( {
 					<DialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+							disabled={!owner}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<Share2 className="mr-2 h-4 w-4" />
@@ -401,6 +426,7 @@ export default function RowActions( {
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+							disabled={!owner}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<UserX className="mr-2 h-4 w-4" />
@@ -453,13 +479,27 @@ export default function RowActions( {
 
 									if ( state )
 									{
+										// Filtrage des fichiers partagés.
+										const sharedFiles = selectedData.filter(
+											( value ) => value.owner.id
+												!== session.data?.user.id
+										);
+
+										// Mise à jour de l'état des fichiers.
 										selectedData.forEach( ( file ) =>
 										{
 											file.status = "private";
 											file.shares = [];
 										} );
 
-										states.setFiles( [ ...states.files ] );
+										states.setFiles(
+											states.files.filter(
+												( file ) => !sharedFiles.find(
+													( value ) => value.uuid
+														=== file.uuid
+												)
+											)
+										);
 									}
 
 									// Fin de l'état de chargement.
@@ -502,6 +542,7 @@ export default function RowActions( {
 					<DialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+							disabled={!owner}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<TextCursorInput className="mr-2 h-4 w-4" />
@@ -762,6 +803,7 @@ export default function RowActions( {
 					<DialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+							disabled={!owner}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<History className="mr-2 h-4 w-4" />
@@ -799,6 +841,7 @@ export default function RowActions( {
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+							disabled={!owner}
 							onSelect={( event ) => event.preventDefault()}
 							className="text-destructive"
 						>

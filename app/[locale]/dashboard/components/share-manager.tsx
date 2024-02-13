@@ -17,6 +17,7 @@ import { Trash,
 	ClipboardCopy,
 	ClipboardCheck } from "lucide-react";
 import type { User } from "next-auth";
+import { useSession } from "next-auth/react";
 import type { FileAttributes } from "@/interfaces/File";
 import type { Table, Row, TableMeta } from "@tanstack/react-table";
 
@@ -48,6 +49,7 @@ export default function ShareManager( {
 	const file = states.files.filter( ( value ) => value.uuid === row.id )[ 0 ];
 
 	// Déclaration des variables d'état.
+	const session = useSession();
 	const loading = states.loading.length !== 0;
 	const [ search, setSearch ] = useState( "" );
 	const [ copied, setCopied ] = useState( false );
@@ -140,13 +142,21 @@ export default function ShareManager( {
 							</Avatar>
 
 							{/* Informations de l'utilisateur */}
-							<div>
-								<p className="text-sm">{share.user.name}</p>
+							{share.user.name ? (
+								<div className="max-w-60 text-sm">
+									<p className="truncate">
+										{share.user.name}
+									</p>
 
-								<p className="text-sm text-muted-foreground">
+									<p className="truncate text-muted-foreground">
+										{share.user.email}
+									</p>
+								</div>
+							) : (
+								<p className="max-w-60 truncate text-sm">
 									{share.user.email}
 								</p>
-							</div>
+							)}
 
 							{/* Autorisations accordées */}
 							<div className="flex gap-3 sm:ml-auto">
@@ -272,7 +282,24 @@ export default function ShareManager( {
 													);
 											}
 
-											states.setFiles( [ ...states.files ] );
+											if (
+												file.owner.id
+												=== session.data?.user.id
+											)
+											{
+												states.setFiles( [
+													...states.files
+												] );
+											}
+											else
+											{
+												states.setFiles( [
+													...states.files.filter(
+														( value ) => value.uuid
+															!== file.uuid
+													)
+												] );
+											}
 										}
 
 										// Fin de l'état de chargement.
