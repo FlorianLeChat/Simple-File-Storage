@@ -111,11 +111,8 @@ export default function ShareManager( {
 			{/* Liste des utilisateurs partagés */}
 			<section>
 				<h4 className="text-sm font-medium max-sm:text-center">
-					<Users className="mr-2 inline h-4 w-4" />
-
-					<p className="align-middle">
-						Liste des utilisateurs en partage
-					</p>
+					<Users className="mr-2 inline h-4 w-4 align-text-top" />
+					Liste des utilisateurs en partage
 				</h4>
 
 				{file.shares.length === 0 ? (
@@ -324,11 +321,8 @@ export default function ShareManager( {
 			{/* Ajout de nouveaux utilisateurs */}
 			<section>
 				<h4 className="text-sm font-medium max-sm:text-center">
-					<UserCog className="mr-2 inline h-4 w-4" />
-
-					<p className="align-middle">
-						Ajouts de nouveaux utilisateurs en partage
-					</p>
+					<UserCog className="mr-2 inline h-4 w-4 align-text-top" />
+					Ajouts de nouveaux utilisateurs en partage
 				</h4>
 
 				<Input
