@@ -53,7 +53,19 @@ export async function changeFileStatus( formData: FormData )
 			id: {
 				in: result.data.fileIds
 			},
-			userId: session.user.id,
+			OR: [
+				{
+					userId: session.user.id
+				},
+				{
+					shares: {
+						some: {
+							userId: session.user.id,
+							status: "admin"
+						}
+					}
+				}
+			],
 			status: result.data.status === "private" ? "public" : undefined
 		},
 		data: {
@@ -132,7 +144,19 @@ export async function renameFile( formData: FormData )
 			id: {
 				in: result.data.fileIds
 			},
-			userId: session.user.id
+			OR: [
+				{
+					userId: session.user.id
+				},
+				{
+					shares: {
+						some: {
+							userId: session.user.id,
+							status: "admin"
+						}
+					}
+				}
+			]
 		}
 	} );
 
@@ -148,7 +172,19 @@ export async function renameFile( formData: FormData )
 			id: {
 				in: result.data.fileIds
 			},
-			userId: session.user.id
+			OR: [
+				{
+					userId: session.user.id
+				},
+				{
+					shares: {
+						some: {
+							userId: session.user.id,
+							status: "admin"
+						}
+					}
+				}
+			]
 		},
 		data: {
 			name: result.data.name + parse( first.name ).ext
@@ -536,7 +572,19 @@ export async function restoreVersion( formData: FormData )
 	const file = await prisma.file.findUnique( {
 		where: {
 			id: result.data.fileId,
-			userId: session.user.id
+			OR: [
+				{
+					userId: session.user.id
+				},
+				{
+					shares: {
+						some: {
+							userId: session.user.id,
+							status: "admin"
+						}
+					}
+				}
+			]
 		},
 		include: {
 			versions: {
@@ -556,7 +604,7 @@ export async function restoreVersion( formData: FormData )
 	const userFolder = join(
 		process.cwd(),
 		"public/files",
-		session.user.id,
+		file.userId,
 		result.data.fileId
 	);
 
@@ -842,7 +890,19 @@ export async function updateSharedUser( formData: FormData )
 		where: {
 			file: {
 				id: result.data.fileId,
-				userId: session.user.id
+				OR: [
+					{
+						userId: session.user.id
+					},
+					{
+						shares: {
+							some: {
+								userId: session.user.id,
+								status: "admin"
+							}
+						}
+					}
+				]
 			},
 			userId: result.data.userId
 		},
@@ -894,34 +954,24 @@ export async function deleteSharedUser( formData: FormData )
 				id: {
 					in: result.data.fileId
 				},
-				userId: session.user.id
+				OR: [
+					{
+						userId: session.user.id
+					},
+					{
+						shares: {
+							some: {
+								userId: session.user.id,
+								status: "admin"
+							}
+						}
+					}
+				]
 			},
 			userId: result.data.userId
 		}
 	} );
 
-	if ( shares.count === 0 )
-	{
-		return false;
-	}
-
-	// On met à jour après le statut des fichiers n'ayant plus de
-	//  partages dans la base de données.
-	const files = await prisma.file.updateMany( {
-		where: {
-			id: {
-				in: result.data.fileId
-			},
-			userId: session.user.id,
-			shares: {
-				none: {}
-			}
-		},
-		data: {
-			status: "private"
-		}
-	} );
-
 	// On retourne enfin une valeur de succès à la fin du traitement.
-	return files.count > 0;
+	return shares.count > 0;
 }
