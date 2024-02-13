@@ -140,7 +140,7 @@ export default function UserMenu( { session }: { session: Session } )
 
 				<DialogContent className="w-[380px]">
 					<DialogHeader>
-						<DialogTitle>
+						<DialogTitle className="flex items-center">
 							<BellRing className="mr-2 inline h-5 w-5" />
 							Notifications
 						</DialogTitle>
