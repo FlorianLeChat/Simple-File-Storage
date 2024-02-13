@@ -132,13 +132,10 @@ export default function FileHistory( {
 									<AlertDialogContent>
 										<AlertDialogHeader>
 											<AlertDialogTitle>
-												<History className="mr-2 inline h-5 w-5" />
-
-												<p className="align-middle">
-													Êtes-vous sûr de vouloir
-													restaurer cette version du
-													fichier ?
-												</p>
+												<History className="mr-2 inline h-5 w-5 align-text-top" />
+												Êtes-vous sûr de vouloir
+												restaurer cette version du
+												fichier ?
 											</AlertDialogTitle>
 
 											<AlertDialogDescription>
