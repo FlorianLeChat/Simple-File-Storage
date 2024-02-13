@@ -35,6 +35,7 @@ import { deleteFile,
 	deleteSharedUser,
 	changeFileStatus } from "../actions";
 import { Dialog,
+	DialogClose,
 	DialogTitle,
 	DialogHeader,
 	DialogFooter,
@@ -552,102 +553,105 @@ export default function RowActions( {
 						/>
 
 						<DialogFooter>
-							<Button
-								ref={rename}
-								onClick={async () =>
-								{
-									// Activation de l'état de chargement.
-									states.setLoading(
-										selectedData.map( ( value ) => value.uuid )
-									);
-
-									// Création d'un formulaire de données.
-									const form = new FormData();
-									selectedData.forEach( ( file ) =>
+							<DialogClose asChild>
+								<Button
+									ref={rename}
+									onClick={async () =>
 									{
-										form.append( "fileId", file.uuid );
-									} );
-									form.append( "name", selectedData[ 0 ].name );
-
-									// Envoi de la requête au serveur et
-									//  traitement de la réponse.
-									const files = ( await serverAction(
-										renameFile,
-										form
-									) ) as string[];
-									const processed = selectedData.filter(
-										( file ) => files.includes( file.uuid )
-									);
-
-									if ( processed.length > 0 )
-									{
-										// Renommage des fichiers traités par le serveur.
-										states.setFiles(
-											states.files.filter(
-												( file ) => !processed.find(
-													( value ) => value.uuid
-															=== file.uuid
-												)
+										// Activation de l'état de chargement.
+										states.setLoading(
+											selectedData.map(
+												( value ) => value.uuid
 											)
 										);
-									}
 
-									// Fin de l'état de chargement.
-									states.setLoading( [] );
-
-									// Envoi d'une notification.
-									if ( processed.length > 0 )
-									{
-										if ( files.length === processed.length )
+										// Création d'un formulaire de données.
+										const form = new FormData();
+										selectedData.forEach( ( file ) =>
 										{
-											// Mise à jour complète.
-											toast.success(
-												"form.info.action_success",
-												{
-													description:
-														"form.info.name_updated"
-												}
-											);
+											form.append( "fileId", file.uuid );
+										} );
+										form.append(
+											"name",
+											selectedData[ 0 ].name
+										);
+
+										// Envoi de la requête au serveur et
+										//  traitement de la réponse.
+										const files = ( await serverAction(
+											renameFile,
+											form
+										) ) as string[];
+										const processed = selectedData.filter(
+											( file ) => files.includes( file.uuid )
+										);
+
+										if ( processed.length > 0 )
+										{
+											// Renommage des fichiers traités par le serveur.
+											states.setFiles( [ ...states.files ] );
+										}
+
+										// Fin de l'état de chargement.
+										states.setLoading( [] );
+
+										// Envoi d'une notification.
+										if ( processed.length > 0 )
+										{
+											if (
+												files.length
+												=== processed.length
+											)
+											{
+												// Mise à jour complète.
+												toast.success(
+													"form.info.action_success",
+													{
+														description:
+															"form.info.name_updated"
+													}
+												);
+											}
+											else
+											{
+												// Mise à jour partielle.
+												toast.warning(
+													"form.info.action_partial",
+													{
+														description:
+															"form.info.name_updated"
+													}
+												);
+											}
 										}
 										else
 										{
-											// Mise à jour partielle.
-											toast.warning(
-												"form.info.action_partial",
+											// Erreur dans la mise à jour.
+											toast.error(
+												"form.errors.file_deleted",
 												{
 													description:
-														"form.info.name_updated"
+														"form.errors.server_error"
 												}
 											);
 										}
-									}
-									else
-									{
-										// Erreur dans la mise à jour.
-										toast.error(
-											"form.errors.file_deleted",
-											{
-												description:
-													"form.errors.server_error"
-											}
-										);
-									}
-								}}
-								disabled={loading || !selectedData[ 0 ].name}
-								className="max-sm:w-full"
-							>
-								{loading ? (
-									<>
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-										Mise à jour...
-									</>
-								) : (
-									<>
-										<RefreshCw className="mr-2 h-4 w-4" />
-										Mettre à jour
-									</>
-								)}
-							</Button>
+									}}
+									disabled={loading || !selectedData[ 0 ].name}
+									className="max-sm:w-full"
+								>
+									{loading ? (
+										<>
+											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+											Mise à jour...
+										</>
+									) : (
+										<>
+											<RefreshCw className="mr-2 h-4 w-4" />
+											Mettre à jour
+										</>
+									)}
+								</Button>
+							</DialogClose>
 						</DialogFooter>
 					</DialogContent>
 				</Dialog>
