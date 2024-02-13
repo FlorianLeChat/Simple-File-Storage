@@ -242,6 +242,25 @@ export default async function Layout( {
 			}
 			className={`${ font } ${ theme } ${ color }`}
 		>
+			{/* En-tête de la page */}
+			<head>
+				{/* Mise à jour de l'apparence (utilisateurs anonymes) */}
+				{!session && (
+					<script
+						dangerouslySetInnerHTML={{
+							__html: `
+								// Application du thème préféré par le navigateur.
+								const element = document.documentElement;
+								const target = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+
+								element.classList.add(target);
+								element.style.colorScheme = target;
+							`
+						}}
+					/>
+				)}
+			</head>
+
 			{/* Corps de la page */}
 			<body className="flex min-h-screen flex-col">
 				{/* Écran de chargement de la page */}
