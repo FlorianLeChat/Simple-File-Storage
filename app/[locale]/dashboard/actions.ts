@@ -768,10 +768,18 @@ export async function addSharedUser( formData: FormData )
 	}
 
 	// On vérifie par la suite si l'utilisateur existe bien dans la base
-	//  de données.
+	//  de données et si celui-ci n'est pas déjà en partage avec le fichier.
 	const user = await prisma.user.findUnique( {
 		where: {
-			id: result.data.userId
+			id: result.data.userId,
+			shares: {
+				some: {
+					fileId: file.id
+				}
+			}
+		},
+		include: {
+			shares: true
 		}
 	} );
 
