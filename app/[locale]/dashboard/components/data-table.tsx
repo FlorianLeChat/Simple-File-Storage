@@ -175,7 +175,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 					>
 						<X className="inline h-4 w-4 sm:mr-2" />
 
-						<span className="max-sm:hidden">Réinitialiser</span>
+						<p className="max-sm:hidden">Réinitialiser</p>
 					</Button>
 				)}
 

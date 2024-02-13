@@ -134,11 +134,11 @@ export default function FileHistory( {
 											<AlertDialogTitle>
 												<History className="mr-2 inline h-5 w-5" />
 
-												<span className="align-middle">
+												<p className="align-middle">
 													Êtes-vous sûr de vouloir
 													restaurer cette version du
 													fichier ?
-												</span>
+												</p>
 											</AlertDialogTitle>
 
 											<AlertDialogDescription>
