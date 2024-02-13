@@ -741,12 +741,51 @@ export async function addSharedUser( formData: FormData )
 		return false;
 	}
 
+	// On vérifie également si le fichier existe bien dans la base de
+	//  données et si l'utilisateur a le droit de le partager.
+	const file = await prisma.file.findFirst( {
+		where: {
+			id: result.data.fileId,
+			OR: [
+				{
+					userId: session.user.id
+				},
+				{
+					shares: {
+						some: {
+							userId: session.user.id,
+							status: "admin"
+						}
+					}
+				}
+			]
+		}
+	} );
+
+	if ( !file )
+	{
+		return false;
+	}
+
+	// On vérifie par la suite si l'utilisateur existe bien dans la base
+	//  de données.
+	const user = await prisma.user.findUnique( {
+		where: {
+			id: result.data.userId
+		}
+	} );
+
+	if ( !user )
+	{
+		return false;
+	}
+
 	// On ajoute après l'utilisateur à la liste des partages
 	//  du fichier.
 	await prisma.share.create( {
 		data: {
-			fileId: result.data.fileId,
-			userId: result.data.userId,
+			fileId: file.id,
+			userId: user.id,
 			status: "read"
 		}
 	} );
