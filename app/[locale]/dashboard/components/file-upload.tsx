@@ -166,6 +166,7 @@ export default function FileUpload( {
 					name: json.name,
 					type: json.type,
 					path: new URL( json.path, window.location.href ).href,
+					owner: json.owner,
 					status: json.status,
 					shares: json.shares,
 					encrypted: json.encrypted,
@@ -245,9 +246,9 @@ export default function FileUpload( {
 			>
 				<PlusCircleIcon className="inline h-4 w-4 sm:mr-2" />
 
-				<span id="file-upload" className="max-sm:hidden">
+				<p id="file-upload" className="max-sm:hidden">
 					Ajouter un fichier
-				</span>
+				</p>
 			</DialogTrigger>
 
 			<DialogContent className="h-fit max-h-full overflow-auto">
@@ -457,10 +458,10 @@ export default function FileUpload( {
 																}
 															)
 														) : (
-															<span>
+															<p>
 																Sélectionner une
 																date
-															</span>
+															</p>
 														)}
 													</Button>
 												</PopoverTrigger>
