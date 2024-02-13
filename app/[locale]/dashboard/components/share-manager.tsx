@@ -113,9 +113,9 @@ export default function ShareManager( {
 				<h4 className="text-sm font-medium max-sm:text-center">
 					<Users className="mr-2 inline h-4 w-4" />
 
-					<span className="align-middle">
+					<p className="align-middle">
 						Liste des utilisateurs en partage
-					</span>
+					</p>
 				</h4>
 
 				{file.shares.length === 0 ? (
@@ -305,9 +305,9 @@ export default function ShareManager( {
 									variant="destructive"
 									disabled={loading}
 								>
-									<span className="sr-only">
+									<p className="sr-only">
 										Supprimer définitivement
-									</span>
+									</p>
 
 									{loading ? (
 										<Loader2 className="h-4 w-4 animate-spin" />
@@ -329,9 +329,9 @@ export default function ShareManager( {
 				<h4 className="text-sm font-medium max-sm:text-center">
 					<UserCog className="mr-2 inline h-4 w-4" />
 
-					<span className="align-middle">
+					<p className="align-middle">
 						Ajouts de nouveaux utilisateurs en partage
-					</span>
+					</p>
 				</h4>
 
 				<Input

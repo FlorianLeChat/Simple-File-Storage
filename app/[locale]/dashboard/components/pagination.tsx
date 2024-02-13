@@ -100,7 +100,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 					disabled={!table.getCanPreviousPage()}
 					className="hidden h-8 w-8 p-0 lg:flex"
 				>
-					<span className="sr-only">Aller à la première page</span>
+					<p className="sr-only">Aller à la première page</p>
 
 					<ChevronsLeft className="h-4 w-4" />
 				</Button>
@@ -124,7 +124,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 					disabled={!table.getCanPreviousPage()}
 					className="h-8 w-8 p-0"
 				>
-					<span className="sr-only">Aller à la page précédente</span>
+					<p className="sr-only">Aller à la page précédente</p>
 
 					<ChevronLeft className="h-4 w-4" />
 				</Button>
@@ -148,7 +148,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 					disabled={!table.getCanNextPage()}
 					className="h-8 w-8 p-0"
 				>
-					<span className="sr-only">Aller à la page suivante</span>
+					<p className="sr-only">Aller à la page suivante</p>
 
 					<ChevronRight className="h-4 w-4" />
 				</Button>
@@ -169,7 +169,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 					disabled={!table.getCanNextPage()}
 					className="hidden h-8 w-8 p-0 lg:flex"
 				>
-					<span className="sr-only">Aller à la dernière page</span>
+					<p className="sr-only">Aller à la dernière page</p>
 
 					<ChevronsRight className="h-4 w-4" />
 				</Button>

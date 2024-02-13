@@ -140,10 +140,10 @@ export default function RowActions( {
 							<AlertDialogTitle>
 								<Globe className="mr-2 inline h-5 w-5" />
 
-								<span className="align-middle">
+								<p className="align-middle">
 									Êtes-vous sûr de vouloir rendre public{" "}
 									{count} fichier(s) ?
-								</span>
+								</p>
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>
@@ -266,10 +266,10 @@ export default function RowActions( {
 							<AlertDialogTitle>
 								<FolderLock className="mr-2 inline h-5 w-5" />
 
-								<span className="align-middle">
+								<p className="align-middle">
 									Êtes-vous sûr de vouloir rendre privé{" "}
 									{count} fichier(s) ?
-								</span>
+								</p>
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>
@@ -395,9 +395,9 @@ export default function RowActions( {
 							<DialogTitle>
 								<Share2 className="mr-2 inline h-5 w-5" />
 
-								<span className="align-middle">
+								<p className="align-middle">
 									Partage du fichier
-								</span>
+								</p>
 							</DialogTitle>
 
 							<DialogDescription>
@@ -426,10 +426,10 @@ export default function RowActions( {
 							<AlertDialogTitle>
 								<UserX className="mr-2 inline h-5 w-5" />
 
-								<span className="align-middle">
+								<p className="align-middle">
 									Êtes-vous sûr de vouloir supprimer tous les
 									partages de {count} fichier(s) ?
-								</span>
+								</p>
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>
@@ -530,10 +530,10 @@ export default function RowActions( {
 							<DialogTitle>
 								<TextCursorInput className="mr-2 inline h-5 w-5" />
 
-								<span className="align-middle">
+								<p className="align-middle">
 									Quel sera le nouveau nom de {count}{" "}
 									ressource(s) ?
-								</span>
+								</p>
 							</DialogTitle>
 
 							<DialogDescription>
@@ -689,9 +689,9 @@ export default function RowActions( {
 								<DialogTitle>
 									<ShieldCheck className="mr-2 inline h-5 w-5" />
 
-									<span className="align-middle">
+									<p className="align-middle">
 										Veuillez saisir la clé de déchiffrement.
-									</span>
+									</p>
 								</DialogTitle>
 
 								<DialogDescription>
@@ -793,9 +793,9 @@ export default function RowActions( {
 							<DialogTitle>
 								<History className="mr-2 inline h-5 w-5" />
 
-								<span className="align-middle">
+								<p className="align-middle">
 									Révisions disponibles
-								</span>
+								</p>
 							</DialogTitle>
 
 							<DialogDescription>
@@ -835,10 +835,10 @@ export default function RowActions( {
 							<AlertDialogTitle>
 								<Trash className="mr-2 inline h-5 w-5" />
 
-								<span className="align-middle">
+								<p className="align-middle">
 									Êtes-vous sûr de vouloir supprimer {count}{" "}
 									fichier(s) ?
-								</span>
+								</p>
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>

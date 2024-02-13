@@ -395,9 +395,9 @@ export default function Layout( { session }: { session: Session } )
 											/>
 										</FormControl>
 
-										<span className="text-sm font-normal">
+										<p className="text-sm font-normal">
 											Clair
-										</span>
+										</p>
 									</div>
 
 									<FormLabel
@@ -445,9 +445,9 @@ export default function Layout( { session }: { session: Session } )
 											/>
 										</FormControl>
 
-										<span className="text-sm font-normal">
+										<p className="text-sm font-normal">
 											Sombre
-										</span>
+										</p>
 									</div>
 
 									<FormLabel

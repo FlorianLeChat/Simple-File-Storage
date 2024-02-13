@@ -46,12 +46,12 @@ export default function Navigation()
 			>
 				<Cookie className="mr-2" />
 
-				<span className="text-left">
+				<p className="text-left">
 					Cookies
 					<small className="hidden lg:block">
 						Service fourni par <u>Cookie Consent</u>
 					</small>
-				</span>
+				</p>
 			</Button>
 		</nav>
 	);
