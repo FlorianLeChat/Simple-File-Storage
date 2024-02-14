@@ -20,5 +20,5 @@ export interface ShareAttributes {
 	};
 
 	// Type de partage du fichier avec l'utilisateur.
-	status: "read" | "write" | "admin";
+	status: "read" | "write";
 }
