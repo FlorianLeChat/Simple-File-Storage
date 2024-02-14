@@ -61,7 +61,7 @@ export async function changeFileStatus( formData: FormData )
 					shares: {
 						some: {
 							userId: session.user.id,
-							status: "admin"
+							status: "write"
 						}
 					}
 				}
@@ -152,7 +152,7 @@ export async function renameFile( formData: FormData )
 					shares: {
 						some: {
 							userId: session.user.id,
-							status: "admin"
+							status: "write"
 						}
 					}
 				}
@@ -180,7 +180,7 @@ export async function renameFile( formData: FormData )
 					shares: {
 						some: {
 							userId: session.user.id,
-							status: "admin"
+							status: "write"
 						}
 					}
 				}
@@ -579,7 +579,7 @@ export async function restoreVersion( formData: FormData )
 					shares: {
 						some: {
 							userId: session.user.id,
-							status: "admin"
+							status: "write"
 						}
 					}
 				}
@@ -729,7 +729,7 @@ export async function deleteFile( formData: FormData )
 				shares: {
 					some: {
 						userId: session.user.id,
-						status: "admin"
+						status: "write"
 					}
 				}
 			}
@@ -846,7 +846,7 @@ export async function addSharedUser( formData: FormData )
 					shares: {
 						some: {
 							userId: session.user.id,
-							status: "admin"
+							status: "write"
 						}
 					}
 				}
@@ -928,7 +928,7 @@ export async function updateSharedUser( formData: FormData )
 	const validation = z.object( {
 		fileId: z.string().uuid(),
 		userId: z.string().uuid(),
-		status: z.enum( [ "read", "write", "admin" ] )
+		status: z.enum( [ "read", "write" ] )
 	} );
 
 	// On tente alors de valider les données du formulaire.
@@ -957,7 +957,7 @@ export async function updateSharedUser( formData: FormData )
 						shares: {
 							some: {
 								userId: session.user.id,
-								status: "admin"
+								status: "write"
 							}
 						}
 					}
@@ -1021,7 +1021,7 @@ export async function deleteSharedUser( formData: FormData )
 						shares: {
 							some: {
 								userId: session.user.id,
-								status: "admin"
+								status: "write"
 							}
 						}
 					}

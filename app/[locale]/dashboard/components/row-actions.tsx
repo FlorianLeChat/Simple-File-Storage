@@ -94,7 +94,7 @@ export default function RowActions( {
 	// Récupération de l'état d'administration du fichier.
 	//  Note : si l'utilisateur est introuvable dans les partages,
 	//   alors cela signifie qu'il est le propriétaire du fichier.
-	const owner = rowShares ? rowShares.status === "admin" : true;
+	const owner = rowShares ? rowShares.status === "write" : true;
 
 	// Affichage du rendu HTML du composant.
 	return (

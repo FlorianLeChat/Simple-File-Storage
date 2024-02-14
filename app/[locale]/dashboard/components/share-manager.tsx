@@ -189,8 +189,7 @@ export default function ShareManager( {
 											// Mise à jour de l'état du fichier.
 											share.status = value as
 												| "read"
-												| "write"
-												| "admin";
+												| "write";
 
 											states.setFiles( [ ...states.files ] );
 										}
@@ -232,10 +231,6 @@ export default function ShareManager( {
 
 										<SelectItem value="write">
 											Écriture
-										</SelectItem>
-
-										<SelectItem value="admin">
-											Gestion
 										</SelectItem>
 									</SelectContent>
 								</Select>
