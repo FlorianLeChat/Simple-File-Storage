@@ -151,15 +151,20 @@ export default function Layout( { session }: { session: Session } )
 			return;
 		}
 
-		// On récupère également une possible raison d'échec ainsi que
+		// On récupère ensuite une possible raison d'échec ainsi que
 		//  l'état associé.
 		const { success, reason } = updateState;
 
-		// On informe ensuite que le traitement est terminé.
+		if ( reason === "" )
+		{
+			return;
+		}
+
+		// On informe après qu'une réponse a été reçue.
 		setLoading( false );
 
-		// On met à jour après les attributs du document HTML pour
-		//  refléter les changements.
+		// On affiche enfin une notification avec la raison fournie
+		//  avant de mettre à jour les attributs HTML en cas de succès.
 		if ( success )
 		{
 			const element = document.documentElement;
@@ -167,24 +172,16 @@ export default function Layout( { session }: { session: Session } )
 			element.className = `${ form.getValues( "font" ) } ${ form.getValues(
 				"color"
 			) } ${ form.getValues( "theme" ) }`;
-		}
 
-		// On affiche enfin le message correspondant si une raison
-		//  a été fournie.
-		if ( reason !== "" )
+			toast.success( "form.info.update_success", {
+				description: reason
+			} );
+		}
+		else
 		{
-			if ( success )
-			{
-				toast.success( "form.info.update_success", {
-					description: reason
-				} );
-			}
-			else
-			{
-				toast.error( "form.errors.update_failed", {
-					description: reason
-				} );
-			}
+			toast.error( "form.errors.update_failed", {
+				description: reason
+			} );
 		}
 	}, [ form, updateState ] );
 

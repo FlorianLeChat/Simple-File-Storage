@@ -59,29 +59,30 @@ export default function Storage( { session }: { session: Session } )
 			return;
 		}
 
-		// On récupère également une possible raison d'échec ainsi que
+		// On récupère ensuite une possible raison d'échec ainsi que
 		//  l'état associé.
 		const { success, reason } = updateState;
 
-		// On informe ensuite que le traitement est terminé.
+		if ( reason === "" )
+		{
+			return;
+		}
+
+		// On informe après qu'une réponse a été reçue.
 		setLoading( false );
 
-		// On affiche enfin le message correspondant si une raison
-		//  a été fournie.
-		if ( reason !== "" )
+		// On affiche enfin une notification avec la raison fournie.
+		if ( success )
 		{
-			if ( success )
-			{
-				toast.success( "form.info.update_success", {
-					description: reason
-				} );
-			}
-			else
-			{
-				toast.error( "form.errors.update_failed", {
-					description: reason
-				} );
-			}
+			toast.success( "form.info.update_success", {
+				description: reason
+			} );
+		}
+		else
+		{
+			toast.error( "form.errors.update_failed", {
+				description: reason
+			} );
 		}
 	}, [ form, updateState ] );
 
@@ -146,7 +147,7 @@ export default function Storage( { session }: { session: Session } )
 										className="leading-5"
 									>
 										Activer la publication automatique des
-										fichiers téléversés sur le serveur.
+										fichiers téléversés sur le serveur
 									</Label>
 								</div>
 							</FormControl>
@@ -194,7 +195,7 @@ export default function Storage( { session }: { session: Session } )
 										className="leading-5"
 									>
 										Afficher les extensions des fichiers
-										dans le lien d&lsquo;accès.
+										dans le lien d&lsquo;accès
 									</Label>
 								</div>
 							</FormControl>
@@ -251,7 +252,7 @@ export default function Storage( { session }: { session: Session } )
 										className="leading-5"
 									>
 										Enregistrer automatiquement les
-										anciennes versions des fichiers.
+										anciennes versions des fichiers
 									</Label>
 								</div>
 							</FormControl>
