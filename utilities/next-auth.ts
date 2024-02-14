@@ -53,7 +53,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 					color: "blue",
 					public: false,
 					extension: false,
-					versions: true
+					versions: true,
+					default: true // Utilisation des préférences par défaut.
 				};
 				session.user.notification = user.notification;
 

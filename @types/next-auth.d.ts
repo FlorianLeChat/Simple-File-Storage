@@ -15,6 +15,7 @@ declare module "@auth/core/types" {
 				public: boolean;
 				extension: boolean;
 				versions: boolean;
+				default?: boolean;
 			};
 			notification: string;
 		} & DefaultSession["user"];
