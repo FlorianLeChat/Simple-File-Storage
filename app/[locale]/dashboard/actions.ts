@@ -864,9 +864,24 @@ export async function addSharedUser( formData: FormData )
 	const user = await prisma.user.findUnique( {
 		where: {
 			id: result.data.userId,
-			shares: {
-				some: {
-					fileId: file.id
+			AND: {
+				NOT: {
+					OR: [
+						{
+							files: {
+								some: {
+									id: file.id
+								}
+							}
+						},
+						{
+							shares: {
+								some: {
+									fileId: file.id
+								}
+							}
+						}
+					]
 				}
 			}
 		},
