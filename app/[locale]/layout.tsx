@@ -228,6 +228,7 @@ export default async function Layout( {
 	const font = session?.user.preferences.font ?? "inter";
 	const theme = session?.user.preferences.theme ?? "light";
 	const color = session?.user.preferences.color ?? "blue";
+	const factory = session?.user.preferences.default ?? true;
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -240,12 +241,12 @@ export default async function Layout( {
 					"--roboto-font": roboto.style.fontFamily
 				} as CSSProperties
 			}
-			className={`${ font } ${ theme } ${ color }`}
+			className={`${ font } ${ factory ? theme : "" } ${ color }`}
 		>
 			{/* En-tête de la page */}
 			<head>
-				{/* Mise à jour de l'apparence (utilisateurs anonymes) */}
-				{!session && (
+				{/* Mise à jour de l'apparence (utilisateurs anonymes ou sans préférences) */}
+				{( !session || session?.user.preferences.default ) && (
 					<script
 						dangerouslySetInnerHTML={{
 							__html: `
@@ -253,6 +254,7 @@ export default async function Layout( {
 								const element = document.documentElement;
 								const target = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 
+								element.classList.remove("light", "dark");
 								element.classList.add(target);
 								element.style.colorScheme = target;
 							`
