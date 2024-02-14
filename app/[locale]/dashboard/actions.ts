@@ -526,7 +526,6 @@ export async function uploadFiles(
 		// Si une erreur survient lors du téléversement des fichiers,
 		//  on l'envoie à Sentry et on retourne un message d'erreur
 		Sentry.captureException( error );
-		console.error( error );
 
 		return {
 			success: false,
@@ -600,15 +599,12 @@ export async function restoreVersion( formData: FormData )
 		return "";
 	}
 
-	// On vérifie si le dossier de l'utilisateur existe bien.
-	const userFolder = join(
-		process.cwd(),
-		"public/files",
-		file.userId,
-		result.data.fileId
-	);
+	// On vérifie si le dossier de l'utilisateur et celui du fichier
+	//  existent bien dans le système de fichiers.
+	const userFolder = join( process.cwd(), "public/files", file.userId );
+	const fileFolder = join( userFolder, result.data.fileId );
 
-	if ( !existsSync( userFolder ) )
+	if ( !existsSync( userFolder ) || !existsSync( fileFolder ) )
 	{
 		return "";
 	}
@@ -621,6 +617,37 @@ export async function restoreVersion( formData: FormData )
 	if ( !targetVersion )
 	{
 		return "";
+	}
+
+	// On vérifie si le quota de l'utilisateur ne sera pas dépassé
+	//  après la restauration de cette version.
+	//  Note : cela ne concerne pas les administrateurs.
+	if ( session.user.role !== "admin" )
+	{
+		try
+		{
+			const files = await readdir( userFolder, { recursive: true } );
+			const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA );
+			const nextQuota = files.reduce( ( previous, current ) =>
+			{
+				const { size } = statSync( join( userFolder, current ) );
+				return previous + size;
+			}, Number( targetVersion.size ) );
+
+			if ( nextQuota > maxQuota )
+			{
+				return "";
+			}
+		}
+		catch ( error )
+		{
+			// Si une erreur s'est produite lors de l'opération avec le
+			//  système de fichiers, on l'envoie à Sentry avant de retourner
+			//  enfin une valeur vide.
+			Sentry.captureException( error );
+
+			return "";
+		}
 	}
 
 	// On créé également une nouvelle version à partir de la version
@@ -640,8 +667,8 @@ export async function restoreVersion( formData: FormData )
 		const extension = parse( file.name ).ext;
 
 		link(
-			join( userFolder, targetVersion.id + extension ),
-			join( userFolder, newVersion.id + extension )
+			join( fileFolder, targetVersion.id + extension ),
+			join( fileFolder, newVersion.id + extension )
 		);
 
 		// On retourne l'identifiant de la nouvelle version à restaurer
