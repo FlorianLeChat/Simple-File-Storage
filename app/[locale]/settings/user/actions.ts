@@ -76,7 +76,7 @@ export async function updateUser(
 	cookies().set( "NEXT_LOCALE", result.data.language );
 
 	// On vérifie également si un avatar a été fourni.
-	const avatar = result.data.avatar as File;
+	const { avatar } = result.data;
 
 	if (
 		avatar.size !== 0
