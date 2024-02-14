@@ -120,36 +120,33 @@ export default function User( { session }: { session: Session } )
 			return;
 		}
 
-		// On récupère également une possible raison d'échec ainsi que
+		// On récupère ensuite une possible raison d'échec ainsi que
 		//  l'état associé.
 		const { success, reason } = updateState;
 
-		// On informe ensuite que le traitement est terminé.
+		if ( reason === "" )
+		{
+			return;
+		}
+
+		// On informe après qu'une réponse a été reçue.
 		setLoading( false );
 
-		// On réinitialise après une partie du formulaire
-		//  en cas de succès.
+		// On affiche enfin une notification avec la raison fournie
+		//  avant de réinitialiser le formulaire en cas de succès.
 		if ( success )
 		{
 			form.resetField( "avatar" );
-		}
 
-		// On affiche enfin le message correspondant si une raison
-		//  a été fournie.
-		if ( reason !== "" )
+			toast.success( "form.info.update_success", {
+				description: reason
+			} );
+		}
+		else
 		{
-			if ( success )
-			{
-				toast.success( "form.info.update_success", {
-					description: reason
-				} );
-			}
-			else
-			{
-				toast.error( "form.errors.update_failed", {
-					description: reason
-				} );
-			}
+			toast.error( "form.errors.update_failed", {
+				description: reason
+			} );
 		}
 	}, [ form, updateState ] );
 
