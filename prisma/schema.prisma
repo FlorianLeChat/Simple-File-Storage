@@ -100,7 +100,7 @@ model User {
 	name          String?
 	email         String    @unique
 	password      String?
-	notification  String?   @default("necessary")
+	notification  String    @default("necessary")
 	emailVerified DateTime?
 	image         String?
 	role          String    @default("user")
