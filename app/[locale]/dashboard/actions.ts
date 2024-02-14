@@ -721,13 +721,26 @@ export async function deleteFile( formData: FormData )
 		id: {
 			in: result.data.fileIds
 		},
-		userId: session.user.id
+		OR: [
+			{
+				userId: session.user.id
+			},
+			{
+				shares: {
+					some: {
+						userId: session.user.id,
+						status: "admin"
+					}
+				}
+			}
+		]
 	};
 
 	const [ files ] = await prisma.$transaction( [
 		prisma.file.findMany( {
 			select: {
-				id: true
+				id: true,
+				userId: true
 			},
 			where: query
 		} ),
@@ -745,18 +758,22 @@ export async function deleteFile( formData: FormData )
 	try
 	{
 		// On parcourt l'ensemble des fichiers à supprimer.
-		const userFolder = join( process.cwd(), "public/files", session.user.id );
-
 		await Promise.all(
-			result.data.fileIds.map( async ( id ) =>
+			files.map( async ( file ) =>
 			{
 				// On supprime le fichier et le dossier associé dans le
 				//  système de fichiers.
+				const userFolder = join(
+					process.cwd(),
+					"public/files",
+					file.userId
+				);
+
 				if ( existsSync( userFolder ) )
 				{
 					// On supprime le dossier où se trouve les versions du
 					//  fichier.
-					const fileFolder = join( userFolder, id );
+					const fileFolder = join( userFolder, file.id );
 
 					if ( existsSync( fileFolder ) )
 					{
