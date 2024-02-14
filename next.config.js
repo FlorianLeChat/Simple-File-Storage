@@ -25,7 +25,7 @@ const nextConfig = million.next(
 					//  vers l'onglet par défaut du profil utilisateur.
 					source: "/settings",
 					permanent: true,
-					destination: "/settings/profile"
+					destination: "/settings/user"
 				}
 			];
 		}
