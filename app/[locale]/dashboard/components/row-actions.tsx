@@ -189,15 +189,15 @@ export default function RowActions( {
 										changeFileStatus,
 										form
 									) ) as string[];
-									const processed = selectedData.filter(
-										( file ) => files.includes( file.uuid )
-									);
 
-									if ( processed.length > 0 )
+									if ( files.length > 0 )
 									{
 										// Filtrage des fichiers partagés.
+										const processed = selectedData.filter(
+											( file ) => files.includes( file.uuid )
+										);
 										const sharedFiles = processed.filter(
-											( value ) => value.owner.id
+											( file ) => file.owner.id
 												!== session.data?.user.id
 										);
 
@@ -221,9 +221,11 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									if ( processed.length > 0 )
+									if ( files.length > 0 )
 									{
-										if ( files.length === processed.length )
+										if (
+											files.length === selectedData.length
+										)
 										{
 											// Mise à jour complète.
 											toast.success(
@@ -326,17 +328,16 @@ export default function RowActions( {
 										changeFileStatus,
 										form
 									) ) as string[];
-									const processed = selectedData.filter(
-										( file ) => files.includes( file.uuid )
-									);
 
-									if ( processed.length > 0 )
+									if ( files.length > 0 )
 									{
 										// Mise à jour de l'état des fichiers.
-										processed.forEach( ( file ) =>
-										{
-											file.status = "private";
-										} );
+										selectedData
+											.filter( ( file ) => files.includes( file.uuid ) )
+											.forEach( ( file ) =>
+											{
+												file.status = "private";
+											} );
 
 										states.setFiles( [ ...states.files ] );
 									}
@@ -345,9 +346,11 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									if ( processed.length > 0 )
+									if ( files.length > 0 )
 									{
-										if ( files.length === processed.length )
+										if (
+											files.length === selectedData.length
+										)
 										{
 											// Mise à jour complète.
 											toast.success(
@@ -623,11 +626,8 @@ export default function RowActions( {
 											renameFile,
 											form
 										) ) as string[];
-										const processed = selectedData.filter(
-											( file ) => files.includes( file.uuid )
-										);
 
-										if ( processed.length > 0 )
+										if ( files.length > 0 )
 										{
 											// Renommage des fichiers traités par le serveur.
 											states.setFiles( [ ...states.files ] );
@@ -637,11 +637,11 @@ export default function RowActions( {
 										states.setLoading( [] );
 
 										// Envoi d'une notification.
-										if ( processed.length > 0 )
+										if ( files.length > 0 )
 										{
 											if (
 												files.length
-												=== processed.length
+												=== selectedData.length
 											)
 											{
 												// Mise à jour complète.
@@ -893,18 +893,14 @@ export default function RowActions( {
 										deleteFile,
 										form
 									) ) as string[];
-									const processed = selectedData.filter(
-										( file ) => files.includes( file.uuid )
-									);
 
-									if ( processed.length > 0 )
+									if ( files.length > 0 )
 									{
 										// Suppression des fichiers traités
 										//  par le serveur dans la liste.
 										const newFiles = states.files.filter(
-											( file ) => !processed.find(
-												( value ) => value.uuid
-														=== file.uuid
+											( file ) => !files.find(
+												( value ) => value === file.uuid
 											)
 										);
 
@@ -927,9 +923,11 @@ export default function RowActions( {
 									states.setLoading( [] );
 
 									// Envoi d'une notification.
-									if ( processed.length > 0 )
+									if ( files.length > 0 )
 									{
-										if ( files.length === processed.length )
+										if (
+											files.length === selectedData.length
+										)
 										{
 											// Mise à jour complète.
 											toast.success(
