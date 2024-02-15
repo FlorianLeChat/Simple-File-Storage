@@ -77,7 +77,6 @@ export default function RowActions( {
 	// Déclaration des variables d'état.
 	const rename = useRef<HTMLButtonElement>( null );
 	const access = useRef<HTMLButtonElement>( null );
-	const [ open, setOpen ] = useState( false );
 	const [ password, setPassword ] = useState( "" );
 
 	// Filtrage des données d'une ou plusieurs lignes.
@@ -97,18 +96,7 @@ export default function RowActions( {
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<DropdownMenu
-			open={open}
-			onOpenChange={( state ) =>
-			{
-				if ( !states.loading )
-				{
-					// Blocage de l'ouverture du menu si l'état de chargement
-					//  est inactif.
-					setOpen( state );
-				}
-			}}
-		>
+		<DropdownMenu open={states.loading ? false : undefined}>
 			{/* Bouton d'ouverture du menu */}
 			<DropdownMenuTrigger
 				title={
