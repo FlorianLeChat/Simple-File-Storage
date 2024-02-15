@@ -9,7 +9,8 @@ import { X } from "lucide-react";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
-import { flexRender,
+import { type TableMeta,
+	flexRender,
 	SortingState,
 	useReactTable,
 	VisibilityState,
@@ -174,7 +175,9 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 				<ColumnToggle table={table} />
 
 				{/* Ajout d'une nouvelle entrée */}
-				<FileUpload table={table} />
+				<FileUpload
+					states={table.options.meta as TableMeta<FileAttributes>}
+				/>
 			</div>
 
 			{/* Affichage des données dans le tableau */}
