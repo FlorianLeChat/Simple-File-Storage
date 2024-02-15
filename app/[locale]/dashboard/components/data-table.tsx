@@ -76,9 +76,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 		data: files,
 		meta: {
 			files,
-			loading,
 			setFiles,
-			setLoading
 		},
 		state: {
 			sorting,

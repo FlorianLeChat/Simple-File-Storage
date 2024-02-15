@@ -77,8 +77,8 @@ export default function RowActions( {
 	// Déclaration des variables d'état.
 	const rename = useRef<HTMLButtonElement>( null );
 	const access = useRef<HTMLButtonElement>( null );
-	const loading = states.loading.includes( row.id );
 	const [ open, setOpen ] = useState( false );
+	const [ loading, setLoading ] = useState( false );
 	const [ password, setPassword ] = useState( "" );
 
 	// Filtrage des données d'une ou plusieurs lignes.
@@ -171,9 +171,7 @@ export default function RowActions( {
 								onClick={async () =>
 								{
 									// Activation de l'état de chargement.
-									states.setLoading(
-										selectedData.map( ( value ) => value.uuid )
-									);
+									setLoading( true );
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
@@ -218,7 +216,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									states.setLoading( [] );
+									setLoading( false );
 
 									// Envoi d'une notification.
 									if ( files.length > 0 )
@@ -310,9 +308,7 @@ export default function RowActions( {
 								onClick={async () =>
 								{
 									// Activation de l'état de chargement.
-									states.setLoading(
-										selectedData.map( ( value ) => value.uuid )
-									);
+									setLoading( true );
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
@@ -343,7 +339,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									states.setLoading( [] );
+									setLoading( false );
 
 									// Envoi d'une notification.
 									if ( files.length > 0 )
@@ -462,9 +458,7 @@ export default function RowActions( {
 								onClick={async () =>
 								{
 									// Activation de l'état de chargement.
-									states.setLoading(
-										selectedData.map( ( value ) => value.uuid )
-									);
+									setLoading( true );
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
@@ -506,7 +500,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									states.setLoading( [] );
+									setLoading( false );
 
 									// Envoi d'une notification.
 									if ( state )
@@ -603,11 +597,7 @@ export default function RowActions( {
 									onClick={async () =>
 									{
 										// Activation de l'état de chargement.
-										states.setLoading(
-											selectedData.map(
-												( value ) => value.uuid
-											)
-										);
+										setLoading( true );
 
 										// Création d'un formulaire de données.
 										const form = new FormData();
@@ -634,7 +624,7 @@ export default function RowActions( {
 										}
 
 										// Fin de l'état de chargement.
-										states.setLoading( [] );
+										setLoading( false );
 
 										// Envoi d'une notification.
 										if ( files.length > 0 )
@@ -876,9 +866,7 @@ export default function RowActions( {
 								onClick={async () =>
 								{
 									// Activation de l'état de chargement.
-									states.setLoading(
-										selectedData.map( ( value ) => value.uuid )
-									);
+									setLoading( true );
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
@@ -908,7 +896,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									states.setLoading( [] );
+									setLoading( false );
 
 									// Envoi d'une notification.
 									if ( files.length > 0 )
