@@ -22,10 +22,10 @@ import { useSession } from "next-auth/react";
 import { formatSize } from "@/utilities/react-table";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
+import type { TableMeta } from "@tanstack/react-table";
 import { addDays, format } from "date-fns";
 import { useEffect, useState } from "react";
 import { type FileAttributes } from "@/interfaces/File";
-import type { Table, TableMeta } from "@tanstack/react-table";
 
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
@@ -55,15 +55,14 @@ import { uploadFiles } from "../actions";
 import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function FileUpload( {
-	table
+	states
 }: {
-	table: Table<FileAttributes>;
+	states: TableMeta<FileAttributes>;
 } )
 {
 	// Déclaration des constantes.
 	const today = new Date();
 	const locale = useLocale();
-	const states = table.options.meta as TableMeta<FileAttributes>;
 	const oneYear = addDays( today, 365 );
 	const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA ?? 0 );
 	const dateFormat = locale === "fr" ? fr : enGB;
@@ -77,13 +76,7 @@ export default function FileUpload( {
 	// Déclaration des variables d'état.
 	const session = useSession();
 	const [ open, setOpen ] = useState( false );
-	const [ quota, setQuota ] = useState(
-		states.files.reduce(
-			( total, file ) => total
-				+ file.versions.reduce( ( size, version ) => size + version.size, 0 ),
-			0
-		)
-	);
+	const [ quota, setQuota ] = useState( 0 );
 	const [ loading, setLoading ] = useState( false );
 	const [ uploadState, uploadAction ] = useFormState( uploadFiles, {
 		success: true,
@@ -101,6 +94,21 @@ export default function FileUpload( {
 			expiration: ""
 		}
 	} );
+
+	// Mise à jour automatique du quota utilisateur.
+	useEffect( () =>
+	{
+		setQuota(
+			states.files.reduce(
+				( total, file ) => total
+					+ file.versions.reduce(
+						( size, version ) => size + version.size,
+						0
+					),
+				0
+			)
+		);
+	}, [ states ] );
 
 	// Vérification de la response du serveur après l'envoi du formulaire.
 	useEffect( () =>
@@ -184,9 +192,8 @@ export default function FileUpload( {
 				} );
 			} );
 
-			// On filtre les fichiers déjà existants pour éviter
-			//  les doublons avant de mettre à jour la liste des
-			//  fichiers et le quota utilisateur.
+			// On filtre les fichiers déjà existants pour éviter les
+			//  doublons avant de mettre à jour la liste des fichiers.
 			let newFiles: FileAttributes[] = [];
 
 			states.setFiles( ( previous ) =>
@@ -201,17 +208,6 @@ export default function FileUpload( {
 
 				return newFiles;
 			} );
-
-			setQuota(
-				newFiles.reduce(
-					( total, file ) => total
-						+ file.versions.reduce(
-							( size, version ) => size + version.size,
-							0
-						),
-					0
-				)
-			);
 		}
 
 		// On réinitialise après une partie du formulaire en cas
