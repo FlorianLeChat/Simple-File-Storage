@@ -905,18 +905,6 @@ export default function RowActions( {
 										);
 
 										states.setFiles( newFiles );
-
-										// Mise à jour du quota utilisateur.
-										states.setQuota(
-											newFiles.reduce(
-												( total, file ) => total
-													+ file.versions.reduce(
-														( size, version ) => size + version.size,
-														0
-													),
-												0
-											)
-										);
 									}
 
 									// Fin de l'état de chargement.
