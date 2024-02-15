@@ -38,7 +38,6 @@ export default function FileHistory( {
 	const count = file.versions.length ?? 0;
 
 	// Déclaration des variables d'état.
-	const [ open, setOpen ] = useState( false );
 	const [ identifier, setIdentifier ] = useState( "" );
 
 	// Affichage du rendu HTML du composant.
