@@ -78,7 +78,6 @@ export default function RowActions( {
 	const rename = useRef<HTMLButtonElement>( null );
 	const access = useRef<HTMLButtonElement>( null );
 	const [ open, setOpen ] = useState( false );
-	const [ loading, setLoading ] = useState( false );
 	const [ password, setPassword ] = useState( "" );
 
 	// Filtrage des données d'une ou plusieurs lignes.
@@ -102,7 +101,7 @@ export default function RowActions( {
 			open={open}
 			onOpenChange={( state ) =>
 			{
-				if ( !loading )
+				if ( !states.loading )
 				{
 					// Blocage de l'ouverture du menu si l'état de chargement
 					//  est inactif.
@@ -112,13 +111,17 @@ export default function RowActions( {
 		>
 			{/* Bouton d'ouverture du menu */}
 			<DropdownMenuTrigger
-				title={loading ? "Mise à jour en cours..." : "Ouvrir le menu"}
+				title={
+					states.loading
+						? "Mise à jour en cours..."
+						: "Ouvrir le menu"
+				}
 				className={merge(
 					buttonVariants( { variant: "ghost" } ),
 					"h-8 w-8 p-0"
 				)}
 			>
-				{loading ? (
+				{states.loading ? (
 					<Loader2 className="h-4 w-4 animate-spin" />
 				) : (
 					<MoreHorizontal className="h-4 w-4" />
@@ -129,7 +132,7 @@ export default function RowActions( {
 			<DropdownMenuContent align="end">
 				<DropdownMenuLabel>Actions sur le fichier</DropdownMenuLabel>
 
-				{/* Restriction d'accès */}
+				{/* Rendre public */}
 				<AlertDialog>
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
@@ -171,7 +174,7 @@ export default function RowActions( {
 								onClick={async () =>
 								{
 									// Activation de l'état de chargement.
-									setLoading( true );
+									states.setLoading( true );
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
@@ -216,7 +219,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									setLoading( false );
+									states.setLoading( false );
 
 									// Envoi d'une notification.
 									if ( files.length > 0 )
@@ -266,6 +269,7 @@ export default function RowActions( {
 					</AlertDialogContent>
 				</AlertDialog>
 
+				{/* Rendre privé */}
 				<AlertDialog>
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
@@ -308,7 +312,7 @@ export default function RowActions( {
 								onClick={async () =>
 								{
 									// Activation de l'état de chargement.
-									setLoading( true );
+									states.setLoading( true );
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
@@ -339,7 +343,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									setLoading( false );
+									states.setLoading( false );
 
 									// Envoi d'une notification.
 									if ( files.length > 0 )
@@ -417,10 +421,11 @@ export default function RowActions( {
 							</DialogDescription>
 						</DialogHeader>
 
-						<ShareManager table={table} row={row} />
+						<ShareManager file={rowData[ 0 ]} states={states} />
 					</DialogContent>
 				</Dialog>
 
+				{/* Suppression des partages */}
 				<AlertDialog>
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
@@ -458,7 +463,7 @@ export default function RowActions( {
 								onClick={async () =>
 								{
 									// Activation de l'état de chargement.
-									setLoading( true );
+									states.setLoading( true );
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
@@ -500,7 +505,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									setLoading( false );
+									states.setLoading( false );
 
 									// Envoi d'une notification.
 									if ( state )
@@ -534,7 +539,7 @@ export default function RowActions( {
 
 				<DropdownMenuSeparator />
 
-				{/* Accès, renommage et suppression */}
+				{/* Renommage de la ressource */}
 				<Dialog>
 					<DialogTrigger asChild>
 						<DropdownMenuItem
@@ -597,7 +602,7 @@ export default function RowActions( {
 									onClick={async () =>
 									{
 										// Activation de l'état de chargement.
-										setLoading( true );
+										states.setLoading( true );
 
 										// Création d'un formulaire de données.
 										const form = new FormData();
@@ -624,7 +629,7 @@ export default function RowActions( {
 										}
 
 										// Fin de l'état de chargement.
-										setLoading( false );
+										states.setLoading( false );
 
 										// Envoi d'une notification.
 										if ( files.length > 0 )
@@ -667,10 +672,12 @@ export default function RowActions( {
 											);
 										}
 									}}
-									disabled={loading || !selectedData[ 0 ].name}
+									disabled={
+										states.loading || !selectedData[ 0 ].name
+									}
 									className="max-sm:w-full"
 								>
-									{loading ? (
+									{states.loading ? (
 										<>
 											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 											Mise à jour...
@@ -687,6 +694,7 @@ export default function RowActions( {
 					</DialogContent>
 				</Dialog>
 
+				{/* Accès à la ressource */}
 				{rowData[ 0 ].encrypted ? (
 					<Dialog>
 						<DialogTrigger asChild>
@@ -765,7 +773,7 @@ export default function RowActions( {
 											"noopener,noreferrer"
 										);
 									}}
-									disabled={loading || !password}
+									disabled={states.loading || !password}
 									className="max-sm:w-full"
 								>
 									<ArrowUpRight className="mr-2 h-4 w-4" />
@@ -789,6 +797,7 @@ export default function RowActions( {
 
 				<DropdownMenuSeparator />
 
+				{/* Accès aux révisions */}
 				<Dialog>
 					<DialogTrigger asChild>
 						<DropdownMenuItem
@@ -814,10 +823,11 @@ export default function RowActions( {
 							</DialogDescription>
 						</DialogHeader>
 
-						<FileHistory table={table} row={row} />
+						<FileHistory file={rowData[ 0 ]} states={states} />
 					</DialogContent>
 				</Dialog>
 
+				{/* Copie du lien d'accès */}
 				<DropdownMenuItem
 					onClick={() => navigator.clipboard.writeText(
 						new URL( rowData[ 0 ].path, window.location.href ).href
@@ -827,6 +837,7 @@ export default function RowActions( {
 					Copier le lien d&lsquo;accès
 				</DropdownMenuItem>
 
+				{/* Suppression de la ressource */}
 				<AlertDialog>
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
@@ -866,7 +877,7 @@ export default function RowActions( {
 								onClick={async () =>
 								{
 									// Activation de l'état de chargement.
-									setLoading( true );
+									states.setLoading( true );
 
 									// Création d'un formulaire de données.
 									const form = new FormData();
@@ -896,7 +907,7 @@ export default function RowActions( {
 									}
 
 									// Fin de l'état de chargement.
-									setLoading( false );
+									states.setLoading( false );
 
 									// Envoi d'une notification.
 									if ( files.length > 0 )
