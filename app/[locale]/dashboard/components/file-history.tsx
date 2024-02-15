@@ -40,8 +40,8 @@ export default function FileHistory( {
 	const count = file.versions.length ?? 0;
 
 	// Déclaration des variables d'état.
-	const loading = states.loading.length !== 0;
 	const [ identifier, setIdentifier ] = useState( "" );
+	const [ loading, setLoading ] = useState( false );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -159,9 +159,7 @@ export default function FileHistory( {
 												onClick={async () =>
 												{
 													// Activation de l'état de chargement.
-													states.setLoading( [
-														"history"
-													] );
+													setLoading( true );
 
 													// Création d'un formulaire de données.
 													const form = new FormData();
@@ -217,7 +215,7 @@ export default function FileHistory( {
 													}
 
 													// Fin de l'état de chargement.
-													states.setLoading( [] );
+													setLoading( false );
 
 													// Envoi d'une notification.
 													if ( data )
