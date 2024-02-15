@@ -18,8 +18,8 @@ import { Trash,
 	ClipboardCheck } from "lucide-react";
 import type { User } from "next-auth";
 import { useSession } from "next-auth/react";
+import type { TableMeta } from "@tanstack/react-table";
 import type { FileAttributes } from "@/interfaces/File";
-import type { Table, Row, TableMeta } from "@tanstack/react-table";
 
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -36,23 +36,20 @@ import { ScrollArea } from "../../components/ui/scroll-area";
 import { addSharedUser, updateSharedUser, deleteSharedUser } from "../actions";
 
 export default function ShareManager( {
-	table,
-	row
+	file,
+	states
 }: {
-	table: Table<FileAttributes>;
-	row: Row<FileAttributes>;
+	file: FileAttributes;
+	states: TableMeta<FileAttributes>;
 } )
 {
 	// Déclaration des constantes.
 	const fetcher = ( url: string ) => fetch( url ).then( ( res ) => res.json() ) as Promise<User[]>;
-	const states = table.options.meta as TableMeta<FileAttributes>;
-	const file = states.files.filter( ( value ) => value.uuid === row.id )[ 0 ];
 
 	// Déclaration des variables d'état.
 	const session = useSession();
 	const [ search, setSearch ] = useState( "" );
 	const [ copied, setCopied ] = useState( false );
-	const [ loading, setLoading ] = useState( false );
 	const { data, error, isLoading } = useSWR<User[]>(
 		search !== ""
 			? `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/search/${ search }`
@@ -161,12 +158,12 @@ export default function ShareManager( {
 							{/* Autorisations accordées */}
 							<div className="flex gap-3 sm:ml-auto">
 								<Select
-									disabled={loading}
+									disabled={states.loading}
 									defaultValue={share.status}
 									onValueChange={async ( value ) =>
 									{
 										// Activation de l'état de chargement.
-										setLoading( true );
+										states.setLoading( true );
 
 										// Création d'un formulaire de données.
 										const form = new FormData();
@@ -195,7 +192,7 @@ export default function ShareManager( {
 										}
 
 										// Fin de l'état de chargement.
-										setLoading( false );
+										states.setLoading( false );
 
 										// Envoi d'une notification.
 										if ( state )
@@ -240,7 +237,7 @@ export default function ShareManager( {
 									onClick={async () =>
 									{
 										// Activation de l'état de chargement.
-										setLoading( true );
+										states.setLoading( true );
 
 										// Création d'un formulaire de données.
 										const form = new FormData();
@@ -298,7 +295,7 @@ export default function ShareManager( {
 										}
 
 										// Fin de l'état de chargement.
-										setLoading( false );
+										states.setLoading( false );
 
 										// Envoi d'une notification.
 										if ( state )
@@ -323,9 +320,9 @@ export default function ShareManager( {
 										}
 									}}
 									variant="destructive"
-									disabled={loading}
+									disabled={states.loading}
 								>
-									{loading ? (
+									{states.loading ? (
 										<Loader2 className="h-4 w-4 animate-spin" />
 									) : (
 										<Trash className="h-4 w-4" />
@@ -351,7 +348,7 @@ export default function ShareManager( {
 					type="text"
 					value={search}
 					onChange={( event ) => setSearch( event.target.value )}
-					disabled={loading}
+					disabled={states.loading}
 					maxLength={50}
 					className="mt-3"
 					spellCheck="false"
@@ -417,7 +414,7 @@ export default function ShareManager( {
 									onClick={async () =>
 									{
 										// Activation de l'état de chargement.
-										setLoading( true );
+										states.setLoading( true );
 
 										// Création d'un formulaire de données.
 										const form = new FormData();
@@ -452,7 +449,7 @@ export default function ShareManager( {
 										}
 
 										// Fin de l'état de chargement.
-										setLoading( false );
+										states.setLoading( false );
 
 										// Envoi d'une notification.
 										if ( state )
@@ -476,10 +473,10 @@ export default function ShareManager( {
 											);
 										}
 									}}
-									disabled={loading}
+									disabled={states.loading}
 									className="sm:ml-auto"
 								>
-									{loading ? (
+									{states.loading ? (
 										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									) : (
 										<UserPlus className="mr-2 h-4 w-4" />

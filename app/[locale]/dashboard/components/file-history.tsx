@@ -7,8 +7,8 @@
 import { toast } from "sonner";
 import { useState } from "react";
 import { formatSize } from "@/utilities/react-table";
+import type { TableMeta } from "@tanstack/react-table";
 import type { FileAttributes } from "@/interfaces/File";
-import type { Table, Row, TableMeta } from "@tanstack/react-table";
 import { Ban, Check, History, ArrowUpRight } from "lucide-react";
 
 import serverAction from "@/utilities/recaptcha";
@@ -27,21 +27,19 @@ import { AlertDialog,
 	AlertDialogDescription } from "../../components/ui/alert-dialog";
 
 export default function FileHistory( {
-	table,
-	row
+	file,
+	states
 }: {
-	table: Table<FileAttributes>;
-	row: Row<FileAttributes>;
+	file: FileAttributes;
+	states: TableMeta<FileAttributes>;
 } )
 {
 	// Déclaration des constantes.
-	const states = table.options.meta as TableMeta<FileAttributes>;
-	const file = states.files.filter( ( value ) => value.uuid === row.id )[ 0 ];
 	const count = file.versions.length ?? 0;
 
 	// Déclaration des variables d'état.
+	const [ open, setOpen ] = useState( false );
 	const [ identifier, setIdentifier ] = useState( "" );
-	const [ loading, setLoading ] = useState( false );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -118,7 +116,7 @@ export default function FileHistory( {
 
 								<AlertDialog>
 									<AlertDialogTrigger
-										disabled={index === 0 || loading}
+										disabled={index === 0 || states.loading}
 										className={buttonVariants( {
 											variant: "secondary"
 										} )}
@@ -149,7 +147,7 @@ export default function FileHistory( {
 
 										<AlertDialogFooter>
 											<AlertDialogCancel
-												disabled={loading}
+												disabled={states.loading}
 											>
 												<Ban className="mr-2 h-4 w-4" />
 												Annuler
@@ -159,7 +157,7 @@ export default function FileHistory( {
 												onClick={async () =>
 												{
 													// Activation de l'état de chargement.
-													setLoading( true );
+													states.setLoading( true );
 
 													// Création d'un formulaire de données.
 													const form = new FormData();
@@ -215,7 +213,7 @@ export default function FileHistory( {
 													}
 
 													// Fin de l'état de chargement.
-													setLoading( false );
+													states.setLoading( false );
 
 													// Envoi d'une notification.
 													if ( data )
@@ -239,7 +237,7 @@ export default function FileHistory( {
 														);
 													}
 												}}
-												disabled={loading}
+												disabled={states.loading}
 											>
 												<Check className="mr-2 h-4 w-4" />
 												Confirmer
