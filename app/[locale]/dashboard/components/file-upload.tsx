@@ -246,7 +246,17 @@ export default function FileUpload( {
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog
+			open={open}
+			onOpenChange={( state ) =>
+			{
+				if ( !loading )
+				{
+					form.reset();
+					setOpen( state );
+				}
+			}}
+		>
 			<DialogTrigger
 				className={buttonVariants( { variant: "default" } )}
 				aria-controls="file-upload"
