@@ -71,6 +71,19 @@ export async function updateUser(
 		}
 	} );
 
+	// On ajoute une notification pour prévenir l'utilisateur que son mot
+	//  de passe a été modifié récemment.
+	if ( !result.data.password )
+	{
+		await prisma.notification.create( {
+			data: {
+				title: 1,
+				userId: session.user.id,
+				message: 1
+			}
+		} );
+	}
+
 	// On modifie la langue sélectionnée par l'utilisateur dans les
 	//  cookies de son navigateur.
 	cookies().set( "NEXT_LOCALE", result.data.language );

@@ -389,7 +389,26 @@ export async function uploadFiles(
 				} )
 			).id;
 
-			// Une fois la version créée, on créé le dossier du fichier
+			// Une fois la version créée, on ajoute une notification à
+			//  tous les utilisateurs partagés avec le fichier pour les
+			//  prévenir que quelqu'un a téléversé une nouvelle version.
+			if ( exists )
+			{
+				await prisma.notification.createMany( {
+					data: exists.shares
+						.filter(
+							( share ) => share.user.notification.includes( "necessary" )
+								|| share.user.notification.includes( "all" )
+						)
+						.map( ( share ) => ( {
+							title: 4,
+							userId: share.userId,
+							message: 4
+						} ) )
+				} );
+			}
+
+			// Après la création de la notification, on créé le dossier du fichier
 			//  dans le système de fichiers ainsi qu'une clé de chiffrement
 			//  aléatoire indépendante de celle du serveur.
 			const fileFolder = join( userFolder, fileId );
@@ -509,15 +528,30 @@ export async function uploadFiles(
 			} );
 		} );
 
+		// On ajoute une notification à l'utilisateur si le quota de
+		//  celui-ci est proche d'être dépassé ou s'il est dépassé.
+		const quotaIsNear = currentQuota > maxQuota * 0.9;
+		const quotaIsExceeded = currentQuota > maxQuota;
+
+		if ( quotaIsNear || quotaIsExceeded )
+		{
+			await prisma.notification.create( {
+				data: {
+					title: quotaIsExceeded ? 6 : 5,
+					userId: session.user.id,
+					message: quotaIsExceeded ? 6 : 5
+				}
+			} );
+		}
+
 		// On retourne un message de succès ou d'erreur si le quota de
 		//  l'utilisateur a été dépassé en compagnie de la liste des
 		//  fichiers téléversés avec succès.
 		return {
 			success: currentQuota <= maxQuota,
-			reason:
-				currentQuota > maxQuota
-					? "form.errors.quota_exceeded"
-					: "form.info.upload_success",
+			reason: quotaIsExceeded
+				? "form.errors.quota_exceeded"
+				: "form.info.upload_success",
 			data: ( await Promise.all( data ) ).flat()
 		};
 	}
@@ -586,6 +620,11 @@ export async function restoreVersion( formData: FormData )
 			]
 		},
 		include: {
+			shares: {
+				include: {
+					user: true
+				}
+			},
 			versions: {
 				orderBy: {
 					createdAt: "desc"
@@ -658,6 +697,22 @@ export async function restoreVersion( formData: FormData )
 			size: targetVersion.size,
 			fileId: result.data.fileId
 		}
+	} );
+
+	// On ajoute une notification à tous les utilisateurs partagés
+	//  avec le fichier pour les prévenir que quelqu'un a restauré
+	//  une version précédente.
+	await prisma.notification.createMany( {
+		data: file.shares
+			.filter(
+				( share ) => share.user.notification.includes( "necessary" )
+					|| share.user.notification.includes( "all" )
+			)
+			.map( ( share ) => ( {
+				title: 4,
+				userId: share.userId,
+				message: 4
+			} ) )
 	} );
 
 	try
@@ -886,7 +941,8 @@ export async function addSharedUser( formData: FormData )
 			}
 		},
 		include: {
-			shares: true
+			shares: true,
+			preferences: true
 		}
 	} );
 
@@ -904,6 +960,22 @@ export async function addSharedUser( formData: FormData )
 			status: "read"
 		}
 	} );
+
+	// On ajoute une notification pour prévenir l'utilisateur que
+	//  quelqu'un a partagé un fichier avec lui.
+	if (
+		user.notification.includes( "necessary" )
+		|| user.notification.includes( "all" )
+	)
+	{
+		await prisma.notification.create( {
+			data: {
+				title: 2,
+				userId: user.id,
+				message: 2
+			}
+		} );
+	}
 
 	// On retourne enfin une valeur de succès à la fin du traitement.
 	return true;
@@ -1007,7 +1079,7 @@ export async function deleteSharedUser( formData: FormData )
 
 	// On supprime également le partage dans la base de données
 	//  avant de vérifier si l'opération a réussi.
-	const shares = await prisma.share.deleteMany( {
+	const query = {
 		where: {
 			file: {
 				id: {
@@ -1029,8 +1101,40 @@ export async function deleteSharedUser( formData: FormData )
 			},
 			userId: result.data.userId
 		}
+	};
+
+	const [ shares ] = await prisma.$transaction( [
+		prisma.share.findMany( {
+			select: {
+				user: {
+					select: {
+						notification: true
+					}
+				},
+				userId: true
+			},
+			where: query.where
+		} ),
+
+		prisma.share.deleteMany( query )
+	] );
+
+	// On ajoute une notification pour prévenir tous les utilisateurs
+	//  qui ont été retirés que quelqu'un a retiré un fichier partagé
+	//  avec eux.
+	await prisma.notification.createMany( {
+		data: shares
+			.filter(
+				( share ) => share.user.notification.includes( "necessary" )
+					|| share.user.notification.includes( "all" )
+			)
+			.map( ( share ) => ( {
+				title: 3,
+				userId: share.userId,
+				message: 3
+			} ) )
 	} );
 
 	// On retourne enfin une valeur de succès à la fin du traitement.
-	return shares.count > 0;
+	return shares.length > 0;
 }
