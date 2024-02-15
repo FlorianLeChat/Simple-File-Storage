@@ -50,9 +50,9 @@ export default function ShareManager( {
 
 	// Déclaration des variables d'état.
 	const session = useSession();
-	const loading = states.loading.length !== 0;
 	const [ search, setSearch ] = useState( "" );
 	const [ copied, setCopied ] = useState( false );
+	const [ loading, setLoading ] = useState( false );
 	const { data, error, isLoading } = useSWR<User[]>(
 		search !== ""
 			? `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/search/${ search }`
@@ -166,7 +166,7 @@ export default function ShareManager( {
 									onValueChange={async ( value ) =>
 									{
 										// Activation de l'état de chargement.
-										states.setLoading( [ "modal" ] );
+										setLoading( true );
 
 										// Création d'un formulaire de données.
 										const form = new FormData();
@@ -195,7 +195,7 @@ export default function ShareManager( {
 										}
 
 										// Fin de l'état de chargement.
-										states.setLoading( [] );
+										setLoading( false );
 
 										// Envoi d'une notification.
 										if ( state )
@@ -240,7 +240,7 @@ export default function ShareManager( {
 									onClick={async () =>
 									{
 										// Activation de l'état de chargement.
-										states.setLoading( [ "modal" ] );
+										setLoading( true );
 
 										// Création d'un formulaire de données.
 										const form = new FormData();
@@ -298,7 +298,7 @@ export default function ShareManager( {
 										}
 
 										// Fin de l'état de chargement.
-										states.setLoading( [] );
+										setLoading( false );
 
 										// Envoi d'une notification.
 										if ( state )
@@ -417,7 +417,7 @@ export default function ShareManager( {
 									onClick={async () =>
 									{
 										// Activation de l'état de chargement.
-										states.setLoading( [ "modal" ] );
+										setLoading( true );
 
 										// Création d'un formulaire de données.
 										const form = new FormData();
@@ -452,7 +452,7 @@ export default function ShareManager( {
 										}
 
 										// Fin de l'état de chargement.
-										states.setLoading( [] );
+										setLoading( false );
 
 										// Envoi d'une notification.
 										if ( state )

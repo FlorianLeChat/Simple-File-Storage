@@ -76,7 +76,6 @@ export default function FileUpload( {
 
 	// Déclaration des variables d'état.
 	const session = useSession();
-	const loading = states.loading.length !== 0;
 	const [ open, setOpen ] = useState( false );
 	const [ quota, setQuota ] = useState(
 		states.files.reduce(
@@ -85,6 +84,7 @@ export default function FileUpload( {
 			0
 		)
 	);
+	const [ loading, setLoading ] = useState( false );
 	const [ uploadState, uploadAction ] = useFormState( uploadFiles, {
 		success: true,
 		reason: "",
@@ -111,7 +111,7 @@ export default function FileUpload( {
 		{
 			// Si ce n'est pas le cas, quelque chose s'est mal passé au
 			//  niveau du serveur.
-			states.setLoading( [ "modal" ] );
+			setLoading( false );
 
 			toast.error( "form.errors.update_failed", {
 				description: "form.errors.server_error"
@@ -272,7 +272,7 @@ export default function FileUpload( {
 							}
 
 							// Activation de l'état de chargement.
-							states.setLoading( [ "modal" ] );
+							setLoading( true );
 
 							// Récupération des données du formulaire.
 							formData.set(
