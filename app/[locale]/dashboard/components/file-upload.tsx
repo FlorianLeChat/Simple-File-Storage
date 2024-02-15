@@ -72,6 +72,7 @@ export default function FileUpload( {
 		//  côté serveur.
 		upload: z.string().min( 1 )
 	} );
+	const { setFiles } = states;
 
 	// Déclaration des variables d'état.
 	const session = useSession();
@@ -194,40 +195,25 @@ export default function FileUpload( {
 
 			// On filtre les fichiers déjà existants pour éviter les
 			//  doublons avant de mettre à jour la liste des fichiers.
-			let newFiles: FileAttributes[] = [];
-
-			states.setFiles( ( previous ) =>
-			{
-				newFiles = [
-					...previous.filter(
-						( value ) => uploaded.filter( ( file ) => file.uuid === value.uuid )
-							.length === 0
-					),
-					...uploaded
-				];
-
-				return newFiles;
-			} );
+			setFiles( ( previous ) => [
+				...previous.filter(
+					( value ) => !uploaded.find( ( file ) => file.uuid === value.uuid )
+				),
+				...uploaded
+			] );
 		}
 
-		// On réinitialise après une partie du formulaire en cas
-		//  de succès avant de le fermer.
+		// On informe après qu'une réponse a été reçue.
+		setLoading( false );
+
+		// On affiche enfin une notification avec la raison fournie
+		//  avant de réinitialiser le formulaire en cas de succès.
 		if ( success )
 		{
+			setOpen( false );
+
 			form.reset();
 
-			setOpen( false );
-		}
-
-		// On affiche enfin le message correspondant avant
-		//  d'indiquer que le traitement est terminé.
-		uploadState.reason = "";
-		uploadState.data = undefined;
-
-		states.setLoading( [] );
-
-		if ( success )
-		{
 			toast.success( "form.info.upload_success", {
 				description: reason
 			} );
@@ -238,7 +224,7 @@ export default function FileUpload( {
 				description: reason
 			} );
 		}
-	}, [ form, states, uploadState ] );
+	}, [ form, setFiles, uploadState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
