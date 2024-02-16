@@ -5,15 +5,15 @@
 // Importation des dépendances.
 import { join } from "path";
 import * as dotenv from "dotenv";
-import { PrismaClient } from "@prisma/client";
 import { existsSync } from "fs";
 import { readdir, rm } from "fs/promises";
+import { PrismaClient } from "@prisma/client";
 
 // Configuration des variables d'environnement.
 dotenv.config( { path: join( process.cwd(), ".env.local" ), override: true } );
 
 // Exécution de la fonction asynchrone.
-const cleanup = async () =>
+const script = async () =>
 {
 	// Création d'une nouvelle instance de Prisma et récupération
 	//  des fichiers expirés depuis la base de données.
@@ -66,4 +66,4 @@ const cleanup = async () =>
 	prisma.$disconnect();
 };
 
-cleanup();
+script();
