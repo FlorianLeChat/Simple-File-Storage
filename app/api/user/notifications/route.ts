@@ -5,6 +5,9 @@ import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
 import { NextResponse } from "next/server";
 
+// Nombre maximal de notifications par utilisateur.
+const MAX_NOTIFICATIONS = 50;
+
 export async function GET()
 {
 	// On vérifie si l'utilisateur est connecté afin de récupérer
@@ -17,12 +20,12 @@ export async function GET()
 	}
 
 	// On récupère ensuite l'ensemble des notifications de l'utilisateur
-	//  tout en limitant le nombre de résultats à 50.
+	//  tout en limitant le nombre de résultats.
 	const notifications = await prisma.notification.findMany( {
 		where: {
 			userId: session.user.id
 		},
-		take: 50
+		take: MAX_NOTIFICATIONS
 	} );
 
 	// On retourne enfin les notifications sous forme de réponse JSON.
