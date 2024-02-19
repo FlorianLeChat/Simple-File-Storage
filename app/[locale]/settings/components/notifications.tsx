@@ -181,11 +181,11 @@ export default function Notifications( { session }: { session: Session } )
 											</h4>
 
 											<p className="text-sm text-muted-foreground">
-												Recevez une notification à
-												chaque téléchargement de vos
-												fichiers et à chaque fois que
-												votre fichier est modifié par un
-												autre utilisateur autorisé.
+												Recevez l&lsquo;intégralité des
+												notifications concernant la
+												gestion de vos fichiers par des
+												tiers ou des avertissements de
+												sécurité.
 											</p>
 										</div>
 									</Button>
@@ -215,10 +215,10 @@ export default function Notifications( { session }: { session: Session } )
 											</h4>
 
 											<p className="text-sm text-muted-foreground">
-												Recevez une notification
-												seulement lorsqu&lsquo;un
-												fichier partagé avec tiers est
-												supprimé.
+												Recevez seulement les
+												notifications importantes
+												concernant la gestion de vos
+												fichiers par des tiers.
 											</p>
 										</div>
 									</Button>
@@ -249,8 +249,8 @@ export default function Notifications( { session }: { session: Session } )
 
 											<p className="text-sm text-muted-foreground">
 												Ne recevez aucune notification
-												sauf en cas de problème avec
-												votre compte.
+												sauf les alertes de sécurité
+												importantes.
 											</p>
 										</div>
 									</Button>

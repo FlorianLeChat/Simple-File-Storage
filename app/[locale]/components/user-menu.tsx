@@ -7,6 +7,7 @@
 import Link from "next/link";
 import { merge } from "@/utilities/tailwind";
 import { useRouter } from "next/navigation";
+import type { Prisma } from "@prisma/client";
 import type { Session } from "next-auth";
 import { BellRing, Check } from "lucide-react";
 import { useEffect, useCallback, useState } from "react";
@@ -14,6 +15,7 @@ import { useEffect, useCallback, useState } from "react";
 import serverAction from "@/utilities/recaptcha";
 import { Dialog,
 	DialogTitle,
+	DialogClose,
 	DialogHeader,
 	DialogFooter,
 	DialogTrigger,
@@ -31,23 +33,14 @@ import { DropdownMenu,
 import { Button, buttonVariants } from "./ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
-const notifications = [
-	{
-		type: "success",
-		title: "Nouveau fichier téléversé",
-		description: "Votre fichier a bien été téléversé."
-	},
-	{
-		type: "warning",
-		title: "Collaborateur supprimé",
-		description: "Donald a été supprimé de votre espace de travail."
-	},
-	{
-		type: "error",
-		title: "Espace de stockage saturé",
-		description: "Vous avez atteint 90% de votre espace de stockage."
-	}
-];
+// Typage des notifications provenant de la base de données.
+type Notification = Prisma.NotificationGetPayload<object>;
+
+// Intervalle de vérification des notifications (en millisecondes).
+const CHECK_INTERVAL = 10000;
+
+// Nombre maximal de notifications à afficher.
+const MAX_NOTIFICATIONS = 50;
 
 export default function UserMenu( { session }: { session: Session } )
 {
@@ -60,6 +53,8 @@ export default function UserMenu( { session }: { session: Session } )
 	// Déclaration des variables d'état.
 	const router = useRouter();
 	const [ open, setOpen ] = useState( false );
+	const [ unread, setUnread ] = useState( 0 );
+	const [ notifications, setNotifications ] = useState<Notification[]>( [] );
 
 	// Capture et support des combinaisons de touches.
 	const handleShortcuts = useCallback(
@@ -106,6 +101,54 @@ export default function UserMenu( { session }: { session: Session } )
 		[ router ]
 	);
 
+	// Récupération des notifications depuis l'API.
+	const fetchNotifications = async () =>
+	{
+		fetch( `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/notifications` )
+			.then( ( response ) => response.json() as Promise<Notification[]> )
+			.then( ( data ) =>
+			{
+				setNotifications( ( existing ) =>
+				{
+					// Filtrage des notifications existantes.
+					const filter = data.filter(
+						( notification ) => !existing.some(
+							( cache ) => cache.title === notification.title
+						)
+					);
+
+					// Comptage du nombre de notifications non lues.
+					setUnread( ( count ) => Math.min( data.length, count + filter.length ) );
+
+					// Conversion de la date de création en objet et limitation
+					//  à un nombre maximal de notifications.
+					return data
+						.map( ( notification ) =>
+						{
+							notification.createdAt = new Date(
+								notification.createdAt
+							);
+
+							return notification;
+						} )
+						.slice( 0, MAX_NOTIFICATIONS );
+				} );
+			} );
+	};
+
+	// Vérification périodique des notifications.
+	useEffect( () =>
+	{
+		// Création d'un minuteur toutes les X secondes.
+		const timer = setInterval( fetchNotifications, CHECK_INTERVAL );
+
+		// Exécution immédiate de la fonction pour récupérer les notifications.
+		fetchNotifications();
+
+		// Nettoyage du minuteur au démontage du composant.
+		return () => clearInterval( timer );
+	}, [] );
+
 	// Récupération des touches pressées.
 	useEffect( () =>
 	{
@@ -126,19 +169,27 @@ export default function UserMenu( { session }: { session: Session } )
 	// Affichage du rendu HTML du composant.
 	return (
 		<nav className="flex items-center justify-center space-x-4 md:ml-auto">
+			{/* Notifications utilisateur */}
 			<Dialog>
 				<DialogTrigger
-					className={buttonVariants( { variant: "secondary" } )}
+					className={buttonVariants( {
+						variant: unread > 0 ? "secondary" : "ghost"
+					} )}
 					aria-controls="notifications"
 				>
-					<BellRing className="inline h-5 w-5 md:mr-2" />
+					<BellRing className="inline h-5 w-5" />
 
-					<p id="notifications" className="hidden md:inline">
-						Nouvelles notifications
-					</p>
+					{unread > 0 && (
+						<p
+							id="notifications"
+							className="hidden md:ml-2 md:inline-block"
+						>
+							Nouvelles notifications
+						</p>
+					)}
 				</DialogTrigger>
 
-				<DialogContent className="w-[380px]">
+				<DialogContent className="h-fit max-h-full w-[380px] overflow-auto">
 					<DialogHeader>
 						<DialogTitle className="flex items-center">
 							<BellRing className="mr-2 inline h-5 w-5" />
@@ -146,40 +197,74 @@ export default function UserMenu( { session }: { session: Session } )
 						</DialogTitle>
 
 						<DialogDescription>
-							Vous avez 3 nouvelles notifications.
+							{unread === 0
+								? "Vous n'avez aucune nouvelle notification."
+								: `Vous avez ${ unread } nouvelle(s) notification(s).`}
 						</DialogDescription>
 					</DialogHeader>
 
-					<ul className="my-2 flex flex-col gap-4">
-						{notifications.map( ( notification ) => (
-							<li
-								key={notification.title}
-								className="grid grid-cols-[25px_1fr]"
-							>
-								<p className="h-2 w-2 translate-y-1 rounded-full bg-primary" />
+					{unread > 0 && (
+						<>
+							<ul className="my-2 flex flex-col gap-4">
+								{notifications.map( ( notification ) => (
+									<li
+										key={notification.title}
+										className="grid grid-cols-[25px_1fr]"
+									>
+										<p className="h-2 w-2 translate-y-1 rounded-full bg-primary" />
 
-								<div className="space-y-1">
-									<h3 className="text-sm font-medium leading-none">
-										{notification.title}
-									</h3>
+										<div className="space-y-1">
+											<h3 className="text-sm font-medium leading-none">
+												{notification.title}
+											</h3>
 
-									<p className="text-sm text-muted-foreground">
-										{notification.description}
-									</p>
-								</div>
-							</li>
-						) )}
-					</ul>
+											<p className="text-sm text-muted-foreground">
+												{notification.message}
+											</p>
 
-					<DialogFooter>
-						<Button className="w-full">
-							<Check className="mr-2 h-4 w-4" />
-							Tout marquer comme lu
-						</Button>
-					</DialogFooter>
+											<time
+												dateTime={notification.createdAt.toISOString()}
+												className="text-xs text-muted-foreground"
+											>
+												{new Intl.DateTimeFormat(
+													undefined,
+													{
+														year: "numeric",
+														month: "long",
+														day: "numeric",
+														hour: "numeric",
+														minute: "numeric",
+														second: "numeric"
+													}
+												).format(
+													notification.createdAt
+												)}
+											</time>
+										</div>
+									</li>
+								) )}
+							</ul>
+
+							<DialogFooter>
+								<DialogClose asChild>
+									<Button
+										className="w-full"
+										onClick={async () =>
+										{
+											setUnread( 0 );
+										}}
+									>
+										<Check className="mr-2 h-4 w-4" />
+										Tout marquer comme lu
+									</Button>
+								</DialogClose>
+							</DialogFooter>
+						</>
+					)}
 				</DialogContent>
 			</Dialog>
 
+			{/* Menu utilisateur */}
 			<DropdownMenu open={open} onOpenChange={setOpen}>
 				{/* Bouton d'apparition */}
 				<DropdownMenuTrigger
