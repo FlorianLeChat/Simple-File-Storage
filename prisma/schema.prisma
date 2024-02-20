@@ -50,7 +50,6 @@ model File {
 	userId       String
 	name         String
 	status	     String
-	encrypted    Boolean    @default(false)
 	expiration   DateTime?
 	versions     Version[]
 	shares       Share[]
@@ -63,6 +62,7 @@ model Version {
 	size 	     String
 	hash         String
 	createdAt    DateTime   @default(now())
+	encrypted    Boolean    @default(false)
 }
 
 model Notification {
