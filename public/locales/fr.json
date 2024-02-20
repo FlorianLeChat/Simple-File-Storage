@@ -38,9 +38,27 @@
 						},
 						{
 							"name": "NEXT_LOCALE",
-							"domain": "NextJS",
-							"description": "Cookie mis en place par le site Internet.",
+							"domain": "Next Intl",
+							"description": "Cookie mis en place par <a href=\"https://next-intl-docs.vercel.app/\" target=\"_blank\">Next Intl</a>.",
 							"expiration": "Expire à la fin de la session."
+						},
+						{
+							"name": "authjs.session-token",
+							"domain": "AuthJS",
+							"description": "Cookie mis en place par <a href=\"https://authjs.dev/\" target=\"_blank\">AuthJS</a>.",
+							"expiration": "Expire après 1 mois."
+						},
+						{
+							"name": "authjs.csrf-token",
+							"domain": "AuthJS",
+							"description": "Cookie mis en place par <a href=\"https://authjs.dev/\" target=\"_blank\">AuthJS</a>.",
+							"expiration": "Expire après 1 mois."
+						},
+						{
+							"name": "authjs.callback-url",
+							"domain": "AuthJS",
+							"description": "Cookie mis en place par <a href=\"https://authjs.dev/\" target=\"_blank\">AuthJS</a>.",
+							"expiration": "Expire après 1 mois."
 						}
 					]
 				}
