@@ -169,7 +169,6 @@ export default function FileUpload( {
 					owner: json.owner,
 					status: json.status,
 					shares: json.shares,
-					encrypted: json.encrypted,
 					versions: json.versions.map( ( version ) => ( {
 						...version,
 						date: new Date( version.date )

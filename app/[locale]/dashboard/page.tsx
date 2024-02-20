@@ -100,12 +100,12 @@ async function getFiles(): Promise<FileAttributes[]>
 					},
 					status: share.status
 				} ) ),
-				encrypted: file.encrypted,
 				versions: file.versions.map( ( version ) => ( {
 					uuid: version.id,
 					size: Number( version.size ),
 					date: version.createdAt,
-					path: `${ path }?v=${ version.id }`
+					path: `${ path }?v=${ version.id }`,
+					encrypted: version.encrypted
 				} ) )
 			} as FileAttributes;
 		} )

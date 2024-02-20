@@ -27,9 +27,6 @@ export interface FileAttributes {
 	// Partage du fichier.
 	shares: ShareAttributes[];
 
-	// État de chiffrement du fichier.
-	encrypted: boolean;
-
 	// Liste des versions du fichier.
 	versions: VersionAttributes[];
 }
