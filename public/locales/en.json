@@ -38,9 +38,27 @@
 						},
 						{
 							"name": "NEXT_LOCALE",
-							"domain": "NextJS",
-							"description": "Cookie set by the website.",
+							"domain": "Next Intl",
+							"description": "Cookie set by <a href=\"https://next-intl-docs.vercel.app/\" target=\"_blank\">Next Intl</a>.",
 							"expiration": "Expires at the end of the session."
+						},
+						{
+							"name": "authjs.session-token",
+							"domain": "AuthJS",
+							"description": "Cookie set by <a href=\"https://authjs.dev/\" target=\"_blank\">AuthJS</a>.",
+							"expiration": "Expire after 1 month."
+						},
+						{
+							"name": "authjs.csrf-token",
+							"domain": "AuthJS",
+							"description": "Cookie set by <a href=\"https://authjs.dev/\" target=\"_blank\">AuthJS</a>.",
+							"expiration": "Expire after 1 month."
+						},
+						{
+							"name": "authjs.callback-url",
+							"domain": "AuthJS",
+							"description": "Cookie set by <a href=\"https://authjs.dev/\" target=\"_blank\">AuthJS</a>.",
+							"expiration": "Expire after 1 month."
 						}
 					]
 				}
