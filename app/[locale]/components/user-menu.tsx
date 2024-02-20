@@ -8,7 +8,6 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import { useRouter } from "next/navigation";
-import type { Prisma } from "@prisma/client";
 import type { Session } from "next-auth";
 import { BellRing, Check, Loader2 } from "lucide-react";
 import { useEffect, useCallback, useState } from "react";
@@ -36,7 +35,11 @@ import { Button, buttonVariants } from "./ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
 // Typage des notifications provenant de la base de données.
-type Notification = Prisma.NotificationGetPayload<object>;
+type Notification = {
+	title: string;
+	message: string;
+	createdAt: Date;
+};
 
 // Intervalle de vérification des notifications (en millisecondes).
 const CHECK_INTERVAL = 10000;
@@ -105,7 +108,7 @@ export default function UserMenu( { session }: { session: Session } )
 	);
 
 	// Récupération des notifications depuis l'API.
-	const fetchNotifications = async () =>
+	const fetchNotifications = useCallback( async () =>
 	{
 		// Activation de l'état de chargement.
 		setLoading( true );
@@ -130,6 +133,40 @@ export default function UserMenu( { session }: { session: Session } )
 					// Désactivation de l'état de chargement.
 					setLoading( false );
 
+					// Vérification de l'existence de l'API de notifications.
+					if ( typeof Notification !== "undefined" )
+					{
+						// Demande de permission pour les notifications.
+						const icon: HTMLLinkElement | null =
+							document.querySelector( "link[sizes = \"512x512\"]" );
+
+						Notification.requestPermission().then( ( permission ) =>
+						{
+							// Création d'une notification si la permission est accordée.
+							if ( permission === "granted" )
+							{
+								data.forEach( ( notification ) =>
+								{
+									const popup = new Notification(
+										document.title,
+										{
+											icon: icon?.href,
+											body: notification.title,
+											timestamp:
+												notification.createdAt.getTime()
+										}
+									);
+
+									popup.addEventListener( "click", () =>
+									{
+										// Redirection vers les paramètres de notifications.
+										router.push( "/settings/notifications" );
+									} );
+								} );
+							}
+						} );
+					}
+
 					// Conversion de la date de création en objet et limitation
 					//  à un nombre maximal de notifications.
 					return data
@@ -144,7 +181,7 @@ export default function UserMenu( { session }: { session: Session } )
 						.slice( 0, MAX_NOTIFICATIONS );
 				} );
 			} );
-	};
+	}, [ router ] );
 
 	// Vérification périodique des notifications.
 	useEffect( () =>
@@ -157,7 +194,7 @@ export default function UserMenu( { session }: { session: Session } )
 
 		// Nettoyage du minuteur au démontage du composant.
 		return () => clearInterval( timer );
-	}, [] );
+	}, [ fetchNotifications ] );
 
 	// Récupération des touches pressées.
 	useEffect( () =>
