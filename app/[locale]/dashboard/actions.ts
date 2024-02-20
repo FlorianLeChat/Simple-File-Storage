@@ -361,6 +361,7 @@ export async function uploadFiles(
 							name: file.name,
 							userId: session.user.id,
 							status,
+							encrypted: result.data.encryption,
 							expiration:
 								result.data.expiration !== ""
 									? new Date( result.data.expiration )
@@ -524,7 +525,8 @@ export async function uploadFiles(
 					size: Number( version.size ),
 					date: version.createdAt,
 					path: `${ path }?v=${ version.id }`
-				} ) )
+				} ) ),
+				encrypted: result.data.encryption
 			} );
 		} );
 
