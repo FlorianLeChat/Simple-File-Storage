@@ -266,7 +266,79 @@ export default function FileUpload( {
 							// Activation de l'état de chargement.
 							setLoading( true );
 
-							// Récupération des données du formulaire.
+							// Vérification de l'activation du chiffrement
+							//  renforcé (côté client).
+							if ( formData.get( "encryption" ) === "on" )
+							{
+								// Génération d'une clé de chiffrement.
+								const key = Buffer.from(
+									crypto.getRandomValues( new Uint8Array( 32 ) )
+								).toString( "base64" );
+
+								// Génération d'un vecteur d'initialisation.
+								const iv = crypto.getRandomValues(
+									new Uint8Array( 16 )
+								);
+
+								// Importation de la clé de chiffrement.
+								const cipher = await crypto.subtle.importKey(
+									"raw",
+									Buffer.from( key, "base64" ),
+									{
+										name: "AES-GCM",
+										length: 256
+									},
+									true,
+									[ "encrypt", "decrypt" ]
+								);
+
+								// Récupération des fichiers à téléverser et
+								//  suppression de ces derniers de la liste
+								//  des fichiers à téléverser.
+								const files = formData.getAll(
+									"upload"
+								) as File[];
+
+								formData.delete( "upload" );
+
+								// Chiffrement des fichiers.
+								await Promise.all(
+									files.map( async ( file ) =>
+									{
+										// Récupération du contenu du fichier.
+										const buffer = new Uint8Array(
+											await file.arrayBuffer()
+										);
+
+										// Chiffrement du contenu du fichier.
+										const encrypted = Buffer.concat( [
+											iv,
+											new Uint8Array(
+												await crypto.subtle.encrypt(
+													{
+														iv,
+														name: "AES-GCM"
+													},
+													cipher,
+													buffer
+												)
+											)
+										] );
+
+										// Ajout du fichier chiffré à la liste
+										//  des fichiers à téléverser.
+										formData.append(
+											"upload",
+											new File( [ encrypted ], file.name, {
+												type: file.type
+											} )
+										);
+									} )
+								);
+							}
+
+							// Récupération des données manquantes
+							//  du formulaire.
 							formData.set(
 								"expiration",
 								form.getValues( "expiration" )
@@ -360,9 +432,9 @@ export default function FileUpload( {
 											clé de chiffrement connue uniquement
 											par le serveur. Si vous activez
 											cette option, le fichier sera
-											chiffré avec une clé générée
-											aléatoirement et ne sera pas
-											enregistrée sur le serveur.{" "}
+											chiffré dans votre navigateur avec
+											une clé générée aléatoirement et ne
+											sera pas transmise au serveur.{" "}
 											<strong>
 												Attention, une fois le fichier
 												téléversé, une clé de

@@ -283,6 +283,7 @@ export async function uploadFiles(
 		{
 			// On tente de récupérer le tampon du fichier téléversé pour vérifier
 			//  son type au travers des nombres magiques.
+			//  Note : si le fichier est chiffré, on ignore les 16 premiers octets.
 			const buffer = new Uint8Array( await file.arrayBuffer() );
 			const info = await fileTypeFromBuffer( buffer );
 
@@ -410,13 +411,9 @@ export async function uploadFiles(
 			}
 
 			// Après la création de la notification, on créé le dossier du fichier
-			//  dans le système de fichiers ainsi qu'une clé de chiffrement
-			//  aléatoire indépendante de celle du serveur.
+			//  dans le système de fichiers.
+			const extension = info ? `.${ info.ext }` : parse( file.name ).ext;
 			const fileFolder = join( userFolder, fileId );
-			const extension = `.${ info?.ext }` ?? parse( file.name ).ext;
-			const key = Buffer.from(
-				crypto.getRandomValues( new Uint8Array( 32 ) )
-			).toString( "base64" );
 
 			await mkdir( fileFolder, { recursive: true } );
 
@@ -444,15 +441,12 @@ export async function uploadFiles(
 				// Dans le cas contraire, on génère un vecteur d'initialisation
 				//  puis on chiffre le fichier avec l'algorithme AES-256-GCM
 				//  avant de l'écrire dans le système de fichiers.
+				//  Note : si l'utilisateur a demandé un chiffrement renforcé,
+				//   le fichier a déjà été chiffré par le client.
 				const iv = crypto.getRandomValues( new Uint8Array( 16 ) );
 				const cipher = await crypto.subtle.importKey(
 					"raw",
-					Buffer.from(
-						result.data.encryption
-							? key
-							: process.env.AUTH_SECRET ?? "",
-						"base64"
-					),
+					Buffer.from( process.env.AUTH_SECRET ?? "", "base64" ),
 					{
 						name: "AES-GCM",
 						length: 256
@@ -463,19 +457,21 @@ export async function uploadFiles(
 
 				await writeFile(
 					join( fileFolder, `${ versionId }${ extension }` ),
-					Buffer.concat( [
-						iv,
-						new Uint8Array(
-							await crypto.subtle.encrypt(
-								{
-									iv,
-									name: "AES-GCM"
-								},
-								cipher,
-								buffer
+					result.data.encryption
+						? buffer
+						: Buffer.concat( [
+							iv,
+							new Uint8Array(
+								await crypto.subtle.encrypt(
+									{
+										iv,
+										name: "AES-GCM"
+									},
+									cipher,
+									buffer
+								)
 							)
-						)
-					] )
+						] )
 				);
 			}
 
@@ -496,7 +492,6 @@ export async function uploadFiles(
 			} );
 
 			return JSON.stringify( {
-				key: result.data.encryption ? key : undefined,
 				uuid: fileId,
 				name: parse( file.name ).name,
 				type: file.type,
