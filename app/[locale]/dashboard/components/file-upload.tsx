@@ -16,6 +16,7 @@ import { Ban,
 	ShieldCheck,
 	UploadCloud,
 	CalendarDays,
+	ClipboardCopy,
 	PlusCircleIcon } from "lucide-react";
 import { useLocale } from "next-intl";
 import { useSession } from "next-auth/react";
@@ -52,6 +53,13 @@ import { Form,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
 import { uploadFiles } from "../actions";
+import { AlertDialog,
+	AlertDialogTitle,
+	AlertDialogAction,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogContent,
+	AlertDialogDescription } from "../../components/ui/alert-dialog";
 import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function FileUpload( {
@@ -76,6 +84,7 @@ export default function FileUpload( {
 
 	// Déclaration des variables d'état.
 	const session = useSession();
+	const [ key, setKey ] = useState( "" );
 	const [ open, setOpen ] = useState( false );
 	const [ quota, setQuota ] = useState( 0 );
 	const [ loading, setLoading ] = useState( false );
@@ -149,32 +158,7 @@ export default function FileUpload( {
 			data.forEach( ( file ) =>
 			{
 				// Transformation de la chaîne JSON en objet.
-				const json = JSON.parse( file ) as FileAttributes & {
-					key?: string;
-				};
-
-				// Récupération de la clé de chiffrement si elle existe.
-				if ( json.key )
-				{
-					toast.warning( "form.info.upload_encrypted", {
-						action: {
-							label: "Copier",
-							onClick: ( event ) =>
-							{
-								// Suppression de la fermeture automatique.
-								event.preventDefault();
-
-								// Copie dans le presse-papier.
-								navigator.clipboard.writeText(
-									json.key as string
-								);
-							}
-						},
-						duration: 60 * 1000, // 1 minute.
-						dismissible: false,
-						description: "form.info.encryption_success"
-					} );
-				}
+				const json = JSON.parse( file ) as FileAttributes;
 
 				// Ajout du fichier à la liste des fichiers téléversés.
 				uploaded.push( {
@@ -224,7 +208,61 @@ export default function FileUpload( {
 				description: reason
 			} );
 		}
-	}, [ form, setFiles, uploadState ] );
+	}, [ key, form, setFiles, uploadState ] );
+
+	// Affichage de la fenêtre modale de clé de déchiffrement.
+	if ( key && !open )
+	{
+		return (
+			<AlertDialog defaultOpen>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>
+							<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
+							Clé de déchiffrement
+						</AlertDialogTitle>
+
+						<AlertDialogDescription>
+							Vous avez activé le chiffrement renforcé pour ce
+							téléversement. Vos fichiers ont été chiffrés dans
+							votre navigateur avec une clé de chiffrement
+							aléatoire que vous seul pouvez utiliser pour les
+							déchiffrer.
+							<br />
+							<br />
+							Vous trouverez ci-dessous la clé de déchiffrement
+							que vous devez conserver précieusement pour pouvoir
+							accéder à vos fichiers ultérieurement.{" "}
+							<strong>
+								Si vous perdez cette clé, vous ne pourrez plus
+								accéder à vos fichiers.
+							</strong>
+							<br />
+							<br />
+							<code>{key}</code>
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+
+					<AlertDialogFooter>
+						<AlertDialogAction
+							onClick={() =>
+							{
+								// Copie dans le presse-papiers.
+								navigator.clipboard.writeText( key );
+
+								// Réinitialisation de la variable d'état.
+								setKey( "" );
+							}}
+							className="w-full"
+						>
+							<ClipboardCopy className="mr-2 h-4 w-4" />
+							Copier dans le presse-papiers
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+		);
+	}
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -270,10 +308,13 @@ export default function FileUpload( {
 							//  renforcé (côté client).
 							if ( formData.get( "encryption" ) === "on" )
 							{
-								// Génération d'une clé de chiffrement.
-								const key = Buffer.from(
+								// Génération d'une clé de chiffrement et
+								//  sauvegarde dans une variable d'état.
+								const decryptionKey = Buffer.from(
 									crypto.getRandomValues( new Uint8Array( 32 ) )
 								).toString( "base64" );
+
+								setKey( decryptionKey );
 
 								// Génération d'un vecteur d'initialisation.
 								const iv = crypto.getRandomValues(
@@ -283,7 +324,7 @@ export default function FileUpload( {
 								// Importation de la clé de chiffrement.
 								const cipher = await crypto.subtle.importKey(
 									"raw",
-									Buffer.from( key, "base64" ),
+									Buffer.from( decryptionKey, "base64" ),
 									{
 										name: "AES-GCM",
 										length: 256
