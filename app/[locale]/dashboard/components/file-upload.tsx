@@ -207,7 +207,7 @@ export default function FileUpload( {
 				description: reason
 			} );
 		}
-	}, [ key, form, setFiles, uploadState ] );
+	}, [ form, setFiles, uploadState ] );
 
 	// Affichage de la fenêtre modale de clé de déchiffrement.
 	if ( key && !open )
