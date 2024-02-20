@@ -13,4 +13,7 @@ export interface VersionAttributes {
 
 	// Chemin d'accès à la version.
 	path: string;
+
+	// État de chiffrement de la version.
+	encrypted: boolean;
 }

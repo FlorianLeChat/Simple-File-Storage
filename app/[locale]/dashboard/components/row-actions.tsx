@@ -683,7 +683,7 @@ export default function RowActions( {
 				</Dialog>
 
 				{/* Accès à la ressource */}
-				{rowData[ 0 ].encrypted ? (
+				{rowData[ 0 ].versions[ 0 ].encrypted ? (
 					<Dialog>
 						<DialogTrigger asChild>
 							<DropdownMenuItem
