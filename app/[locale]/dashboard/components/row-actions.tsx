@@ -790,7 +790,10 @@ export default function RowActions( {
 					<DialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
-							disabled={!owner}
+							disabled={
+								!owner
+								|| !session.data?.user.preferences.versions
+							}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<History className="mr-2 h-4 w-4" />

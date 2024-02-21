@@ -570,10 +570,11 @@ export async function uploadFiles(
 //
 export async function restoreVersion( formData: FormData )
 {
-	// On récupère d'abord la session de l'utilisateur.
+	// On récupère d'abord la session de l'utilisateur ainsi
+	//  que ses préférences.
 	const session = await auth();
 
-	if ( !session )
+	if ( !session || !session.user.preferences.versions )
 	{
 		return "";
 	}
