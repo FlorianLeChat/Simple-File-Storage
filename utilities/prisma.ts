@@ -15,12 +15,10 @@ else
 {
 	if ( !global.prisma )
 	{
-		global.prisma = {
-			client: new PrismaClient()
-		};
+		global.prisma = new PrismaClient();
 	}
 
-	cache = global.prisma.client;
+	cache = global.prisma;
 }
 
 // Exportation du client Prisma.
