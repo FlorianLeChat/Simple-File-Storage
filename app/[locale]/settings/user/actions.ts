@@ -89,12 +89,15 @@ export async function updateUser(
 	cookies().set( "NEXT_LOCALE", result.data.language );
 
 	// On vérifie également si un avatar a été fourni.
+	//  Note : si S3 est activé, l'utilisateur doit téléverser son
+	//   avatar directement sur le service de stockage depuis le navigateur.
 	const { avatar } = result.data;
 
 	if (
 		avatar.size !== 0
 		&& avatar.name !== "undefined"
 		&& avatar.type !== "application/octet-stream"
+		&& process.env.S3_ENABLED !== "true"
 	)
 	{
 		// Si c'est le cas, on récupère le tampon de l'avatar téléversé
