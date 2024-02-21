@@ -6,6 +6,7 @@ import S3 from "@/utilities/s3";
 import { auth } from "@/utilities/next-auth";
 import { NextResponse } from "next/server";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
+import { PutBucketCorsCommand } from "@aws-sdk/client-s3";
 
 export async function GET()
 {
@@ -23,6 +24,32 @@ export async function GET()
 	{
 		return new NextResponse( null, { status: 403 } );
 	}
+
+	// On applique après la configuration CORS pour l'instance S3.
+	//  Source : https://docs.aws.amazon.com/AmazonS3/latest/userguide/example_s3_PutBucketCors_section.html
+	const command = new PutBucketCorsCommand( {
+		Bucket: process.env.S3_BUCKET_NAME ?? "",
+		CORSConfiguration: {
+			CORSRules: [
+				{
+					MaxAgeSeconds: 3600,
+					ExposeHeaders: [
+						"ETag",
+						"Content-Type",
+						"Access-Control-Allow-Origin"
+					],
+					AllowedHeaders: [ "*" ],
+					AllowedMethods: [ "GET", "HEAD", "PUT", "POST", "DELETE" ],
+					AllowedOrigins: [
+						"http://localhost:*",
+						"https://*.florian-dev.fr"
+					]
+				}
+			]
+		}
+	} );
+
+	await S3.send( command );
 
 	// On créé alors une URL de téléversement pour l'avatar de
 	//  l'utilisateur avec certaines conditions.
