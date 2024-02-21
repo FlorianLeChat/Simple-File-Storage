@@ -1,6 +1,6 @@
-// Types pour le cache de connexion à la base de données MongoDB.
-// Source : https://www.typescriptlang.org/docs/handbook/declaration-files/templates/global-d-ts.html
-import prisma from "@prisma/client";
+// Types pour le cache de connexion à la base de données Prisma.
+import { PrismaClient } from "@prisma/client";
 
-export const client: prisma.PrismaClient;
-export as namespace prisma;
+declare global {
+	var prisma: PrismaClient;
+}
