@@ -20,9 +20,9 @@ import { generateMetadata } from "../layout";
 // Importation des composants.
 import { Separator } from "../components/ui/separator";
 
-const Header = lazy( () => import( "../components/header" ) );
 const UserMenu = lazy( () => import( "../components/user-menu" ) );
 const DataTable = lazy( () => import( "./components/data-table" ) );
+const Navigation = lazy( () => import( "../components/navigation" ) );
 
 // Déclaration des propriétés de la page.
 export const metadata: Metadata = {
@@ -135,19 +135,17 @@ export default async function Page( {
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			<header className="flex min-h-[4rem] flex-wrap justify-center gap-2 border-b p-4 max-md:flex-col">
-				<div className="align-center flex items-center gap-2 max-md:flex-col md:gap-4">
-					{/* Titre du site */}
-					<h1 className="text-xl font-semibold">
-						<Link href="/">💾 {meta.title as string}</Link>
-					</h1>
+			<header className="flex min-h-[4rem] flex-wrap items-center justify-center gap-y-4 border-b px-4 py-8 sm:gap-x-4 sm:py-4">
+				{/* Titre du site */}
+				<h1 className="text-2xl font-semibold max-sm:w-full max-sm:max-w-fit max-sm:overflow-hidden max-sm:text-ellipsis max-sm:whitespace-nowrap sm:text-xl">
+					<Link href="/">💾 {meta.title as string}</Link>
+				</h1>
 
-					{/* Éléments de navigation */}
-					<Header
-						theme={session.user.preferences.theme}
-						source={meta.source}
-					/>
-				</div>
+				{/* Navigation du site */}
+				<Navigation
+					theme={session.user.preferences.theme}
+					source={meta.source}
+				/>
 
 				{/* Menu utilisateur */}
 				<UserMenu session={session} />

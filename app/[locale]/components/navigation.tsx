@@ -6,17 +6,24 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Bell, User, Files, Palette, Cctv, Bug } from "lucide-react";
+import { Bug,
+	Bell,
+	User,
+	Cctv,
+	Files,
+	Palette,
+	Settings,
+	LayoutDashboard } from "lucide-react";
 
-import GitHubDark from "../../../public/assets/images/github-dark.png";
-import GitHubLight from "../../../public/assets/images/github-light.png";
-import { buttonVariants } from "./ui/button";
+import GitHubDark from "@/public/assets/images/github-dark.png";
+import GitHubLight from "@/public/assets/images/github-light.png";
 import { NavigationMenu,
 	NavigationMenuItem,
 	NavigationMenuLink,
 	NavigationMenuList,
 	NavigationMenuContent,
-	NavigationMenuTrigger } from "./ui/navigation-menu";
+	NavigationMenuTrigger,
+	navigationMenuTriggerStyle } from "./ui/navigation-menu";
 
 // Déclaration des routes de paramétrage.
 export const routes: {
@@ -100,18 +107,17 @@ export default function Header( {
 {
 	// Affichage du rendu HTML du composant.
 	return (
-		<NavigationMenu>
+		<NavigationMenu className="flex items-center max-md:flex-col">
 			<NavigationMenuList>
 				{/* Page d'accueil */}
 				<NavigationMenuItem>
 					<NavigationMenuLink asChild>
 						<Link
 							href="/dashboard"
-							className={buttonVariants( {
-								variant: "outline"
-							} )}
+							className={navigationMenuTriggerStyle()}
 						>
-							Tableau de bord
+							<LayoutDashboard className="h-5 w-5 md:hidden" />
+							<p className="hidden md:inline">Tableau de bord</p>
 						</Link>
 					</NavigationMenuLink>
 				</NavigationMenuItem>
@@ -122,7 +128,8 @@ export default function Header( {
 						id="settings"
 						aria-controls="settings"
 					>
-						Paramètres
+						<Settings className="h-5 w-5 md:hidden" />
+						<p className="hidden md:inline">Paramètres</p>
 					</NavigationMenuTrigger>
 
 					<NavigationMenuContent>

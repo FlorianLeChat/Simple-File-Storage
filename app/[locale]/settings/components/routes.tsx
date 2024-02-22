@@ -1,5 +1,5 @@
 //
-// Composant de navigation des paramètres.
+// Composant des routes vers les paramètres.
 //
 
 "use client";
@@ -9,10 +9,10 @@ import { merge } from "@/utilities/tailwind";
 import { Cookie } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-import { routes } from "../../components/header";
+import { routes } from "../../components/navigation";
 import { Button, buttonVariants } from "../../components/ui/button";
 
-export default function Navigation()
+export default function Routes()
 {
 	// Déclaration des variables d'état.
 	const pathname = usePathname();

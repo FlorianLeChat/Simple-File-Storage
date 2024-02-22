@@ -215,7 +215,7 @@ export default function UserMenu( { session }: { session: Session } )
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<nav className="flex items-center justify-center space-x-4 md:ml-auto">
+		<aside className="flex items-center justify-center space-x-4 sm:ml-auto">
 			{/* Notifications utilisateur */}
 			<Dialog>
 				<DialogTrigger
@@ -468,6 +468,6 @@ export default function UserMenu( { session }: { session: Session } )
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
-		</nav>
+		</aside>
 	);
 }
