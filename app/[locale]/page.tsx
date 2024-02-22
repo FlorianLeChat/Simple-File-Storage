@@ -46,9 +46,9 @@ export default async function Page( {
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			<header className="mb-auto flex items-center justify-between gap-2 p-4 max-sm:flex-col">
+			<header className="mb-auto flex items-center justify-between gap-4 p-4 max-sm:mt-4 max-sm:flex-col">
 				{/* Titre du site */}
-				<h1 className="text-2xl font-semibold">
+				<h1 className="text-2xl font-semibold max-sm:w-full max-sm:max-w-fit max-sm:overflow-hidden max-sm:text-ellipsis max-sm:whitespace-nowrap">
 					<Link href="/">💾 {meta.title as string}</Link>
 				</h1>
 
@@ -108,8 +108,8 @@ export default async function Page( {
 			</header>
 
 			{/* Contenu de la page */}
-			<section className="container mx-auto p-4 text-center">
-				<h2 className="bg-gradient-to-r bg-clip-text text-4xl font-bold tracking-tighter dark:from-white dark:to-gray-500 dark:text-transparent sm:text-5xl xl:text-6xl/none">
+			<section className="container mx-auto mb-4 p-4 text-center">
+				<h2 className="hyphens-auto bg-gradient-to-r bg-clip-text text-4xl font-bold tracking-tighter dark:from-white dark:to-gray-500 dark:text-transparent sm:text-5xl xl:text-6xl">
 					Découvrez nos fonctionnalités
 				</h2>
 
@@ -118,7 +118,7 @@ export default async function Page( {
 					confidentialité et protéger vos données.
 				</p>
 
-				<div className="grid gap-8 max-xl:mt-8 md:grid-cols-3 xl:mt-[5%]">
+				<div className="grid gap-4 max-xl:mt-8 md:grid-cols-3 md:gap-8 xl:mt-[5%]">
 					<article className="space-y-2 p-4">
 						<Lock className="mx-auto mb-2 h-6 w-6" />
 
