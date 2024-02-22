@@ -8,7 +8,7 @@ const schema = z.object( {
 	email: z.string().min( 10 ).max( 100 ).email(),
 
 	// Mot de passe.
-	password: z.string().min( 10 ).max( 60 ).or( z.literal( "" ) ),
+	password: z.string().min( 10 ).max( 50 ).or( z.literal( "" ) ),
 
 	// Se souvenir de moi.
 	remembered: z.boolean()
