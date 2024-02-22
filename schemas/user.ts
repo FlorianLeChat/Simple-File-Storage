@@ -18,7 +18,7 @@ const schema = z.object( {
 	email: z.string().min( 10 ).max( 100 ).email(),
 
 	// Mot de passe.
-	password: z.string().min( 10 ).max( 100 ).or( z.literal( "" ) ),
+	password: z.string().min( 10 ).max( 50 ).or( z.literal( "" ) ),
 
 	// Langue préférée.
 	language: z.enum( [ "en", "fr" ] ),
