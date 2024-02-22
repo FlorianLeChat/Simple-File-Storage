@@ -118,7 +118,7 @@ export default function Authentification()
 	// Affichage du rendu HTML du composant.
 	return (
 		<Tabs
-			className="flex w-full flex-col justify-center space-y-6 p-4 text-center sm:mx-auto sm:w-[500px]"
+			className="mb-4 flex w-full flex-col justify-center space-y-6 p-4 text-center sm:mx-auto sm:w-[500px]"
 			defaultValue="signUp"
 			onValueChange={() => form.reset()}
 		>
