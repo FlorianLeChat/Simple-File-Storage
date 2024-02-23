@@ -39,10 +39,10 @@ import { Dialog,
 	DialogClose,
 	DialogTitle,
 	DialogHeader,
-	DialogFooter,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
+import { buttonVariants } from "../../components/ui/button";
 import { DropdownMenu,
 	DropdownMenuItem,
 	DropdownMenuLabel,
@@ -58,7 +58,6 @@ import { AlertDialog,
 	AlertDialogHeader,
 	AlertDialogTrigger,
 	AlertDialogDescription } from "../../components/ui/alert-dialog";
-import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function RowActions( {
 	table,
@@ -68,31 +67,308 @@ export default function RowActions( {
 	row: Row<FileAttributes>;
 } )
 {
-	// Déclaration des constantes.
-	const model = table.getFilteredSelectedRowModel();
-	const count = Math.max( model.rows.length, 1 );
-	const states = table.options.meta as TableMeta<FileAttributes>;
-	const session = useSession();
-
 	// Déclaration des variables d'état.
 	const rename = useRef<HTMLButtonElement>( null );
 	const access = useRef<HTMLButtonElement>( null );
 	const [ password, setPassword ] = useState( "" );
 
-	// Filtrage des données d'une ou plusieurs lignes.
-	const rowData = states.files.filter( ( file ) => file.uuid === row.id );
-	const rowShares = rowData[ 0 ].shares.find(
+	// Déclaration des constantes.
+	const states = table.options.meta as TableMeta<FileAttributes>;
+	const session = useSession();
+	const dataFiles = states.files.filter( ( file ) => file.uuid === row.id );
+	const selectedRows = table.getFilteredSelectedRowModel().rows;
+	const selectedCount = Math.max( selectedRows.length, 1 );
+	const selectedFiles =
+		selectedRows.length > 1
+			? states.files.filter( ( file ) => selectedRows.find( ( value ) => file.uuid === value.id ) )
+			: dataFiles;
+	const fileShares = selectedFiles[ 0 ].shares.find(
 		( share ) => share.user.uuid === session.data?.user.id
 	);
-	const selectedData =
-		model.rows.length > 1
-			? states.files.filter( ( file ) => model.rows.find( ( value ) => file.uuid === value.id ) )
-			: rowData;
+	const isFileOwner = fileShares ? fileShares.status === "write" : true;
 
-	// Récupération de l'état d'administration du fichier.
-	//  Note : si l'utilisateur est introuvable dans les partages,
-	//   alors cela signifie qu'il est le propriétaire du fichier.
-	const owner = rowShares ? rowShares.status === "write" : true;
+	// Soumission de la requête de publication d'un fichier.
+	const submitMakePublic = async () =>
+	{
+		// Activation de l'état de chargement.
+		states.setLoading( true );
+
+		// Création d'un formulaire de données.
+		const form = new FormData();
+		form.append( "status", "public" );
+
+		selectedFiles.forEach( ( file ) =>
+		{
+			form.append( "fileId", file.uuid );
+		} );
+
+		// Envoi de la requête au serveur et
+		//  traitement de la réponse.
+		const files = ( await serverAction( changeFileStatus, form ) ) as string[];
+
+		// Fin de l'état de chargement.
+		states.setLoading( false );
+
+		if ( files.length > 0 )
+		{
+			// Filtrage des fichiers partagés.
+			const processed = selectedFiles.filter( ( file ) => files.includes( file.uuid ) );
+			const sharedFiles = processed.filter(
+				( file ) => file.owner.id !== session.data?.user.id
+			);
+
+			// Mise à jour de l'état des fichiers.
+			processed.forEach( ( file ) =>
+			{
+				file.status = "public";
+			} );
+
+			states.setFiles(
+				states.files.filter(
+					( file ) => !sharedFiles.find( ( value ) => value.uuid === file.uuid )
+				)
+			);
+
+			if ( files.length === selectedFiles.length )
+			{
+				// Envoi d'une notification de succès (mise à jour complète).
+				toast.success( "form.info.action_success", {
+					description: "form.info.status_updated"
+				} );
+			}
+			else
+			{
+				// Envoi d'une notification d'avertissement (mise à jour partielle).
+				toast.warning( "form.info.action_partial", {
+					description: "form.info.status_updated"
+				} );
+			}
+		}
+		else
+		{
+			// Envoi d'une notification d'erreur.
+			toast.error( "form.errors.file_deleted", {
+				description: "form.errors.server_error"
+			} );
+		}
+	};
+
+	// Soumission de la requête de privatisation d'un fichier.
+	const submitMakePrivate = async () =>
+	{
+		// Activation de l'état de chargement.
+		states.setLoading( true );
+
+		// Création d'un formulaire de données.
+		const form = new FormData();
+		form.append( "status", "private" );
+
+		selectedFiles.forEach( ( file ) =>
+		{
+			form.append( "fileId", file.uuid );
+		} );
+
+		// Envoi de la requête au serveur et
+		//  traitement de la réponse.
+		const files = ( await serverAction( changeFileStatus, form ) ) as string[];
+
+		// Fin de l'état de chargement.
+		states.setLoading( false );
+
+		if ( files.length > 0 )
+		{
+			// Mise à jour de l'état des fichiers.
+			selectedFiles
+				.filter( ( file ) => files.includes( file.uuid ) )
+				.forEach( ( file ) =>
+				{
+					file.status = "private";
+				} );
+
+			states.setFiles( [ ...states.files ] );
+
+			if ( files.length === selectedFiles.length )
+			{
+				// Envoi d'une notification de succès (mise à jour complète).
+				toast.success( "form.info.action_success", {
+					description: "form.info.status_updated"
+				} );
+			}
+			else
+			{
+				// Envoi d'une notification d'avertissement (mise à jour partielle).
+				toast.warning( "form.info.action_partial", {
+					description: "form.info.status_updated"
+				} );
+			}
+		}
+		else
+		{
+			// Envoi d'une notification d'erreur.
+			toast.error( "form.errors.file_deleted", {
+				description: "form.errors.server_error"
+			} );
+		}
+	};
+
+	// Soumission de la requête de renommage d'un fichier.
+	const submitFileRename = async () =>
+	{
+		// Activation de l'état de chargement.
+		states.setLoading( true );
+
+		// Création d'un formulaire de données.
+		const form = new FormData();
+		form.append( "name", dataFiles[ 0 ].name );
+
+		dataFiles.forEach( ( file ) =>
+		{
+			form.append( "fileId", file.uuid );
+		} );
+
+		// Envoi de la requête au serveur et
+		//  traitement de la réponse.
+		const files = ( await serverAction( renameFile, form ) ) as string[];
+
+		// Fin de l'état de chargement.
+		states.setLoading( false );
+
+		if ( files.length > 0 )
+		{
+			// Renommage des fichiers traités par le serveur.
+			states.setFiles( [ ...states.files ] );
+
+			if ( files.length === selectedFiles.length )
+			{
+				// Envoi d'une notification de succès (mise à jour complète).
+				toast.success( "form.info.action_success", {
+					description: "form.info.name_updated"
+				} );
+			}
+			else
+			{
+				// Envoi d'une notification d'avertissement (mise à jour partielle).
+				toast.warning( "form.info.action_partial", {
+					description: "form.info.name_updated"
+				} );
+			}
+		}
+		else
+		{
+			// Envoi d'une notification d'erreur.
+			toast.error( "form.errors.file_deleted", {
+				description: "form.errors.server_error"
+			} );
+		}
+	};
+
+	// Soumission de la requête de suppression d'un partage.
+	const submitRemoveShare = async () =>
+	{
+		// Activation de l'état de chargement.
+		states.setLoading( true );
+
+		// Création d'un formulaire de données.
+		const form = new FormData();
+		selectedFiles.forEach( ( file ) =>
+		{
+			form.append( "fileId", file.uuid );
+		} );
+
+		// Envoi de la requête au serveur et
+		//  traitement de la réponse.
+		const files = ( await serverAction( deleteFile, form ) ) as string[];
+
+		// Fin de l'état de chargement.
+		states.setLoading( false );
+
+		if ( files.length > 0 )
+		{
+			// Suppression des fichiers traités
+			//  par le serveur dans la liste.
+			const newFiles = states.files.filter(
+				( file ) => !files.find( ( value ) => value === file.uuid )
+			);
+
+			states.setFiles( newFiles );
+
+			if ( files.length === selectedFiles.length )
+			{
+				// Envoi d'une notification de succès (mise à jour complète).
+				toast.success( "form.info.action_success", {
+					description: "form.info.file_deleted"
+				} );
+			}
+			else
+			{
+				// Envoi d'une notification d'avertissement (mise à jour partielle).
+				toast.warning( "form.info.action_partial", {
+					description: "form.info.file_deleted"
+				} );
+			}
+		}
+		else
+		{
+			// Envoi d'une notification d'erreur.
+			toast.error( "form.errors.file_deleted", {
+				description: "form.errors.server_error"
+			} );
+		}
+	};
+
+	// Soumission de la requête de suppression de tous les partages.
+	const submitRemoveAllShares = async () =>
+	{
+		// Activation de l'état de chargement.
+		states.setLoading( true );
+
+		// Création d'un formulaire de données.
+		const form = new FormData();
+		selectedFiles.forEach( ( file ) =>
+		{
+			form.append( "fileId", file.uuid );
+		} );
+
+		// Envoi de la requête au serveur et
+		//  traitement de la réponse.
+		const state = await serverAction( deleteSharedUser, form );
+
+		// Fin de l'état de chargement.
+		states.setLoading( false );
+
+		if ( state )
+		{
+			// Filtrage des fichiers partagés.
+			const sharedFiles = selectedFiles.filter(
+				( value ) => value.owner.id !== session.data?.user.id
+			);
+
+			// Mise à jour de l'état des fichiers.
+			selectedFiles.forEach( ( file ) =>
+			{
+				file.status = "private";
+				file.shares = [];
+			} );
+
+			states.setFiles(
+				states.files.filter(
+					( file ) => !sharedFiles.find( ( value ) => value.uuid === file.uuid )
+				)
+			);
+
+			// Envoi d'une notification de succès.
+			toast.success( "form.info.action_success", {
+				description: "form.info.sharing_updated"
+			} );
+		}
+		else
+		{
+			// Envoi d'une notification d'erreur.
+			toast.error( "form.errors.file_deleted", {
+				description: "form.errors.server_error"
+			} );
+		}
+	};
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -125,7 +401,7 @@ export default function RowActions( {
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
-							disabled={!owner}
+							disabled={!isFileOwner}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<Globe className="mr-2 h-4 w-4" />
@@ -137,8 +413,8 @@ export default function RowActions( {
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								<Globe className="mr-2 inline h-5 w-5 align-text-top" />
-								Êtes-vous sûr de vouloir rendre public {count}{" "}
-								fichier(s) ?
+								Êtes-vous sûr de vouloir rendre public{" "}
+								{selectedCount} fichier(s) ?
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>
@@ -158,98 +434,7 @@ export default function RowActions( {
 								Annuler
 							</AlertDialogCancel>
 
-							<AlertDialogAction
-								onClick={async () =>
-								{
-									// Activation de l'état de chargement.
-									states.setLoading( true );
-
-									// Création d'un formulaire de données.
-									const form = new FormData();
-									selectedData.forEach( ( file ) =>
-									{
-										form.append( "fileId", file.uuid );
-									} );
-									form.append( "status", "public" );
-
-									// Envoi de la requête au serveur et
-									//  traitement de la réponse.
-									const files = ( await serverAction(
-										changeFileStatus,
-										form
-									) ) as string[];
-
-									if ( files.length > 0 )
-									{
-										// Filtrage des fichiers partagés.
-										const processed = selectedData.filter(
-											( file ) => files.includes( file.uuid )
-										);
-										const sharedFiles = processed.filter(
-											( file ) => file.owner.id
-												!== session.data?.user.id
-										);
-
-										// Mise à jour de l'état des fichiers.
-										processed.forEach( ( file ) =>
-										{
-											file.status = "public";
-										} );
-
-										states.setFiles(
-											states.files.filter(
-												( file ) => !sharedFiles.find(
-													( value ) => value.uuid
-														=== file.uuid
-												)
-											)
-										);
-									}
-
-									// Fin de l'état de chargement.
-									states.setLoading( false );
-
-									// Envoi d'une notification.
-									if ( files.length > 0 )
-									{
-										if (
-											files.length === selectedData.length
-										)
-										{
-											// Mise à jour complète.
-											toast.success(
-												"form.info.action_success",
-												{
-													description:
-														"form.info.status_updated"
-												}
-											);
-										}
-										else
-										{
-											// Mise à jour partielle.
-											toast.warning(
-												"form.info.action_partial",
-												{
-													description:
-														"form.info.status_updated"
-												}
-											);
-										}
-									}
-									else
-									{
-										// Erreur dans la mise à jour.
-										toast.error(
-											"form.errors.file_deleted",
-											{
-												description:
-													"form.errors.server_error"
-											}
-										);
-									}
-								}}
-							>
+							<AlertDialogAction onClick={submitMakePublic}>
 								<Check className="mr-2 h-4 w-4" />
 								Confirmer
 							</AlertDialogAction>
@@ -262,7 +447,7 @@ export default function RowActions( {
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
-							disabled={rowData[ 0 ].status === "shared"}
+							disabled={dataFiles[ 0 ].status === "shared"}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<FolderLock className="mr-2 h-4 w-4" />
@@ -274,8 +459,8 @@ export default function RowActions( {
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								<FolderLock className="mr-2 inline h-5 w-5 align-text-top" />
-								Êtes-vous sûr de vouloir rendre privé {count}{" "}
-								fichier(s) ?
+								Êtes-vous sûr de vouloir rendre privé{" "}
+								{selectedCount} fichier(s) ?
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>
@@ -296,84 +481,7 @@ export default function RowActions( {
 								Annuler
 							</AlertDialogCancel>
 
-							<AlertDialogAction
-								onClick={async () =>
-								{
-									// Activation de l'état de chargement.
-									states.setLoading( true );
-
-									// Création d'un formulaire de données.
-									const form = new FormData();
-									selectedData.forEach( ( file ) =>
-									{
-										form.append( "fileId", file.uuid );
-									} );
-									form.append( "status", "private" );
-
-									// Envoi de la requête au serveur et
-									//  traitement de la réponse.
-									const files = ( await serverAction(
-										changeFileStatus,
-										form
-									) ) as string[];
-
-									if ( files.length > 0 )
-									{
-										// Mise à jour de l'état des fichiers.
-										selectedData
-											.filter( ( file ) => files.includes( file.uuid ) )
-											.forEach( ( file ) =>
-											{
-												file.status = "private";
-											} );
-
-										states.setFiles( [ ...states.files ] );
-									}
-
-									// Fin de l'état de chargement.
-									states.setLoading( false );
-
-									// Envoi d'une notification.
-									if ( files.length > 0 )
-									{
-										if (
-											files.length === selectedData.length
-										)
-										{
-											// Mise à jour complète.
-											toast.success(
-												"form.info.action_success",
-												{
-													description:
-														"form.info.status_updated"
-												}
-											);
-										}
-										else
-										{
-											// Mise à jour partielle.
-											toast.warning(
-												"form.info.action_partial",
-												{
-													description:
-														"form.info.status_updated"
-												}
-											);
-										}
-									}
-									else
-									{
-										// Erreur dans la mise à jour.
-										toast.error(
-											"form.errors.file_deleted",
-											{
-												description:
-													"form.errors.server_error"
-											}
-										);
-									}
-								}}
-							>
+							<AlertDialogAction onClick={submitMakePrivate}>
 								<Check className="mr-2 h-4 w-4" />
 								Confirmer
 							</AlertDialogAction>
@@ -388,7 +496,7 @@ export default function RowActions( {
 					<DialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
-							disabled={!owner}
+							disabled={!isFileOwner}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<Share2 className="mr-2 h-4 w-4" />
@@ -409,7 +517,7 @@ export default function RowActions( {
 							</DialogDescription>
 						</DialogHeader>
 
-						<ShareManager file={rowData[ 0 ]} states={states} />
+						<ShareManager file={dataFiles[ 0 ]} states={states} />
 					</DialogContent>
 				</Dialog>
 
@@ -418,7 +526,7 @@ export default function RowActions( {
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
-							disabled={!owner}
+							disabled={!isFileOwner}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<UserX className="mr-2 h-4 w-4" />
@@ -431,7 +539,7 @@ export default function RowActions( {
 							<AlertDialogTitle>
 								<UserX className="mr-2 inline h-5 w-5 align-text-top" />
 								Êtes-vous sûr de vouloir supprimer tous les
-								partages de {count} fichier(s) ?
+								partages de {selectedCount} fichier(s) ?
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>
@@ -447,77 +555,7 @@ export default function RowActions( {
 								Annuler
 							</AlertDialogCancel>
 
-							<AlertDialogAction
-								onClick={async () =>
-								{
-									// Activation de l'état de chargement.
-									states.setLoading( true );
-
-									// Création d'un formulaire de données.
-									const form = new FormData();
-									selectedData.forEach( ( file ) =>
-									{
-										form.append( "fileId", file.uuid );
-									} );
-
-									// Envoi de la requête au serveur et
-									//  traitement de la réponse.
-									const state = ( await serverAction(
-										deleteSharedUser,
-										form
-									) ) as boolean;
-
-									if ( state )
-									{
-										// Filtrage des fichiers partagés.
-										const sharedFiles = selectedData.filter(
-											( value ) => value.owner.id
-												!== session.data?.user.id
-										);
-
-										// Mise à jour de l'état des fichiers.
-										selectedData.forEach( ( file ) =>
-										{
-											file.status = "private";
-											file.shares = [];
-										} );
-
-										states.setFiles(
-											states.files.filter(
-												( file ) => !sharedFiles.find(
-													( value ) => value.uuid
-														=== file.uuid
-												)
-											)
-										);
-									}
-
-									// Fin de l'état de chargement.
-									states.setLoading( false );
-
-									// Envoi d'une notification.
-									if ( state )
-									{
-										toast.success(
-											"form.info.action_success",
-											{
-												description:
-													"form.info.sharing_updated"
-											}
-										);
-									}
-									else
-									{
-										toast.error(
-											"form.errors.file_deleted",
-											{
-												description:
-													"form.errors.server_error"
-											}
-										);
-									}
-								}}
-							>
+							<AlertDialogAction onClick={submitRemoveAllShares}>
 								<Check className="mr-2 h-4 w-4" />
 								Confirmer
 							</AlertDialogAction>
@@ -532,7 +570,7 @@ export default function RowActions( {
 					<DialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
-							disabled={!owner}
+							disabled={!isFileOwner}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<TextCursorInput className="mr-2 h-4 w-4" />
@@ -544,8 +582,8 @@ export default function RowActions( {
 						<DialogHeader>
 							<DialogTitle>
 								<TextCursorInput className="mr-2 inline h-5 w-5 align-text-top" />
-								Quel sera le nouveau nom de {count} ressource(s)
-								?
+								Quel sera le nouveau nom de {selectedCount}{" "}
+								ressource(s) ?
 							</DialogTitle>
 
 							<DialogDescription>
@@ -561,7 +599,7 @@ export default function RowActions( {
 							onInput={( event ) =>
 							{
 								// Mise à jour de l'entrée utilisateur.
-								selectedData.forEach( ( file ) =>
+								selectedFiles.forEach( ( file ) =>
 								{
 									file.name = event.currentTarget.value;
 								} );
@@ -579,111 +617,33 @@ export default function RowActions( {
 							spellCheck="false"
 							placeholder="john-doe"
 							autoComplete="off"
-							defaultValue={rowData[ 0 ].name}
+							defaultValue={dataFiles[ 0 ].name}
 							autoCapitalize="off"
 						/>
 
-						<DialogFooter>
-							<DialogClose asChild>
-								<Button
-									ref={rename}
-									onClick={async () =>
-									{
-										// Activation de l'état de chargement.
-										states.setLoading( true );
-
-										// Création d'un formulaire de données.
-										const form = new FormData();
-										selectedData.forEach( ( file ) =>
-										{
-											form.append( "fileId", file.uuid );
-										} );
-										form.append(
-											"name",
-											selectedData[ 0 ].name
-										);
-
-										// Envoi de la requête au serveur et
-										//  traitement de la réponse.
-										const files = ( await serverAction(
-											renameFile,
-											form
-										) ) as string[];
-
-										if ( files.length > 0 )
-										{
-											// Renommage des fichiers traités par le serveur.
-											states.setFiles( [ ...states.files ] );
-										}
-
-										// Fin de l'état de chargement.
-										states.setLoading( false );
-
-										// Envoi d'une notification.
-										if ( files.length > 0 )
-										{
-											if (
-												files.length
-												=== selectedData.length
-											)
-											{
-												// Mise à jour complète.
-												toast.success(
-													"form.info.action_success",
-													{
-														description:
-															"form.info.name_updated"
-													}
-												);
-											}
-											else
-											{
-												// Mise à jour partielle.
-												toast.warning(
-													"form.info.action_partial",
-													{
-														description:
-															"form.info.name_updated"
-													}
-												);
-											}
-										}
-										else
-										{
-											// Erreur dans la mise à jour.
-											toast.error(
-												"form.errors.file_deleted",
-												{
-													description:
-														"form.errors.server_error"
-												}
-											);
-										}
-									}}
-									disabled={
-										states.loading || !selectedData[ 0 ].name
-									}
-									className="max-sm:w-full"
-								>
-									{states.loading ? (
-										<>
-											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-											Mise à jour...
-										</>
-									) : (
-										<>
-											<RefreshCw className="mr-2 h-4 w-4" />
-											Mettre à jour
-										</>
-									)}
-								</Button>
-							</DialogClose>
-						</DialogFooter>
+						<DialogClose
+							ref={rename}
+							onClick={submitFileRename}
+							disabled={states.loading || !dataFiles[ 0 ].name}
+							className={buttonVariants()}
+						>
+							{states.loading ? (
+								<>
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									Mise à jour...
+								</>
+							) : (
+								<>
+									<RefreshCw className="mr-2 h-4 w-4" />
+									Mettre à jour
+								</>
+							)}
+						</DialogClose>
 					</DialogContent>
 				</Dialog>
 
 				{/* Accès à la ressource */}
-				{rowData[ 0 ].versions[ 0 ].encrypted ? (
+				{dataFiles[ 0 ].versions[ 0 ].encrypted ? (
 					<Dialog>
 						<DialogTrigger asChild>
 							<DropdownMenuItem
@@ -730,12 +690,7 @@ export default function RowActions( {
 								onKeyDown={( event ) =>
 								{
 									// Soumission du formulaire par clavier.
-									const { key } = event;
-
-									if (
-										key === "Enter"
-										|| key === "NumpadEnter"
-									)
+									if ( event.key.endsWith( "Enter" ) )
 									{
 										access.current?.click();
 									}
@@ -746,34 +701,32 @@ export default function RowActions( {
 								autoCapitalize="off"
 							/>
 
-							<DialogFooter>
-								<Button
-									ref={access}
-									onClick={() =>
-									{
-										// Ouverture de la ressource dans un nouvel onglet.
-										window.open(
-											new URL(
-												`${ rowData[ 0 ].path }?key=${ password }`,
-												window.location.href
-											).href,
-											"_blank",
-											"noopener,noreferrer"
-										);
-									}}
-									disabled={states.loading || !password}
-									className="max-sm:w-full"
-								>
-									<ArrowUpRight className="mr-2 h-4 w-4" />
-									Accéder
-								</Button>
-							</DialogFooter>
+							<DialogClose
+								ref={access}
+								onClick={() =>
+								{
+									// Ouverture de la ressource dans un nouvel onglet.
+									window.open(
+										new URL(
+											`${ dataFiles[ 0 ].path }?key=${ password }`,
+											window.location.href
+										).href,
+										"_blank",
+										"noopener,noreferrer"
+									);
+								}}
+								disabled={states.loading || !password}
+								className={buttonVariants()}
+							>
+								<ArrowUpRight className="mr-2 h-4 w-4" />
+								Accéder
+							</DialogClose>
 						</DialogContent>
 					</Dialog>
 				) : (
 					<a
 						rel="noopener noreferrer"
-						href={rowData[ 0 ].path}
+						href={dataFiles[ 0 ].path}
 						target="_blank"
 					>
 						<DropdownMenuItem>
@@ -791,7 +744,7 @@ export default function RowActions( {
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
 							disabled={
-								!owner
+								!isFileOwner
 								|| !session.data?.user.preferences.versions
 							}
 							onSelect={( event ) => event.preventDefault()}
@@ -814,14 +767,15 @@ export default function RowActions( {
 							</DialogDescription>
 						</DialogHeader>
 
-						<FileHistory file={rowData[ 0 ]} states={states} />
+						<FileHistory file={dataFiles[ 0 ]} states={states} />
 					</DialogContent>
 				</Dialog>
 
 				{/* Copie du lien d'accès */}
 				<DropdownMenuItem
 					onClick={() => navigator.clipboard.writeText(
-						new URL( rowData[ 0 ].path, window.location.href ).href
+						new URL( dataFiles[ 0 ].path, window.location.href )
+							.href
 					)}
 				>
 					<ClipboardCopy className="mr-2 h-4 w-4" />
@@ -833,7 +787,7 @@ export default function RowActions( {
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
-							disabled={!owner}
+							disabled={!isFileOwner}
 							onSelect={( event ) => event.preventDefault()}
 							className="text-destructive"
 						>
@@ -847,8 +801,8 @@ export default function RowActions( {
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								<Trash className="mr-2 inline h-5 w-5 align-text-top" />
-								Êtes-vous sûr de vouloir supprimer {count}{" "}
-								fichier(s) ?
+								Êtes-vous sûr de vouloir supprimer{" "}
+								{selectedCount} fichier(s) ?
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>
@@ -864,83 +818,7 @@ export default function RowActions( {
 								Annuler
 							</AlertDialogCancel>
 
-							<AlertDialogAction
-								onClick={async () =>
-								{
-									// Activation de l'état de chargement.
-									states.setLoading( true );
-
-									// Création d'un formulaire de données.
-									const form = new FormData();
-									selectedData.forEach( ( file ) =>
-									{
-										form.append( "fileId", file.uuid );
-									} );
-
-									// Envoi de la requête au serveur et
-									//  traitement de la réponse.
-									const files = ( await serverAction(
-										deleteFile,
-										form
-									) ) as string[];
-
-									if ( files.length > 0 )
-									{
-										// Suppression des fichiers traités
-										//  par le serveur dans la liste.
-										const newFiles = states.files.filter(
-											( file ) => !files.find(
-												( value ) => value === file.uuid
-											)
-										);
-
-										states.setFiles( newFiles );
-									}
-
-									// Fin de l'état de chargement.
-									states.setLoading( false );
-
-									// Envoi d'une notification.
-									if ( files.length > 0 )
-									{
-										if (
-											files.length === selectedData.length
-										)
-										{
-											// Mise à jour complète.
-											toast.success(
-												"form.info.action_success",
-												{
-													description:
-														"form.info.file_deleted"
-												}
-											);
-										}
-										else
-										{
-											// Mise à jour partielle.
-											toast.warning(
-												"form.info.action_partial",
-												{
-													description:
-														"form.info.file_deleted"
-												}
-											);
-										}
-									}
-									else
-									{
-										// Erreur dans la mise à jour.
-										toast.error(
-											"form.errors.file_deleted",
-											{
-												description:
-													"form.errors.server_error"
-											}
-										);
-									}
-								}}
-							>
+							<AlertDialogAction onClick={submitRemoveShare}>
 								<Check className="mr-2 h-4 w-4" />
 								Confirmer
 							</AlertDialogAction>
