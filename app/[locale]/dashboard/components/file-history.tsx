@@ -5,6 +5,7 @@
 "use client";
 
 import { toast } from "sonner";
+import { merge } from "@/utilities/tailwind";
 import serverAction from "@/utilities/recaptcha";
 import { formatSize } from "@/utilities/react-table";
 import type { TableMeta } from "@tanstack/react-table";
@@ -18,7 +19,6 @@ import { ScrollArea } from "../../components/ui/scroll-area";
 import { Dialog,
 	DialogTitle,
 	DialogHeader,
-	DialogFooter,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
@@ -42,25 +42,78 @@ export default function FileHistory( {
 	states: TableMeta<FileAttributes>;
 } )
 {
-	// Déclaration des constantes.
-	const count = file.versions.length ?? 0;
-	const access = useRef<HTMLButtonElement>( null );
-
 	// Déclaration des variables d'état.
 	const [ password, setPassword ] = useState( "" );
 	const [ identifier, setIdentifier ] = useState( "" );
 
+	// Déclaration des constantes.
+	const count = file.versions.length ?? 0;
+	const access = useRef<HTMLButtonElement>( null );
+
+	// Soumission de la restauration de la version.
+	const submitRestoring = async () =>
+	{
+		// Activation de l'état de chargement.
+		states.setLoading( true );
+
+		// Création d'un formulaire de données.
+		const form = new FormData();
+		form.append( "fileId", file.uuid );
+		form.append( "versionId", identifier );
+
+		// Envoi de la requête au serveur et
+		//  attente de la réponse.
+		const data = ( await serverAction( restoreVersion, form ) ) as string;
+
+		if ( data )
+		{
+			// Sélection de la version sélectionnée
+			//  pour être restaurée.
+			const selectedVersion = file.versions.find(
+				( value ) => value.uuid === identifier
+			);
+
+			if ( !selectedVersion )
+			{
+				return;
+			}
+
+			// Copie et modification de l'identifiant
+			//  de la version sélectionnée.
+			const newVersion = {
+				...selectedVersion
+			};
+			newVersion.uuid = data;
+
+			// Ajout de la nouvelle version à la liste
+			//  des versions du fichier.
+			file.versions.unshift( newVersion );
+
+			// Mise à jour de la liste des fichiers.
+			states.setFiles( states.files );
+		}
+
+		// Fin de l'état de chargement.
+		states.setLoading( false );
+
+		// Envoi d'une notification.
+		if ( data )
+		{
+			toast.success( "form.info.action_success", {
+				description: "form.info.version_restored"
+			} );
+		}
+		else
+		{
+			toast.error( "form.errors.action_failed", {
+				description: "form.errors.server_error"
+			} );
+		}
+	};
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<ScrollArea className="h-72 rounded-md border">
-			{/* Aucune version précédente */}
-			{count === 0 && (
-				<p className="inline-block p-4 text-sm text-muted-foreground">
-					Aucune révision précédente n&lsquo;est disponible pour ce
-					fichier.
-				</p>
-			)}
-
 			{/* Liste des révisions */}
 			<ul className="p-4">
 				{file.versions.map( ( version, index ) =>
@@ -94,7 +147,15 @@ export default function FileHistory( {
 									? "actuelle"
 									: ( index === count - 1 && "initiale" )
 										|| "antérieure"}{" "}
-								du {version.date.toLocaleString()}
+								du{" "}
+								{new Intl.DateTimeFormat( undefined, {
+									year: "numeric",
+									month: "long",
+									day: "numeric",
+									hour: "numeric",
+									minute: "numeric",
+									second: "numeric"
+								} ).format( version.date )}
 							</h3>
 
 							{/* Taille et différence de la révision */}
@@ -110,249 +171,161 @@ export default function FileHistory( {
 									: offset}
 							</p>
 
-							{/* Actions sur la révision */}
-							<div className="my-2 flex items-center gap-2">
-								{/* Accès au fichier */}
-								{version.encrypted ? (
-									<Dialog>
-										<DialogTrigger
-											className={buttonVariants()}
-										>
-											<ArrowUpRight className="mr-2 h-4 w-4" />
-											Accéder
-										</DialogTrigger>
+							{/* Saut de ligne */}
+							<br />
 
-										<DialogContent>
-											<DialogHeader>
-												<DialogTitle>
-													<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
-													Veuillez saisir la clé de
-													déchiffrement.
-												</DialogTitle>
-
-												<DialogDescription>
-													La version de ce fichier est
-													chiffrée par une clé que le
-													serveur ne possède pas. Pour
-													accéder à la ressource,
-													veuillez saisir la clé de
-													déchiffrement qui vous a été
-													fournie lors du
-													téléversement de cette
-													version.{" "}
-													<strong>
-														En cas de perte, vous ne
-														pouvez plus accéder à
-														cette version. Si
-														c&lsquo;est le cas,
-														restaurez une version
-														antérieure ou supprimez
-														le fichier afin de le
-														téléverser à nouveau.
-													</strong>
-												</DialogDescription>
-											</DialogHeader>
-
-											<Input
-												type="text"
-												onInput={( event ) =>
-												{
-													// Mise à jour de l'entrée utilisateur.
-													setPassword(
-														event.currentTarget
-															.value
-													);
-												}}
-												onKeyDown={( event ) =>
-												{
-													// Soumission du formulaire par clavier.
-													const { key } = event;
-
-													if (
-														key === "Enter"
-														|| key === "NumpadEnter"
-													)
-													{
-														access.current?.click();
-													}
-												}}
-												spellCheck="false"
-												placeholder="your_key"
-												autoComplete="off"
-												autoCapitalize="off"
-											/>
-
-											<DialogFooter>
-												<Button
-													ref={access}
-													onClick={() =>
-													{
-														// Ouverture de la version dans un nouvel onglet.
-														window.open(
-															new URL(
-																`${ version.path }&key=${ password }`,
-																window.location.href
-															).href,
-															"_blank",
-															"noopener,noreferrer"
-														);
-													}}
-													disabled={
-														states.loading
-														|| !password
-													}
-													className="max-sm:w-full"
-												>
-													<ArrowUpRight className="mr-2 h-4 w-4" />
-													Accéder
-												</Button>
-											</DialogFooter>
-										</DialogContent>
-									</Dialog>
-								) : (
-									<a
-										rel="noreferrer noopener"
-										href={version.path}
-										target="_blank"
-										className={buttonVariants()}
+							{/* Accès au fichier */}
+							{version.encrypted ? (
+								<Dialog>
+									<DialogTrigger
+										className={merge(
+											buttonVariants(),
+											"mr-2 mt-2"
+										)}
 									>
 										<ArrowUpRight className="mr-2 h-4 w-4" />
 										Accéder
-									</a>
-								)}
+									</DialogTrigger>
 
-								{/* Restauration de la version */}
-								<AlertDialog>
-									<AlertDialogTrigger
-										disabled={index === 0 || states.loading}
-										className={buttonVariants( {
-											variant: "secondary"
-										} )}
-										onClick={() => setIdentifier( version.uuid )}
-									>
-										<History className="mr-2 h-4 w-4" />
-										Restaurer
-									</AlertDialogTrigger>
+									<DialogContent>
+										<DialogHeader>
+											<DialogTitle>
+												<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
+												Veuillez saisir la clé de
+												déchiffrement.
+											</DialogTitle>
 
-									<AlertDialogContent>
-										<AlertDialogHeader>
-											<AlertDialogTitle>
-												<History className="mr-2 inline h-5 w-5 align-text-top" />
-												Êtes-vous sûr de vouloir
-												restaurer cette version du
-												fichier ?
-											</AlertDialogTitle>
+											<DialogDescription>
+												La version de ce fichier est
+												chiffrée par une clé que le
+												serveur ne possède pas. Pour
+												accéder à la ressource, veuillez
+												saisir la clé de déchiffrement
+												qui vous a été fournie lors du
+												téléversement de cette version.{" "}
+												<strong>
+													En cas de perte, vous ne
+													pouvez plus accéder à cette
+													version. Si c&lsquo;est le
+													cas, restaurez une version
+													antérieure ou supprimez le
+													fichier afin de le
+													téléverser à nouveau.
+												</strong>
+											</DialogDescription>
+										</DialogHeader>
 
-											<AlertDialogDescription>
-												La version actuelle du fichier
-												sera sauvegardée sous forme
-												d&lsquo;une nouvelle version et
-												remplacée par la version
-												sélectionnée.
-											</AlertDialogDescription>
-										</AlertDialogHeader>
-
-										<AlertDialogFooter>
-											<AlertDialogCancel
-												disabled={states.loading}
-											>
-												<Ban className="mr-2 h-4 w-4" />
-												Annuler
-											</AlertDialogCancel>
-
-											<AlertDialogAction
-												onClick={async () =>
+										<Input
+											type="text"
+											onInput={( event ) =>
+											{
+												// Mise à jour de l'entrée utilisateur.
+												setPassword(
+													event.currentTarget.value
+												);
+											}}
+											onKeyDown={( event ) =>
+											{
+												// Soumission du formulaire par clavier.
+												if (
+													event.key.endsWith( "Enter" )
+												)
 												{
-													// Activation de l'état de chargement.
-													states.setLoading( true );
+													access.current?.click();
+												}
+											}}
+											spellCheck="false"
+											placeholder="your_key"
+											autoComplete="off"
+											autoCapitalize="off"
+										/>
 
-													// Création d'un formulaire de données.
-													const form = new FormData();
-													form.append(
-														"fileId",
-														file.uuid
-													);
-													form.append(
-														"versionId",
-														identifier
-													);
+										<Button
+											ref={access}
+											onClick={() =>
+											{
+												// Ouverture de la version dans un nouvel onglet.
+												window.open(
+													new URL(
+														`${ version.path }&key=${ password }`,
+														window.location.href
+													).href,
+													"_blank",
+													"noopener,noreferrer"
+												);
+											}}
+											disabled={
+												states.loading || !password
+											}
+											className="max-sm:w-full"
+										>
+											<ArrowUpRight className="mr-2 h-4 w-4" />
+											Accéder
+										</Button>
+									</DialogContent>
+								</Dialog>
+							) : (
+								<a
+									rel="noreferrer noopener"
+									href={version.path}
+									target="_blank"
+									className={merge(
+										buttonVariants(),
+										"mr-2 mt-2"
+									)}
+								>
+									<ArrowUpRight className="mr-2 h-4 w-4" />
+									Accéder
+								</a>
+							)}
 
-													// Envoi de la requête au serveur et
-													//  attente de la réponse.
-													const data =
-														( await serverAction(
-															restoreVersion,
-															form
-														) ) as string;
+							{/* Restauration de la version */}
+							<AlertDialog>
+								<AlertDialogTrigger
+									onClick={() => setIdentifier( version.uuid )}
+									disabled={index === 0 || states.loading}
+									className={buttonVariants( {
+										variant: "secondary"
+									} )}
+								>
+									<History className="mr-2 h-4 w-4" />
+									Restaurer
+								</AlertDialogTrigger>
 
-													if ( data )
-													{
-														// Sélection de la version sélectionnée
-														//  pour être restaurée.
-														const selectedVersion =
-															file.versions.find(
-																( value ) => value.uuid
-																	=== identifier
-															);
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle>
+											<History className="mr-2 inline h-5 w-5 align-text-top" />
+											Êtes-vous sûr de vouloir restaurer
+											cette version du fichier ?
+										</AlertDialogTitle>
 
-														if ( !selectedVersion )
-														{
-															return;
-														}
+										<AlertDialogDescription>
+											La version actuelle du fichier sera
+											sauvegardée sous forme d&lsquo;une
+											nouvelle version et remplacée par la
+											version sélectionnée.
+										</AlertDialogDescription>
+									</AlertDialogHeader>
 
-														// Copie et modification de l'identifiant
-														//  de la version sélectionnée.
-														const newVersion = {
-															...selectedVersion
-														};
-														newVersion.uuid = data;
+									<AlertDialogFooter>
+										<AlertDialogCancel
+											disabled={states.loading}
+										>
+											<Ban className="mr-2 h-4 w-4" />
+											Annuler
+										</AlertDialogCancel>
 
-														// Ajout de la nouvelle version à la liste
-														//  des versions du fichier.
-														file.versions.unshift(
-															newVersion
-														);
-
-														// Mise à jour de la liste des fichiers.
-														states.setFiles(
-															states.files
-														);
-													}
-
-													// Fin de l'état de chargement.
-													states.setLoading( false );
-
-													// Envoi d'une notification.
-													if ( data )
-													{
-														toast.success(
-															"form.info.action_success",
-															{
-																description:
-																	"form.info.version_restored"
-															}
-														);
-													}
-													else
-													{
-														toast.error(
-															"form.errors.action_failed",
-															{
-																description:
-																	"form.errors.server_error"
-															}
-														);
-													}
-												}}
-												disabled={states.loading}
-											>
-												<Check className="mr-2 h-4 w-4" />
-												Confirmer
-											</AlertDialogAction>
-										</AlertDialogFooter>
-									</AlertDialogContent>
-								</AlertDialog>
-							</div>
+										<AlertDialogAction
+											onClick={submitRestoring}
+											disabled={states.loading}
+										>
+											<Check className="mr-2 h-4 w-4" />
+											Confirmer
+										</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
 
 							{/* Séparateur horizontal */}
 							{index !== file.versions.length - 1 && (
