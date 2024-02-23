@@ -1,5 +1,5 @@
 //
-// Composant de navigation de l'en-tête.
+// Composant de navigation dans l'en-tête du site.
 //
 
 "use client";

@@ -1,5 +1,5 @@
 //
-// Composant de navigation du pied de page.
+// Composant du pied de page du site.
 //
 import { Separator } from "./ui/separator";
 
