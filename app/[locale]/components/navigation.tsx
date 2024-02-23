@@ -133,7 +133,7 @@ export default function Header( {
 					</NavigationMenuTrigger>
 
 					<NavigationMenuContent>
-						<ul className="grid w-full gap-3 p-4 md:w-[500px] lg:w-[800px] lg:grid-cols-[.75fr_1fr_1fr]">
+						<ul className="grid w-[250px] gap-3 p-4 sm:w-[400px] lg:w-[800px] lg:grid-cols-[.75fr_1fr_1fr]">
 							{/* Image d'illustration */}
 							<li className="row-span-3 max-lg:hidden">
 								<NavigationMenuLink
