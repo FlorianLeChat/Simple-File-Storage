@@ -21,13 +21,13 @@ export default function CookieConsent()
 	{
 		// Définition de l'environnement de production.
 		run( {
+			// Désactivation de l'interaction avec la page.
+			disablePageInteraction: true,
+
 			// Activation automatique de la fenêtre de consentement.
 			autoShow:
 				process.env.NEXT_PUBLIC_ENV === "production"
 				&& !pathname.startsWith( "/legal" ),
-
-			// Désactivation de l'interaction avec la page.
-			disablePageInteraction: true,
 
 			// Disparition du mécanisme pour les robots.
 			hideFromBots: process.env.NEXT_PUBLIC_ENV === "production",
