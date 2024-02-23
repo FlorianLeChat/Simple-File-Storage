@@ -115,7 +115,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 			basePath={`${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`}
 		>
 			{/* Filtrage et tri des données */}
-			<div className="flex items-center gap-2 py-4">
+			<div className="mb-4 flex items-center gap-2">
 				{/* Filtrage par nom */}
 				<Input
 					value={

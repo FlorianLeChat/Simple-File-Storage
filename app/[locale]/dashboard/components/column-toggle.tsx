@@ -35,12 +35,12 @@ export default function ColumnToggle( {
 			<DropdownMenuTrigger
 				className={merge(
 					buttonVariants( { size: "sm", variant: "outline" } ),
-					"h-10 sm:mr-auto"
+					"h-10 md:mr-auto"
 				)}
 			>
-				<SlidersHorizontal className="inline h-4 w-4 sm:mr-2" />
+				<SlidersHorizontal className="inline h-4 w-4 md:mr-2" />
 
-				<p className="max-sm:hidden">Colonnes</p>
+				<p className="max-md:hidden">Colonnes</p>
 			</DropdownMenuTrigger>
 
 			{/* Menu de sélection des colonnes */}

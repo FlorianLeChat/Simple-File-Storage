@@ -277,12 +277,12 @@ export default function FileUpload( {
 			}}
 		>
 			<DialogTrigger
-				className={buttonVariants( { variant: "default" } )}
+				className={buttonVariants()}
 				aria-controls="file-upload"
 			>
-				<PlusCircleIcon className="inline h-4 w-4 sm:mr-2" />
+				<PlusCircleIcon className="inline h-4 w-4 md:mr-2" />
 
-				<p id="file-upload" className="max-sm:hidden">
+				<p id="file-upload" className="max-md:hidden">
 					Ajouter un fichier
 				</p>
 			</DialogTrigger>
