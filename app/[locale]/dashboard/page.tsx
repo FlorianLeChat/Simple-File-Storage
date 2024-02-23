@@ -136,9 +136,9 @@ export default async function Page( {
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			<header className="flex min-h-[4rem] flex-wrap items-center justify-center gap-y-4 border-b px-4 py-8 sm:gap-x-4 sm:py-4">
+			<header className="flex min-h-[4rem] flex-wrap items-center justify-center gap-y-4 border-b px-4 py-8 md:gap-x-4 md:py-4">
 				{/* Titre du site */}
-				<h1 className="text-2xl font-semibold max-sm:w-full max-sm:max-w-fit max-sm:overflow-hidden max-sm:text-ellipsis max-sm:whitespace-nowrap sm:text-xl">
+				<h1 className="text-center text-2xl font-semibold max-md:w-full max-md:overflow-hidden max-md:text-ellipsis max-md:whitespace-nowrap md:max-w-fit md:text-xl">
 					<Link href="/">💾 {meta.title as string}</Link>
 				</h1>
 
@@ -149,7 +149,7 @@ export default async function Page( {
 				/>
 
 				{/* Éléments latéraux */}
-				<aside className="flex items-center justify-center space-x-4 sm:ml-auto">
+				<aside className="flex items-center justify-center space-x-4 md:ml-auto">
 					{/* Notifications */}
 					<Notification />
 
@@ -158,7 +158,7 @@ export default async function Page( {
 				</aside>
 			</header>
 
-			<main className="p-4 md:p-10">
+			<main className="p-4 md:p-8">
 				{/* Titre et description de la page */}
 				<h2 className="text-2xl font-bold tracking-tight">
 					Tableau de bord
@@ -170,7 +170,7 @@ export default async function Page( {
 				</p>
 
 				{/* Barre verticale de séparation */}
-				<Separator className="my-6" />
+				<Separator className="mb-6 mt-4 sm:mb-8" />
 
 				{/* Tableau des fichiers téléversés */}
 				<DataTable data={await getFiles()} />
