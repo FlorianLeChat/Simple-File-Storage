@@ -30,7 +30,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<>
+		<div className="flex items-center justify-end gap-2 py-4 max-sm:flex-col sm:gap-4 lg:gap-8">
 			{/* Nombre de lignes sélectionnées */}
 			<p className="flex-1 text-sm text-muted-foreground">
 				{table.getFilteredSelectedRowModel().rows.length} sur{" "}
@@ -170,6 +170,6 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 					<ChevronsRight className="h-4 w-4" />
 				</Button>
 			</nav>
-		</>
+		</div>
 	);
 }

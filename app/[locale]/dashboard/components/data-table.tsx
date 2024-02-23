@@ -233,9 +233,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 			</Table>
 
 			{/* Contrôles de pagination */}
-			<aside className="flex items-center justify-end gap-2 py-4 max-sm:flex-col sm:gap-4 lg:gap-8">
-				<Pagination table={table} />
-			</aside>
+			<Pagination table={table} />
 		</SessionProvider>
 	);
 }
