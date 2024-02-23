@@ -5,7 +5,6 @@
 "use client";
 
 import { toast } from "sonner";
-import { merge } from "@/utilities/tailwind";
 import { useRouter } from "next/navigation";
 import { BellRing, Check, Loader2 } from "lucide-react";
 import { useEffect, useCallback, useState } from "react";
@@ -15,7 +14,6 @@ import { Dialog,
 	DialogTitle,
 	DialogClose,
 	DialogHeader,
-	DialogFooter,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "./ui/dialog";
@@ -119,6 +117,42 @@ export default function Notifications()
 			} );
 	}, [ router ] );
 
+	// Soumission de la requête de marquage de toutes les notifications comme lues.
+	const submitClearing = async () =>
+	{
+		// Activation de l'état de chargement.
+		setLoading( true );
+
+		// Envoi de la requête au serveur et
+		//  traitement de la réponse.
+		const state = await serverAction( updateReadState, new FormData() );
+
+		// Fin de l'état de chargement.
+		setLoading( false );
+
+		if ( state )
+		{
+			// Marquage de toutes les notifications
+			//  comme lues.
+			setUnreadCount( 0 );
+
+			// Suppression de toutes les notifications.
+			setNotifications( [] );
+
+			// Envoi d'une notification de succès.
+			toast.success( "form.info.action_success", {
+				description: "form.info.notifications_read"
+			} );
+		}
+		else
+		{
+			// Envoi d'une notification d'erreur.
+			toast.error( "form.errors.file_deleted", {
+				description: "form.errors.server_error"
+			} );
+		}
+	};
+
 	// Vérification périodique des notifications.
 	useEffect( () =>
 	{
@@ -211,73 +245,22 @@ export default function Notifications()
 							) )}
 						</ul>
 
-						<DialogFooter>
-							<DialogClose
-								onClick={async () =>
-								{
-									// Activation de l'état de chargement.
-									setLoading( true );
-
-									// Envoi de la requête au serveur et
-									//  traitement de la réponse.
-									const state = ( await serverAction(
-										updateReadState,
-										new FormData()
-									) ) as boolean;
-
-									if ( state )
-									{
-										// Marquage de toutes les notifications
-										//  comme lues.
-										setUnreadCount( 0 );
-
-										// Suppression de toutes les notifications.
-										setNotifications( [] );
-									}
-
-									// Fin de l'état de chargement.
-									setLoading( false );
-
-									// Envoi d'une notification.
-									if ( state )
-									{
-										// Mise à jour réussie.
-										toast.success(
-											"form.info.action_success",
-											{
-												description:
-													"form.info.notifications_read"
-											}
-										);
-									}
-									else
-									{
-										// Erreur dans la mise à jour.
-										toast.error(
-											"form.errors.file_deleted",
-											{
-												description:
-													"form.errors.server_error"
-											}
-										);
-									}
-								}}
-								disabled={isLoading}
-								className={merge( buttonVariants(), "w-full" )}
-							>
-								{isLoading ? (
-									<>
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-										Veuillez patienter...
-									</>
-								) : (
-									<>
-										<Check className="mr-2 h-4 w-4" />
-										Tout marquer comme lu
-									</>
-								)}
-							</DialogClose>
-						</DialogFooter>
+						<DialogClose
+							onClick={submitClearing}
+							className={buttonVariants()}
+						>
+							{isLoading ? (
+								<>
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									Veuillez patienter...
+								</>
+							) : (
+								<>
+									<Check className="mr-2 h-4 w-4" />
+									Tout marquer comme lu
+								</>
+							)}
+						</DialogClose>
 					</>
 				)}
 			</DialogContent>
