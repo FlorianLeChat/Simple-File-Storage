@@ -1,5 +1,5 @@
 //
-// Composant des colonnes d'un tableau de données.
+// Composant de déclaration des colonnes d'un tableau de données.
 //  Source : https://ui.shadcn.com/docs/components/data-table
 //
 
@@ -14,13 +14,13 @@ import { Badge } from "../../components/ui/badge";
 import RowActions from "./row-actions";
 import ColumnHeader from "./column-header";
 import { Checkbox } from "../../components/ui/checkbox";
+import { buttonVariants } from "../../components/ui/button";
 import { Avatar,
 	AvatarImage,
 	AvatarFallback } from "../../components/ui/avatar";
 import { HoverCard,
 	HoverCardContent,
 	HoverCardTrigger } from "../../components/ui/hover-card";
-import { buttonVariants } from "../../components/ui/button";
 
 // Déclaration des colonnes du tableau.
 export const columns: ColumnDef<FileAttributes>[] = [
@@ -92,7 +92,6 @@ export const columns: ColumnDef<FileAttributes>[] = [
 								<h4 className="font-medium leading-none">
 									{row.original.owner.name}
 								</h4>
-
 								<p className="text-muted-foreground">
 									{row.original.owner.email}
 								</p>
