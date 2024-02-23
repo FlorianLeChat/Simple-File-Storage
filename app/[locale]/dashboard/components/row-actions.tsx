@@ -409,7 +409,7 @@ export default function RowActions( {
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
 
-					<AlertDialogContent>
+					<AlertDialogContent className="max-sm:max-w-[calc(100%-2rem)]">
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								<Globe className="mr-2 inline h-5 w-5 align-text-top" />
@@ -455,7 +455,7 @@ export default function RowActions( {
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
 
-					<AlertDialogContent>
+					<AlertDialogContent className="max-sm:max-w-[calc(100%-2rem)]">
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								<FolderLock className="mr-2 inline h-5 w-5 align-text-top" />
@@ -534,7 +534,7 @@ export default function RowActions( {
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
 
-					<AlertDialogContent>
+					<AlertDialogContent className="max-sm:max-w-[calc(100%-2rem)]">
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								<UserX className="mr-2 inline h-5 w-5 align-text-top" />
@@ -578,7 +578,7 @@ export default function RowActions( {
 						</DropdownMenuItem>
 					</DialogTrigger>
 
-					<DialogContent>
+					<DialogContent className="max-sm:max-w-[calc(100%-2rem)]">
 						<DialogHeader>
 							<DialogTitle>
 								<TextCursorInput className="mr-2 inline h-5 w-5 align-text-top" />
@@ -655,7 +655,7 @@ export default function RowActions( {
 							</DropdownMenuItem>
 						</DialogTrigger>
 
-						<DialogContent>
+						<DialogContent className="max-sm:max-w-[calc(100%-2rem)]">
 							<DialogHeader>
 								<DialogTitle>
 									<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
@@ -797,7 +797,7 @@ export default function RowActions( {
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
 
-					<AlertDialogContent>
+					<AlertDialogContent className="max-sm:max-w-[calc(100%-2rem)]">
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								<Trash className="mr-2 inline h-5 w-5 align-text-top" />
