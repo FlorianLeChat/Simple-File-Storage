@@ -1,5 +1,5 @@
 //
-// Composant des services de vérification via Google reCAPTCHA.
+// Composant des services de vérification Google reCAPTCHA.
 //
 
 "use client";

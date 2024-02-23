@@ -1,5 +1,5 @@
 //
-// Composant de navigation du profil utilisateur.
+// Composant du menu utilisateur dans l'en-tête du site.
 //
 
 "use client";
@@ -21,6 +21,7 @@ import { Dialog,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "./ui/dialog";
+import { buttonVariants } from "./ui/button";
 import { signOutAccount } from "../authentication/actions";
 import { updateReadState } from "../actions";
 import { DropdownMenu,
@@ -31,7 +32,6 @@ import { DropdownMenu,
 	DropdownMenuTrigger,
 	DropdownMenuShortcut,
 	DropdownMenuSeparator } from "./ui/dropdown-menu";
-import { Button, buttonVariants } from "./ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
 // Typage des notifications provenant de la base de données.
@@ -297,72 +297,73 @@ export default function UserMenu( { session }: { session: Session } )
 							</ul>
 
 							<DialogFooter>
-								<DialogClose asChild>
-									<Button
-										onClick={async () =>
+								<DialogClose
+									onClick={async () =>
+									{
+										// Activation de l'état de chargement.
+										setLoading( true );
+
+										// Envoi de la requête au serveur et
+										//  traitement de la réponse.
+										const state = ( await serverAction(
+											updateReadState,
+											new FormData()
+										) ) as boolean;
+
+										if ( state )
 										{
-											// Activation de l'état de chargement.
-											setLoading( true );
+											// Marquage de toutes les notifications
+											//  comme lues.
+											setUnread( 0 );
 
-											// Envoi de la requête au serveur et
-											//  traitement de la réponse.
-											const state = ( await serverAction(
-												updateReadState,
-												new FormData()
-											) ) as boolean;
+											// Suppression de toutes les notifications.
+											setNotifications( [] );
+										}
 
-											if ( state )
-											{
-												// Marquage de toutes les notifications
-												//  comme lues.
-												setUnread( 0 );
+										// Fin de l'état de chargement.
+										setLoading( false );
 
-												// Suppression de toutes les notifications.
-												setNotifications( [] );
-											}
-
-											// Fin de l'état de chargement.
-											setLoading( false );
-
-											// Envoi d'une notification.
-											if ( state )
-											{
-												// Mise à jour réussie.
-												toast.success(
-													"form.info.action_success",
-													{
-														description:
-															"form.info.notifications_read"
-													}
-												);
-											}
-											else
-											{
-												// Erreur dans la mise à jour.
-												toast.error(
-													"form.errors.file_deleted",
-													{
-														description:
-															"form.errors.server_error"
-													}
-												);
-											}
-										}}
-										disabled={loading}
-										className="w-full"
-									>
-										{loading ? (
-											<>
-												<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-												Veuillez patienter...
-											</>
-										) : (
-											<>
-												<Check className="mr-2 h-4 w-4" />
-												Tout marquer comme lu
-											</>
-										)}
-									</Button>
+										// Envoi d'une notification.
+										if ( state )
+										{
+											// Mise à jour réussie.
+											toast.success(
+												"form.info.action_success",
+												{
+													description:
+														"form.info.notifications_read"
+												}
+											);
+										}
+										else
+										{
+											// Erreur dans la mise à jour.
+											toast.error(
+												"form.errors.file_deleted",
+												{
+													description:
+														"form.errors.server_error"
+												}
+											);
+										}
+									}}
+									disabled={loading}
+									className={merge(
+										buttonVariants(),
+										"w-full"
+									)}
+								>
+									{loading ? (
+										<>
+											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+											Veuillez patienter...
+										</>
+									) : (
+										<>
+											<Check className="mr-2 h-4 w-4" />
+											Tout marquer comme lu
+										</>
+									)}
 								</DialogClose>
 							</DialogFooter>
 						</>

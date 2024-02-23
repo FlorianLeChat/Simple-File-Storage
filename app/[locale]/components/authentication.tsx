@@ -1,5 +1,5 @@
 //
-// Composant du formulaire d'authentification (connexion ou inscription).
+// Composant de la page d'authentification (inscription et connexion).
 //
 
 "use client";
@@ -19,7 +19,6 @@ import { useState, useEffect } from "react";
 import { Eye, EyeOff, Loader2, Mail, KeyRound } from "lucide-react";
 
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { Separator } from "./ui/separator";
 import { Form,
@@ -43,6 +42,7 @@ export default function Authentification()
 	const [ locked, setLocked ] = useState( false );
 	const [ focused, setFocused ] = useState( false );
 	const [ loading, setLoading ] = useState( false );
+	const [ inputType, setInputType ] = useState( "password" );
 	const [ signUpState, signUpAction ] = useFormState( signUpAccount, {
 		success: true,
 		reason: ""
@@ -51,7 +51,6 @@ export default function Authentification()
 		success: true,
 		reason: ""
 	} );
-	const [ passwordType, setPasswordType ] = useState( "password" );
 
 	// Déclaration du formulaire.
 	const form = useForm<z.infer<typeof schema>>( {
@@ -273,84 +272,74 @@ export default function Authentification()
 							name="password"
 							control={form.control}
 							render={( { field } ) => (
-								<FormItem>
+								<FormItem className="flex gap-2">
 									<FormLabel className="sr-only">
 										Mot de passe
 									</FormLabel>
 
-									<FormControl>
-										<div className="flex gap-2">
-											<TooltipProvider>
-												<Input
-													{...field}
-													type={passwordType}
-													onBlur={() => setFocused(
-														field.value
-															?.length !== 0
-													)}
-													onKeyUp={( event ) => setLocked(
-														event.getModifierState(
-															"CapsLock"
-														)
-													)}
-													onFocus={() => setFocused( true )}
-													disabled={loading}
-													className={`transition-opacity ${
-														!focused
-															? "opacity-25"
-															: ""
-													}`}
-													maxLength={
-														schema.shape.password
-															._def.options[ 0 ]
-															.maxLength as number
-													}
-													spellCheck="false"
-													placeholder="password"
-													autoComplete="current-password"
-													autoCapitalize="off"
-												/>
+									<TooltipProvider>
+										<FormControl>
+											<Input
+												{...field}
+												type={inputType}
+												onBlur={() => setFocused(
+													field.value?.length > 0
+												)}
+												onKeyUp={( event ) => setLocked(
+													event.getModifierState(
+														"CapsLock"
+													)
+												)}
+												onFocus={() => setFocused( true )}
+												disabled={loading}
+												className={`!mt-0 transition-opacity ${
+													!focused ? "opacity-25" : ""
+												}`}
+												maxLength={
+													schema.shape.password._def
+														.options[ 0 ]
+														.maxLength as number
+												}
+												spellCheck="false"
+												placeholder="password"
+												autoComplete="current-password"
+												autoCapitalize="off"
+											/>
+										</FormControl>
 
-												<Tooltip>
-													<TooltipTrigger
-														type="button"
-														className={merge(
-															`transition-opacity ${
-																!focused
-																&& "opacity-25"
-															}`,
-															buttonVariants( {
-																size: "icon",
-																variant:
-																	"outline"
-															} )
-														)}
-														onClick={() =>
-														{
-															setPasswordType(
-																passwordType
-																	=== "password"
-																	? "text"
-																	: "password"
-															);
-														}}
-													>
-														{( passwordType
-															=== "password" && (
-															<Eye className="h-4 w-4" />
-														) ) || (
-															<EyeOff className="h-4 w-4" />
-														)}
-													</TooltipTrigger>
+										<Tooltip>
+											<TooltipTrigger
+												type="button"
+												className={merge(
+													`transition-opacity ${
+														!focused && "opacity-25"
+													}`,
+													buttonVariants( {
+														size: "icon",
+														variant: "outline"
+													} )
+												)}
+												onClick={() =>
+												{
+													setInputType(
+														inputType === "password"
+															? "text"
+															: "password"
+													);
+												}}
+											>
+												{inputType === "password" ? (
+													<Eye className="h-4 w-4" />
+												) : (
+													<EyeOff className="h-4 w-4" />
+												)}
+											</TooltipTrigger>
 
-													<TooltipContent>
-														Voir ou masquer le mot
-														de passe
-													</TooltipContent>
-												</Tooltip>
-											</TooltipProvider>
-										</div>
-									</FormControl>
+											<TooltipContent>
+												Voir ou masquer le mot de passe
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
 
 									<FormDescription className="sr-only">
 										Le mot de passe utilisé pour vous
@@ -375,26 +364,19 @@ export default function Authentification()
 							name="remembered"
 							control={form.control}
 							render={( { field } ) => (
-								<FormItem>
-									<FormLabel className="sr-only">
+								<FormItem className="flex items-center justify-center space-x-2">
+									<FormControl>
+										<Switch
+											name="remembered"
+											checked={field.value}
+											disabled={loading}
+											onCheckedChange={field.onChange}
+										/>
+									</FormControl>
+
+									<FormLabel className="!mt-0">
 										Se souvenir de moi
 									</FormLabel>
-
-									<FormControl>
-										<div className="flex items-center justify-center space-x-2">
-											<Switch
-												id="remembered"
-												name="remembered"
-												checked={field.value}
-												disabled={loading}
-												onCheckedChange={field.onChange}
-											/>
-
-											<Label htmlFor="remembered">
-												Se souvenir de moi
-											</Label>
-										</div>
-									</FormControl>
 
 									<FormDescription className="sr-only">
 										Pour rester connecté à votre compte
