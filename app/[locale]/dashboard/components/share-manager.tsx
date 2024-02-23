@@ -20,6 +20,7 @@ import type { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import type { TableMeta } from "@tanstack/react-table";
 import type { FileAttributes } from "@/interfaces/File";
+import type { ShareAttributes } from "@/interfaces/Share";
 
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -62,6 +63,158 @@ export default function ShareManager( {
 		data?.filter(
 			( user ) => !file.shares.some( ( share ) => share.user.uuid === user.id )
 		) ?? [];
+
+	// Soumission de la requête d'ajout d'un partage.
+	const submitAddition = async ( user: User ) =>
+	{
+		// Activation de l'état de chargement.
+		states.setLoading( true );
+
+		// Création d'un formulaire de données.
+		const form = new FormData();
+		form.append( "fileId", file.uuid );
+		form.append( "userId", user.id ?? "" );
+
+		// Envoi de la requête au serveur et
+		//  attente de la réponse.
+		const state = await serverAction( addSharedUser, form );
+
+		// Fin de l'état de chargement.
+		states.setLoading( false );
+
+		if ( state )
+		{
+			// Réinitialisation de la recherche.
+			setSearch( "" );
+
+			// Mise à jour de l'état du fichier.
+			file.status = "shared";
+			file.shares.push( {
+				user: {
+					uuid: user.id,
+					name: user.name,
+					email: user.email,
+					image: user.image
+				},
+				status: "read"
+			} );
+
+			states.setFiles( [ ...states.files ] );
+
+			// Envoi d'une notification de succès.
+			toast.success( "form.info.update_success", {
+				description: "form.info.sharing_updated"
+			} );
+		}
+		else
+		{
+			// Envoi d'une notification d'erreur.
+			toast.error( "form.errors.update_failed", {
+				description: "form.errors.server_error"
+			} );
+		}
+	};
+
+	// Soumission de la requête de mise à jour du partage.
+	const submitUpdate = async ( share: ShareAttributes, value: string ) =>
+	{
+		// Activation de l'état de chargement.
+		states.setLoading( true );
+
+		// Création d'un formulaire de données.
+		const form = new FormData();
+		form.append( "fileId", file.uuid );
+		form.append( "userId", share.user.uuid ?? "" );
+		form.append( "status", value );
+
+		// Envoi de la requête au serveur et
+		//  attente de la réponse.
+		const state = await serverAction( updateSharedUser, form );
+
+		// Fin de l'état de chargement.
+		states.setLoading( false );
+
+		if ( state )
+		{
+			// Mise à jour de l'état du fichier.
+			share.status = value as "read" | "write";
+
+			states.setFiles( [ ...states.files ] );
+
+			// Envoi d'une notification de succès.
+			toast.success( "form.info.update_success", {
+				description: "form.info.sharing_updated"
+			} );
+		}
+		else
+		{
+			// Envoi d'une notification d'erreur.
+			toast.error( "form.errors.update_failed", {
+				description: "form.errors.server_error"
+			} );
+		}
+	};
+
+	// Soumission de la requête de suppression d'un partage.
+	const submitDeletion = async ( share: ShareAttributes ) =>
+	{
+		// Activation de l'état de chargement.
+		states.setLoading( true );
+
+		// Création d'un formulaire de données.
+		const form = new FormData();
+		form.append( "fileId", file.uuid );
+		form.append( "userId", share.user.uuid ?? "" );
+
+		// Envoi de la requête au serveur et
+		//  attente de la réponse.
+		const state = await serverAction( deleteSharedUser, form );
+
+		// Fin de l'état de chargement.
+		states.setLoading( false );
+
+		if ( state )
+		{
+			// Réinitialisation de la recherche.
+			setSearch( "" );
+
+			// Mise à jour de l'état du fichier.
+			if ( file.shares.length === 1 )
+			{
+				file.status = "private";
+				file.shares = [];
+			}
+			else
+			{
+				file.shares = file.shares.filter(
+					( value ) => value.user.uuid !== share.user.uuid
+				);
+			}
+
+			if ( file.owner.id === session.data?.user.id )
+			{
+				states.setFiles( [ ...states.files ] );
+			}
+			else
+			{
+				states.setFiles( [
+					...states.files.filter( ( value ) => value.uuid !== file.uuid )
+				] );
+			}
+
+			// Envoi d'une notification de succès.
+			toast.success( "form.info.delete_success", {
+				description: "form.info.sharing_updated"
+			} );
+		}
+		else
+		{
+			// Envoi d'une notification d'erreur.
+			toast.error( "form.errors.delete_failed", {
+				description: "form.errors.server_error"
+			} );
+		}
+	};
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -160,62 +313,7 @@ export default function ShareManager( {
 								<Select
 									disabled={states.loading}
 									defaultValue={share.status}
-									onValueChange={async ( value ) =>
-									{
-										// Activation de l'état de chargement.
-										states.setLoading( true );
-
-										// Création d'un formulaire de données.
-										const form = new FormData();
-										form.append( "fileId", file.uuid );
-										form.append(
-											"userId",
-											share.user.uuid ?? ""
-										);
-										form.append( "status", value );
-
-										// Envoi de la requête au serveur et
-										//  attente de la réponse.
-										const state = ( await serverAction(
-											updateSharedUser,
-											form
-										) ) as boolean;
-
-										if ( state )
-										{
-											// Mise à jour de l'état du fichier.
-											share.status = value as
-												| "read"
-												| "write";
-
-											states.setFiles( [ ...states.files ] );
-										}
-
-										// Fin de l'état de chargement.
-										states.setLoading( false );
-
-										// Envoi d'une notification.
-										if ( state )
-										{
-											toast.success(
-												"form.info.update_success",
-												{
-													description:
-														"form.info.sharing_updated"
-												}
-											);
-										}
-										else
-										{
-											toast.error(
-												"form.errors.update_failed",
-												{
-													description:
-														"form.errors.server_error"
-												}
-											);
-										}
-									}}
+									onValueChange={( value ) => submitUpdate( share, value )}
 								>
 									<SelectTrigger className="ml-auto w-auto gap-1">
 										<SelectValue />
@@ -234,91 +332,7 @@ export default function ShareManager( {
 
 								<Button
 									title="Supprimer définitivement"
-									onClick={async () =>
-									{
-										// Activation de l'état de chargement.
-										states.setLoading( true );
-
-										// Création d'un formulaire de données.
-										const form = new FormData();
-										form.append( "fileId", file.uuid );
-										form.append(
-											"userId",
-											share.user.uuid ?? ""
-										);
-
-										// Envoi de la requête au serveur et
-										//  attente de la réponse.
-										const state = ( await serverAction(
-											deleteSharedUser,
-											form
-										) ) as boolean;
-
-										if ( state )
-										{
-											// Réinitialisation de la recherche.
-											setSearch( "" );
-
-											// Mise à jour de l'état du fichier.
-											if ( file.shares.length === 1 )
-											{
-												file.status = "private";
-												file.shares = [];
-											}
-											else
-											{
-												file.shares =
-													file.shares.filter(
-														( value ) => value.user.uuid
-															!== share.user.uuid
-													);
-											}
-
-											if (
-												file.owner.id
-												=== session.data?.user.id
-											)
-											{
-												states.setFiles( [
-													...states.files
-												] );
-											}
-											else
-											{
-												states.setFiles( [
-													...states.files.filter(
-														( value ) => value.uuid
-															!== file.uuid
-													)
-												] );
-											}
-										}
-
-										// Fin de l'état de chargement.
-										states.setLoading( false );
-
-										// Envoi d'une notification.
-										if ( state )
-										{
-											toast.success(
-												"form.info.delete_success",
-												{
-													description:
-														"form.info.sharing_updated"
-												}
-											);
-										}
-										else
-										{
-											toast.error(
-												"form.errors.delete_failed",
-												{
-													description:
-														"form.errors.server_error"
-												}
-											);
-										}
-									}}
+									onClick={() => submitDeletion( share )}
 									variant="destructive"
 									disabled={states.loading}
 								>
@@ -411,67 +425,9 @@ export default function ShareManager( {
 
 								{/* Bouton d'ajout de l'utilisateur */}
 								<Button
-									onClick={async () =>
+									onClick={() =>
 									{
-										// Activation de l'état de chargement.
-										states.setLoading( true );
-
-										// Création d'un formulaire de données.
-										const form = new FormData();
-										form.append( "fileId", file.uuid );
-										form.append( "userId", user.id ?? "" );
-
-										// Envoi de la requête au serveur et
-										//  attente de la réponse.
-										const state = ( await serverAction(
-											addSharedUser,
-											form
-										) ) as boolean;
-
-										if ( state )
-										{
-											// Réinitialisation de la recherche.
-											setSearch( "" );
-
-											// Mise à jour de l'état du fichier.
-											file.status = "shared";
-											file.shares.push( {
-												user: {
-													uuid: user.id,
-													name: user.name,
-													email: user.email,
-													image: user.image
-												},
-												status: "read"
-											} );
-
-											states.setFiles( [ ...states.files ] );
-										}
-
-										// Fin de l'état de chargement.
-										states.setLoading( false );
-
-										// Envoi d'une notification.
-										if ( state )
-										{
-											toast.success(
-												"form.info.update_success",
-												{
-													description:
-														"form.info.sharing_updated"
-												}
-											);
-										}
-										else
-										{
-											toast.error(
-												"form.errors.update_failed",
-												{
-													description:
-														"form.errors.server_error"
-												}
-											);
-										}
+										submitAddition( user );
 									}}
 									disabled={states.loading}
 									className="sm:ml-auto"

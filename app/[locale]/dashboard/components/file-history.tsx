@@ -51,7 +51,7 @@ export default function FileHistory( {
 	const access = useRef<HTMLButtonElement>( null );
 
 	// Soumission de la restauration de la version.
-	const submitRestoring = async () =>
+	const submitRestoration = async () =>
 	{
 		// Activation de l'état de chargement.
 		states.setLoading( true );
@@ -63,7 +63,10 @@ export default function FileHistory( {
 
 		// Envoi de la requête au serveur et
 		//  attente de la réponse.
-		const data = ( await serverAction( restoreVersion, form ) ) as string;
+		const data = await serverAction( restoreVersion, form );
+
+		// Fin de l'état de chargement.
+		states.setLoading( false );
 
 		if ( data )
 		{
@@ -83,7 +86,8 @@ export default function FileHistory( {
 			const newVersion = {
 				...selectedVersion
 			};
-			newVersion.uuid = data;
+
+			newVersion.uuid = data as string;
 
 			// Ajout de la nouvelle version à la liste
 			//  des versions du fichier.
@@ -91,20 +95,15 @@ export default function FileHistory( {
 
 			// Mise à jour de la liste des fichiers.
 			states.setFiles( states.files );
-		}
 
-		// Fin de l'état de chargement.
-		states.setLoading( false );
-
-		// Envoi d'une notification.
-		if ( data )
-		{
+			// Envoi d'une notification de succès.
 			toast.success( "form.info.action_success", {
 				description: "form.info.version_restored"
 			} );
 		}
 		else
 		{
+			// Envoi d'une notification d'erreur.
 			toast.error( "form.errors.action_failed", {
 				description: "form.errors.server_error"
 			} );
@@ -317,7 +316,7 @@ export default function FileHistory( {
 										</AlertDialogCancel>
 
 										<AlertDialogAction
-											onClick={submitRestoring}
+											onClick={submitRestoration}
 											disabled={states.loading}
 										>
 											<Check className="mr-2 h-4 w-4" />
