@@ -191,14 +191,14 @@ export default function Notifications()
 				)}
 			</DialogTrigger>
 
-			<DialogContent className="h-fit max-h-full w-[380px] overflow-auto">
+			<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:h-3/4">
 				<DialogHeader>
 					<DialogTitle className="flex items-center">
 						<BellRing className="mr-2 inline h-5 w-5" />
 						Notifications
 					</DialogTitle>
 
-					<DialogDescription>
+					<DialogDescription className="text-left">
 						{unreadCount === 0
 							? "Vous n'avez aucune nouvelle notification."
 							: `Vous avez ${ unreadCount } nouvelle(s) notification(s).`}

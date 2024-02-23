@@ -287,7 +287,7 @@ export default function FileUpload( {
 				</p>
 			</DialogTrigger>
 
-			<DialogContent className="h-fit max-h-full overflow-auto">
+			<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[75%]">
 				<Form {...form}>
 					<form
 						action={async ( formData: FormData ) =>
