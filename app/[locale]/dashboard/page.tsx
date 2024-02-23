@@ -23,6 +23,7 @@ import { Separator } from "../components/ui/separator";
 const UserMenu = lazy( () => import( "../components/user-menu" ) );
 const DataTable = lazy( () => import( "./components/data-table" ) );
 const Navigation = lazy( () => import( "../components/navigation" ) );
+const Notification = lazy( () => import( "../components/notification" ) );
 
 // Déclaration des propriétés de la page.
 export const metadata: Metadata = {
@@ -147,8 +148,14 @@ export default async function Page( {
 					source={meta.source}
 				/>
 
-				{/* Menu utilisateur */}
-				<UserMenu session={session} />
+				{/* Éléments latéraux */}
+				<aside className="flex items-center justify-center space-x-4 sm:ml-auto">
+					{/* Notifications */}
+					<Notification />
+
+					{/* Menu utilisateur */}
+					<UserMenu session={session} />
+				</aside>
 			</header>
 
 			<main className="p-4 md:p-10">
