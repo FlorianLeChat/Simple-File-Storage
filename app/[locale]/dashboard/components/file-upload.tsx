@@ -11,8 +11,7 @@ import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { enGB, fr } from "date-fns/locale";
-import { Ban,
-	Loader2,
+import { Loader2,
 	ShieldCheck,
 	UploadCloud,
 	CalendarDays,
@@ -56,9 +55,9 @@ import { uploadFiles } from "../actions";
 import { AlertDialog,
 	AlertDialogTitle,
 	AlertDialogAction,
+	AlertDialogContent,
 	AlertDialogFooter,
 	AlertDialogHeader,
-	AlertDialogContent,
 	AlertDialogDescription } from "../../components/ui/alert-dialog";
 import { Button, buttonVariants } from "../../components/ui/button";
 
@@ -104,6 +103,73 @@ export default function FileUpload( {
 			expiration: ""
 		}
 	} );
+
+	// Chiffrement des fichiers à téléverser.
+	const encryptFiles = async ( formData: FormData ) =>
+	{
+		// Génération d'une clé de chiffrement et
+		//  sauvegarde dans une variable d'état.
+		const decryptionKey = Buffer.from(
+			crypto.getRandomValues( new Uint8Array( 32 ) )
+		).toString( "base64" );
+
+		setKey( decryptionKey );
+
+		// Génération d'un vecteur d'initialisation.
+		const iv = crypto.getRandomValues( new Uint8Array( 16 ) );
+
+		// Importation de la clé de chiffrement.
+		const cipher = await crypto.subtle.importKey(
+			"raw",
+			Buffer.from( decryptionKey, "base64" ),
+			{
+				name: "AES-GCM",
+				length: 256
+			},
+			true,
+			[ "encrypt", "decrypt" ]
+		);
+
+		// Récupération des fichiers à téléverser et
+		//  suppression de ces derniers de la liste
+		//  des fichiers à téléverser.
+		const files = formData.getAll( "upload" ) as File[];
+
+		formData.delete( "upload" );
+
+		// Chiffrement des fichiers.
+		await Promise.all(
+			files.map( async ( file ) =>
+			{
+				// Récupération du contenu du fichier.
+				const buffer = new Uint8Array( await file.arrayBuffer() );
+
+				// Chiffrement du contenu du fichier.
+				const encrypted = Buffer.concat( [
+					iv,
+					new Uint8Array(
+						await crypto.subtle.encrypt(
+							{
+								iv,
+								name: "AES-GCM"
+							},
+							cipher,
+							buffer
+						)
+					)
+				] );
+
+				// Ajout du fichier chiffré à la liste
+				//  des fichiers à téléverser.
+				formData.append(
+					"upload",
+					new File( [ encrypted ], file.name, {
+						type: file.type
+					} )
+				);
+			} )
+		);
+	};
 
 	// Mise à jour automatique du quota utilisateur.
 	useEffect( () =>
@@ -307,74 +373,7 @@ export default function FileUpload( {
 							//  renforcé (côté client).
 							if ( formData.get( "encryption" ) === "on" )
 							{
-								// Génération d'une clé de chiffrement et
-								//  sauvegarde dans une variable d'état.
-								const decryptionKey = Buffer.from(
-									crypto.getRandomValues( new Uint8Array( 32 ) )
-								).toString( "base64" );
-
-								setKey( decryptionKey );
-
-								// Génération d'un vecteur d'initialisation.
-								const iv = crypto.getRandomValues(
-									new Uint8Array( 16 )
-								);
-
-								// Importation de la clé de chiffrement.
-								const cipher = await crypto.subtle.importKey(
-									"raw",
-									Buffer.from( decryptionKey, "base64" ),
-									{
-										name: "AES-GCM",
-										length: 256
-									},
-									true,
-									[ "encrypt", "decrypt" ]
-								);
-
-								// Récupération des fichiers à téléverser et
-								//  suppression de ces derniers de la liste
-								//  des fichiers à téléverser.
-								const files = formData.getAll(
-									"upload"
-								) as File[];
-
-								formData.delete( "upload" );
-
-								// Chiffrement des fichiers.
-								await Promise.all(
-									files.map( async ( file ) =>
-									{
-										// Récupération du contenu du fichier.
-										const buffer = new Uint8Array(
-											await file.arrayBuffer()
-										);
-
-										// Chiffrement du contenu du fichier.
-										const encrypted = Buffer.concat( [
-											iv,
-											new Uint8Array(
-												await crypto.subtle.encrypt(
-													{
-														iv,
-														name: "AES-GCM"
-													},
-													cipher,
-													buffer
-												)
-											)
-										] );
-
-										// Ajout du fichier chiffré à la liste
-										//  des fichiers à téléverser.
-										formData.append(
-											"upload",
-											new File( [ encrypted ], file.name, {
-												type: file.type
-											} )
-										);
-									} )
-								);
+								await encryptFiles( formData );
 							}
 
 							// Récupération des données manquantes
@@ -640,9 +639,14 @@ export default function FileUpload( {
 						</details>
 
 						{/* Bouton de validation du formulaire */}
-						<Button
+						<DialogClose
+							onClick={( event ) =>
+							{
+								event.preventDefault();
+								event.currentTarget.form?.requestSubmit();
+							}}
 							disabled={loading}
-							className="float-right ml-1 max-sm:w-[calc(50%-0.25rem)] sm:ml-2"
+							className={merge( buttonVariants(), "w-full" )}
 						>
 							{loading ? (
 								<>
@@ -655,21 +659,6 @@ export default function FileUpload( {
 									Téléverser
 								</>
 							)}
-						</Button>
-
-						{/* Bouton de fermeture du formulaire */}
-						<DialogClose
-							onClick={() => form.reset()}
-							disabled={loading}
-							className={merge(
-								buttonVariants( {
-									variant: "outline"
-								} ),
-								"float-right max-sm:mr-1 max-sm:w-[calc(50%-0.25rem)]"
-							)}
-						>
-							<Ban className="mr-2 h-4 w-4" />
-							Annuler
 						</DialogClose>
 					</form>
 				</Form>
