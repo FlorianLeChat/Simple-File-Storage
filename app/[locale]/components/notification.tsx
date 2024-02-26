@@ -215,7 +215,7 @@ export default function Notifications()
 								>
 									<span className="h-2 w-2 translate-y-1 rounded-full bg-primary" />
 
-									<div className="space-y-1">
+									<section className="space-y-1">
 										<h3 className="text-sm font-medium leading-none">
 											{notification.title}
 										</h3>
@@ -240,7 +240,7 @@ export default function Notifications()
 												}
 											).format( notification.createdAt )}
 										</time>
-									</div>
+									</section>
 								</li>
 							) )}
 						</ul>

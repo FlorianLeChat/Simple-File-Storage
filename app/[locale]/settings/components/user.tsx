@@ -14,6 +14,7 @@ import { Lock,
 	FileImage,
 	Languages } from "lucide-react";
 import { toast } from "sonner";
+import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useLocale } from "next-intl";
@@ -29,7 +30,6 @@ import { Select,
 	SelectValue,
 	SelectContent,
 	SelectTrigger } from "../../components/ui/select";
-
 import { Tooltip,
 	TooltipTrigger,
 	TooltipContent,
@@ -263,57 +263,58 @@ export default function User( { session }: { session: Session } )
 								Mot de passe
 							</FormLabel>
 
-							<FormControl>
-								<div className="flex gap-2">
-									<TooltipProvider>
-										<Input
-											{...field}
-											type={passwordType}
-											disabled={loading}
-											onKeyUp={( event ) => setLocked(
-												event.getModifierState(
-													"CapsLock"
-												)
-											)}
-											onKeyDown={() => setPasswordType( "password" )}
-											maxLength={
-												schema.shape.password._def
-													.options[ 0 ]
-													.maxLength as number
-											}
-											spellCheck="false"
-											placeholder="password"
-											autoComplete="new-password"
-											autoCapitalize="off"
-										/>
+							<TooltipProvider>
+								<FormControl>
+									<Input
+										{...field}
+										type={passwordType}
+										disabled={loading}
+										onKeyUp={( event ) => setLocked(
+											event.getModifierState(
+												"CapsLock"
+											)
+										)}
+										onKeyDown={() => setPasswordType( "password" )}
+										maxLength={
+											schema.shape.password._def
+												.options[ 0 ].maxLength as number
+										}
+										className="inline-block w-[calc(100%-40px-0.5rem)]"
+										spellCheck="false"
+										placeholder="password"
+										autoComplete="new-password"
+										autoCapitalize="off"
+									/>
+								</FormControl>
 
-										<Tooltip>
-											<TooltipTrigger
-												type="button"
-												disabled={loading}
-												className={buttonVariants( {
-													size: "icon",
-													variant: "outline"
-												} )}
-												onClick={() =>
-												{
-													// Génération d'un nouveau mot de passe.
-													form.setValue(
-														"password",
-														generateRandomPassword()
-													);
-												}}
-											>
-												<RefreshCw className="h-4 w-4" />
-											</TooltipTrigger>
+								<Tooltip>
+									<TooltipTrigger
+										type="button"
+										disabled={loading}
+										className={merge(
+											buttonVariants( {
+												size: "icon",
+												variant: "outline"
+											} ),
+											"!mt-0 ml-2 align-bottom"
+										)}
+										onClick={() =>
+										{
+											// Génération d'un nouveau mot de passe.
+											form.setValue(
+												"password",
+												generateRandomPassword()
+											);
+										}}
+									>
+										<RefreshCw className="h-4 w-4" />
+									</TooltipTrigger>
 
-											<TooltipContent>
-												Générer un mot de passe sécurisé
-											</TooltipContent>
-										</Tooltip>
-									</TooltipProvider>
-								</div>
-							</FormControl>
+									<TooltipContent>
+										Générer un mot de passe sécurisé
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
 
 							<FormDescription>
 								Ceci est le mot de passe qui sera utilisé pour
