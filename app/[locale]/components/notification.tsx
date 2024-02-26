@@ -5,11 +5,11 @@
 "use client";
 
 import { toast } from "sonner";
+import serverAction from "@/utilities/recaptcha";
 import { useRouter } from "next/navigation";
 import { BellRing, Check, Loader2 } from "lucide-react";
 import { useEffect, useCallback, useState } from "react";
 
-import serverAction from "@/utilities/recaptcha";
 import { Dialog,
 	DialogTitle,
 	DialogClose,
