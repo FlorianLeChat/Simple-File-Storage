@@ -16,12 +16,7 @@ import { Ban, Check, History, ShieldCheck, ArrowUpRight } from "lucide-react";
 import { Input } from "../../components/ui/input";
 import { Separator } from "../../components/ui/separator";
 import { ScrollArea } from "../../components/ui/scroll-area";
-import { Dialog,
-	DialogTitle,
-	DialogHeader,
-	DialogTrigger,
-	DialogContent,
-	DialogDescription } from "../../components/ui/dialog";
+import { buttonVariants } from "../../components/ui/button";
 import { restoreVersion } from "../actions";
 import { AlertDialog,
 	AlertDialogTitle,
@@ -32,7 +27,6 @@ import { AlertDialog,
 	AlertDialogHeader,
 	AlertDialogTrigger,
 	AlertDialogDescription } from "../../components/ui/alert-dialog";
-import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function FileHistory( {
 	file,
@@ -175,8 +169,8 @@ export default function FileHistory( {
 
 							{/* Accès au fichier */}
 							{version.encrypted ? (
-								<Dialog>
-									<DialogTrigger
+								<AlertDialog>
+									<AlertDialogTrigger
 										className={merge(
 											buttonVariants(),
 											"mr-2 mt-2"
@@ -184,17 +178,17 @@ export default function FileHistory( {
 									>
 										<ArrowUpRight className="mr-2 h-4 w-4" />
 										Accéder
-									</DialogTrigger>
+									</AlertDialogTrigger>
 
-									<DialogContent>
-										<DialogHeader>
-											<DialogTitle>
+									<AlertDialogContent>
+										<AlertDialogHeader>
+											<AlertDialogTitle>
 												<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
 												Veuillez saisir la clé de
 												déchiffrement.
-											</DialogTitle>
+											</AlertDialogTitle>
 
-											<DialogDescription>
+											<AlertDialogDescription>
 												La version de ce fichier est
 												chiffrée par une clé que le
 												serveur ne possède pas. Pour
@@ -211,8 +205,8 @@ export default function FileHistory( {
 													fichier afin de le
 													téléverser à nouveau.
 												</strong>
-											</DialogDescription>
-										</DialogHeader>
+											</AlertDialogDescription>
+										</AlertDialogHeader>
 
 										<Input
 											type="text"
@@ -239,30 +233,36 @@ export default function FileHistory( {
 											autoCapitalize="off"
 										/>
 
-										<Button
-											ref={access}
-											onClick={() =>
-											{
-												// Ouverture de la version dans un nouvel onglet.
-												window.open(
-													new URL(
-														`${ version.path }&key=${ password }`,
-														window.location.href
-													).href,
-													"_blank",
-													"noopener,noreferrer"
-												);
-											}}
-											disabled={
-												states.loading || !password
-											}
-											className="max-sm:w-full"
-										>
-											<ArrowUpRight className="mr-2 h-4 w-4" />
-											Accéder
-										</Button>
-									</DialogContent>
-								</Dialog>
+										<AlertDialogFooter>
+											<AlertDialogCancel>
+												<Ban className="mr-2 h-4 w-4" />
+												Annuler
+											</AlertDialogCancel>
+
+											<AlertDialogAction
+												ref={access}
+												onClick={() =>
+												{
+													// Ouverture de la version dans un nouvel onglet.
+													window.open(
+														new URL(
+															`${ version.path }&key=${ password }`,
+															window.location.href
+														).href,
+														"_blank",
+														"noopener,noreferrer"
+													);
+												}}
+												disabled={
+													states.loading || !password
+												}
+											>
+												<ArrowUpRight className="mr-2 h-4 w-4" />
+												Accéder
+											</AlertDialogAction>
+										</AlertDialogFooter>
+									</AlertDialogContent>
+								</AlertDialog>
 							) : (
 								<a
 									rel="noreferrer noopener"
