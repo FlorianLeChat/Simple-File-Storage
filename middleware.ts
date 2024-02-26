@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import createIntlMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
+import "./utilities/env";
 import { getLanguages } from "./utilities/i18n";
 import type { RecaptchaResponse } from "./interfaces/Recaptcha";
 
