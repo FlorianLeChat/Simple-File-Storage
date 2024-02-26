@@ -504,7 +504,7 @@ export default function RowActions( {
 						</DropdownMenuItem>
 					</DialogTrigger>
 
-					<DialogContent className="overflow-auto max-sm:max-h-full sm:max-h-[50%]">
+					<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[75%]">
 						<DialogHeader>
 							<DialogTitle>
 								<Share2 className="mr-2 inline h-5 w-5 align-text-top" />

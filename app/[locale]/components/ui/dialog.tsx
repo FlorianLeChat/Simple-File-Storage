@@ -60,10 +60,7 @@ function DialogHeader( { className, ...props }: HTMLAttributes<HTMLDivElement> )
 {
 	return (
 		<div
-			className={merge(
-				"flex flex-col space-y-1.5 text-center sm:text-left",
-				className
-			)}
+			className={merge( "flex flex-col space-y-1.5", className )}
 			{...props}
 		/>
 	);
