@@ -19,7 +19,7 @@ export default function Routes()
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<nav className="flex flex-col md:-mx-4 md:flex-row md:space-x-2 lg:w-1/5 lg:flex-col lg:space-x-0 lg:space-y-1">
+		<nav className="flex flex-col flex-wrap gap-2 sm:max-lg:flex-row lg:-mx-4 lg:w-1/5">
 			{/* Listes des routes */}
 			{routes.map( ( route ) => (
 				<Link
