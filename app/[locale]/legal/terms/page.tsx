@@ -32,7 +32,7 @@ export default async function Page( {
 
 	// Affichage du rendu HTML de la page.
 	return (
-		<div className="space-y-6 px-4 pb-12 pt-6 md:p-10">
+		<main className="mx-auto w-full max-w-[1440px] p-4 md:p-8">
 			{/* En-tête de la page */}
 			<header>
 				<h2 className="text-2xl font-bold tracking-tight">
@@ -46,10 +46,10 @@ export default async function Page( {
 			</header>
 
 			{/* Barre verticale de séparation */}
-			<Separator className="my-6" />
+			<Separator className="mb-6 mt-4 md:mb-8 md:mt-6" />
 
 			{/* Contenu principal */}
-			<main className="flex flex-col space-y-6 text-justify text-sm">
+			<section className="flex flex-col space-y-6 text-justify text-sm">
 				<h3 className="text-2xl font-bold tracking-tight">
 					Définitions
 				</h3>
@@ -1280,7 +1280,7 @@ export default async function Page( {
 					le permet pas, il est fait attribution exclusive de
 					juridiction aux tribunaux compétents de Cannes.
 				</p>
-			</main>
-		</div>
+			</section>
+		</main>
 	);
 }
