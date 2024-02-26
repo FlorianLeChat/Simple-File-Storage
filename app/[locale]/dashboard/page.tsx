@@ -136,7 +136,7 @@ export default async function Page( {
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			<header className="flex min-h-[4rem] flex-wrap items-center justify-center gap-y-4 border-b px-4 py-8 md:gap-x-4 md:py-4">
+			<header className="mx-auto flex min-h-[4rem] w-full max-w-screen-2xl flex-wrap items-center justify-center gap-y-4 px-4 py-8 md:gap-x-4 md:py-4">
 				{/* Titre du site */}
 				<h1 className="text-center text-2xl font-semibold max-md:w-full max-md:overflow-hidden max-md:text-ellipsis max-md:whitespace-nowrap md:max-w-fit md:text-xl">
 					<Link href="/">💾 {meta.title as string}</Link>
@@ -158,7 +158,10 @@ export default async function Page( {
 				</aside>
 			</header>
 
-			<main className="p-4 md:p-8">
+			{/* Barre verticale de séparation */}
+			<Separator />
+
+			<main className="mx-auto w-full max-w-[1440px] p-4 md:p-8">
 				{/* Titre et description de la page */}
 				<h2 className="text-2xl font-bold tracking-tight">
 					Tableau de bord
@@ -170,7 +173,7 @@ export default async function Page( {
 				</p>
 
 				{/* Barre verticale de séparation */}
-				<Separator className="mb-6 mt-4 sm:mb-8" />
+				<Separator className="mb-6 mt-4 md:mb-8 md:mt-6" />
 
 				{/* Tableau des fichiers téléversés */}
 				<DataTable data={await getFiles()} />
