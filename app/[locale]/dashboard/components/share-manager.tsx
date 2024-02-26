@@ -220,7 +220,7 @@ export default function ShareManager( {
 	return (
 		<>
 			{/* Lien de partage */}
-			<div className="flex space-x-2">
+			<div className="flex gap-2 max-sm:flex-col">
 				<Input
 					type="url"
 					value={new URL( file.path, window.location.href ).href}
@@ -262,7 +262,7 @@ export default function ShareManager( {
 
 			{/* Liste des utilisateurs partagés */}
 			<section>
-				<h4 className="text-sm font-medium max-sm:text-center">
+				<h4 className="text-sm font-medium">
 					<Users className="mr-2 inline h-4 w-4 align-text-top" />
 					Liste des utilisateurs en partage
 				</h4>
@@ -275,7 +275,7 @@ export default function ShareManager( {
 					file.shares.map( ( share ) => (
 						<article
 							key={share.user.uuid}
-							className="mt-4 flex flex-wrap items-center gap-3 max-sm:justify-center"
+							className="mt-4 flex flex-wrap items-center gap-3"
 						>
 							{/* Avatar de l'utilisateur */}
 							<Avatar>
@@ -309,13 +309,13 @@ export default function ShareManager( {
 							)}
 
 							{/* Autorisations accordées */}
-							<div className="flex gap-3 sm:ml-auto">
+							<div className="flex gap-3 max-sm:w-full sm:ml-auto">
 								<Select
 									disabled={states.loading}
 									defaultValue={share.status}
 									onValueChange={( value ) => submitUpdate( share, value )}
 								>
-									<SelectTrigger className="ml-auto w-auto gap-1">
+									<SelectTrigger className="ml-auto gap-1">
 										<SelectValue />
 									</SelectTrigger>
 
@@ -353,7 +353,7 @@ export default function ShareManager( {
 
 			{/* Ajout de nouveaux utilisateurs */}
 			<section>
-				<h4 className="text-sm font-medium max-sm:text-center">
+				<h4 className="text-sm font-medium">
 					<UserCog className="mr-2 inline h-4 w-4 align-text-top" />
 					Ajouts de nouveaux utilisateurs en partage
 				</h4>
@@ -372,8 +372,8 @@ export default function ShareManager( {
 				/>
 
 				<p className="mt-3 text-sm text-muted-foreground">
-					<strong>{data?.length ?? 0}</strong> résultat(s) trouvé(s)
-					dans la base de données.
+					<strong>{result.length}</strong> résultat(s) trouvé(s) dans
+					la base de données.
 				</p>
 
 				{/* Message d'erreur de la recherche */}
@@ -394,11 +394,11 @@ export default function ShareManager( {
 
 				{/* Résultats de la recherche */}
 				<ScrollArea>
-					<ul className={data && data.length > 0 ? "mt-4" : ""}>
+					<ul className={result.length > 0 ? "mt-4" : ""}>
 						{result.map( ( user, index ) => (
 							<li
 								key={user.id}
-								className="flex flex-wrap items-center gap-3 max-sm:justify-center"
+								className="flex flex-wrap items-center gap-3"
 							>
 								{/* Avatar de l'utilisateur */}
 								<Avatar>
@@ -430,7 +430,7 @@ export default function ShareManager( {
 										submitAddition( user );
 									}}
 									disabled={states.loading}
-									className="sm:ml-auto"
+									className="max-sm:w-full sm:ml-auto"
 								>
 									{states.loading ? (
 										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
