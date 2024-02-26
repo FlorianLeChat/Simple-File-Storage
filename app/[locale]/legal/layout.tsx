@@ -11,8 +11,12 @@ import { unstable_setRequestLocale } from "next-intl/server";
 import { auth } from "@/utilities/next-auth";
 import { generateMetadata } from "../layout";
 
+// Importation des composants.
+import { Separator } from "../components/ui/separator";
+
 const UserMenu = lazy( () => import( "../components/user-menu" ) );
 const Navigation = lazy( () => import( "../components/navigation" ) );
+const Notification = lazy( () => import( "../components/notification" ) );
 
 export default async function Layout( {
 	children,
@@ -32,9 +36,9 @@ export default async function Layout( {
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			<header className="flex min-h-[4rem] flex-wrap items-center justify-center gap-y-4 border-b px-4 py-8 sm:gap-x-4 sm:py-4">
+			<header className="mx-auto flex min-h-[4rem] w-full max-w-screen-2xl flex-wrap items-center justify-center gap-y-4 px-4 py-8 md:gap-x-4 md:py-4">
 				{/* Titre du site */}
-				<h1 className="text-2xl font-semibold max-sm:w-full max-sm:max-w-fit max-sm:overflow-hidden max-sm:text-ellipsis max-sm:whitespace-nowrap sm:text-xl">
+				<h1 className="text-center text-2xl font-semibold max-md:w-full max-md:overflow-hidden max-md:text-ellipsis max-md:whitespace-nowrap md:max-w-fit md:text-xl">
 					<Link href="/">💾 {meta.title as string}</Link>
 				</h1>
 
@@ -46,12 +50,22 @@ export default async function Layout( {
 							source={meta.source}
 						/>
 
-						{/* Menu utilisateur */}
-						<UserMenu session={session} />
+						{/* Éléments latéraux */}
+						<aside className="flex items-center justify-center space-x-4 md:ml-auto">
+							{/* Notifications */}
+							<Notification />
+
+							{/* Menu utilisateur */}
+							<UserMenu session={session} />
+						</aside>
 					</>
 				)}
 			</header>
 
+			{/* Barre verticale de séparation */}
+			<Separator />
+
+			{/* Contenu de la page */}
 			{children}
 		</>
 	);
