@@ -144,7 +144,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 
 						window.history.pushState( null, "", `?${ url }` );
 					}}
-					className="max-w-sm"
+					className="md:max-w-sm"
 					placeholder="Filtrer par nom"
 				/>
 

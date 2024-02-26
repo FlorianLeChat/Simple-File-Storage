@@ -36,7 +36,6 @@ import { deleteFile,
 	deleteSharedUser,
 	changeFileStatus } from "../actions";
 import { Dialog,
-	DialogClose,
 	DialogTitle,
 	DialogHeader,
 	DialogTrigger,
@@ -566,8 +565,8 @@ export default function RowActions( {
 				<DropdownMenuSeparator />
 
 				{/* Renommage de la ressource */}
-				<Dialog>
-					<DialogTrigger asChild>
+				<AlertDialog>
+					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
 							disabled={!isFileOwner}
@@ -576,23 +575,23 @@ export default function RowActions( {
 							<TextCursorInput className="mr-2 h-4 w-4" />
 							Renommer la ressource
 						</DropdownMenuItem>
-					</DialogTrigger>
+					</AlertDialogTrigger>
 
-					<DialogContent className="max-sm:max-w-[calc(100%-2rem)]">
-						<DialogHeader>
-							<DialogTitle>
+					<AlertDialogContent className="max-sm:max-w-[calc(100%-2rem)]">
+						<AlertDialogHeader>
+							<AlertDialogTitle>
 								<TextCursorInput className="mr-2 inline h-5 w-5 align-text-top" />
 								Quel sera le nouveau nom de {selectedCount}{" "}
 								ressource(s) ?
-							</DialogTitle>
+							</AlertDialogTitle>
 
-							<DialogDescription>
+							<AlertDialogDescription>
 								<strong>Cette action est irréversible.</strong>{" "}
 								Cela ne modifiera pas le lien d&lsquo;accès, ni
 								son extension et ni les partages actuellement
 								associés avec d&lsquo;autres utilisateurs.
-							</DialogDescription>
-						</DialogHeader>
+							</AlertDialogDescription>
+						</AlertDialogHeader>
 
 						<Input
 							type="text"
@@ -621,31 +620,37 @@ export default function RowActions( {
 							autoCapitalize="off"
 						/>
 
-						<DialogClose
-							ref={rename}
-							onClick={submitFileRename}
-							disabled={states.loading || !dataFiles[ 0 ].name}
-							className={buttonVariants()}
-						>
-							{states.loading ? (
-								<>
-									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									Mise à jour...
-								</>
-							) : (
-								<>
-									<RefreshCw className="mr-2 h-4 w-4" />
-									Mettre à jour
-								</>
-							)}
-						</DialogClose>
-					</DialogContent>
-				</Dialog>
+						<AlertDialogFooter>
+							<AlertDialogCancel>
+								<Ban className="mr-2 h-4 w-4" />
+								Annuler
+							</AlertDialogCancel>
+
+							<AlertDialogAction
+								ref={rename}
+								onClick={submitFileRename}
+								disabled={states.loading || !dataFiles[ 0 ].name}
+							>
+								{states.loading ? (
+									<>
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+										Mise à jour...
+									</>
+								) : (
+									<>
+										<RefreshCw className="mr-2 h-4 w-4" />
+										Mettre à jour
+									</>
+								)}
+							</AlertDialogAction>
+						</AlertDialogFooter>
+					</AlertDialogContent>
+				</AlertDialog>
 
 				{/* Accès à la ressource */}
 				{dataFiles[ 0 ].versions[ 0 ].encrypted ? (
-					<Dialog>
-						<DialogTrigger asChild>
+					<AlertDialog>
+						<AlertDialogTrigger asChild>
 							<DropdownMenuItem
 								// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
 								onSelect={( event ) => event.preventDefault()}
@@ -653,16 +658,16 @@ export default function RowActions( {
 								<ArrowUpRight className="mr-2 h-4 w-4" />
 								Accéder à la ressource
 							</DropdownMenuItem>
-						</DialogTrigger>
+						</AlertDialogTrigger>
 
-						<DialogContent className="max-sm:max-w-[calc(100%-2rem)]">
-							<DialogHeader>
-								<DialogTitle>
+						<AlertDialogContent className="max-sm:max-w-[calc(100%-2rem)]">
+							<AlertDialogHeader>
+								<AlertDialogTitle>
 									<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
 									Veuillez saisir la clé de déchiffrement.
-								</DialogTitle>
+								</AlertDialogTitle>
 
-								<DialogDescription>
+								<AlertDialogDescription>
 									Ce fichier est chiffré par une clé que le
 									serveur ne possède pas. Pour accéder à la
 									ressource, veuillez saisir la clé de
@@ -677,8 +682,8 @@ export default function RowActions( {
 										pas vous aider car elle ne possède pas
 										la clé de déchiffrement.
 									</strong>
-								</DialogDescription>
-							</DialogHeader>
+								</AlertDialogDescription>
+							</AlertDialogHeader>
 
 							<Input
 								type="text"
@@ -701,28 +706,34 @@ export default function RowActions( {
 								autoCapitalize="off"
 							/>
 
-							<DialogClose
-								ref={access}
-								onClick={() =>
-								{
-									// Ouverture de la ressource dans un nouvel onglet.
-									window.open(
-										new URL(
-											`${ dataFiles[ 0 ].path }?key=${ password }`,
-											window.location.href
-										).href,
-										"_blank",
-										"noopener,noreferrer"
-									);
-								}}
-								disabled={states.loading || !password}
-								className={buttonVariants()}
-							>
-								<ArrowUpRight className="mr-2 h-4 w-4" />
-								Accéder
-							</DialogClose>
-						</DialogContent>
-					</Dialog>
+							<AlertDialogFooter>
+								<AlertDialogCancel>
+									<Ban className="mr-2 h-4 w-4" />
+									Annuler
+								</AlertDialogCancel>
+
+								<AlertDialogAction
+									ref={access}
+									onClick={() =>
+									{
+										// Ouverture de la ressource dans un nouvel onglet.
+										window.open(
+											new URL(
+												`${ dataFiles[ 0 ].path }?key=${ password }`,
+												window.location.href
+											).href,
+											"_blank",
+											"noopener,noreferrer"
+										);
+									}}
+									disabled={states.loading || !password}
+								>
+									<ArrowUpRight className="mr-2 h-4 w-4" />
+									Accéder
+								</AlertDialogAction>
+							</AlertDialogFooter>
+						</AlertDialogContent>
+					</AlertDialog>
 				) : (
 					<a
 						rel="noopener noreferrer"

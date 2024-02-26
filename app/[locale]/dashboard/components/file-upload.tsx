@@ -30,10 +30,6 @@ import { type FileAttributes } from "@/interfaces/File";
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
 import { Switch } from "../../components/ui/switch";
-import { Dialog,
-	DialogClose,
-	DialogTrigger,
-	DialogContent } from "../../components/ui/dialog";
 import { Progress } from "../../components/ui/progress";
 import { Calendar } from "../../components/ui/calendar";
 import { Select,
@@ -52,13 +48,13 @@ import { Form,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
 import { uploadFiles } from "../actions";
-import { AlertDialog,
-	AlertDialogTitle,
-	AlertDialogAction,
-	AlertDialogContent,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogDescription } from "../../components/ui/alert-dialog";
+import { Dialog,
+	DialogClose,
+	DialogTitle,
+	DialogHeader,
+	DialogTrigger,
+	DialogContent,
+	DialogDescription } from "../../components/ui/dialog";
 import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function FileUpload( {
@@ -279,15 +275,15 @@ export default function FileUpload( {
 	if ( key && !open )
 	{
 		return (
-			<AlertDialog defaultOpen>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>
+			<Dialog defaultOpen>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>
 							<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
 							Clé de déchiffrement
-						</AlertDialogTitle>
+						</DialogTitle>
 
-						<AlertDialogDescription>
+						<DialogDescription>
 							Vous avez activé le chiffrement renforcé pour ce
 							téléversement. Vos fichiers ont été chiffrés dans
 							votre navigateur avec une clé de chiffrement
@@ -305,27 +301,25 @@ export default function FileUpload( {
 							<br />
 							<br />
 							<code>{key}</code>
-						</AlertDialogDescription>
-					</AlertDialogHeader>
+						</DialogDescription>
+					</DialogHeader>
 
-					<AlertDialogFooter>
-						<AlertDialogAction
-							onClick={() =>
-							{
-								// Copie dans le presse-papiers.
-								navigator.clipboard.writeText( key );
+					<DialogClose
+						onClick={() =>
+						{
+							// Copie dans le presse-papiers.
+							navigator.clipboard.writeText( key );
 
-								// Réinitialisation de la variable d'état.
-								setKey( "" );
-							}}
-							className="w-full"
-						>
-							<ClipboardCopy className="mr-2 h-4 w-4" />
-							Copier dans le presse-papiers
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+							// Réinitialisation de la variable d'état.
+							setKey( "" );
+						}}
+						className="w-full"
+					>
+						<ClipboardCopy className="mr-2 h-4 w-4" />
+						Copier dans le presse-papiers
+					</DialogClose>
+				</DialogContent>
+			</Dialog>
 		);
 	}
 
@@ -639,15 +633,7 @@ export default function FileUpload( {
 						</details>
 
 						{/* Bouton de validation du formulaire */}
-						<DialogClose
-							onClick={( event ) =>
-							{
-								event.preventDefault();
-								event.currentTarget.form?.requestSubmit();
-							}}
-							disabled={loading}
-							className={merge( buttonVariants(), "w-full" )}
-						>
+						<Button disabled={loading} className="w-full">
 							{loading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -659,7 +645,7 @@ export default function FileUpload( {
 									Téléverser
 								</>
 							)}
-						</DialogClose>
+						</Button>
 					</form>
 				</Form>
 			</DialogContent>
