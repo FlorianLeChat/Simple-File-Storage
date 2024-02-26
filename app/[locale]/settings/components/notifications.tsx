@@ -4,13 +4,18 @@
 
 "use client";
 
+import { Mail,
+	Loader2,
+	BellOff,
+	BellPlus,
+	BellMinus,
+	RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import type { Session } from "next-auth";
 import { useFormState } from "react-dom";
 import { useState, useEffect } from "react";
-import { Loader2, RefreshCw, Bell, User2, EyeOff, Mail } from "lucide-react";
 
 import { Switch } from "../../components/ui/switch";
 import { Button } from "../../components/ui/button";
@@ -173,7 +178,7 @@ export default function Notifications( { session }: { session: Session } )
 										disabled={loading}
 										className="-mx-2 h-auto justify-normal gap-4 p-3 text-left"
 									>
-										<Bell className="h-9 w-auto max-sm:hidden" />
+										<BellPlus className="w-auto max-sm:hidden" />
 
 										<div>
 											<h4 className="mb-2 text-sm font-medium leading-none sm:mb-1">
@@ -206,7 +211,7 @@ export default function Notifications( { session }: { session: Session } )
 										disabled={loading}
 										className="-mx-2 h-auto justify-normal gap-4 p-3 text-left"
 									>
-										<User2 className="max-sm:hidden" />
+										<BellMinus className="max-sm:hidden" />
 
 										<div>
 											<h4 className="mb-2 text-sm font-medium leading-none sm:mb-1">
@@ -240,7 +245,7 @@ export default function Notifications( { session }: { session: Session } )
 										disabled={loading}
 										className="-mx-2 h-auto justify-normal gap-4 p-3 text-left"
 									>
-										<EyeOff className="max-sm:hidden" />
+										<BellOff className="max-sm:hidden" />
 
 										<div>
 											<h4 className="mb-2 text-sm font-medium leading-none sm:mb-1">

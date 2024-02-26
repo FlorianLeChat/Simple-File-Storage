@@ -126,120 +126,116 @@ export default function Account()
 				}}
 				className="space-y-8"
 			>
-				<div className="flex gap-4 max-sm:flex-col">
-					{/* Domaine touché */}
-					<FormField
-						name="area"
-						control={form.control}
-						render={( { field } ) => (
-							<FormItem className="w-full">
-								<FormLabel htmlFor="area">
-									<Globe className="mr-2 inline h-6 w-6" />
-									Domaine
-								</FormLabel>
+				{/* Domaine touché */}
+				<FormField
+					name="area"
+					control={form.control}
+					render={( { field } ) => (
+						<FormItem className="sm:inline-block sm:w-[calc(100%-160px-1rem)]">
+							<FormLabel htmlFor="area">
+								<Globe className="mr-2 inline h-6 w-6" />
+								Domaine
+							</FormLabel>
 
-								<FormControl>
-									<Select
-										{...field}
-										defaultValue={field.value}
-										onValueChange={field.onChange}
+							<FormControl>
+								<Select
+									{...field}
+									defaultValue={field.value}
+									onValueChange={field.onChange}
+								>
+									<SelectTrigger
+										id="area"
+										disabled={loading}
+										className="h-auto"
+										aria-controls="area"
 									>
-										<SelectTrigger
-											id="area"
-											disabled={loading}
-											className="h-auto"
-											aria-controls="area"
-										>
-											<SelectValue />
-										</SelectTrigger>
+										<SelectValue />
+									</SelectTrigger>
 
-										<SelectContent>
-											<SelectItem value="account">
-												Modification des informations du
-												compte
-											</SelectItem>
+									<SelectContent>
+										<SelectItem value="account">
+											Modification des informations du
+											compte
+										</SelectItem>
 
-											<SelectItem value="upload">
-												Téléversement des fichiers vers
-												le serveur
-											</SelectItem>
+										<SelectItem value="upload">
+											Téléversement des fichiers vers le
+											serveur
+										</SelectItem>
 
-											<SelectItem value="sharing">
-												Partages des fichiers avec
-												d&lsquo;autres utilisateurs
-											</SelectItem>
+										<SelectItem value="sharing">
+											Partages des fichiers avec
+											d&lsquo;autres utilisateurs
+										</SelectItem>
 
-											<SelectItem value="other">
-												Autres / Non classé
-											</SelectItem>
-										</SelectContent>
-									</Select>
-								</FormControl>
+										<SelectItem value="other">
+											Autres / Non classé
+										</SelectItem>
+									</SelectContent>
+								</Select>
+							</FormControl>
 
-								<FormDescription className="sr-only">
-									Indiquez le domaine concerné par le bogue.
-								</FormDescription>
+							<FormDescription className="sr-only">
+								Indiquez le domaine concerné par le bogue.
+							</FormDescription>
 
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 
-					{/* Sévérité */}
-					<FormField
-						name="severity"
-						control={form.control}
-						render={( { field } ) => (
-							<FormItem className="max-sm:mt-4">
-								<FormLabel htmlFor="level">
-									<ShieldAlert className="mr-2 inline h-6 w-6" />
-									Sévérité
-								</FormLabel>
+				{/* Sévérité */}
+				<FormField
+					name="severity"
+					control={form.control}
+					render={( { field } ) => (
+						<FormItem className="sm:!mt-0 sm:ml-2 sm:inline-block">
+							<FormLabel htmlFor="level">
+								<ShieldAlert className="mr-2 inline h-6 w-6" />
+								Sévérité
+							</FormLabel>
 
-								<FormControl>
-									<Select
-										{...field}
-										defaultValue={field.value}
-										onValueChange={field.onChange}
+							<FormControl>
+								<Select
+									{...field}
+									defaultValue={field.value}
+									onValueChange={field.onChange}
+								>
+									<SelectTrigger
+										id="level"
+										disabled={loading}
+										className="h-auto w-full truncate sm:w-[160px]"
+										aria-controls="level"
 									>
-										<SelectTrigger
-											id="level"
-											disabled={loading}
-											className="w-full truncate sm:w-[160px]"
-											aria-controls="level"
-										>
-											<SelectValue />
-										</SelectTrigger>
+										<SelectValue />
+									</SelectTrigger>
 
-										<SelectContent>
-											<SelectItem value="critical">
-												Critique
-											</SelectItem>
+									<SelectContent>
+										<SelectItem value="critical">
+											Critique
+										</SelectItem>
 
-											<SelectItem value="high">
-												Élevé
-											</SelectItem>
+										<SelectItem value="high">
+											Élevé
+										</SelectItem>
 
-											<SelectItem value="medium">
-												Moyen
-											</SelectItem>
+										<SelectItem value="medium">
+											Moyen
+										</SelectItem>
 
-											<SelectItem value="low">
-												Bas
-											</SelectItem>
-										</SelectContent>
-									</Select>
-								</FormControl>
+										<SelectItem value="low">Bas</SelectItem>
+									</SelectContent>
+								</Select>
+							</FormControl>
 
-								<FormDescription className="sr-only">
-									Indiquez la sévérité (selon vous) du bogue.
-								</FormDescription>
+							<FormDescription className="sr-only">
+								Indiquez la sévérité (selon vous) du bogue.
+							</FormDescription>
 
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-				</div>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 
 				{/* Sujet */}
 				<FormField

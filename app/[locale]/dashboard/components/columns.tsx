@@ -92,6 +92,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 								<h4 className="font-medium leading-none">
 									{row.original.owner.name}
 								</h4>
+
 								<p className="text-muted-foreground">
 									{row.original.owner.email}
 								</p>
