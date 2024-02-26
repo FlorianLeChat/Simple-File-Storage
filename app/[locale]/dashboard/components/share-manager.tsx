@@ -415,13 +415,13 @@ export default function ShareManager( {
 								</Avatar>
 
 								{/* Informations de l'utilisateur */}
-								<div>
-									<p className="text-sm">{user.name}</p>
+								<p className="text-sm">
+									{user.name}
 
-									<p className="text-sm text-muted-foreground">
+									<span className="block text-muted-foreground">
 										{user.email}
-									</p>
-								</div>
+									</span>
+								</p>
 
 								{/* Bouton d'ajout de l'utilisateur */}
 								<Button

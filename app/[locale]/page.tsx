@@ -118,8 +118,8 @@ export default async function Page( {
 					confidentialité et protéger vos données.
 				</p>
 
-				<div className="grid gap-4 max-xl:mt-8 md:grid-cols-3 md:gap-8 xl:mt-[5%]">
-					<article className="space-y-2 p-4">
+				<ul className="grid gap-4 max-xl:mt-8 md:grid-cols-3 md:gap-8 xl:mt-[5%]">
+					<li className="space-y-2 p-4">
 						<Lock className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
@@ -131,9 +131,9 @@ export default async function Page( {
 							des serveurs sécurisés et à l&lsquo;abri des regards
 							indiscrets.
 						</p>
-					</article>
+					</li>
 
-					<article className="space-y-2 p-4">
+					<li className="space-y-2 p-4">
 						<Smile className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
@@ -145,9 +145,9 @@ export default async function Page( {
 							ergonomique pour tous les utilisateurs, même pour
 							vos grands-parents.
 						</p>
-					</article>
+					</li>
 
-					<article className="space-y-2 p-4">
+					<li className="space-y-2 p-4">
 						<Eye className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
@@ -159,9 +159,9 @@ export default async function Page( {
 							Europe conformément au RGPD pour garantir une
 							intégrité et une confidentialité totale.
 						</p>
-					</article>
+					</li>
 
-					<article className="space-y-2 p-4">
+					<li className="space-y-2 p-4">
 						<Zap className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">Haute performance</h2>
@@ -170,9 +170,9 @@ export default async function Page( {
 							Nos serveurs sont prévus pour garantir une
 							performance optimale et une disponibilité maximale.
 						</p>
-					</article>
+					</li>
 
-					<article className="space-y-2 p-4">
+					<li className="space-y-2 p-4">
 						<PocketKnife className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">Outils efficaces</h2>
@@ -182,9 +182,9 @@ export default async function Page( {
 							l&lsquo;enregistrement et le partage de vos fichiers
 							avec d&lsquo;autres utilisateurs.
 						</p>
-					</article>
+					</li>
 
-					<article className="space-y-2 p-4">
+					<li className="space-y-2 p-4">
 						<Share2 className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
@@ -197,8 +197,8 @@ export default async function Page( {
 							suffisamment de fichiers pour vos besoins
 							quotidiens.
 						</p>
-					</article>
-				</div>
+					</li>
+				</ul>
 			</section>
 		</>
 	);
