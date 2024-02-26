@@ -56,10 +56,7 @@ function AlertDialogHeader( {
 {
 	return (
 		<div
-			className={merge(
-				"flex flex-col space-y-2 text-center sm:text-left",
-				className
-			)}
+			className={merge( "flex flex-col space-y-2", className )}
 			{...props}
 		/>
 	);
