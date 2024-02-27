@@ -594,7 +594,6 @@ export default function RowActions( {
 						</AlertDialogHeader>
 
 						<Input
-							type="text"
 							onInput={( event ) =>
 							{
 								// Mise à jour de l'entrée utilisateur.
@@ -686,7 +685,6 @@ export default function RowActions( {
 							</AlertDialogHeader>
 
 							<Input
-								type="text"
 								onInput={( event ) =>
 								{
 									// Mise à jour de l'entrée utilisateur.

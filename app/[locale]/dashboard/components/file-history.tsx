@@ -209,7 +209,6 @@ export default function FileHistory( {
 										</AlertDialogHeader>
 
 										<Input
-											type="text"
 											onInput={( event ) =>
 											{
 												// Mise à jour de l'entrée utilisateur.
