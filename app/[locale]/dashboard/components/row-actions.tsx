@@ -765,7 +765,7 @@ export default function RowActions( {
 						</DropdownMenuItem>
 					</DialogTrigger>
 
-					<DialogContent>
+					<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[75%]">
 						<DialogHeader>
 							<DialogTitle>
 								<History className="mr-2 inline h-5 w-5 align-text-top" />
