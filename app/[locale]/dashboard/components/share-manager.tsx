@@ -359,7 +359,6 @@ export default function ShareManager( {
 				</h4>
 
 				<Input
-					type="text"
 					value={search}
 					onChange={( event ) => setSearch( event.target.value )}
 					disabled={states.loading}

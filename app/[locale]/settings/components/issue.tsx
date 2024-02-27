@@ -39,7 +39,7 @@ import { createIssue } from "../issue/actions";
 export default function Account()
 {
 	// Déclaration des variables d'état.
-	const [ loading, setLoading ] = useState( false );
+	const [ isLoading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( createIssue, {
 		success: true,
 		reason: ""
@@ -132,48 +132,43 @@ export default function Account()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem className="sm:inline-block sm:w-[calc(100%-160px-1rem)]">
-							<FormLabel htmlFor="area">
+							<FormLabel>
 								<Globe className="mr-2 inline h-6 w-6" />
 								Domaine
 							</FormLabel>
 
-							<FormControl>
-								<Select
-									{...field}
-									defaultValue={field.value}
-									onValueChange={field.onChange}
-								>
-									<SelectTrigger
-										id="area"
-										disabled={loading}
-										className="h-auto"
-										aria-controls="area"
-									>
+							<Select
+								{...field}
+								disabled={isLoading}
+								defaultValue={field.value}
+								onValueChange={field.onChange}
+							>
+								<FormControl>
+									<SelectTrigger className="h-auto">
 										<SelectValue />
 									</SelectTrigger>
+								</FormControl>
 
-									<SelectContent>
-										<SelectItem value="account">
-											Modification des informations du
-											compte
-										</SelectItem>
+								<SelectContent>
+									<SelectItem value="account">
+										Modification des informations du compte
+									</SelectItem>
 
-										<SelectItem value="upload">
-											Téléversement des fichiers vers le
-											serveur
-										</SelectItem>
+									<SelectItem value="upload">
+										Téléversement des fichiers vers le
+										serveur
+									</SelectItem>
 
-										<SelectItem value="sharing">
-											Partages des fichiers avec
-											d&lsquo;autres utilisateurs
-										</SelectItem>
+									<SelectItem value="sharing">
+										Partages des fichiers avec
+										d&lsquo;autres utilisateurs
+									</SelectItem>
 
-										<SelectItem value="other">
-											Autres / Non classé
-										</SelectItem>
-									</SelectContent>
-								</Select>
-							</FormControl>
+									<SelectItem value="other">
+										Autres / Non classé
+									</SelectItem>
+								</SelectContent>
+							</Select>
 
 							<FormDescription className="sr-only">
 								Indiquez le domaine concerné par le bogue.
@@ -190,43 +185,37 @@ export default function Account()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem className="sm:!mt-0 sm:ml-2 sm:inline-block">
-							<FormLabel htmlFor="level">
+							<FormLabel>
 								<ShieldAlert className="mr-2 inline h-6 w-6" />
 								Sévérité
 							</FormLabel>
 
-							<FormControl>
-								<Select
-									{...field}
-									defaultValue={field.value}
-									onValueChange={field.onChange}
-								>
-									<SelectTrigger
-										id="level"
-										disabled={loading}
-										className="h-auto w-full truncate sm:w-[160px]"
-										aria-controls="level"
-									>
+							<Select
+								{...field}
+								disabled={isLoading}
+								defaultValue={field.value}
+								onValueChange={field.onChange}
+							>
+								<FormControl>
+									<SelectTrigger className="h-auto w-full truncate sm:w-[160px]">
 										<SelectValue />
 									</SelectTrigger>
+								</FormControl>
 
-									<SelectContent>
-										<SelectItem value="critical">
-											Critique
-										</SelectItem>
+								<SelectContent>
+									<SelectItem value="critical">
+										Critique
+									</SelectItem>
 
-										<SelectItem value="high">
-											Élevé
-										</SelectItem>
+									<SelectItem value="high">Élevé</SelectItem>
 
-										<SelectItem value="medium">
-											Moyen
-										</SelectItem>
+									<SelectItem value="medium">
+										Moyen
+									</SelectItem>
 
-										<SelectItem value="low">Bas</SelectItem>
-									</SelectContent>
-								</Select>
-							</FormControl>
+									<SelectItem value="low">Bas</SelectItem>
+								</SelectContent>
+							</Select>
 
 							<FormDescription className="sr-only">
 								Indiquez la sévérité (selon vous) du bogue.
@@ -243,7 +232,7 @@ export default function Account()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel htmlFor="subject">
+							<FormLabel>
 								<List className="mr-2 inline h-6 w-6" />
 								Sujet
 							</FormLabel>
@@ -251,8 +240,7 @@ export default function Account()
 							<FormControl>
 								<Input
 									{...field}
-									id="subject"
-									disabled={loading}
+									disabled={isLoading}
 									maxLength={
 										schema.shape.subject.maxLength as number
 									}
@@ -275,7 +263,7 @@ export default function Account()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel htmlFor="description">
+							<FormLabel>
 								<Subtitles className="mr-2 inline h-6 w-6" />
 								Description
 							</FormLabel>
@@ -283,8 +271,7 @@ export default function Account()
 							<FormControl>
 								<Textarea
 									{...field}
-									id="description"
-									disabled={loading}
+									disabled={isLoading}
 									maxLength={
 										schema.shape.description
 											.maxLength as number
@@ -305,8 +292,8 @@ export default function Account()
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={loading} className="max-sm:w-full">
-					{loading ? (
+				<Button disabled={isLoading} className="max-sm:w-full">
+					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							Envoi...

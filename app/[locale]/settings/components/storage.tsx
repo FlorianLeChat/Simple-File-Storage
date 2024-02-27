@@ -26,7 +26,7 @@ import { updateStorage } from "../storage/actions";
 export default function Storage( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
-	const [ loading, setLoading ] = useState( false );
+	const [ isLoading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateStorage, {
 		success: true,
 		reason: ""
@@ -114,7 +114,7 @@ export default function Storage( { session }: { session: Session } )
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel htmlFor="public">
+							<FormLabel htmlFor={field.name}>
 								<Globe className="mr-2 inline h-6 w-6" />
 								Publication des fichiers
 							</FormLabel>
@@ -132,25 +132,25 @@ export default function Storage( { session }: { session: Session } )
 								.
 							</FormDescription>
 
-							<FormControl>
-								<div className="flex items-center space-x-2">
+							<div className="flex items-center space-x-2">
+								<FormControl>
 									<Switch
-										id="public"
-										name="public"
+										id={field.name}
+										name={field.name}
 										checked={field.value}
-										disabled={loading}
+										disabled={isLoading}
 										onCheckedChange={field.onChange}
 									/>
+								</FormControl>
 
-									<Label
-										htmlFor="public"
-										className="leading-5"
-									>
-										Activer la publication automatique des
-										fichiers téléversés sur le serveur
-									</Label>
-								</div>
-							</FormControl>
+								<Label
+									htmlFor={field.name}
+									className="leading-5"
+								>
+									Activer la publication automatique des
+									fichiers téléversés sur le serveur
+								</Label>
+							</div>
 						</FormItem>
 					)}
 				/>
@@ -161,7 +161,7 @@ export default function Storage( { session }: { session: Session } )
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel htmlFor="extension">
+							<FormLabel htmlFor={field.name}>
 								<Link2 className="mr-2 inline h-6 w-6" />
 								Affichage des extensions
 							</FormLabel>
@@ -180,25 +180,25 @@ export default function Storage( { session }: { session: Session } )
 								musiques) sur des lecteurs anciens.
 							</FormDescription>
 
-							<FormControl>
-								<div className="flex items-center space-x-2">
+							<div className="flex items-center space-x-2">
+								<FormControl>
 									<Switch
-										id="extension"
-										name="extension"
+										id={field.name}
+										name={field.name}
 										checked={field.value}
-										disabled={loading}
+										disabled={isLoading}
 										onCheckedChange={field.onChange}
 									/>
+								</FormControl>
 
-									<Label
-										htmlFor="account"
-										className="leading-5"
-									>
-										Afficher les extensions des fichiers
-										dans le lien d&lsquo;accès
-									</Label>
-								</div>
-							</FormControl>
+								<Label
+									htmlFor={field.name}
+									className="leading-5"
+								>
+									Afficher les extensions des fichiers dans le
+									lien d&lsquo;accès
+								</Label>
+							</div>
 						</FormItem>
 					)}
 				/>
@@ -209,7 +209,7 @@ export default function Storage( { session }: { session: Session } )
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel htmlFor="versions">
+							<FormLabel htmlFor={field.name}>
 								<History className="mr-2 inline h-6 w-6" />
 								Enregistrement des anciennes versions
 							</FormLabel>
@@ -237,32 +237,32 @@ export default function Storage( { session }: { session: Session } )
 								</em>
 							</FormDescription>
 
-							<FormControl>
-								<div className="flex items-center space-x-2">
+							<div className="flex items-center space-x-2">
+								<FormControl>
 									<Switch
-										id="versions"
-										name="versions"
+										id={field.name}
+										name={field.name}
 										checked={field.value}
-										disabled={loading}
+										disabled={isLoading}
 										onCheckedChange={field.onChange}
 									/>
+								</FormControl>
 
-									<Label
-										htmlFor="versions"
-										className="leading-5"
-									>
-										Enregistrer automatiquement les
-										anciennes versions des fichiers
-									</Label>
-								</div>
-							</FormControl>
+								<Label
+									htmlFor={field.name}
+									className="leading-5"
+								>
+									Enregistrer automatiquement les anciennes
+									versions des fichiers
+								</Label>
+							</div>
 						</FormItem>
 					)}
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={loading} className="max-sm:w-full">
-					{loading ? (
+				<Button disabled={isLoading} className="max-sm:w-full">
+					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							Veuillez patienter...

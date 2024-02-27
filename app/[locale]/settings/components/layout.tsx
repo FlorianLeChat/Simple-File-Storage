@@ -115,7 +115,7 @@ const colors = [
 export default function Layout( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
-	const [ loading, setLoading ] = useState( false );
+	const [ isLoading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateLayout, {
 		success: true,
 		reason: ""
@@ -217,23 +217,19 @@ export default function Layout( { session }: { session: Session } )
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel htmlFor="font">
+							<FormLabel>
 								<CaseUpper className="mr-2 inline h-6 w-6" />
 								Police de caractères
 							</FormLabel>
 
 							<Select
 								{...field}
-								name="font"
-								disabled={loading}
+								disabled={isLoading}
 								defaultValue={field.value}
 								onValueChange={field.onChange}
 							>
 								<FormControl>
-									<SelectTrigger
-										id="font"
-										aria-controls="font"
-									>
+									<SelectTrigger>
 										<SelectValue />
 									</SelectTrigger>
 								</FormControl>
@@ -293,7 +289,7 @@ export default function Layout( { session }: { session: Session } )
 												{
 													field.onChange( value.name );
 												}}
-												disabled={loading}
+												disabled={isLoading}
 												className={merge(
 													"relative inline-flex h-9 w-9 flex-col items-center justify-center rounded-full border-2 text-xs",
 													field.value === value.name
@@ -340,7 +336,7 @@ export default function Layout( { session }: { session: Session } )
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem className="space-y-1">
-							<FormLabel htmlFor="theme">
+							<FormLabel>
 								<SunMoon className="mr-2 inline h-6 w-6" />
 								Thème
 							</FormLabel>
@@ -354,7 +350,7 @@ export default function Layout( { session }: { session: Session } )
 
 							<RadioGroup
 								value={field.value}
-								disabled={loading}
+								disabled={isLoading}
 								className="grid grid-cols-1 gap-8 pt-2 sm:max-w-md sm:grid-cols-2"
 								onValueChange={field.onChange}
 							>
@@ -463,8 +459,8 @@ export default function Layout( { session }: { session: Session } )
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={loading} className="max-sm:w-full">
-					{loading ? (
+				<Button disabled={isLoading} className="max-sm:w-full">
+					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							Veuillez patienter...

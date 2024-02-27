@@ -39,9 +39,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 export default function Authentification()
 {
 	// Déclaration des variables d'état.
-	const [ locked, setLocked ] = useState( false );
-	const [ focused, setFocused ] = useState( false );
-	const [ loading, setLoading ] = useState( false );
+	const [ isLocked, setLocked ] = useState( false );
+	const [ isFocused, setFocused ] = useState( false );
+	const [ isLoading, setLoading ] = useState( false );
 	const [ inputType, setInputType ] = useState( "password" );
 	const [ signUpState, signUpAction ] = useFormState( signUpAccount, {
 		success: true,
@@ -171,8 +171,7 @@ export default function Authentification()
 									<FormControl>
 										<Input
 											{...field}
-											type="email"
-											disabled={loading}
+											disabled={isLoading}
 											maxLength={
 												schema.shape.email
 													.maxLength as number
@@ -195,8 +194,8 @@ export default function Authentification()
 						/>
 
 						{/* Bouton de validation du formulaire */}
-						<Button disabled={loading}>
-							{loading ? (
+						<Button disabled={isLoading}>
+							{isLoading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									Traitement...
@@ -244,8 +243,7 @@ export default function Authentification()
 									<FormControl>
 										<Input
 											{...field}
-											type="email"
-											disabled={loading}
+											disabled={isLoading}
 											maxLength={
 												schema.shape.email
 													.maxLength as number
@@ -291,9 +289,11 @@ export default function Authentification()
 													)
 												)}
 												onFocus={() => setFocused( true )}
-												disabled={loading}
+												disabled={isLoading}
 												className={`!mt-0 transition-opacity ${
-													!focused ? "opacity-25" : ""
+													!isFocused
+														? "opacity-25"
+														: ""
 												}`}
 												maxLength={
 													schema.shape.password._def
@@ -312,7 +312,8 @@ export default function Authentification()
 												type="button"
 												className={merge(
 													`transition-opacity ${
-														!focused && "opacity-25"
+														!isFocused
+														&& "opacity-25"
 													}`,
 													buttonVariants( {
 														size: "icon",
@@ -352,7 +353,7 @@ export default function Authentification()
 						/>
 
 						{/* Avertissements pour les majuscules */}
-						{locked && (
+						{isLocked && (
 							<p className="text-sm font-bold uppercase text-destructive">
 								Les majuscules ont été activées pour la saisie
 								du mot de passe.
@@ -369,7 +370,7 @@ export default function Authentification()
 										<Switch
 											name="remembered"
 											checked={field.value}
-											disabled={loading}
+											disabled={isLoading}
 											onCheckedChange={field.onChange}
 										/>
 									</FormControl>
@@ -387,8 +388,8 @@ export default function Authentification()
 						/>
 
 						{/* Bouton de validation du formulaire */}
-						<Button disabled={loading}>
-							{loading ? (
+						<Button disabled={isLoading}>
+							{isLoading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									Traitement...
@@ -426,33 +427,25 @@ export default function Authentification()
 			<form
 				action={async ( formData: FormData ) =>
 				{
-					// Vérifications côté client.
-					const state = await form.trigger();
-
-					if ( !state )
-					{
-						return false;
-					}
-
 					// Activation de l'état de chargement.
 					setLoading( true );
+
+					// Ajout du fournisseur d'authentification.
+					formData.set( "provider", "google" );
 
 					// Exécution de l'action côté serveur.
 					return serverAction( signInAction, formData );
 				}}
 			>
-				<input type="hidden" name="provider" value="google" />
-
 				<Button
-					type="submit"
 					variant="outline"
 					disabled={
-						loading
+						isLoading
 						|| process.env.NEXT_PUBLIC_AUTH_GOOGLE_ENABLED !== "true"
 					}
 					className="w-full"
 				>
-					{loading ? (
+					{isLoading ? (
 						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 					) : (
 						<FontAwesomeIcon
@@ -465,21 +458,27 @@ export default function Authentification()
 			</form>
 
 			<form
-				action={( formData ) => serverAction( signInAction, formData )}
-				onSubmit={() => setLoading( true )}
-			>
-				<input type="hidden" name="provider" value="github" />
+				action={async ( formData: FormData ) =>
+				{
+					// Activation de l'état de chargement.
+					setLoading( true );
 
+					// Ajout du fournisseur d'authentification.
+					formData.set( "provider", "github" );
+
+					// Exécution de l'action côté serveur.
+					return serverAction( signInAction, formData );
+				}}
+			>
 				<Button
-					type="submit"
 					variant="outline"
 					disabled={
-						loading
+						isLoading
 						|| process.env.NEXT_PUBLIC_AUTH_GITHUB_ENABLED !== "true"
 					}
 					className="w-full"
 				>
-					{loading ? (
+					{isLoading ? (
 						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 					) : (
 						<FontAwesomeIcon
