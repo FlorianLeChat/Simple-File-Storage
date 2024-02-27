@@ -34,8 +34,8 @@ export default function Notifications( { session }: { session: Session } )
 	const notifications = session.user.notification.split( "+" );
 
 	// Déclaration des variables d'état.
-	const [ push, setPush ] = useState( notifications[ 0 ] !== "off" );
-	const [ loading, setLoading ] = useState( false );
+	const [ isPush, setPush ] = useState( notifications[ 0 ] !== "off" );
+	const [ isLoading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateNotifications, {
 		success: true,
 		reason: ""
@@ -109,7 +109,7 @@ export default function Notifications( { session }: { session: Session } )
 					render={( { field } ) => (
 						<FormItem
 							className={`-mx-2 mb-2 flex items-center space-y-0 rounded-md border p-4 transition-opacity ${
-								!push ? "opacity-50" : ""
+								!isPush ? "opacity-50" : ""
 							}`}
 						>
 							<Mail className="max-sm:hidden" />
@@ -136,7 +136,7 @@ export default function Notifications( { session }: { session: Session } )
 							<FormControl>
 								<Switch
 									checked={field.value}
-									disabled={loading || !push}
+									disabled={isLoading || !isPush}
 									onCheckedChange={field.onChange}
 								/>
 							</FormControl>
@@ -175,7 +175,7 @@ export default function Notifications( { session }: { session: Session } )
 											form.setValue( "level", "all" );
 											setPush( true );
 										}}
-										disabled={loading}
+										disabled={isLoading}
 										className="-mx-2 h-auto justify-normal gap-4 p-3 text-left"
 									>
 										<BellPlus className="w-auto max-sm:hidden" />
@@ -208,7 +208,7 @@ export default function Notifications( { session }: { session: Session } )
 											form.setValue( "level", "necessary" );
 											setPush( true );
 										}}
-										disabled={loading}
+										disabled={isLoading}
 										className="-mx-2 h-auto justify-normal gap-4 p-3 text-left"
 									>
 										<BellMinus className="max-sm:hidden" />
@@ -242,7 +242,7 @@ export default function Notifications( { session }: { session: Session } )
 											form.setValue( "push", false );
 											setPush( false );
 										}}
-										disabled={loading}
+										disabled={isLoading}
 										className="-mx-2 h-auto justify-normal gap-4 p-3 text-left"
 									>
 										<BellOff className="max-sm:hidden" />
@@ -268,8 +268,8 @@ export default function Notifications( { session }: { session: Session } )
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={loading} className="max-sm:w-full">
-					{loading ? (
+				<Button disabled={isLoading} className="max-sm:w-full">
+					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							Mise à jour...

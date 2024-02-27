@@ -53,8 +53,8 @@ const languages = [
 export default function User( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
-	const [ locked, setLocked ] = useState( false );
-	const [ loading, setLoading ] = useState( false );
+	const [ isLocked, setLocked ] = useState( false );
+	const [ isLoading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateUser, {
 		success: true,
 		reason: ""
@@ -186,7 +186,7 @@ export default function User( { session }: { session: Session } )
 							<FormControl>
 								<Input
 									{...field}
-									disabled={loading}
+									disabled={isLoading}
 									maxLength={
 										schema.shape.username
 											.maxLength as number
@@ -211,125 +211,129 @@ export default function User( { session }: { session: Session } )
 					)}
 				/>
 
-				{/* Adresse électronique */}
-				<FormField
-					name="email"
-					control={form.control}
-					render={( { field } ) => (
-						<FormItem
-							className={session.user.oauth ? "hidden" : ""}
-						>
-							<FormLabel htmlFor="email">
-								<AtSign className="mr-2 inline h-6 w-6" />
-								Adresse électronique
-							</FormLabel>
+				{!session.user.oauth && (
+					<>
+						{/* Adresse électronique */}
+						<FormField
+							name="email"
+							control={form.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormLabel>
+										<AtSign className="mr-2 inline h-6 w-6" />
+										Adresse électronique
+									</FormLabel>
 
-							<FormControl>
-								<Input
-									{...field}
-									disabled={loading}
-									maxLength={
-										schema.shape.email.maxLength as number
-									}
-									spellCheck="false"
-									placeholder="name@example.com"
-									autoComplete="email"
-									autoCapitalize="off"
-								/>
-							</FormControl>
+									<FormControl>
+										<Input
+											{...field}
+											disabled={isLoading}
+											maxLength={
+												schema.shape.email
+													.maxLength as number
+											}
+											spellCheck="false"
+											placeholder="name@example.com"
+											autoComplete="email"
+											autoCapitalize="off"
+										/>
+									</FormControl>
 
-							<FormDescription>
-								Ceci est l&lsquo;adresse électronique associée à
-								votre compte. Elle est indispensable pour vous
-								connecter à votre compte et recevoir les
-								notifications via courriel.
-							</FormDescription>
+									<FormDescription>
+										Ceci est l&lsquo;adresse électronique
+										associée à votre compte. Elle est
+										indispensable pour vous connecter à
+										votre compte et recevoir les
+										notifications via courriel.
+									</FormDescription>
 
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-				{/* Mot de passe */}
-				<FormField
-					name="password"
-					control={form.control}
-					render={( { field } ) => (
-						<FormItem
-							className={session.user.oauth ? "hidden" : ""}
-						>
-							<FormLabel>
-								<Lock className="mr-2 inline h-6 w-6" />
-								Mot de passe
-							</FormLabel>
+						{/* Mot de passe */}
+						<FormField
+							name="password"
+							control={form.control}
+							render={( { field } ) => (
+								<FormItem>
+									<FormLabel>
+										<Lock className="mr-2 inline h-6 w-6" />
+										Mot de passe
+									</FormLabel>
 
-							<TooltipProvider>
-								<FormControl>
-									<Input
-										{...field}
-										type={passwordType}
-										disabled={loading}
-										onKeyUp={( event ) => setLocked(
-											event.getModifierState(
-												"CapsLock"
-											)
-										)}
-										onKeyDown={() => setPasswordType( "password" )}
-										maxLength={
-											schema.shape.password._def
-												.options[ 0 ].maxLength as number
-										}
-										className="inline-block w-[calc(100%-40px-0.5rem)]"
-										spellCheck="false"
-										placeholder="password"
-										autoComplete="new-password"
-										autoCapitalize="off"
-									/>
-								</FormControl>
+									<TooltipProvider>
+										<FormControl>
+											<Input
+												{...field}
+												type={passwordType}
+												disabled={isLoading}
+												onKeyUp={( event ) => setLocked(
+													event.getModifierState(
+														"CapsLock"
+													)
+												)}
+												onKeyDown={() => setPasswordType( "password" )}
+												maxLength={
+													schema.shape.password._def
+														.options[ 0 ]
+														.maxLength as number
+												}
+												className="inline-block w-[calc(100%-40px-0.5rem)]"
+												spellCheck="false"
+												placeholder="password"
+												autoComplete="new-password"
+												autoCapitalize="off"
+											/>
+										</FormControl>
 
-								<Tooltip>
-									<TooltipTrigger
-										type="button"
-										disabled={loading}
-										className={merge(
-											buttonVariants( {
-												size: "icon",
-												variant: "outline"
-											} ),
-											"!mt-0 ml-2 align-bottom"
-										)}
-										onClick={() =>
-										{
-											// Génération d'un nouveau mot de passe.
-											form.setValue(
-												"password",
-												generateRandomPassword()
-											);
-										}}
-									>
-										<RefreshCw className="h-4 w-4" />
-									</TooltipTrigger>
+										<Tooltip>
+											<TooltipTrigger
+												type="button"
+												disabled={isLoading}
+												className={merge(
+													buttonVariants( {
+														size: "icon",
+														variant: "outline"
+													} ),
+													"!mt-0 ml-2 align-bottom"
+												)}
+												onClick={() =>
+												{
+													// Génération d'un nouveau mot de passe.
+													form.setValue(
+														"password",
+														generateRandomPassword()
+													);
+												}}
+											>
+												<RefreshCw className="h-4 w-4" />
+											</TooltipTrigger>
 
-									<TooltipContent>
-										Générer un mot de passe sécurisé
-									</TooltipContent>
-								</Tooltip>
-							</TooltipProvider>
+											<TooltipContent>
+												Générer un mot de passe sécurisé
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
 
-							<FormDescription>
-								Ceci est le mot de passe qui sera utilisé pour
-								vous connecter à votre compte si vous ne
-								souhaitez pas utiliser les liens
-								d&lsquo;authentification envoyés par courriel.
-							</FormDescription>
+									<FormDescription>
+										Ceci est le mot de passe qui sera
+										utilisé pour vous connecter à votre
+										compte si vous ne souhaitez pas utiliser
+										les liens d&lsquo;authentification
+										envoyés par courriel.
+									</FormDescription>
 
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</>
+				)}
 
 				{/* Avertissements pour les majuscules */}
-				{locked && (
+				{isLocked && (
 					<p className="!mt-4 text-sm font-bold uppercase text-destructive">
 						Les majuscules ont été activées pour la saisie du mot de
 						passe.
@@ -342,37 +346,34 @@ export default function User( { session }: { session: Session } )
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem className="flex flex-col">
-							<FormLabel htmlFor="language">
+							<FormLabel>
 								<Languages className="mr-2 inline h-6 w-6" />
 								Langue préférée
 							</FormLabel>
 
-							<FormControl>
-								<Select
-									{...field}
-									disabled={loading}
-									defaultValue={field.value}
-									onValueChange={field.onChange}
-								>
-									<SelectTrigger
-										id="language"
-										aria-controls="language"
-									>
+							<Select
+								{...field}
+								disabled={isLoading}
+								defaultValue={field.value}
+								onValueChange={field.onChange}
+							>
+								<FormControl>
+									<SelectTrigger>
 										<SelectValue />
 									</SelectTrigger>
+								</FormControl>
 
-									<SelectContent>
-										{languages.map( ( language ) => (
-											<SelectItem
-												key={language.value}
-												value={language.value}
-											>
-												{language.label}
-											</SelectItem>
-										) )}
-									</SelectContent>
-								</Select>
-							</FormControl>
+								<SelectContent>
+									{languages.map( ( language ) => (
+										<SelectItem
+											key={language.value}
+											value={language.value}
+										>
+											{language.label}
+										</SelectItem>
+									) )}
+								</SelectContent>
+							</Select>
 
 							<FormDescription>
 								Ceci est la langue qui sera utilisée sur
@@ -393,7 +394,7 @@ export default function User( { session }: { session: Session } )
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel htmlFor="email">
+							<FormLabel>
 								<FileImage className="mr-2 inline h-6 w-6" />
 								Avatar
 							</FormLabel>
@@ -406,7 +407,7 @@ export default function User( { session }: { session: Session } )
 										process.env
 											.NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES
 									}
-									disabled={loading}
+									disabled={isLoading}
 									className="file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
 								/>
 							</FormControl>
@@ -427,8 +428,8 @@ export default function User( { session }: { session: Session } )
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={loading} className="max-sm:w-full">
-					{loading ? (
+				<Button disabled={isLoading} className="max-sm:w-full">
+					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							Mise à jour...

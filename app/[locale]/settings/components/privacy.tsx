@@ -26,7 +26,7 @@ import { deleteUserData } from "../privacy/actions";
 export default function Privacy()
 {
 	// Déclaration des variables d'état.
-	const [ loading, setLoading ] = useState( false );
+	const [ isLoading, setLoading ] = useState( false );
 	const [ deleteState, deleteAction ] = useFormState( deleteUserData, {
 		success: true,
 		reason: ""
@@ -115,10 +115,10 @@ export default function Privacy()
 					name="legal"
 					render={() => (
 						<FormItem>
-							<FormLabel htmlFor="files">
+							<Label>
 								<Scale className="mr-2 inline h-6 w-6" />
 								Documents légaux
-							</FormLabel>
+							</Label>
 
 							<ul className="list-inside list-disc text-sm text-muted-foreground underline decoration-dotted underline-offset-4">
 								<li>
@@ -131,6 +131,7 @@ export default function Privacy()
 										seulement).
 									</Link>
 								</li>
+
 								<li>
 									<Link
 										href="/legal/privacy"
@@ -151,7 +152,7 @@ export default function Privacy()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel htmlFor="files">
+							<FormLabel htmlFor={field.name}>
 								<Files className="mr-2 inline h-6 w-6" />
 								Fichiers utilisateur
 							</FormLabel>
@@ -178,28 +179,27 @@ export default function Privacy()
 								partage à d&lsquo;autres utilisateurs.
 							</FormDescription>
 
-							<FormControl>
-								<div className="flex items-center space-x-2">
+							<div className="flex items-center space-x-2">
+								<FormControl>
 									<Switch
-										id="files"
-										name="files"
+										id={field.name}
+										name={field.name}
 										checked={field.value}
-										disabled={loading}
+										disabled={isLoading}
 										onCheckedChange={field.onChange}
 									/>
+								</FormControl>
 
-									<Label
-										htmlFor="files"
-										className="leading-5"
-									>
-										Je veux supprimer mes fichiers ainsi que
-										toutes les données associées
-										définitivement sans possibilité de
-										récupération via l&lsquo;assistance
-										technique.
-									</Label>
-								</div>
-							</FormControl>
+								<Label
+									htmlFor={field.name}
+									className="leading-5"
+								>
+									Je veux supprimer mes fichiers ainsi que
+									toutes les données associées définitivement
+									sans possibilité de récupération via
+									l&lsquo;assistance technique.
+								</Label>
+							</div>
 						</FormItem>
 					)}
 				/>
@@ -210,7 +210,7 @@ export default function Privacy()
 					control={form.control}
 					render={( { field } ) => (
 						<FormItem>
-							<FormLabel htmlFor="account">
+							<FormLabel htmlFor={field.name}>
 								<KeyRound className="mr-2 inline h-6 w-6" />
 								Compte utilisateur
 							</FormLabel>
@@ -245,13 +245,13 @@ export default function Privacy()
 								données de session, l&lsquo;avatar, etc.).
 							</FormDescription>
 
-							<FormControl>
-								<div className="flex items-center space-x-2">
+							<div className="flex items-center space-x-2">
+								<FormControl>
 									<Switch
-										id="account"
-										name="account"
+										id={field.name}
+										name={field.name}
 										checked={field.value}
-										disabled={loading}
+										disabled={isLoading}
 										onCheckedChange={( value ) =>
 										{
 											if ( value )
@@ -263,19 +263,19 @@ export default function Privacy()
 											field.onChange( value );
 										}}
 									/>
+								</FormControl>
 
-									<Label
-										htmlFor="account"
-										className="leading-5"
-									>
-										Je veux supprimer mon compte utilisateur
-										ainsi que toutes les données associées
-										définitivement sans possibilité de
-										récupération via l&lsquo;assistance
-										technique.
-									</Label>
-								</div>
-							</FormControl>
+								<Label
+									htmlFor={field.name}
+									className="leading-5"
+								>
+									Je veux supprimer mon compte utilisateur
+									ainsi que toutes les données associées
+									définitivement sans possibilité de
+									récupération via l&lsquo;assistance
+									technique.
+								</Label>
+							</div>
 						</FormItem>
 					)}
 				/>
@@ -283,12 +283,12 @@ export default function Privacy()
 				{/* Bouton de validation du formulaire */}
 				<Button
 					disabled={
-						loading
+						isLoading
 						|| ( !form.getValues().files && !form.getValues().account )
 					}
 					className="max-sm:w-full"
 				>
-					{loading ? (
+					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							Veuillez patienter...

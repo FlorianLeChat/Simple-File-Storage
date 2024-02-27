@@ -428,12 +428,12 @@ export default function FileUpload( {
 												className="h-1"
 											/>
 
-											<FormDescription className="!mt-1 text-sm text-muted-foreground">
+											<p className="!mt-1 text-sm text-muted-foreground">
 												{percent.toLocaleString()}% du
 												quota actuellement utilisés (
 												{formatSize( quota )} /{" "}
 												{formatSize( maxQuota )})
-											</FormDescription>
+											</p>
 										</>
 									)}
 
@@ -454,7 +454,7 @@ export default function FileUpload( {
 								control={form.control}
 								render={( { field } ) => (
 									<FormItem className="mt-4">
-										<FormLabel>
+										<FormLabel htmlFor={field.name}>
 											<ShieldCheck className="mr-2 inline h-6 w-6" />
 											Chiffrement renforcé{" "}
 											<em>(optionnel)</em>
@@ -479,27 +479,26 @@ export default function FileUpload( {
 											</strong>
 										</FormDescription>
 
-										<FormControl>
-											<div className="flex items-center space-x-2">
+										<div className="flex items-center space-x-2">
+											<FormControl>
 												<Switch
-													id="encryption"
-													name="encryption"
+													id={field.name}
+													name={field.name}
 													checked={field.value}
 													disabled={isLoading}
 													onCheckedChange={
 														field.onChange
 													}
 												/>
+											</FormControl>
 
-												<Label
-													htmlFor="encryption"
-													className="leading-5"
-												>
-													Activer le chiffrement
-													renforcé
-												</Label>
-											</div>
-										</FormControl>
+											<Label
+												htmlFor={field.name}
+												className="leading-5"
+											>
+												Activer le chiffrement renforcé
+											</Label>
+										</div>
 
 										<FormMessage />
 									</FormItem>
@@ -537,94 +536,89 @@ export default function FileUpload( {
 											</strong>
 										</FormDescription>
 
-										<FormControl>
-											<Popover>
-												<PopoverTrigger asChild>
-													<Button
-														variant="outline"
-														disabled={isLoading}
-														className={merge(
-															"w-full justify-start text-left font-normal",
-															!field.value
-																&& "text-muted-foreground"
-														)}
-													>
-														<CalendarDays className="mr-2 h-4 w-4" />
+										<Popover>
+											<FormControl>
+												<PopoverTrigger
+													disabled={isLoading}
+													className={merge(
+														buttonVariants( {
+															variant: "outline"
+														} ),
+														"w-full justify-start text-left font-normal",
+														!field.value
+															&& "text-muted-foreground"
+													)}
+												>
+													<CalendarDays className="mr-2 h-4 w-4" />
 
-														{field.value ? (
-															format(
-																new Date(
-																	field.value
-																),
-																"PPP",
-																{
-																	locale: dateFormat
-																}
-															)
-														) : (
-															<p>
-																Sélectionner une
-																date
-															</p>
-														)}
-													</Button>
-												</PopoverTrigger>
-
-												<PopoverContent className="flex w-auto flex-col space-y-2 p-2">
-													<Select
-														onValueChange={(
-															value
-														) => field.onChange(
-															addDays(
-																new Date(),
-																Number(
-																	value
-																)
-															).toISOString()
-														)}
-													>
-														<SelectTrigger>
-															<SelectValue placeholder="Sélectionner une présélection" />
-														</SelectTrigger>
-
-														<SelectContent position="popper">
-															<SelectItem value="1">
-																Demain
-															</SelectItem>
-
-															<SelectItem value="3">
-																Dans trois jours
-															</SelectItem>
-
-															<SelectItem value="7">
-																Dans une semaine
-															</SelectItem>
-
-															<SelectItem value="31">
-																Dans un mois
-															</SelectItem>
-														</SelectContent>
-													</Select>
-
-													<Calendar
-														mode="single"
-														locale={dateFormat}
-														selected={
+													{field.value ? (
+														format(
 															new Date(
 																field.value
-															)
-														}
-														disabled={( date ) => date > oneYear
-															|| date < today}
-														onSelect={( value ) => field.onChange(
-															value?.toISOString()
-														)}
-														className="rounded-md border"
-														initialFocus
-													/>
-												</PopoverContent>
-											</Popover>
-										</FormControl>
+															),
+															"PPP",
+															{
+																locale: dateFormat
+															}
+														)
+													) : (
+														<>
+															Sélectionner une
+															date
+															d&lsquo;expiration
+														</>
+													)}
+												</PopoverTrigger>
+											</FormControl>
+
+											<PopoverContent className="flex w-auto flex-col space-y-2 p-2">
+												<Select
+													onValueChange={( value ) => field.onChange(
+														addDays(
+															new Date(),
+															Number( value )
+														).toISOString()
+													)}
+												>
+													<SelectTrigger>
+														<SelectValue placeholder="Sélectionner une présélection" />
+													</SelectTrigger>
+
+													<SelectContent position="popper">
+														<SelectItem value="1">
+															Demain
+														</SelectItem>
+
+														<SelectItem value="3">
+															Dans trois jours
+														</SelectItem>
+
+														<SelectItem value="7">
+															Dans une semaine
+														</SelectItem>
+
+														<SelectItem value="31">
+															Dans un mois
+														</SelectItem>
+													</SelectContent>
+												</Select>
+
+												<Calendar
+													mode="single"
+													locale={dateFormat}
+													selected={
+														new Date( field.value )
+													}
+													disabled={( date ) => date > oneYear
+														|| date < today}
+													onSelect={( value ) => field.onChange(
+														value?.toISOString()
+													)}
+													className="rounded-md border"
+													initialFocus
+												/>
+											</PopoverContent>
+										</Popover>
 
 										<FormMessage />
 									</FormItem>
