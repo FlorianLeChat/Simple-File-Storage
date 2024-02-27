@@ -27,11 +27,10 @@ const schema = z.object( {
 
 	NEXT_PUBLIC_RECAPTCHA_ENABLED: z.enum( [ "true", "false" ] ),
 	NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY: z.string().length( 40 ).startsWith( "6Ld" ),
+	RECAPTCHA_SECRET_KEY: z.string().length( 40 ).startsWith( "6Ld" ),
 
 	NEXT_PUBLIC_ANALYTICS_ENABLED: z.enum( [ "true", "false" ] ),
 	NEXT_PUBLIC_ANALYTICS_TAG: z.string().length( 12 ).startsWith( "G-" ),
-
-	RECAPTCHA_SECRET_KEY: z.string().length( 40 ).startsWith( "6Ld" ),
 
 	DATABASE_URL: z.string().url(),
 
@@ -47,11 +46,11 @@ const schema = z.object( {
 	AUTH_URL: z.string().url(),
 	AUTH_SECRET: z.string().min( 1 ),
 
-	AUTH_GOOGLE_ENABLED: z.enum( [ "true", "false" ] ),
+	NEXT_PUBLIC_AUTH_GOOGLE_ENABLED: z.enum( [ "true", "false" ] ),
 	AUTH_GOOGLE_ID: z.string().min( 1 ),
 	AUTH_GOOGLE_SECRET: z.string().min( 1 ),
 
-	AUTH_GITHUB_ENABLED: z.enum( [ "true", "false" ] ),
+	NEXT_PUBLIC_AUTH_GITHUB_ENABLED: z.enum( [ "true", "false" ] ),
 	AUTH_GITHUB_ID: z.string().min( 1 ),
 	AUTH_GITHUB_SECRET: z.string().min( 1 )
 } );
