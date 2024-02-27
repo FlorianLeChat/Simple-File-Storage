@@ -189,7 +189,7 @@ export default function Layout( { session }: { session: Session } )
 	return (
 		<Form {...form}>
 			<form
-				action={async () =>
+				action={async ( formData ) =>
 				{
 					// Vérifications côté client.
 					const state = await form.trigger();
@@ -203,8 +203,6 @@ export default function Layout( { session }: { session: Session } )
 					setLoading( true );
 
 					// Récupération des données du formulaire.
-					const formData = new FormData();
-					formData.append( "font", form.getValues( "font" ) );
 					formData.append( "color", form.getValues( "color" ) );
 					formData.append( "theme", form.getValues( "theme" ) );
 
@@ -224,32 +222,33 @@ export default function Layout( { session }: { session: Session } )
 								Police de caractères
 							</FormLabel>
 
-							<FormControl>
-								<Select
-									{...field}
-									disabled={loading}
-									defaultValue={field.value}
-									onValueChange={field.onChange}
-								>
+							<Select
+								{...field}
+								name="font"
+								disabled={loading}
+								defaultValue={field.value}
+								onValueChange={field.onChange}
+							>
+								<FormControl>
 									<SelectTrigger
 										id="font"
 										aria-controls="font"
 									>
 										<SelectValue />
 									</SelectTrigger>
+								</FormControl>
 
-									<SelectContent>
-										{fonts.map( ( value ) => (
-											<SelectItem
-												key={value.value}
-												value={value.value}
-											>
-												{value.label}
-											</SelectItem>
-										) )}
-									</SelectContent>
-								</Select>
-							</FormControl>
+								<SelectContent>
+									{fonts.map( ( value ) => (
+										<SelectItem
+											key={value.value}
+											value={value.value}
+										>
+											{value.label}
+										</SelectItem>
+									) )}
+								</SelectContent>
+							</Select>
 
 							<FormDescription>
 								Définissez la police que vous souhaitez utiliser
@@ -272,10 +271,10 @@ export default function Layout( { session }: { session: Session } )
 								Couleurs
 							</FormLabel>
 
-							<FormControl>
-								<TooltipProvider>
-									{colors.map( ( value ) => (
-										<Tooltip key={value.name}>
+							<TooltipProvider>
+								{colors.map( ( value ) => (
+									<Tooltip key={value.name}>
+										<FormControl>
 											<TooltipTrigger
 												{...field}
 												type="button"
@@ -309,20 +308,20 @@ export default function Layout( { session }: { session: Session } )
 													)}
 												</span>
 											</TooltipTrigger>
+										</FormControl>
 
-											<TooltipContent
-												align="center"
-												className="rounded-[0.5rem] bg-zinc-900 text-zinc-50"
-											>
-												{value.name
-													.charAt( 0 )
-													.toUpperCase()
-													+ value.name.slice( 1 )}
-											</TooltipContent>
-										</Tooltip>
-									) )}
-								</TooltipProvider>
-							</FormControl>
+										<TooltipContent
+											align="center"
+											className="rounded-[0.5rem] bg-zinc-900 text-zinc-50"
+										>
+											{value.name
+												.charAt( 0 )
+												.toUpperCase()
+												+ value.name.slice( 1 )}
+										</TooltipContent>
+									</Tooltip>
+								) )}
+							</TooltipProvider>
 
 							<FormDescription>
 								Définissez la couleur que vous souhaitez
