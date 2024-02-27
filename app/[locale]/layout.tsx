@@ -236,12 +236,13 @@ export default async function Layout( {
 			lang={locale}
 			style={
 				{
+					colorScheme: theme,
 					"--inter-font": inter.style.fontFamily,
 					"--poppins-font": poppins.style.fontFamily,
 					"--roboto-font": roboto.style.fontFamily
 				} as CSSProperties
 			}
-			className={`${ font } ${ factory ? theme : "" } ${ color }`}
+			className={`${ font } ${ color } ${ factory ? theme : "" }`}
 		>
 			{/* En-tête de la page */}
 			<head>
