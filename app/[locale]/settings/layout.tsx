@@ -50,7 +50,7 @@ export default async function Layout( {
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			<header className="mx-auto flex min-h-[4rem] w-full max-w-screen-2xl flex-wrap items-center justify-center gap-y-4 px-4 py-8 md:gap-x-4 md:py-4">
+			<header className="container mx-auto flex min-h-[4rem] flex-wrap items-center justify-center gap-y-4 px-4 py-8 md:gap-x-4 md:py-4">
 				{/* Titre du site */}
 				<h1 className="text-center text-2xl font-semibold max-md:w-full max-md:overflow-hidden max-md:text-ellipsis max-md:whitespace-nowrap md:max-w-fit md:text-xl">
 					<Link href="/">💾 {meta.title as string}</Link>
@@ -75,7 +75,7 @@ export default async function Layout( {
 			{/* Barre verticale de séparation */}
 			<Separator />
 
-			<main className="mx-auto w-full max-w-[1440px] p-4 md:p-8">
+			<main className="container mx-auto max-w-[1440px] p-4 md:p-8">
 				{/* En-tête de la page */}
 				<header>
 					<h2 className="text-2xl font-bold tracking-tight">
