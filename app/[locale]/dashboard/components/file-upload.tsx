@@ -63,6 +63,18 @@ export default function FileUpload( {
 	states: TableMeta<FileAttributes>;
 } )
 {
+	// Déclaration des variables d'état.
+	const session = useSession();
+	const [ key, setKey ] = useState( "" );
+	const [ quota, setQuota ] = useState( 0 );
+	const [ isOpen, setOpen ] = useState( false );
+	const [ isLoading, setLoading ] = useState( false );
+	const [ uploadState, uploadAction ] = useFormState( uploadFiles, {
+		success: true,
+		reason: "",
+		data: []
+	} );
+
 	// Déclaration des constantes.
 	const today = new Date();
 	const locale = useLocale();
@@ -76,18 +88,6 @@ export default function FileUpload( {
 		upload: z.string().min( 1 )
 	} );
 	const { setFiles } = states;
-
-	// Déclaration des variables d'état.
-	const session = useSession();
-	const [ key, setKey ] = useState( "" );
-	const [ open, setOpen ] = useState( false );
-	const [ quota, setQuota ] = useState( 0 );
-	const [ loading, setLoading ] = useState( false );
-	const [ uploadState, uploadAction ] = useFormState( uploadFiles, {
-		success: true,
-		reason: "",
-		data: []
-	} );
 
 	// Déclaration du formulaire.
 	const percent = Number( ( ( quota / maxQuota ) * 100 ).toFixed( 2 ) );
@@ -272,7 +272,7 @@ export default function FileUpload( {
 	}, [ form, setFiles, uploadState ] );
 
 	// Affichage de la fenêtre modale de clé de déchiffrement.
-	if ( key && !open )
+	if ( key && !isOpen )
 	{
 		return (
 			<Dialog defaultOpen>
@@ -326,10 +326,10 @@ export default function FileUpload( {
 	// Affichage du rendu HTML du composant.
 	return (
 		<Dialog
-			open={open}
+			open={isOpen}
 			onOpenChange={( state ) =>
 			{
-				if ( !loading )
+				if ( !isLoading )
 				{
 					form.reset();
 					setOpen( state );
@@ -416,7 +416,7 @@ export default function FileUpload( {
 													.NEXT_PUBLIC_ACCEPTED_FILE_TYPES
 											}
 											multiple
-											disabled={loading}
+											disabled={isLoading}
 											className="file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
 										/>
 									</FormControl>
@@ -485,7 +485,7 @@ export default function FileUpload( {
 													id="encryption"
 													name="encryption"
 													checked={field.value}
-													disabled={loading}
+													disabled={isLoading}
 													onCheckedChange={
 														field.onChange
 													}
@@ -542,7 +542,7 @@ export default function FileUpload( {
 												<PopoverTrigger asChild>
 													<Button
 														variant="outline"
-														disabled={loading}
+														disabled={isLoading}
 														className={merge(
 															"w-full justify-start text-left font-normal",
 															!field.value
@@ -633,8 +633,8 @@ export default function FileUpload( {
 						</details>
 
 						{/* Bouton de validation du formulaire */}
-						<Button disabled={loading} className="w-full">
-							{loading ? (
+						<Button disabled={isLoading} className="w-full">
+							{isLoading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									Téléversement...

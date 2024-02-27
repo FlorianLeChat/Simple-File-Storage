@@ -12,13 +12,12 @@ import { useEffect, useCallback, useState } from "react";
 
 import { Dialog,
 	DialogTitle,
-	DialogClose,
 	DialogHeader,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "./ui/dialog";
-import { buttonVariants } from "./ui/button";
 import { updateReadState } from "../actions";
+import { Button, buttonVariants } from "./ui/button";
 
 // Typage des notifications provenant de la base de données.
 type Notification = {
@@ -37,6 +36,7 @@ export default function Notifications()
 {
 	// Déclaration des variables d'état.
 	const router = useRouter();
+	const [ isOpen, setOpen ] = useState( false );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ unreadCount, setUnreadCount ] = useState( 0 );
 	const [ notifications, setNotifications ] = useState<Notification[]>( [] );
@@ -132,6 +132,9 @@ export default function Notifications()
 
 		if ( state )
 		{
+			// Fermeture de la boîte de dialogue.
+			setOpen( false );
+
 			// Marquage de toutes les notifications
 			//  comme lues.
 			setUnreadCount( 0 );
@@ -168,7 +171,16 @@ export default function Notifications()
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<Dialog>
+		<Dialog
+			open={isOpen}
+			onOpenChange={( state ) =>
+			{
+				if ( !isLoading )
+				{
+					setOpen( state );
+				}
+			}}
+		>
 			<DialogTrigger
 				className={buttonVariants( {
 					variant: unreadCount > 0 ? "secondary" : "ghost"
@@ -191,7 +203,7 @@ export default function Notifications()
 				)}
 			</DialogTrigger>
 
-			<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:h-3/4">
+			<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[50%]">
 				<DialogHeader>
 					<DialogTitle className="flex items-center">
 						<BellRing className="mr-2 inline h-5 w-5" />
@@ -245,9 +257,10 @@ export default function Notifications()
 							) )}
 						</ul>
 
-						<DialogClose
+						<Button
 							onClick={submitClearing}
-							className={buttonVariants()}
+							disabled={isLoading}
+							className="w-full"
 						>
 							{isLoading ? (
 								<>
@@ -260,7 +273,7 @@ export default function Notifications()
 									Tout marquer comme lu
 								</>
 							)}
-						</DialogClose>
+						</Button>
 					</>
 				)}
 			</DialogContent>
