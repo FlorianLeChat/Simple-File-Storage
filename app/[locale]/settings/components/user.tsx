@@ -52,6 +52,15 @@ const languages = [
 
 export default function User( { session }: { session: Session } )
 {
+	// Déclaration des variables d'état.
+	const [ locked, setLocked ] = useState( false );
+	const [ loading, setLoading ] = useState( false );
+	const [ updateState, updateAction ] = useFormState( updateUser, {
+		success: true,
+		reason: ""
+	} );
+	const [ passwordType, setPasswordType ] = useState( "text" );
+
 	// Déclaration des constantes.
 	const characters =
 		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
@@ -62,15 +71,6 @@ export default function User( { session }: { session: Session } )
 		avatar: z.string().optional()
 	} );
 	const maxAvatarSize = Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE ?? 0 );
-
-	// Déclaration des variables d'état.
-	const [ locked, setLocked ] = useState( false );
-	const [ loading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( updateUser, {
-		success: true,
-		reason: ""
-	} );
-	const [ passwordType, setPasswordType ] = useState( "text" );
 
 	// Déclaration du formulaire.
 	const form = useForm<z.infer<typeof userSchema>>( {
