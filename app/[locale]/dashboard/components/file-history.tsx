@@ -106,7 +106,7 @@ export default function FileHistory( {
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<ScrollArea className="h-72 rounded-md border">
+		<ScrollArea className="rounded-md border">
 			{/* Liste des révisions */}
 			<ul className="p-4">
 				{file.versions.map( ( version, index ) =>
@@ -283,9 +283,12 @@ export default function FileHistory( {
 								<AlertDialogTrigger
 									onClick={() => setIdentifier( version.uuid )}
 									disabled={index === 0 || states.loading}
-									className={buttonVariants( {
-										variant: "secondary"
-									} )}
+									className={merge(
+										buttonVariants( {
+											variant: "secondary"
+										} ),
+										"mt-2"
+									)}
 								>
 									<History className="mr-2 h-4 w-4" />
 									Restaurer
