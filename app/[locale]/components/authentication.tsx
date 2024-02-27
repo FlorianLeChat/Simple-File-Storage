@@ -447,7 +447,8 @@ export default function Authentification()
 					type="submit"
 					variant="outline"
 					disabled={
-						loading || process.env.AUTH_GOOGLE_ENABLED !== "true"
+						loading
+						|| process.env.NEXT_PUBLIC_AUTH_GOOGLE_ENABLED !== "true"
 					}
 					className="w-full"
 				>
@@ -473,7 +474,8 @@ export default function Authentification()
 					type="submit"
 					variant="outline"
 					disabled={
-						loading || process.env.AUTH_GITHUB_ENABLED !== "true"
+						loading
+						|| process.env.NEXT_PUBLIC_AUTH_GITHUB_ENABLED !== "true"
 					}
 					className="w-full"
 				>
