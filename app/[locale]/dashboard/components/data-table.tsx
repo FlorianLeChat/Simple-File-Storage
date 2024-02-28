@@ -109,6 +109,9 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 		onColumnVisibilityChange: setColumnVisibility
 	} );
 
+	// Récupération des données du tableau.
+	const { rows } = table.getRowModel();
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<SessionProvider
@@ -183,7 +186,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 			{/* Affichage des données dans le tableau */}
 			<Table className="rounded-md border">
 				{/* Éléments de l'en-tête */}
-				<TableHeader>
+				<TableHeader className="max-sm:hidden">
 					{table.getHeaderGroups().map( ( group ) => (
 						<TableRow key={group.id}>
 							{group.headers.map( ( header ) => (
@@ -200,27 +203,11 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 					) )}
 				</TableHeader>
 
-				{/* Colonnes et lignes */}
+				{/* Lignes du tableau */}
 				<TableBody>
-					{table.getRowModel().rows?.length ? (
-						table.getRowModel().rows.map( ( row ) => (
-							<TableRow
-								key={row.id}
-								data-state={row.getIsSelected() && "selected"}
-							>
-								{row.getVisibleCells().map( ( cell ) => (
-									<TableCell key={cell.id}>
-										{flexRender(
-											cell.column.columnDef.cell,
-											cell.getContext()
-										)}
-									</TableCell>
-								) )}
-							</TableRow>
-						) )
-					) : (
+					{rows.length === 0 && (
 						<TableRow>
-							{/* Résultat de la recherche */}
+							{/* Aucun fichier trouvé */}
 							<TableCell
 								colSpan={columns.length}
 								className="h-24 text-center"
@@ -229,6 +216,54 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 							</TableCell>
 						</TableRow>
 					)}
+
+					{rows.map( ( row ) => (
+						<TableRow
+							key={row.id}
+							className="max-sm:flex max-sm:flex-col max-sm:gap-4 max-sm:p-4"
+							data-state={row.getIsSelected() && "selected"}
+						>
+							{/* Fichiers trouvés */}
+							{row.getVisibleCells().map( ( cell ) => (
+								<TableCell key={cell.id} className="max-sm:p-0">
+									{table
+										.getHeaderGroups()[ 0 ]
+										.headers.filter(
+											// Filtrage des colonnes à afficher.
+											( header ) => header.id === cell.column.id
+												&& header.id !== "select"
+										)
+										.map( ( header ) => (
+											<span
+												key={header.id}
+												className="sm:hidden"
+											>
+												{header.isPlaceholder
+													? null
+													: flexRender(
+														header.column
+															.columnDef
+															.header,
+														header.getContext()
+													)}
+											</span>
+										) )}
+
+									{/* Séparateur */}
+									{cell.column.id !== "select"
+										&& cell.column.id !== "actions" && (
+										<br className="sm:hidden" />
+									)}
+
+									{/* Données */}
+									{flexRender(
+										cell.column.columnDef.cell,
+										cell.getContext()
+									)}
+								</TableCell>
+							) )}
+						</TableRow>
+					) )}
 				</TableBody>
 			</Table>
 
