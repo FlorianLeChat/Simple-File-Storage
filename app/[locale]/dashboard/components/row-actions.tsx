@@ -14,7 +14,6 @@ import { Ban,
 	Trash,
 	UserX,
 	Globe,
-	Share2,
 	Loader2,
 	RefreshCw,
 	FolderLock,
@@ -34,12 +33,6 @@ import { deleteFile,
 	renameFile,
 	deleteSharedUser,
 	changeFileStatus } from "../actions";
-import { Dialog,
-	DialogTitle,
-	DialogHeader,
-	DialogTrigger,
-	DialogContent,
-	DialogDescription } from "../../components/ui/dialog";
 import { buttonVariants } from "../../components/ui/button";
 import { DropdownMenu,
 	DropdownMenuItem,
@@ -488,34 +481,11 @@ export default function RowActions( {
 				<DropdownMenuSeparator />
 
 				{/* Gestion des partages */}
-				<Dialog>
-					<DialogTrigger asChild>
-						<DropdownMenuItem
-							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
-							disabled={!isFileOwner}
-							onSelect={( event ) => event.preventDefault()}
-						>
-							<Share2 className="mr-2 h-4 w-4" />
-							Gérer les partages
-						</DropdownMenuItem>
-					</DialogTrigger>
-
-					<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[75%]">
-						<DialogHeader>
-							<DialogTitle>
-								<Share2 className="mr-2 inline h-5 w-5 align-text-top" />
-								Partage du fichier
-							</DialogTitle>
-
-							<DialogDescription>
-								Copier et partager le lien d&lsquo;accès aux
-								utilisateurs de votre choix.
-							</DialogDescription>
-						</DialogHeader>
-
-						<ShareManager file={dataFiles[ 0 ]} states={states} />
-					</DialogContent>
-				</Dialog>
+				<ShareManager
+					file={dataFiles[ 0 ]}
+					states={states}
+					disabled={!isFileOwner}
+				/>
 
 				{/* Suppression des partages */}
 				<AlertDialog>

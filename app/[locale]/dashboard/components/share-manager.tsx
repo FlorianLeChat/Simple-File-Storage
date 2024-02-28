@@ -11,6 +11,7 @@ import { useState } from "react";
 import serverAction from "@/utilities/recaptcha";
 import { Trash,
 	Users,
+	Share2,
 	Loader2,
 	UserCog,
 	UserPlus,
@@ -33,15 +34,23 @@ import { Avatar,
 	AvatarImage,
 	AvatarFallback } from "../../components/ui/avatar";
 import { Separator } from "../../components/ui/separator";
-import { ScrollArea } from "../../components/ui/scroll-area";
+import { Dialog,
+	DialogTitle,
+	DialogHeader,
+	DialogTrigger,
+	DialogContent,
+	DialogDescription } from "../../components/ui/dialog";
+import { DropdownMenuItem } from "../../components/ui/dropdown-menu";
 import { addSharedUser, updateSharedUser, deleteSharedUser } from "../actions";
 
 export default function ShareManager( {
 	file,
-	states
+	states,
+	disabled
 }: {
 	file: FileAttributes;
 	states: TableMeta<FileAttributes>;
+	disabled: boolean;
 } )
 {
 	// Déclaration des constantes.
@@ -49,8 +58,10 @@ export default function ShareManager( {
 
 	// Déclaration des variables d'état.
 	const session = useSession();
+	const [ isOpen, setOpen ] = useState( false );
 	const [ search, setSearch ] = useState( "" );
-	const [ copied, setCopied ] = useState( false );
+	const [ loading, setLoading ] = useState( false );
+	const [ isCopied, setCopied ] = useState( false );
 	const { data, error, isLoading } = useSWR<User[]>(
 		search !== ""
 			? `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/search/${ search }`
@@ -68,7 +79,7 @@ export default function ShareManager( {
 	const submitAddition = async ( user: User ) =>
 	{
 		// Activation de l'état de chargement.
-		states.setLoading( true );
+		setLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -80,7 +91,7 @@ export default function ShareManager( {
 		const state = await serverAction( addSharedUser, form );
 
 		// Fin de l'état de chargement.
-		states.setLoading( false );
+		setLoading( false );
 
 		if ( state )
 		{
@@ -119,7 +130,7 @@ export default function ShareManager( {
 	const submitUpdate = async ( share: ShareAttributes, value: string ) =>
 	{
 		// Activation de l'état de chargement.
-		states.setLoading( true );
+		setLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -132,7 +143,7 @@ export default function ShareManager( {
 		const state = await serverAction( updateSharedUser, form );
 
 		// Fin de l'état de chargement.
-		states.setLoading( false );
+		setLoading( false );
 
 		if ( state )
 		{
@@ -159,7 +170,7 @@ export default function ShareManager( {
 	const submitDeletion = async ( share: ShareAttributes ) =>
 	{
 		// Activation de l'état de chargement.
-		states.setLoading( true );
+		setLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -171,7 +182,7 @@ export default function ShareManager( {
 		const state = await serverAction( deleteSharedUser, form );
 
 		// Fin de l'état de chargement.
-		states.setLoading( false );
+		setLoading( false );
 
 		if ( state )
 		{
@@ -218,182 +229,222 @@ export default function ShareManager( {
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<>
-			{/* Lien de partage */}
-			<div className="flex gap-2 max-sm:flex-col">
-				<Input
-					type="url"
-					value={new URL( file.path, window.location.href ).href}
-					readOnly
-				/>
-
-				<Button
-					variant="secondary"
-					onClick={() =>
-					{
-						// Déclaration de la copie du lien.
-						setCopied( true );
-
-						// Réinitialisation de l'état de copie.
-						setTimeout( () => setCopied( false ), 1500 );
-
-						// Copie du lien dans le presse-papiers.
-						navigator.clipboard.writeText(
-							new URL( file.path, window.location.href ).href
-						);
-					}}
+		<Dialog
+			open={isOpen}
+			onOpenChange={( state ) =>
+			{
+				if ( !loading )
+				{
+					setOpen( state );
+				}
+			}}
+		>
+			<DialogTrigger asChild>
+				{/* Bouton de sélection */}
+				<DropdownMenuItem
+					// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+					disabled={disabled}
+					onSelect={( event ) => event.preventDefault()}
 				>
-					{copied ? (
-						<>
-							<ClipboardCheck className="mr-2 h-4 w-4" />
-							Copié
-						</>
+					<Share2 className="mr-2 h-4 w-4" />
+					Gérer les partages
+				</DropdownMenuItem>
+			</DialogTrigger>
+
+			<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[75%]">
+				{/* En-tête de la fenêtre modale */}
+				<DialogHeader>
+					<DialogTitle>
+						<Share2 className="mr-2 inline h-5 w-5 align-text-top" />
+						Partage du fichier
+					</DialogTitle>
+
+					<DialogDescription>
+						Copier et partager le lien d&lsquo;accès aux
+						utilisateurs de votre choix.
+					</DialogDescription>
+				</DialogHeader>
+
+				{/* Lien de partage */}
+				<div className="flex gap-2 max-sm:flex-col">
+					<Input
+						type="url"
+						value={new URL( file.path, window.location.href ).href}
+						readOnly
+					/>
+
+					<Button
+						variant="secondary"
+						onClick={() =>
+						{
+							// Déclaration de la copie du lien.
+							setCopied( true );
+
+							// Réinitialisation de l'état de copie.
+							setTimeout( () => setCopied( false ), 1500 );
+
+							// Copie du lien dans le presse-papiers.
+							navigator.clipboard.writeText(
+								new URL( file.path, window.location.href ).href
+							);
+						}}
+					>
+						{isCopied ? (
+							<>
+								<ClipboardCheck className="mr-2 h-4 w-4" />
+								Copié
+							</>
+						) : (
+							<>
+								<ClipboardCopy className="mr-2 h-4 w-4" />
+								Copier
+							</>
+						)}
+					</Button>
+				</div>
+
+				{/* Séparateur horizontal */}
+				<Separator />
+
+				{/* Liste des utilisateurs partagés */}
+				<section>
+					<h4 className="text-sm font-medium">
+						<Users className="mr-2 inline h-4 w-4 align-text-top" />
+						Liste des utilisateurs en partage
+					</h4>
+
+					{file.shares.length === 0 ? (
+						<p className="mt-4 text-sm text-muted-foreground">
+							Aucun utilisateur n&lsquo;a accès à ce fichier.
+						</p>
 					) : (
-						<>
-							<ClipboardCopy className="mr-2 h-4 w-4" />
-							Copier
-						</>
-					)}
-				</Button>
-			</div>
+						file.shares.map( ( share ) => (
+							<article
+								key={share.user.uuid}
+								className="mt-4 flex flex-wrap items-center gap-3"
+							>
+								{/* Avatar de l'utilisateur */}
+								<Avatar>
+									<AvatarImage
+										src={share.user.image ?? ""}
+										alt={share.user.name ?? ""}
+									/>
 
-			{/* Séparateur horizontal */}
-			<Separator />
+									<AvatarFallback>
+										{( share.user.name ?? share.user.email )
+											?.slice( 0, 2 )
+											.toUpperCase() ?? "SFS"}
+									</AvatarFallback>
+								</Avatar>
 
-			{/* Liste des utilisateurs partagés */}
-			<section>
-				<h4 className="text-sm font-medium">
-					<Users className="mr-2 inline h-4 w-4 align-text-top" />
-					Liste des utilisateurs en partage
-				</h4>
+								{/* Informations de l'utilisateur */}
+								{share.user.name ? (
+									<div className="max-w-60 text-sm">
+										<p className="truncate">
+											{share.user.name}
+										</p>
 
-				{file.shares.length === 0 ? (
-					<p className="mt-4 text-sm text-muted-foreground">
-						Aucun utilisateur n&lsquo;a accès à ce fichier.
-					</p>
-				) : (
-					file.shares.map( ( share ) => (
-						<article
-							key={share.user.uuid}
-							className="mt-4 flex flex-wrap items-center gap-3"
-						>
-							{/* Avatar de l'utilisateur */}
-							<Avatar>
-								<AvatarImage
-									src={share.user.image ?? ""}
-									alt={share.user.name ?? ""}
-								/>
-
-								<AvatarFallback>
-									{( share.user.name ?? share.user.email )
-										?.slice( 0, 2 )
-										.toUpperCase() ?? "SFS"}
-								</AvatarFallback>
-							</Avatar>
-
-							{/* Informations de l'utilisateur */}
-							{share.user.name ? (
-								<div className="max-w-60 text-sm">
-									<p className="truncate">
-										{share.user.name}
-									</p>
-
-									<p className="truncate text-muted-foreground">
+										<p className="truncate text-muted-foreground">
+											{share.user.email}
+										</p>
+									</div>
+								) : (
+									<p className="max-w-60 truncate text-sm">
 										{share.user.email}
 									</p>
+								)}
+
+								{/* Autorisations accordées */}
+								<div className="flex gap-3 max-sm:w-full sm:ml-auto">
+									<Select
+										disabled={loading}
+										defaultValue={share.status}
+										onValueChange={( value ) => submitUpdate( share, value )}
+									>
+										<SelectTrigger className="ml-auto gap-1">
+											<SelectValue />
+										</SelectTrigger>
+
+										<SelectContent className="gap-1">
+											<SelectItem value="read">
+												Lecture
+											</SelectItem>
+
+											<SelectItem value="write">
+												Écriture
+											</SelectItem>
+										</SelectContent>
+									</Select>
+
+									<Button
+										title="Supprimer définitivement"
+										onClick={() => submitDeletion( share )}
+										variant="destructive"
+										disabled={loading}
+									>
+										{loading ? (
+											<Loader2 className="h-4 w-4 animate-spin" />
+										) : (
+											<Trash className="h-4 w-4" />
+										)}
+									</Button>
 								</div>
-							) : (
-								<p className="max-w-60 truncate text-sm">
-									{share.user.email}
-								</p>
-							)}
+							</article>
+						) )
+					)}
+				</section>
 
-							{/* Autorisations accordées */}
-							<div className="flex gap-3 max-sm:w-full sm:ml-auto">
-								<Select
-									disabled={states.loading}
-									defaultValue={share.status}
-									onValueChange={( value ) => submitUpdate( share, value )}
-								>
-									<SelectTrigger className="ml-auto gap-1">
-										<SelectValue />
-									</SelectTrigger>
+				{/* Séparateur horizontal */}
+				<Separator />
 
-									<SelectContent className="gap-1">
-										<SelectItem value="read">
-											Lecture
-										</SelectItem>
+				{/* Ajout de nouveaux utilisateurs */}
+				<section>
+					<h4 className="text-sm font-medium">
+						<UserCog className="mr-2 inline h-4 w-4 align-text-top" />
+						Ajouts de nouveaux utilisateurs en partage
+					</h4>
 
-										<SelectItem value="write">
-											Écriture
-										</SelectItem>
-									</SelectContent>
-								</Select>
+					<Input
+						value={search}
+						onChange={( event ) => setSearch( event.target.value )}
+						disabled={loading}
+						maxLength={50}
+						className="mt-3"
+						spellCheck="false"
+						placeholder="Rechercher..."
+						autoComplete="off"
+						autoCapitalize="off"
+					/>
 
-								<Button
-									title="Supprimer définitivement"
-									onClick={() => submitDeletion( share )}
-									variant="destructive"
-									disabled={states.loading}
-								>
-									{states.loading ? (
-										<Loader2 className="h-4 w-4 animate-spin" />
-									) : (
-										<Trash className="h-4 w-4" />
-									)}
-								</Button>
-							</div>
-						</article>
-					) )
-				)}
-			</section>
-
-			{/* Séparateur horizontal */}
-			<Separator />
-
-			{/* Ajout de nouveaux utilisateurs */}
-			<section>
-				<h4 className="text-sm font-medium">
-					<UserCog className="mr-2 inline h-4 w-4 align-text-top" />
-					Ajouts de nouveaux utilisateurs en partage
-				</h4>
-
-				<Input
-					value={search}
-					onChange={( event ) => setSearch( event.target.value )}
-					disabled={states.loading}
-					maxLength={50}
-					className="mt-3"
-					spellCheck="false"
-					placeholder="Rechercher..."
-					autoComplete="off"
-					autoCapitalize="off"
-				/>
-
-				<p className="mt-3 text-sm text-muted-foreground">
-					<strong>{result.length}</strong> résultat(s) trouvé(s) dans
-					la base de données.
-				</p>
-
-				{/* Message d'erreur de la recherche */}
-				{error && !isLoading && (
-					<p className="mt-4 text-sm font-bold text-destructive">
-						Une erreur est survenue lors de la recherche. Veuillez
-						réessayer.
+					<p className="mt-3 text-sm text-muted-foreground">
+						<strong>{result.length}</strong> résultat(s) trouvé(s)
+						dans la base de données.
 					</p>
-				)}
 
-				{/* État de chargement des résultats */}
-				{isLoading && (
-					<p className="mt-4 text-sm text-muted-foreground">
-						<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
-						Chargement des résultats...
-					</p>
-				)}
+					{/* Message d'erreur de la recherche */}
+					{error && !isLoading && (
+						<p className="mt-4 text-sm font-bold text-destructive">
+							Une erreur est survenue lors de la recherche.
+							Veuillez réessayer.
+						</p>
+					)}
 
-				{/* Résultats de la recherche */}
-				<ScrollArea>
-					<ul className={result.length > 0 ? "mt-4" : ""}>
+					{/* État de chargement des résultats */}
+					{isLoading && (
+						<p className="mt-4 text-sm text-muted-foreground">
+							<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
+							Chargement des résultats...
+						</p>
+					)}
+
+					{/* Résultats de la recherche */}
+					<ul
+						className={
+							result.length > 0
+								? "mt-4 rounded-md border p-4"
+								: ""
+						}
+					>
 						{result.map( ( user, index ) => (
 							<li
 								key={user.id}
@@ -428,10 +479,10 @@ export default function ShareManager( {
 									{
 										submitAddition( user );
 									}}
-									disabled={states.loading}
+									disabled={loading}
 									className="max-sm:w-full sm:ml-auto"
 								>
-									{states.loading ? (
+									{loading ? (
 										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 									) : (
 										<UserPlus className="mr-2 h-4 w-4" />
@@ -446,8 +497,8 @@ export default function ShareManager( {
 							</li>
 						) )}
 					</ul>
-				</ScrollArea>
-			</section>
-		</>
+				</section>
+			</DialogContent>
+		</Dialog>
 	);
 }
