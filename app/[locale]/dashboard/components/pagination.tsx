@@ -28,6 +28,13 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 	// Déclaration des variables d'état.
 	const parameters = useSearchParams();
 
+	// Déclaration des constantes.
+	const maxPages = table.getPageCount();
+	const currentPage = Math.min(
+		table.getState().pagination.pageIndex + 1,
+		maxPages
+	);
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<div className="mt-4 flex items-center justify-end gap-2 max-md:flex-col md:gap-4 lg:gap-8">
@@ -80,8 +87,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 			{/* Changement de page */}
 			<nav className="flex items-center space-x-2">
 				<p className="flex w-[100px] items-center justify-center text-sm font-medium">
-					Page {table.getState().pagination.pageIndex + 1} sur{" "}
-					{table.getPageCount()}
+					Page {currentPage} sur {maxPages}
 				</p>
 
 				<Button
@@ -156,11 +162,11 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 					onClick={() =>
 					{
 						// Définition de la page dans le tableau.
-						table.setPageIndex( table.getPageCount() - 1 );
+						table.setPageIndex( maxPages - 1 );
 
 						// Mise à jour de l'URL.
 						const url = new URLSearchParams( parameters );
-						url.set( "page", table.getPageCount().toString() );
+						url.set( "page", maxPages.toString() );
 
 						window.history.pushState( null, "", `?${ url }` );
 					}}
