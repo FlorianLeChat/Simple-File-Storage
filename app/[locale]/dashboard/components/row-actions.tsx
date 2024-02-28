@@ -7,6 +7,7 @@
 
 import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
+import { useRef } from "react";
 import serverAction from "@/utilities/recaptcha";
 import { Ban,
 	Check,
@@ -15,20 +16,18 @@ import { Ban,
 	Globe,
 	Share2,
 	Loader2,
-	History,
 	RefreshCw,
 	FolderLock,
-	ShieldCheck,
 	ArrowUpRight,
 	ClipboardCopy,
 	MoreHorizontal,
 	TextCursorInput } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { FileAttributes } from "@/interfaces/File";
-import { useRef, useState } from "react";
 import type { Table, Row, TableMeta } from "@tanstack/react-table";
 
 import { Input } from "../../components/ui/input";
+import RequestKey from "./request-key";
 import FileHistory from "./file-history";
 import ShareManager from "./share-manager";
 import { deleteFile,
@@ -68,8 +67,6 @@ export default function RowActions( {
 {
 	// Déclaration des variables d'état.
 	const rename = useRef<HTMLButtonElement>( null );
-	const access = useRef<HTMLButtonElement>( null );
-	const [ password, setPassword ] = useState( "" );
 
 	// Déclaration des constantes.
 	const states = table.options.meta as TableMeta<FileAttributes>;
@@ -648,7 +645,7 @@ export default function RowActions( {
 
 				{/* Accès à la ressource */}
 				{dataFiles[ 0 ].versions[ 0 ].encrypted ? (
-					<AlertDialog>
+					<RequestKey url={`${ dataFiles[ 0 ].path }?key=`}>
 						<AlertDialogTrigger asChild>
 							<DropdownMenuItem
 								// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
@@ -658,80 +655,7 @@ export default function RowActions( {
 								Accéder à la ressource
 							</DropdownMenuItem>
 						</AlertDialogTrigger>
-
-						<AlertDialogContent className="max-sm:max-w-[calc(100%-2rem)]">
-							<AlertDialogHeader>
-								<AlertDialogTitle>
-									<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
-									Veuillez saisir la clé de déchiffrement.
-								</AlertDialogTitle>
-
-								<AlertDialogDescription>
-									Ce fichier est chiffré par une clé que le
-									serveur ne possède pas. Pour accéder à la
-									ressource, veuillez saisir la clé de
-									déchiffrement qui vous a été fournie lors du
-									téléversement du fichier.{" "}
-									<strong>
-										En cas de perte, vous ne pourrez plus
-										accéder à la ressource. Si c&lsquo;est
-										le cas, supprimez le fichier et
-										téléversez-le à nouveau.
-										L&lsquo;assistance technique ne pourra
-										pas vous aider car elle ne possède pas
-										la clé de déchiffrement.
-									</strong>
-								</AlertDialogDescription>
-							</AlertDialogHeader>
-
-							<Input
-								onInput={( event ) =>
-								{
-									// Mise à jour de l'entrée utilisateur.
-									setPassword( event.currentTarget.value );
-								}}
-								onKeyDown={( event ) =>
-								{
-									// Soumission du formulaire par clavier.
-									if ( event.key.endsWith( "Enter" ) )
-									{
-										access.current?.click();
-									}
-								}}
-								spellCheck="false"
-								placeholder="your_key"
-								autoComplete="off"
-								autoCapitalize="off"
-							/>
-
-							<AlertDialogFooter>
-								<AlertDialogCancel>
-									<Ban className="mr-2 h-4 w-4" />
-									Annuler
-								</AlertDialogCancel>
-
-								<AlertDialogAction
-									ref={access}
-									onClick={() =>
-									{
-										// Ouverture de la ressource dans un nouvel onglet.
-										window.open(
-											new URL(
-												`${ dataFiles[ 0 ].path }?key=${ password }`,
-												window.location.href
-											).href,
-											"_blank",
-											"noopener,noreferrer"
-										);
-									}}
-									disabled={states.loading || !password}
-								>
-									<ArrowUpRight className="mr-2 h-4 w-4" />
-									Accéder
-								</AlertDialogAction>
-							</AlertDialogFooter>
-						</AlertDialogContent>
-					</AlertDialog>
+					</RequestKey>
 				) : (
 					<a
 						rel="noopener noreferrer"
@@ -748,37 +672,13 @@ export default function RowActions( {
 				<DropdownMenuSeparator />
 
 				{/* Accès aux révisions */}
-				<Dialog>
-					<DialogTrigger asChild>
-						<DropdownMenuItem
-							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
-							disabled={
-								!isFileOwner
-								|| !session.data?.user.preferences.versions
-							}
-							onSelect={( event ) => event.preventDefault()}
-						>
-							<History className="mr-2 h-4 w-4" />
-							Voir les révisions
-						</DropdownMenuItem>
-					</DialogTrigger>
-
-					<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[75%]">
-						<DialogHeader>
-							<DialogTitle>
-								<History className="mr-2 inline h-5 w-5 align-text-top" />
-								Révisions disponibles
-							</DialogTitle>
-
-							<DialogDescription>
-								Accéder et restaurer une version antérieure du
-								fichier.
-							</DialogDescription>
-						</DialogHeader>
-
-						<FileHistory file={dataFiles[ 0 ]} states={states} />
-					</DialogContent>
-				</Dialog>
+				<FileHistory
+					file={dataFiles[ 0 ]}
+					states={states}
+					disabled={
+						!isFileOwner || !session.data?.user.preferences.versions
+					}
+				/>
 
 				{/* Copie du lien d'accès */}
 				<DropdownMenuItem

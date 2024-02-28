@@ -6,18 +6,24 @@
 
 import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
+import { useState } from "react";
 import serverAction from "@/utilities/recaptcha";
 import { formatSize } from "@/utilities/react-table";
 import type { TableMeta } from "@tanstack/react-table";
-import { useRef, useState } from "react";
 import type { FileAttributes } from "@/interfaces/File";
-import { Ban, Check, History, ShieldCheck, ArrowUpRight } from "lucide-react";
+import { Ban, Check, History, ArrowUpRight } from "lucide-react";
 
-import { Input } from "../../components/ui/input";
+import RequestKey from "./request-key";
 import { Separator } from "../../components/ui/separator";
-import { ScrollArea } from "../../components/ui/scroll-area";
+import { Dialog,
+	DialogTitle,
+	DialogHeader,
+	DialogTrigger,
+	DialogContent,
+	DialogDescription } from "../../components/ui/dialog";
 import { buttonVariants } from "../../components/ui/button";
 import { restoreVersion } from "../actions";
+import { DropdownMenuItem } from "../../components/ui/dropdown-menu";
 import { AlertDialog,
 	AlertDialogTitle,
 	AlertDialogAction,
@@ -30,25 +36,27 @@ import { AlertDialog,
 
 export default function FileHistory( {
 	file,
-	states
+	states,
+	disabled
 }: {
 	file: FileAttributes;
 	states: TableMeta<FileAttributes>;
+	disabled: boolean;
 } )
 {
 	// Déclaration des variables d'état.
-	const [ password, setPassword ] = useState( "" );
+	const [ isOpen, setOpen ] = useState( false );
+	const [ isLoading, setLoading ] = useState( false );
 	const [ identifier, setIdentifier ] = useState( "" );
 
 	// Déclaration des constantes.
 	const count = file.versions.length ?? 0;
-	const access = useRef<HTMLButtonElement>( null );
 
 	// Soumission de la restauration de la version.
 	const submitRestoration = async () =>
 	{
 		// Activation de l'état de chargement.
-		states.setLoading( true );
+		setLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -60,7 +68,7 @@ export default function FileHistory( {
 		const data = await serverAction( restoreVersion, form );
 
 		// Fin de l'état de chargement.
-		states.setLoading( false );
+		setLoading( false );
 
 		if ( data )
 		{
@@ -106,71 +114,118 @@ export default function FileHistory( {
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<ScrollArea className="rounded-md border">
-			{/* Liste des révisions */}
-			<ul className="p-4">
-				{file.versions.map( ( version, index ) =>
+		<Dialog
+			open={isOpen}
+			onOpenChange={( state ) =>
+			{
+				if ( !isLoading )
 				{
-					// Calcul de la différence de taille entre la version
-					//  actuelle et la version précédente.
-					const size =
-						version.size
-						- file.versions[ Math.min( index + 1, count - 1 ) ].size;
+					setOpen( state );
+				}
+			}}
+		>
+			<DialogTrigger asChild>
+				{/* Bouton de sélection */}
+				<DropdownMenuItem
+					// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
+					disabled={disabled}
+					onSelect={( event ) => event.preventDefault()}
+				>
+					<History className="mr-2 h-4 w-4" />
+					Voir les révisions
+				</DropdownMenuItem>
+			</DialogTrigger>
 
-					// Définition de la couleur en fonction de la différence de
-					//  taille (vert si négatif, rouge si positif, gris si nul).
-					const color =
-						size === 0
-							? "text-gray-600"
-							: ( size < 0 && "text-green-600" )
-								|| "text-destructive";
+			<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[75%]">
+				<DialogHeader>
+					<DialogTitle>
+						<History className="mr-2 inline h-5 w-5 align-text-top" />
+						Révisions disponibles
+					</DialogTitle>
 
-					// Mise en forme de la différence de taille.
-					const offset =
-						size < 0
-							? `-${ formatSize( size ) }`
-							: `+${ formatSize( size ) }`;
+					<DialogDescription>
+						Accéder et restaurer une version antérieure du fichier.
+					</DialogDescription>
+				</DialogHeader>
 
-					return (
-						<li key={version.uuid} className="text-sm">
-							{/* Nom de la révision */}
-							<h3>
-								Version{" "}
-								{index === 0
-									? "actuelle"
-									: ( index === count - 1 && "initiale" )
-										|| "antérieure"}{" "}
-								du{" "}
-								{new Intl.DateTimeFormat( undefined, {
-									year: "numeric",
-									month: "long",
-									day: "numeric",
-									hour: "numeric",
-									minute: "numeric",
-									second: "numeric"
-								} ).format( version.date )}
-							</h3>
+				{/* Liste des révisions */}
+				<ul className="rounded-md border p-4">
+					{file.versions.map( ( version, index ) =>
+					{
+						// Calcul de la différence de taille entre la version
+						//  actuelle et la version précédente.
+						const size =
+							version.size
+							- file.versions[ Math.min( index + 1, count - 1 ) ].size;
 
-							{/* Taille et différence de la révision */}
-							<p className="inline-block text-muted-foreground">
-								{formatSize( version.size )}
-							</p>
+						// Définition de la couleur en fonction de la différence de
+						//  taille (vert si négatif, rouge si positif, gris si nul).
+						const color =
+							size === 0
+								? "text-gray-600"
+								: ( size < 0 && "text-green-600" )
+									|| "text-destructive";
 
-							<p
-								className={`ml-2 inline-block font-extrabold ${ color }`}
-							>
-								{index === file.versions.length - 1
-									? ""
-									: offset}
-							</p>
+						// Mise en forme de la différence de taille.
+						const offset =
+							size < 0
+								? `-${ formatSize( size ) }`
+								: `+${ formatSize( size ) }`;
 
-							{/* Saut de ligne */}
-							<br />
+						return (
+							<li key={version.uuid} className="text-sm">
+								{/* Nom de la révision */}
+								<h3>
+									Version{" "}
+									{index === 0
+										? "actuelle"
+										: ( index === count - 1 && "initiale" )
+											|| "antérieure"}{" "}
+									du{" "}
+									{new Intl.DateTimeFormat( undefined, {
+										year: "numeric",
+										month: "long",
+										day: "numeric",
+										hour: "numeric",
+										minute: "numeric",
+										second: "numeric"
+									} ).format( version.date )}
+								</h3>
 
-							{/* Accès au fichier */}
-							{version.encrypted ? (
-								<AlertDialog>
-									<AlertDialogTrigger
+								{/* Taille et différence de la révision */}
+								<p className="inline-block text-muted-foreground">
+									{formatSize( version.size )}
+								</p>
+
+								<p
+									className={`ml-2 inline-block font-extrabold ${ color }`}
+								>
+									{index === file.versions.length - 1
+										? ""
+										: offset}
+								</p>
+
+								{/* Saut de ligne */}
+								<br />
+
+								{/* Accès au fichier */}
+								{version.encrypted ? (
+									<RequestKey url={`${ version.path }&key=`}>
+										<AlertDialogTrigger
+											className={merge(
+												buttonVariants(),
+												"mr-2 mt-2"
+											)}
+										>
+											<ArrowUpRight className="mr-2 h-4 w-4" />
+											Accéder
+										</AlertDialogTrigger>
+									</RequestKey>
+								) : (
+									<a
+										rel="noreferrer noopener"
+										href={version.path}
+										target="_blank"
 										className={merge(
 											buttonVariants(),
 											"mr-2 mt-2"
@@ -178,164 +233,71 @@ export default function FileHistory( {
 									>
 										<ArrowUpRight className="mr-2 h-4 w-4" />
 										Accéder
+									</a>
+								)}
+
+								{/* Restauration de la version */}
+								<AlertDialog>
+									<AlertDialogTrigger
+										onClick={() => setIdentifier( version.uuid )}
+										disabled={index === 0 || isLoading}
+										className={merge(
+											buttonVariants( {
+												variant: "secondary"
+											} ),
+											"mt-2"
+										)}
+									>
+										<History className="mr-2 h-4 w-4" />
+										Restaurer
 									</AlertDialogTrigger>
 
 									<AlertDialogContent>
 										<AlertDialogHeader>
 											<AlertDialogTitle>
-												<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
-												Veuillez saisir la clé de
-												déchiffrement.
+												<History className="mr-2 inline h-5 w-5 align-text-top" />
+												Êtes-vous sûr de vouloir
+												restaurer cette version du
+												fichier ?
 											</AlertDialogTitle>
 
 											<AlertDialogDescription>
-												La version de ce fichier est
-												chiffrée par une clé que le
-												serveur ne possède pas. Pour
-												accéder à la ressource, veuillez
-												saisir la clé de déchiffrement
-												qui vous a été fournie lors du
-												téléversement de cette version.{" "}
-												<strong>
-													En cas de perte, vous ne
-													pouvez plus accéder à cette
-													version. Si c&lsquo;est le
-													cas, restaurez une version
-													antérieure ou supprimez le
-													fichier afin de le
-													téléverser à nouveau.
-												</strong>
+												La version actuelle du fichier
+												sera sauvegardée sous forme
+												d&lsquo;une nouvelle version et
+												remplacée par la version
+												sélectionnée.
 											</AlertDialogDescription>
 										</AlertDialogHeader>
 
-										<Input
-											onInput={( event ) =>
-											{
-												// Mise à jour de l'entrée utilisateur.
-												setPassword(
-													event.currentTarget.value
-												);
-											}}
-											onKeyDown={( event ) =>
-											{
-												// Soumission du formulaire par clavier.
-												if (
-													event.key.endsWith( "Enter" )
-												)
-												{
-													access.current?.click();
-												}
-											}}
-											spellCheck="false"
-											placeholder="your_key"
-											autoComplete="off"
-											autoCapitalize="off"
-										/>
-
 										<AlertDialogFooter>
-											<AlertDialogCancel>
+											<AlertDialogCancel
+												disabled={isLoading}
+											>
 												<Ban className="mr-2 h-4 w-4" />
 												Annuler
 											</AlertDialogCancel>
 
 											<AlertDialogAction
-												ref={access}
-												onClick={() =>
-												{
-													// Ouverture de la version dans un nouvel onglet.
-													window.open(
-														new URL(
-															`${ version.path }&key=${ password }`,
-															window.location.href
-														).href,
-														"_blank",
-														"noopener,noreferrer"
-													);
-												}}
-												disabled={
-													states.loading || !password
-												}
+												onClick={submitRestoration}
+												disabled={isLoading}
 											>
-												<ArrowUpRight className="mr-2 h-4 w-4" />
-												Accéder
+												<Check className="mr-2 h-4 w-4" />
+												Confirmer
 											</AlertDialogAction>
 										</AlertDialogFooter>
 									</AlertDialogContent>
 								</AlertDialog>
-							) : (
-								<a
-									rel="noreferrer noopener"
-									href={version.path}
-									target="_blank"
-									className={merge(
-										buttonVariants(),
-										"mr-2 mt-2"
-									)}
-								>
-									<ArrowUpRight className="mr-2 h-4 w-4" />
-									Accéder
-								</a>
-							)}
 
-							{/* Restauration de la version */}
-							<AlertDialog>
-								<AlertDialogTrigger
-									onClick={() => setIdentifier( version.uuid )}
-									disabled={index === 0 || states.loading}
-									className={merge(
-										buttonVariants( {
-											variant: "secondary"
-										} ),
-										"mt-2"
-									)}
-								>
-									<History className="mr-2 h-4 w-4" />
-									Restaurer
-								</AlertDialogTrigger>
-
-								<AlertDialogContent>
-									<AlertDialogHeader>
-										<AlertDialogTitle>
-											<History className="mr-2 inline h-5 w-5 align-text-top" />
-											Êtes-vous sûr de vouloir restaurer
-											cette version du fichier ?
-										</AlertDialogTitle>
-
-										<AlertDialogDescription>
-											La version actuelle du fichier sera
-											sauvegardée sous forme d&lsquo;une
-											nouvelle version et remplacée par la
-											version sélectionnée.
-										</AlertDialogDescription>
-									</AlertDialogHeader>
-
-									<AlertDialogFooter>
-										<AlertDialogCancel
-											disabled={states.loading}
-										>
-											<Ban className="mr-2 h-4 w-4" />
-											Annuler
-										</AlertDialogCancel>
-
-										<AlertDialogAction
-											onClick={submitRestoration}
-											disabled={states.loading}
-										>
-											<Check className="mr-2 h-4 w-4" />
-											Confirmer
-										</AlertDialogAction>
-									</AlertDialogFooter>
-								</AlertDialogContent>
-							</AlertDialog>
-
-							{/* Séparateur horizontal */}
-							{index !== file.versions.length - 1 && (
-								<Separator className="my-4" />
-							)}
-						</li>
-					);
-				} )}
-			</ul>
-		</ScrollArea>
+								{/* Séparateur horizontal */}
+								{index !== file.versions.length - 1 && (
+									<Separator className="my-4" />
+								)}
+							</li>
+						);
+					} )}
+				</ul>
+			</DialogContent>
+		</Dialog>
 	);
 }
