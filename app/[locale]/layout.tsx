@@ -291,7 +291,13 @@ export default async function Layout( {
 					<Recaptcha />
 
 					{/* Composant des notifications */}
-					<Sonner theme={theme as ToasterProps["theme"]} />
+					<Sonner
+						theme={
+							( session && !session?.user.preferences.default
+								? theme
+								: "system" ) as ToasterProps["theme"]
+						}
+					/>
 
 					{/* Pied de page */}
 					<Footer />
