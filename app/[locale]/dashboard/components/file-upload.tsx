@@ -275,7 +275,7 @@ export default function FileUpload( {
 	if ( key && !isOpen )
 	{
 		return (
-			<Dialog defaultOpen>
+			<Dialog open onOpenChange={() => setKey( "" )}>
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>
@@ -313,7 +313,7 @@ export default function FileUpload( {
 							// Réinitialisation de la variable d'état.
 							setKey( "" );
 						}}
-						className="w-full"
+						className={merge( buttonVariants(), "w-full" )}
 					>
 						<ClipboardCopy className="mr-2 h-4 w-4" />
 						Copier dans le presse-papiers
