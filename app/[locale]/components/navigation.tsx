@@ -14,6 +14,7 @@ import { Bug,
 	Palette,
 	Settings,
 	LayoutDashboard } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import GitHubDark from "@/public/assets/images/github-dark.png";
 import GitHubLight from "@/public/assets/images/github-light.png";
@@ -97,7 +98,7 @@ export const routes: {
 	}
 ];
 
-export default function Header( {
+export default function Navigation( {
 	theme,
 	source
 }: {
@@ -105,6 +106,22 @@ export default function Header( {
 	source: string;
 } )
 {
+	// Déclaration des variables d'état.
+	const [ image, setImage ] = useState(
+		theme === "dark" ? GitHubLight : GitHubDark
+	);
+
+	// Détection du thème préféré par l'utilisateur.
+	//  Note : cette détection est nécessaire pour le cas où l'utilisateur
+	//   n'a pas de préférence enregistrée dans son compte.
+	useEffect( () =>
+	{
+		if ( document.documentElement.classList.contains( "dark" ) )
+		{
+			setImage( GitHubLight );
+		}
+	}, [ theme ] );
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<NavigationMenu className="flex items-center max-md:flex-col">
@@ -145,11 +162,7 @@ export default function Header( {
 									className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-4 no-underline outline-none focus:shadow-md"
 								>
 									<Image
-										src={
-											theme === "dark"
-												? GitHubLight
-												: GitHubDark
-										}
+										src={image}
 										alt="GitHub"
 										className="w-[100px] self-center rounded-md object-cover"
 									/>
