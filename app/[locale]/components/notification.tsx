@@ -185,7 +185,6 @@ export default function Notifications()
 				className={buttonVariants( {
 					variant: unreadCount > 0 ? "secondary" : "ghost"
 				} )}
-				aria-controls="notifications"
 			>
 				{isLoading ? (
 					<Loader2 className="inline h-5 w-5 animate-spin" />

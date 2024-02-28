@@ -117,7 +117,9 @@ export default function Header( {
 							className={navigationMenuTriggerStyle()}
 						>
 							<LayoutDashboard className="h-5 w-5 md:hidden" />
-							<p className="hidden md:inline">Tableau de bord</p>
+							<span className="hidden md:inline">
+								Tableau de bord
+							</span>
 						</Link>
 					</NavigationMenuLink>
 				</NavigationMenuItem>
@@ -129,7 +131,7 @@ export default function Header( {
 						aria-controls="settings"
 					>
 						<Settings className="h-5 w-5 md:hidden" />
-						<p className="hidden md:inline">Paramètres</p>
+						<span className="hidden md:inline">Paramètres</span>
 					</NavigationMenuTrigger>
 
 					<NavigationMenuContent>

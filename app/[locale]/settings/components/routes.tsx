@@ -42,16 +42,16 @@ export default function Routes()
 				type="button"
 				variant="ghost"
 				data-cc="show-preferencesModal"
-				className="h-auto min-h-[2.5rem] justify-start"
+				className="h-auto min-h-[2.5rem] justify-start text-left"
 			>
 				<Cookie className="mr-2" />
 
-				<p className="text-left">
+				<span>
 					Cookies
 					<small className="hidden lg:block">
 						Service fourni par <u>Cookie Consent</u>
 					</small>
-				</p>
+				</span>
 			</Button>
 		</nav>
 	);
