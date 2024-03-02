@@ -1,6 +1,6 @@
 //
-// Composant générique de l'avatar.
-//  Source : https://ui.shadcn.com/docs/components/avatar
+// Composant générique de la fenêtre modale d'alerte.
+//  Source : https://ui.shadcn.com/docs/components/alert-dialog
 //
 import { merge } from "@/utilities/tailwind";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
