@@ -39,7 +39,6 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 	// Déclaration des variables d'état.
 	const parameters = useSearchParams();
 	const [ files, setFiles ] = useState( data );
-	const [ loading, setLoading ] = useState( false );
 	const [ sorting, setSorting ] = useState<SortingState>( [
 		{
 			id: parameters.get( "asc" ) ?? parameters.get( "desc" ) ?? "name",
@@ -78,9 +77,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 		data: files,
 		meta: {
 			files,
-			loading,
-			setFiles,
-			setLoading
+			setFiles
 		},
 		state: {
 			sorting,

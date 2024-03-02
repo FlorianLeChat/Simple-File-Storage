@@ -8,13 +8,7 @@ declare module "@tanstack/table-core" {
 		// Fichiers affichés dans le tableau.
 		files: FileAttributes[];
 
-		// Lignes en cours de chargement.
-		loading: boolean;
-
 		// Fonction de mise à jour des fichiers.
 		setFiles: Dispatch<SetStateAction<FileAttributes[]>>;
-
-		// Fonction de mise à jour de l'état de chargement.
-		setLoading: Dispatch<SetStateAction<boolean>>;
 	}
 }
