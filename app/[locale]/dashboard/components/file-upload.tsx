@@ -348,6 +348,16 @@ export default function FileUpload( {
 			</DialogTrigger>
 
 			<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[75%]">
+				<DialogHeader className="sr-only">
+					<DialogTitle>Téléversement de fichiers</DialogTitle>
+
+					<DialogDescription>
+						Ceci est le formulaire de téléversement de fichiers.
+						Vous pouvez utiliser des paramètres supplémentaires pour
+						contrôler la façon dont les fichiers sont téléversés.
+					</DialogDescription>
+				</DialogHeader>
+
 				<Form {...form}>
 					<form
 						action={async ( formData: FormData ) =>
@@ -398,7 +408,12 @@ export default function FileUpload( {
 										dépend de votre connexion Internet et
 										des capacités matérielles de votre
 										ordinateur.{" "}
-										<strong>
+										<strong
+											hidden={
+												!session.data?.user.preferences
+													.versions
+											}
+										>
 											Si un fichier du même nom existe
 											déjà, il sera remplacé et une
 											nouvelle révision sera créée pour
