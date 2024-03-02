@@ -3,7 +3,7 @@
 //  Source : https://next-auth.js.org/providers/email#customizing-emails
 //
 import { createTransport } from "nodemailer";
-import type { SendVerificationRequestParams } from "@auth/core/providers/email";
+import type { EmailConfig } from "@auth/core/providers/email";
 
 // Couleurs utilisées dans les courriels.
 const colors = {
@@ -61,17 +61,22 @@ function text( { url, host }: { url: string; host: string } )
 }
 
 // Fonction d'envoi des courriels via Nodemailer.
-export default async function sendVerificationRequest(
-	parameters: SendVerificationRequestParams
-)
+export default async function sendVerificationRequest( {
+	url,
+	provider: { server, from },
+	identifier
+}: {
+	url: string;
+	provider: EmailConfig;
+	identifier: string;
+} )
 {
-	const { url, provider, identifier } = parameters;
-	const { host } = new URL( parameters.url );
+	const { host } = new URL( url );
+	const transport = createTransport( server );
 
-	const transport = createTransport( provider.server );
 	const result = await transport.sendMail( {
 		to: identifier,
-		from: provider.from,
+		from,
 		text: text( { url, host } ),
 		html: html( { url, host } ),
 		subject: "Connexion à votre compte Simple File Storage"
