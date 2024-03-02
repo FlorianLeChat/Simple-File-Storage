@@ -7,7 +7,6 @@
 
 import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
-import { useRef } from "react";
 import serverAction from "@/utilities/recaptcha";
 import { Ban,
 	Check,
@@ -23,6 +22,7 @@ import { Ban,
 	TextCursorInput } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { FileAttributes } from "@/interfaces/File";
+import { useRef, useState } from "react";
 import type { Table, Row, TableMeta } from "@tanstack/react-table";
 
 import { Input } from "../../components/ui/input";
@@ -60,6 +60,7 @@ export default function RowActions( {
 {
 	// Déclaration des variables d'état.
 	const rename = useRef<HTMLButtonElement>( null );
+	const [ isLoading, setLoading ] = useState( false );
 
 	// Déclaration des constantes.
 	const states = table.options.meta as TableMeta<FileAttributes>;
@@ -80,7 +81,7 @@ export default function RowActions( {
 	const submitMakePublic = async () =>
 	{
 		// Activation de l'état de chargement.
-		states.setLoading( true );
+		setLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -96,7 +97,7 @@ export default function RowActions( {
 		const files = ( await serverAction( changeFileStatus, form ) ) as string[];
 
 		// Fin de l'état de chargement.
-		states.setLoading( false );
+		setLoading( false );
 
 		if ( files.length > 0 )
 		{
@@ -146,7 +147,7 @@ export default function RowActions( {
 	const submitMakePrivate = async () =>
 	{
 		// Activation de l'état de chargement.
-		states.setLoading( true );
+		setLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -162,7 +163,7 @@ export default function RowActions( {
 		const files = ( await serverAction( changeFileStatus, form ) ) as string[];
 
 		// Fin de l'état de chargement.
-		states.setLoading( false );
+		setLoading( false );
 
 		if ( files.length > 0 )
 		{
@@ -204,7 +205,7 @@ export default function RowActions( {
 	const submitFileRename = async () =>
 	{
 		// Activation de l'état de chargement.
-		states.setLoading( true );
+		setLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -220,7 +221,7 @@ export default function RowActions( {
 		const files = ( await serverAction( renameFile, form ) ) as string[];
 
 		// Fin de l'état de chargement.
-		states.setLoading( false );
+		setLoading( false );
 
 		if ( files.length > 0 )
 		{
@@ -255,7 +256,7 @@ export default function RowActions( {
 	const submitRemoveShare = async () =>
 	{
 		// Activation de l'état de chargement.
-		states.setLoading( true );
+		setLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -269,7 +270,7 @@ export default function RowActions( {
 		const files = ( await serverAction( deleteFile, form ) ) as string[];
 
 		// Fin de l'état de chargement.
-		states.setLoading( false );
+		setLoading( false );
 
 		if ( files.length > 0 )
 		{
@@ -309,7 +310,7 @@ export default function RowActions( {
 	const submitRemoveAllShares = async () =>
 	{
 		// Activation de l'état de chargement.
-		states.setLoading( true );
+		setLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -323,7 +324,7 @@ export default function RowActions( {
 		const state = await serverAction( deleteSharedUser, form );
 
 		// Fin de l'état de chargement.
-		states.setLoading( false );
+		setLoading( false );
 
 		if ( state )
 		{
@@ -361,20 +362,16 @@ export default function RowActions( {
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<DropdownMenu open={states.loading ? false : undefined}>
+		<DropdownMenu open={isLoading ? false : undefined}>
 			{/* Bouton d'ouverture du menu */}
 			<DropdownMenuTrigger
-				title={
-					states.loading
-						? "Mise à jour en cours..."
-						: "Ouvrir le menu"
-				}
+				title="Ouvrir le menu des actions"
 				className={merge(
 					buttonVariants( { variant: "ghost" } ),
 					"h-8 w-8 p-0"
 				)}
 			>
-				{states.loading ? (
+				{isLoading ? (
 					<Loader2 className="h-4 w-4 animate-spin" />
 				) : (
 					<MoreHorizontal className="h-4 w-4" />
@@ -595,9 +592,9 @@ export default function RowActions( {
 							<AlertDialogAction
 								ref={rename}
 								onClick={submitFileRename}
-								disabled={states.loading || !dataFiles[ 0 ].name}
+								disabled={isLoading || !dataFiles[ 0 ].name}
 							>
-								{states.loading ? (
+								{isLoading ? (
 									<>
 										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 										Mise à jour...
