@@ -32,7 +32,7 @@ export default async function Page( {
 
 	// Affichage du rendu HTML de la page.
 	return (
-		<main className="container mx-auto max-w-[1440px] p-4 md:p-8">
+		<main className="container mx-auto max-w-[1440px] p-8 max-md:p-4 max-md:pb-8">
 			{/* En-tête de la page */}
 			<header>
 				<h2 className="text-2xl font-bold tracking-tight">
