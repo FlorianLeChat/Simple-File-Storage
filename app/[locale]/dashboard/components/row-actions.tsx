@@ -612,7 +612,7 @@ export default function RowActions( {
 
 				{/* Accès à la ressource */}
 				{dataFiles[ 0 ].versions[ 0 ].encrypted ? (
-					<RequestKey url={`${ dataFiles[ 0 ].path }?key=`}>
+					<RequestKey url={dataFiles[ 0 ].path}>
 						<AlertDialogTrigger asChild>
 							<DropdownMenuItem
 								// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372

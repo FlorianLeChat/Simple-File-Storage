@@ -211,7 +211,7 @@ export default function FileHistory( {
 
 								{/* Accès au fichier */}
 								{version.encrypted ? (
-									<RequestKey url={`${ version.path }&key=`}>
+									<RequestKey url={version.path}>
 										<AlertDialogTrigger
 											className={merge(
 												buttonVariants(),
