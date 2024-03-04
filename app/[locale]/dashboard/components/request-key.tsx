@@ -4,8 +4,8 @@
 
 "use client";
 
+import { type ReactNode } from "react";
 import { Ban, ShieldCheck, ArrowUpRight } from "lucide-react";
-import { useRef, useState, type ReactNode } from "react";
 
 import { Input } from "../../components/ui/input";
 import { AlertDialog,
@@ -25,11 +25,9 @@ export default function RequestKey( {
 	children: ReactNode;
 } )
 {
-	// Déclaration des variables d'état.
-	const [ password, setPassword ] = useState( "" );
-
 	// Déclaration des constantes.
-	const access = useRef<HTMLButtonElement>( null );
+	const base = new URL( url, window.location.href );
+	const parameters = base.searchParams;
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -58,48 +56,40 @@ export default function RequestKey( {
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 
-				<Input
-					onInput={( event ) =>
-					{
-						// Mise à jour de l'entrée utilisateur.
-						setPassword( event.currentTarget.value );
-					}}
-					onKeyDown={( event ) =>
-					{
-						// Soumission du formulaire par clavier.
-						if ( event.key.endsWith( "Enter" ) )
-						{
-							access.current?.click();
-						}
-					}}
-					spellCheck="false"
-					placeholder="your_key"
-					autoComplete="off"
-					autoCapitalize="off"
-				/>
+				<form
+					id="request-key-form"
+					rel="noopener noreferrer"
+					method="GET"
+					target="_blank"
+					action={base.href}
+				>
+					{/* Version d'un fichier */}
+					{parameters.get( "v" ) && (
+						<input
+							type="hidden"
+							name="v"
+							value={parameters.get( "v" ) as string}
+						/>
+					)}
+
+					{/* Clé de déchiffrement */}
+					<Input
+						name="key"
+						maxLength={64}
+						spellCheck="false"
+						placeholder="your_key"
+						autoComplete="off"
+						autoCapitalize="off"
+					/>
+				</form>
 
 				<AlertDialogFooter>
-					<AlertDialogCancel>
+					<AlertDialogCancel type="reset" form="request-key-form">
 						<Ban className="mr-2 h-4 w-4" />
 						Annuler
 					</AlertDialogCancel>
 
-					<AlertDialogAction
-						ref={access}
-						onClick={() =>
-						{
-							// Ouverture de la version dans un nouvel onglet.
-							window.open(
-								new URL(
-									`${ url }${ password }`,
-									window.location.href
-								).href,
-								"_blank",
-								"noopener,noreferrer"
-							);
-						}}
-						disabled={!password}
-					>
+					<AlertDialogAction type="submit" form="request-key-form">
 						<ArrowUpRight className="mr-2 h-4 w-4" />
 						Accéder
 					</AlertDialogAction>
