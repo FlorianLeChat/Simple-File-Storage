@@ -359,7 +359,7 @@ export async function uploadFiles(
 				? (
 					await prisma.file.create( {
 						data: {
-							name: file.name,
+							name: file.name.slice( 0, 128 ),
 							userId: session.user.id,
 							status,
 							expiration:
