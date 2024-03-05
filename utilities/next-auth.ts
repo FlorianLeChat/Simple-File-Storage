@@ -2,7 +2,7 @@
 // Options de configuration de Next Auth.
 //  Source : https://authjs.dev/guides/providers/custom-provider
 //
-import Email from "@auth/core/providers/email";
+import Email from "@auth/core/providers/nodemailer";
 import bcrypt from "bcrypt";
 import prisma from "@/utilities/prisma";
 import Google from "@auth/core/providers/google";
