@@ -77,7 +77,7 @@ export async function signUpAccount(
 	{
 		// Si ce n'est pas le cas, on envoie immédiatement une demande
 		//  de validation de l'adresse électronique fournie.
-		const response = await signIn( "email", {
+		const response = await signIn( "nodemailer", {
 			email: result.data.email,
 			redirect: false,
 			redirectTo: "/dashboard",
@@ -159,7 +159,7 @@ export async function signInAccount(
 		// Dans certains cas, le mot de passe fourni peut être vide, ce qui
 		//  signifie que l'utilisateur a tenté de se connecter via une
 		//  validation de son adresse électronique.
-		const response = await signIn( "email", {
+		const response = await signIn( "nodemailer", {
 			email: result.data.email,
 			redirect: false,
 			redirectTo: "/dashboard",
