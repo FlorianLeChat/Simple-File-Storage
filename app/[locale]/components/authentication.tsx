@@ -226,8 +226,22 @@ export default function Authentification()
 
 				<Form {...form}>
 					<form
-						action={( formData ) => serverAction( signInAction, formData )}
-						onSubmit={() => setLoading( true )}
+						action={async ( formData: FormData ) =>
+						{
+							// Vérifications côté client.
+							const state = await form.trigger();
+
+							if ( !state )
+							{
+								return false;
+							}
+
+							// Activation de l'état de chargement.
+							setLoading( true );
+
+							// Exécution de l'action côté serveur.
+							return serverAction( signInAction, formData );
+						}}
 						className="space-y-6"
 					>
 						{/* Adresse électronique */}
@@ -311,7 +325,7 @@ export default function Authentification()
 											<TooltipTrigger
 												type="button"
 												className={merge(
-													`transition-opacity ${
+													`!mt-0 transition-opacity ${
 														!isFocused
 														&& "opacity-25"
 													}`,
