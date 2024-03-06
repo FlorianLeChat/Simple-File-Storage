@@ -10,6 +10,10 @@ const million = require( "million/compiler" );
 const nextConfig = million.next(
 	withNextIntl( {
 		poweredByHeader: false,
+		experimental: {
+			// https://github.com/getsentry/sentry-javascript/issues/10366
+			serverComponentsExternalPackages: ["@sentry/nextjs", "@sentry/node"],
+		},
 		basePath: "",
 		sentry: {
 			tunnelRoute: "/monitoring",
