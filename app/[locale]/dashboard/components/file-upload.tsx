@@ -443,7 +443,10 @@ export default function FileUpload( {
 												className="h-1"
 											/>
 
-											<p className="!mt-1 text-sm text-muted-foreground">
+											<p
+												className="!mt-1 text-sm text-muted-foreground"
+												suppressHydrationWarning
+											>
 												{percent.toLocaleString()}% du
 												quota actuellement utilisés (
 												{formatSize( quota )} /{" "}
