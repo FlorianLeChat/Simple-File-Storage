@@ -223,7 +223,11 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 						>
 							{/* Fichiers trouvés */}
 							{row.getVisibleCells().map( ( cell ) => (
-								<TableCell key={cell.id} className="max-sm:p-0">
+								<TableCell
+									key={cell.id}
+									className="max-sm:p-0"
+									suppressHydrationWarning
+								>
 									{table
 										.getHeaderGroups()[ 0 ]
 										.headers.filter(
