@@ -342,9 +342,9 @@ export default function FileUpload( {
 			>
 				<PlusCircleIcon className="inline h-4 w-4 md:mr-2" />
 
-				<p id="file-upload" className="max-md:hidden">
+				<span id="file-upload" className="max-md:hidden">
 					Ajouter un fichier
-				</p>
+				</span>
 			</DialogTrigger>
 
 			<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[75%]">
