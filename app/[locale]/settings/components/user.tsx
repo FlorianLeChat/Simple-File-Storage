@@ -415,7 +415,7 @@ export default function User( { session }: { session: Session } )
 							<FormDescription>
 								Vous pouvez mettre à jour l&lsquo;avatar utilisé
 								pour votre compte utilisateur.{" "}
-								<strong>
+								<strong suppressHydrationWarning>
 									Les avatars ne doivent pas dépasser{" "}
 									{formatSize( maxAvatarSize )} et doivent être
 									au format PNG, JPEG ou WEBP.

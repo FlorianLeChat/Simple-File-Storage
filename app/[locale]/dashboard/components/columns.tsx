@@ -134,7 +134,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 			const { date } = row.original.versions[ 0 ];
 
 			return (
-				<time dateTime={date.toISOString()}>
+				<time dateTime={date.toISOString()} suppressHydrationWarning>
 					{new Intl.DateTimeFormat( undefined, {
 						year: "numeric",
 						month: "short",

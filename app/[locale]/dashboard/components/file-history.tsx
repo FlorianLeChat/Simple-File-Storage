@@ -194,7 +194,10 @@ export default function FileHistory( {
 								</h3>
 
 								{/* Taille et différence de la révision */}
-								<p className="inline-block text-muted-foreground">
+								<p
+									className="inline-block text-muted-foreground"
+									suppressHydrationWarning
+								>
 									{formatSize( version.size )}
 								</p>
 

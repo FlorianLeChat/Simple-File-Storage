@@ -238,6 +238,7 @@ export default function Notifications()
 										<time
 											dateTime={notification.createdAt.toISOString()}
 											className="text-xs text-muted-foreground"
+											suppressHydrationWarning
 										>
 											{new Intl.DateTimeFormat(
 												undefined,
