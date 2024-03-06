@@ -118,6 +118,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 			<div className="mb-4 flex items-center gap-2">
 				{/* Filtrage par nom */}
 				<Input
+					name="filter"
 					value={
 						parameters.get( "filter" )
 						?? ( table.getColumn( "name" )?.getFilterValue() as string )

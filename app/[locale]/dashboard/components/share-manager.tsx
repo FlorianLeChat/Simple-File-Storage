@@ -405,6 +405,7 @@ export default function ShareManager( {
 					</h4>
 
 					<Input
+						name="search"
 						value={search}
 						onChange={( event ) => setSearch( event.target.value )}
 						disabled={loading}
