@@ -193,12 +193,12 @@ export default function Notifications()
 				)}
 
 				{unreadCount > 0 && (
-					<p
+					<span
 						id="notifications"
 						className="hidden md:ml-2 md:inline-block"
 					>
 						Nouvelles notifications
-					</p>
+					</span>
 				)}
 			</DialogTrigger>
 
