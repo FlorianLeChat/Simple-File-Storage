@@ -11,6 +11,7 @@ import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
 import * as Sentry from "@sentry/nextjs";
 import { join, parse } from "path";
+import { compressFile } from "@/utilities/sharp";
 import { fileTypeFromBuffer } from "file-type";
 import { existsSync, statSync } from "fs";
 import { rm, mkdir, readdir, link, writeFile } from "fs/promises";
@@ -232,7 +233,8 @@ export async function uploadFiles(
 	const result = schema.safeParse( {
 		upload: formData.getAll( "upload" ),
 		encryption: formData.get( "encryption" ) === "on",
-		expiration: formData.get( "expiration" )
+		expiration: formData.get( "expiration" ),
+		compression: formData.get( "compression" ) === "on"
 	} );
 
 	if ( !result.success )
@@ -438,9 +440,9 @@ export async function uploadFiles(
 			}
 			else
 			{
-				// Dans le cas contraire, on génère un vecteur d'initialisation
-				//  puis on chiffre le fichier avec l'algorithme AES-256-GCM
-				//  avant de l'écrire dans le système de fichiers.
+				// Dans le cas contraire, on chiffre le fichier avec l'algorithme
+				//  AES-256-GCM avant d'effectuer une éventuelle compression
+				//  pour enfin l'écrire dans le système de fichiers.
 				//  Note : si l'utilisateur a demandé un chiffrement renforcé,
 				//   le fichier a déjà été chiffré par le client.
 				const iv = crypto.getRandomValues( new Uint8Array( 16 ) );
@@ -454,11 +456,14 @@ export async function uploadFiles(
 					true,
 					[ "encrypt", "decrypt" ]
 				);
+				const compressed = result.data.compression
+					? await compressFile( buffer, extension )
+					: buffer;
 
 				await writeFile(
 					join( fileFolder, `${ versionId }${ extension }` ),
 					result.data.encryption
-						? buffer
+						? compressed
 						: Buffer.concat( [
 							iv,
 							new Uint8Array(
@@ -468,7 +473,7 @@ export async function uploadFiles(
 										name: "AES-GCM"
 									},
 									cipher,
-									buffer
+									compressed
 								)
 							)
 						] )

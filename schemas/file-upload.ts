@@ -35,6 +35,9 @@ const schema = z.object( {
 			"wrong_file_type"
 		),
 
+	// Compression des images.
+	compression: z.boolean(),
+
 	// Chiffrement renforcé.
 	encryption: z.boolean(),
 

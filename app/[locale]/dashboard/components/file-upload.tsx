@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { enGB, fr } from "date-fns/locale";
 import { Loader2,
+	FileArchive,
 	ShieldCheck,
 	UploadCloud,
 	CalendarDays,
@@ -95,8 +96,9 @@ export default function FileUpload( {
 		resolver: zodResolver( fileSchema ),
 		defaultValues: {
 			upload: "",
+			expiration: "",
 			encryption: false,
-			expiration: ""
+			compression: false
 		}
 	} );
 
@@ -465,6 +467,63 @@ export default function FileUpload( {
 							<summary className="cursor-pointer text-sm">
 								Cliquez ici pour afficher les paramètres avancés
 							</summary>
+
+							{/* Compression */}
+							<FormField
+								name="compression"
+								control={form.control}
+								render={( { field } ) => (
+									<FormItem className="mt-4">
+										<FormLabel htmlFor={field.name}>
+											<FileArchive className="mr-2 inline h-6 w-6" />
+											Compression des images{" "}
+											<em>(optionnel)</em>
+										</FormLabel>
+
+										<FormDescription>
+											Si vous essayez de téléverser des
+											images, vous pouvez activer cette
+											option pour faire compresser les
+											images automatiquement par le
+											serveur. La compression des images
+											peut réduire la taille des fichiers
+											sur votre quota de stockage.{" "}
+											<strong>
+												Attention, cette opération est
+												irréversible et peut altérer la
+												qualité des images. Certaines
+												images ayant des extensions
+												propriétaires ne sont pas prises
+												en charge.
+											</strong>
+										</FormDescription>
+
+										<div className="flex items-center space-x-2">
+											<FormControl>
+												<Switch
+													id={field.name}
+													name={field.name}
+													checked={field.value}
+													disabled={isLoading}
+													onCheckedChange={
+														field.onChange
+													}
+												/>
+											</FormControl>
+
+											<Label
+												htmlFor={field.name}
+												className="leading-5"
+											>
+												Activer la compression des
+												images
+											</Label>
+										</div>
+
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 
 							{/* Chiffrement renforcé */}
 							<FormField
