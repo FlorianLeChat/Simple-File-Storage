@@ -11,13 +11,20 @@ import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
+import { Eye,
+	Mail,
+	Check,
+	EyeOff,
+	Loader2,
+	KeyRound,
+	ShieldQuestion } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { useState, useEffect } from "react";
-import { Eye, EyeOff, Loader2, Mail, KeyRound } from "lucide-react";
 
+import { DialogClose } from "@radix-ui/react-dialog";
 import { Input } from "./ui/input";
 import { Switch } from "./ui/switch";
 import { Separator } from "./ui/separator";
@@ -32,6 +39,12 @@ import { Tooltip,
 	TooltipTrigger,
 	TooltipContent,
 	TooltipProvider } from "./ui/tooltip";
+import { Dialog,
+	DialogTitle,
+	DialogHeader,
+	DialogTrigger,
+	DialogContent,
+	DialogDescription } from "./ui/dialog";
 import { buttonVariants, Button } from "./ui/button";
 import { signUpAccount, signInAccount } from "../authentication/actions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
@@ -221,7 +234,57 @@ export default function Authentification()
 					Saisissez votre adresse électronique pour vous connecter à
 					l&lsquo;aide d&lsquo;un lien d&lsquo;authentification. Si
 					vous avez associé un mot de passe à votre compte, vous
-					pouvez également le saisir pour vous connecter directement.
+					pouvez également le saisir pour vous connecter directement.{" "}
+
+					{/* Procédure en cas d'oubli du mot de passe */}
+					<Dialog>
+						<DialogTrigger
+							className={merge(
+								buttonVariants( {
+									variant: "link"
+								} ),
+								"h-auto p-0"
+							)}
+						>
+							Vous avez oublié votre mot de passe ?
+						</DialogTrigger>
+
+						<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[50%]">
+							<DialogHeader>
+								<DialogTitle className="flex items-center">
+									<ShieldQuestion className="mr-2 inline h-5 w-5" />
+									Oubli du mot de passe
+								</DialogTitle>
+
+								<DialogDescription className="text-left">
+									Si vous avez oublié votre mot de passe, il
+									n&lsquo;existe actuellement aucun moyen de
+									faire une quelconque réinitialisation. Le
+									processus d&lsquo;authentification vous
+									permet de vous connecter à votre compte avec
+									un lien à usage unique envoyé à votre
+									adresse électronique, rendant inutile la
+									saisie du mot de passe en cas d&lsquo;oubli.
+									<br />
+									<strong>
+										Si vous avez perdu l&lsquo;accès à votre
+										adresse électronique, vous devrez
+										recréer un nouveau compte car le support
+										technique ne sera pas légalement
+										autorisé à vous aider à récupérer
+										l&lsquo;accès à votre compte.
+									</strong>
+								</DialogDescription>
+							</DialogHeader>
+
+							<DialogClose
+								className={merge( buttonVariants(), "w-full" )}
+							>
+								<Check className="mr-2 h-4 w-4" />
+								J&lsquo;ai bien compris
+							</DialogClose>
+						</DialogContent>
+					</Dialog>
 				</p>
 
 				<Form {...form}>
