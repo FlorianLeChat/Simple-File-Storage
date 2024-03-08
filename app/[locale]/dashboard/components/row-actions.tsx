@@ -7,6 +7,7 @@
 
 import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
+import { useState } from "react";
 import serverAction from "@/utilities/recaptcha";
 import { Ban,
 	Check,
@@ -22,7 +23,6 @@ import { Ban,
 	TextCursorInput } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { FileAttributes } from "@/interfaces/File";
-import { useRef, useState } from "react";
 import type { Table, Row, TableMeta } from "@tanstack/react-table";
 
 import { Input } from "../../components/ui/input";
@@ -59,7 +59,6 @@ export default function RowActions( {
 } )
 {
 	// Déclaration des variables d'état.
-	const rename = useRef<HTMLButtonElement>( null );
 	const [ isLoading, setLoading ] = useState( false );
 
 	// Déclaration des constantes.
@@ -202,14 +201,14 @@ export default function RowActions( {
 	};
 
 	// Soumission de la requête de renommage d'un fichier.
-	const submitFileRename = async () =>
+	const submitFileRename = async ( name: string ) =>
 	{
 		// Activation de l'état de chargement.
 		setLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
-		form.append( "name", dataFiles[ 0 ].name );
+		form.append( "name", name );
 
 		dataFiles.forEach( ( file ) =>
 		{
@@ -226,6 +225,13 @@ export default function RowActions( {
 		if ( files.length > 0 )
 		{
 			// Renommage des fichiers traités par le serveur.
+			selectedFiles
+				.filter( ( file ) => files.includes( file.uuid ) )
+				.forEach( ( file ) =>
+				{
+					file.name = name;
+				} );
+
 			states.setFiles( [ ...states.files ] );
 
 			if ( files.length === selectedFiles.length )
@@ -557,42 +563,44 @@ export default function RowActions( {
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 
-						<Input
-							onInput={( event ) =>
+						<form
+							id="rename-file-form"
+							onSubmit={( event ) =>
 							{
-								// Mise à jour de l'entrée utilisateur.
-								selectedFiles.forEach( ( file ) =>
-								{
-									file.name = event.currentTarget.value;
-								} );
-							}}
-							onKeyDown={( event ) =>
-							{
-								// Soumission du formulaire par clavier.
-								const { key } = event;
+								// Arrêt du comportement par défaut.
+								event.preventDefault();
 
-								if ( key === "Enter" || key === "NumpadEnter" )
-								{
-									rename.current?.click();
-								}
+								// Récupération de la valeur du champ de saisie.
+								const element = event.currentTarget
+									.children[ 0 ] as HTMLInputElement;
+
+								submitFileRename( element.value );
 							}}
-							spellCheck="false"
-							placeholder="john-doe"
-							autoComplete="off"
-							defaultValue={dataFiles[ 0 ].name}
-							autoCapitalize="off"
-						/>
+						>
+							<Input
+								name="name"
+								maxLength={100}
+								spellCheck="false"
+								placeholder={dataFiles[ 0 ].name}
+								autoComplete="off"
+								defaultValue={dataFiles[ 0 ].name}
+								autoCapitalize="off"
+							/>
+						</form>
 
 						<AlertDialogFooter>
-							<AlertDialogCancel>
+							<AlertDialogCancel
+								type="reset"
+								form="rename-file-form"
+							>
 								<Ban className="mr-2 h-4 w-4" />
 								Annuler
 							</AlertDialogCancel>
 
 							<AlertDialogAction
-								ref={rename}
-								onClick={submitFileRename}
-								disabled={isLoading || !dataFiles[ 0 ].name}
+								type="submit"
+								form="rename-file-form"
+								disabled={isLoading}
 							>
 								{isLoading ? (
 									<>
