@@ -493,19 +493,12 @@ export default function Authentification()
 
 			{/* Fournisseurs d'authentification externes */}
 			<form
-				action={async ( formData: FormData ) =>
-				{
-					// Activation de l'état de chargement.
-					setLoading( true );
-
-					// Ajout du fournisseur d'authentification.
-					formData.set( "provider", "google" );
-
-					// Exécution de l'action côté serveur.
-					return serverAction( signInAction, formData );
-				}}
+				action={( formData ) => serverAction( signInAction, formData )}
+				onSubmit={() => setLoading( true )}
 			>
 				<Button
+					name="provider"
+					value="google"
 					variant="outline"
 					disabled={
 						isLoading
@@ -536,19 +529,12 @@ export default function Authentification()
 			</form>
 
 			<form
-				action={async ( formData: FormData ) =>
-				{
-					// Activation de l'état de chargement.
-					setLoading( true );
-
-					// Ajout du fournisseur d'authentification.
-					formData.set( "provider", "github" );
-
-					// Exécution de l'action côté serveur.
-					return serverAction( signInAction, formData );
-				}}
+				action={( formData ) => serverAction( signInAction, formData )}
+				onSubmit={() => setLoading( true )}
 			>
 				<Button
+					name="provider"
+					value="github"
 					variant="outline"
 					disabled={
 						isLoading
