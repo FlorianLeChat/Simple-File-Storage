@@ -233,9 +233,10 @@ export default function Authentification()
 					l&lsquo;aide d&lsquo;un lien d&lsquo;authentification. Si
 					vous avez associé un mot de passe à votre compte, vous
 					pouvez également le saisir pour vous connecter directement.{" "}
+
 					{/* Procédure en cas d'oubli du mot de passe */}
 					<Dialog>
-						<DialogTrigger className="h-auto p-0 underline decoration-dotted underline-offset-4 dark:hover:text-primary-foreground">
+						<DialogTrigger className="h-auto p-0 underline decoration-dotted underline-offset-4 dark:hover:text-foreground">
 							Vous avez oublié votre mot de passe ?
 						</DialogTrigger>
 
@@ -578,7 +579,7 @@ export default function Authentification()
 				<Link
 					href="/legal/terms"
 					target="_blank"
-					className="underline decoration-dotted underline-offset-4 dark:hover:text-primary-foreground"
+					className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
 				>
 					conditions d&lsquo;utilisation
 				</Link>{" "}
@@ -586,7 +587,7 @@ export default function Authentification()
 				<Link
 					href="/legal/privacy"
 					target="_blank"
-					className="underline decoration-dotted underline-offset-4 dark:hover:text-primary-foreground"
+					className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
 				>
 					politique de confidentialité
 				</Link>
