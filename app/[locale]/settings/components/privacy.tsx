@@ -124,7 +124,7 @@ export default function Privacy()
 								<li>
 									<Link
 										href="/legal/terms"
-										className="dark:hover:text-primary-foreground"
+										className="dark:hover:text-foreground"
 									>
 										Consulter les conditions
 										d&lsquo;utilisation (Français
@@ -135,7 +135,7 @@ export default function Privacy()
 								<li>
 									<Link
 										href="/legal/privacy"
-										className="dark:hover:text-primary-foreground"
+										className="dark:hover:text-foreground"
 									>
 										Consulter la politique de
 										confidentialité (Français seulement).
