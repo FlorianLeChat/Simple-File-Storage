@@ -40,7 +40,6 @@ import { Dialog,
 	DialogClose,
 	DialogTitle,
 	DialogHeader,
-	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "./ui/dialog";
 import { buttonVariants, Button } from "./ui/button";
@@ -53,6 +52,7 @@ export default function Authentification()
 	const [ isLocked, setLocked ] = useState( false );
 	const [ isFocused, setFocused ] = useState( false );
 	const [ isLoading, setLoading ] = useState( false );
+	const [ showReset, setShowReset ] = useState( false );
 	const [ inputType, setInputType ] = useState( "password" );
 	const [ signUpState, signUpAction ] = useFormState( signUpAccount, {
 		success: true,
@@ -233,50 +233,14 @@ export default function Authentification()
 					l&lsquo;aide d&lsquo;un lien d&lsquo;authentification. Si
 					vous avez associé un mot de passe à votre compte, vous
 					pouvez également le saisir pour vous connecter directement.{" "}
-
-					{/* Procédure en cas d'oubli du mot de passe */}
-					<Dialog>
-						<DialogTrigger className="h-auto p-0 underline decoration-dotted underline-offset-4 dark:hover:text-foreground">
-							Vous avez oublié votre mot de passe ?
-						</DialogTrigger>
-
-						<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[50%]">
-							<DialogHeader>
-								<DialogTitle className="flex items-center">
-									<ShieldQuestion className="mr-2 inline h-5 w-5" />
-									Oubli du mot de passe
-								</DialogTitle>
-
-								<DialogDescription className="text-left">
-									Si vous avez oublié votre mot de passe, il
-									n&lsquo;existe actuellement aucun moyen de
-									faire une quelconque réinitialisation. Le
-									processus d&lsquo;authentification vous
-									permet de vous connecter à votre compte avec
-									un lien à usage unique envoyé à votre
-									adresse électronique, rendant inutile la
-									saisie du mot de passe en cas d&lsquo;oubli.
-									<br />
-									<br />
-									<strong>
-										Si vous avez perdu l&lsquo;accès à votre
-										adresse électronique, vous devrez
-										recréer un nouveau compte car le support
-										technique ne sera pas légalement
-										autorisé à vous aider à récupérer
-										l&lsquo;accès à votre compte.
-									</strong>
-								</DialogDescription>
-							</DialogHeader>
-
-							<DialogClose
-								className={merge( buttonVariants(), "w-full" )}
-							>
-								<Check className="mr-2 h-4 w-4" />
-								J&lsquo;ai bien compris
-							</DialogClose>
-						</DialogContent>
-					</Dialog>
+					<Button
+						type="button"
+						variant="link"
+						onClick={() => setShowReset( true )}
+						className="h-auto p-0 text-muted-foreground underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
+					>
+						Vous avez oublié votre mot de passe ?
+					</Button>
 				</p>
 
 				<Form {...form}>
@@ -428,6 +392,48 @@ export default function Authentification()
 								du mot de passe.
 							</p>
 						)}
+
+						{/* Procédure en cas d'oubli du mot de passe */}
+						<Dialog open={showReset} onOpenChange={setShowReset}>
+							<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[50%]">
+								<DialogHeader>
+									<DialogTitle className="flex items-center">
+										<ShieldQuestion className="mr-2 inline h-5 w-5" />
+										Oubli du mot de passe
+									</DialogTitle>
+
+									<DialogDescription className="text-left">
+										Si vous avez oublié votre mot de passe,
+										essayez de vous connecter à votre compte
+										avec un lien d&lsquo;authentification à
+										usage unique envoyé à votre adresse
+										électronique. Une fois connecté, vous
+										pourrez saisir un nouveau mot de passe
+										pour votre compte.
+										<br />
+										<strong className="mt-1 inline-block">
+											En cas de perte de l&lsquo;accès à
+											votre adresse électronique, vous
+											devrez recréer un nouveau compte car
+											le support technique ne sera pas
+											légalement autorisé à vous aider à
+											récupérer l&lsquo;accès à votre
+											compte.
+										</strong>
+									</DialogDescription>
+								</DialogHeader>
+
+								<DialogClose
+									className={merge(
+										buttonVariants(),
+										"w-full"
+									)}
+								>
+									<Check className="mr-2 h-4 w-4" />
+									J&lsquo;ai bien compris
+								</DialogClose>
+							</DialogContent>
+						</Dialog>
 
 						{/* Se souvenir de moi */}
 						<FormField
