@@ -95,6 +95,15 @@ model Share {
 	@@id([fileId, userId])
 }
 
+model Otp {
+	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+	userId       String
+	secret       String
+	backup       String
+
+	@@id([userId])
+}
+
 model User {
 	id            String    @id @default(uuid())
 	name          String?
@@ -104,6 +113,7 @@ model User {
 	emailVerified DateTime?
 	image         String?
 	role          String    @default("user")
+	otp           Otp?
 	accounts      Account[]
 	sessions      Session[]
 	issues        Issue[]
