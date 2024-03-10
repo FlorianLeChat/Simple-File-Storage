@@ -3,7 +3,9 @@
 //
 
 // Importation des dépendances.
+import qrCode from "qrcode";
 import { lazy } from "react";
+import { TOTP, Secret } from "otpauth";
 import { type Session } from "next-auth";
 import { unstable_setRequestLocale } from "next-intl/server";
 
@@ -25,6 +27,18 @@ export default async function Page( {
 	// Définition de la langue de la page.
 	unstable_setRequestLocale( locale );
 
+	// Déclaration des constantes.
+	const session = ( await auth() ) as Session;
+	const secret = new Secret();
+	const otp = new TOTP( {
+		label: session.user.email as string,
+		secret,
+		issuer: "Simple File Storage",
+		digits: 6,
+		period: 30,
+		algorithm: "SHA256"
+	} );
+
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
@@ -43,7 +57,11 @@ export default async function Page( {
 			<Separator />
 
 			{/* Formulaire de modification du profil utilisateur */}
-			<User session={( await auth() ) as Session} />
+			<User
+				image={await qrCode.toDataURL( otp.toString() )}
+				secret={secret.base32}
+				session={session}
+			/>
 		</>
 	);
 }
