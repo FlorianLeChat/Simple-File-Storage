@@ -2,6 +2,9 @@
 // Composant générique des champs de saisie pour les codes de vérification.
 //  Source : https://ui.shadcn.com/docs/components/input-otp
 //
+
+"use client";
+
 import { Dot } from "lucide-react";
 import { merge } from "@/utilities/tailwind";
 import { OTPInput, SlotProps } from "input-otp";
