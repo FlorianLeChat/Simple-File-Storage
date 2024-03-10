@@ -6,6 +6,7 @@ declare module "@auth/core/types" {
 	interface Session {
 		user: {
 			id: string;
+			otp: string;
 			role: string;
 			oauth: boolean;
 			preferences: {
@@ -33,7 +34,9 @@ declare module "@auth/core/adapters" {
 		emailVerified?: Date;
 
 		// Propriétés personnalisées.
+		otp: string;
 		role: string;
+		oauth: boolean;
 		preferences?: {
 			font: string;
 			theme: string;

@@ -38,6 +38,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 				} );
 
 				session.user.id = user.id;
+				session.user.otp = user.otp;
 				session.user.role = user.role;
 				session.user.oauth = !user.password && !user.emailVerified;
 				session.user.preferences = preferences ?? {

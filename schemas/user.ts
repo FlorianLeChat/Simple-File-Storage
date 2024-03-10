@@ -20,6 +20,9 @@ const schema = z.object( {
 	// Mot de passe.
 	password: z.string().min( 10 ).max( 50 ).or( z.literal( "" ) ),
 
+	// Authentification à deux facteurs.
+	otp: z.string().length( 6 ).regex( /^\d+$/ ).or( z.literal( "" ) ),
+
 	// Langue préférée.
 	language: z.enum( [ "en", "fr" ] ),
 
