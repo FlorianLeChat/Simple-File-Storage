@@ -8,10 +8,6 @@ const withNextIntl = require( "next-intl/plugin" )( "./utilities/i18n.ts" );
 
 const nextConfig = withNextIntl( {
 	poweredByHeader: false,
-	experimental: {
-		// https://github.com/getsentry/sentry-javascript/issues/10366
-		serverComponentsExternalPackages: ["@sentry/nextjs", "@sentry/node"],
-	},
 	basePath: "",
 	sentry: {
 		tunnelRoute: "/monitoring",
