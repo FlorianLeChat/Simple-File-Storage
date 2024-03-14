@@ -12,7 +12,7 @@ import { useEffect, useCallback, useState } from "react";
 
 import serverAction from "@/utilities/recaptcha";
 import { buttonVariants } from "./ui/button";
-import { signOutAccount } from "../authentication/actions";
+import { signOutAccount } from "../authentication/actions/signout";
 import { DropdownMenu,
 	DropdownMenuItem,
 	DropdownMenuGroup,
