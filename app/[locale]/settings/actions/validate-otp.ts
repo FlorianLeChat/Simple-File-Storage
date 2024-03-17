@@ -59,11 +59,9 @@ export async function validateOTP( formData: FormData )
 	//  on enregistre le secret dans la base de données.
 	if ( state )
 	{
-		// Génération du code de sauvegarde.
-		const pattern = "xxx-xxx-xxx";
-		const length = Math.ceil( pattern.split( "x" ).length - 1 / 2 );
-		const bytes = crypto.getRandomValues( new Uint8Array( length ) );
-		let indice = 0;
+		// Génération du code de sauvegarde à 6 chiffres.
+		const bytes = crypto.getRandomValues( new Uint8Array( 6 ) );
+		const numbers = bytes.map( ( byte ) => byte % 10 );
 
 		// Mise à jour de la base de données.
 		const data = await prisma.otp.upsert( {
@@ -76,7 +74,7 @@ export async function validateOTP( formData: FormData )
 			create: {
 				userId: session.user.id,
 				secret: result.data.secret,
-				backup: pattern.replace( /x/g, () => bytes[ indice++ ].toString( 16 ) )
+				backup: numbers.join( "" )
 			}
 		} );
 
