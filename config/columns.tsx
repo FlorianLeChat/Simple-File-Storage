@@ -1,6 +1,5 @@
 //
-// Composant de déclaration des colonnes d'un tableau de données.
-//  Source : https://ui.shadcn.com/docs/components/data-table
+// Déclaration des colonnes d'un tableau de données.
 //
 
 "use client";
@@ -10,17 +9,15 @@ import { ColumnDef } from "@tanstack/react-table";
 import { formatSize } from "@/utilities/react-table";
 import { FileAttributes } from "@/interfaces/File";
 
-import { Badge } from "../../components/ui/badge";
-import RowActions from "./row-actions";
-import ColumnHeader from "./column-header";
-import { Checkbox } from "../../components/ui/checkbox";
-import { buttonVariants } from "../../components/ui/button";
-import { Avatar,
-	AvatarImage,
-	AvatarFallback } from "../../components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import RowActions from "@/dashboard/components/row-actions";
+import ColumnHeader from "@/dashboard/components/column-header";
+import { Checkbox } from "@/components/ui/checkbox";
 import { HoverCard,
 	HoverCardContent,
-	HoverCardTrigger } from "../../components/ui/hover-card";
+	HoverCardTrigger } from "@/components/ui/hover-card";
+import { buttonVariants } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 // Déclaration des colonnes du tableau.
 export const columns: ColumnDef<FileAttributes>[] = [

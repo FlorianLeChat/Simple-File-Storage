@@ -7,9 +7,8 @@
 import Link from "next/link";
 import { merge } from "@/utilities/tailwind";
 import { Cookie } from "lucide-react";
+import { routes } from "@/config/routes";
 import { usePathname } from "next/navigation";
-
-import { routes } from "../../components/navigation";
 import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function Routes()
