@@ -6,15 +6,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Bug,
-	Bell,
-	User,
-	Cctv,
-	Files,
-	Palette,
-	Settings,
-	LayoutDashboard } from "lucide-react";
+import { routes } from "@/config/routes";
 import { useEffect, useState } from "react";
+import { Settings, LayoutDashboard } from "lucide-react";
 
 import GitHubDark from "@/public/assets/images/github-dark.png";
 import GitHubLight from "@/public/assets/images/github-light.png";
@@ -25,78 +19,6 @@ import { NavigationMenu,
 	NavigationMenuContent,
 	NavigationMenuTrigger,
 	navigationMenuTriggerStyle } from "./ui/navigation-menu";
-
-// Déclaration des routes de paramétrage.
-export const routes: {
-	title: JSX.Element;
-	href: string;
-	description: string;
-}[] = [
-	{
-		title: (
-			<>
-				<User className="mr-2 inline" />
-				Utilisateur
-			</>
-		),
-		href: "/settings/user",
-		description:
-			"Gestion des informations de votre profil et de votre compte."
-	},
-	{
-		title: (
-			<>
-				<Files className="mr-2 inline" />
-				Stockage
-			</>
-		),
-		href: "/settings/storage",
-		description:
-			"Personnalisation du mécanisme de téléversement des fichiers."
-	},
-	{
-		title: (
-			<>
-				<Palette className="mr-2 inline" />
-				Apparence
-			</>
-		),
-		href: "/settings/layout",
-		description: "Personnalisation de l'apparence du site Internet."
-	},
-	{
-		title: (
-			<>
-				<Bell className="mr-2 inline" />
-				Notifications
-			</>
-		),
-		href: "/settings/notifications",
-		description:
-			"Gestion des notifications reçues par courriel ou sur le site Internet."
-	},
-	{
-		title: (
-			<>
-				<Bug className="mr-2 inline" />
-				Bogues
-			</>
-		),
-		href: "/settings/issue",
-		description: "Signalement d'un bogue rencontré sur le site Internet."
-	},
-	{
-		title: (
-			<>
-				<Cctv className="mr-2 inline" />
-				Confidentialité
-			</>
-		),
-		href: "/settings/privacy",
-		description:
-			"Gestion des données personnelles collectées par le site Internet."
-	}
-];
 
 export default function Navigation( {
 	theme,
