@@ -22,7 +22,7 @@ import { Dialog,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
 import { buttonVariants } from "../../components/ui/button";
-import { restoreVersion } from "../actions";
+import { restoreVersion } from "../actions/restore-version";
 import { DropdownMenuItem } from "../../components/ui/dropdown-menu";
 import { AlertDialog,
 	AlertDialogTitle,

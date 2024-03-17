@@ -29,11 +29,11 @@ import { Input } from "../../components/ui/input";
 import RequestKey from "./request-key";
 import FileHistory from "./file-history";
 import ShareManager from "./share-manager";
-import { deleteFile,
-	renameFile,
-	deleteSharedUser,
-	changeFileStatus } from "../actions";
+import { renameFile } from "../actions/file-rename";
+import { deleteFile } from "../actions/file-delete";
 import { buttonVariants } from "../../components/ui/button";
+import { changeFileStatus } from "../actions/file-status";
+import { deleteSharedUser } from "../actions/shared-user-delete";
 import { DropdownMenu,
 	DropdownMenuItem,
 	DropdownMenuLabel,
