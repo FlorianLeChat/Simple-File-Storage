@@ -22,6 +22,7 @@ import { Lock,
 	ClipboardCopy } from "lucide-react";
 import serverAction from "@/utilities/recaptcha";
 import { useLocale } from "next-intl";
+import { languages } from "@/config/languages";
 import { formatSize } from "@/utilities/react-table";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
@@ -57,12 +58,6 @@ import { Dialog,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
 import { Button, buttonVariants } from "../../components/ui/button";
-
-// Déclaration des langues disponibles.
-const languages = [
-	{ label: "Anglais", value: "en" },
-	{ label: "Français", value: "fr" }
-] as const;
 
 export default function User( {
 	image,
