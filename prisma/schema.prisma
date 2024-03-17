@@ -97,11 +97,9 @@ model Share {
 
 model Otp {
 	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-	userId       String
+	userId       String     @id
 	secret       String
 	backup       String
-
-	@@id([userId])
 }
 
 model User {
@@ -113,7 +111,7 @@ model User {
 	emailVerified DateTime?
 	image         String?
 	role          String    @default("user")
-	otp           Otp?
+	otp           Otp[]
 	accounts      Account[]
 	sessions      Session[]
 	issues        Issue[]
