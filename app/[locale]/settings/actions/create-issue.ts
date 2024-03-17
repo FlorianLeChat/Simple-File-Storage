@@ -1,5 +1,5 @@
 //
-// Actions du serveur pour le signalement des bogues.
+// Action de création d'un nouveau signalement.
 //
 
 "use server";
@@ -8,9 +8,6 @@ import prisma from "@/utilities/prisma";
 import schema from "@/schemas/issue";
 import { auth } from "@/utilities/next-auth";
 
-//
-// Création d'un nouveau signalement.
-//
 export async function createIssue(
 	_state: Record<string, unknown>,
 	formData: FormData

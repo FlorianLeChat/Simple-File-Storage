@@ -1,5 +1,5 @@
 //
-// Actions du serveur pour les paramètres de confidentialité.
+// Action de suppression des données personnelles.
 //
 
 "use server";
@@ -11,9 +11,6 @@ import { existsSync } from "fs";
 import { readdir, rm } from "fs/promises";
 import { auth, signOut } from "@/utilities/next-auth";
 
-//
-// Suppression des données personnelles.
-//
 export async function deleteUserData(
 	_state: Record<string, unknown>,
 	formData: FormData
