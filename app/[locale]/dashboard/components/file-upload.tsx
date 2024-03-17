@@ -48,7 +48,7 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
-import { uploadFiles } from "../actions";
+import { uploadFiles } from "../actions/file-upload";
 import { Dialog,
 	DialogClose,
 	DialogTitle,
