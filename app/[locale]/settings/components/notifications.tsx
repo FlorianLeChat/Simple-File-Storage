@@ -26,7 +26,7 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
-import { updateNotifications } from "../notifications/actions";
+import { updateNotifications } from "../actions/update-notifications";
 
 export default function Notifications( { session }: { session: Session } )
 {

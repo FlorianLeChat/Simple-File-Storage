@@ -21,7 +21,7 @@ import { Form,
 	FormField,
 	FormControl,
 	FormDescription } from "../../components/ui/form";
-import { deleteUserData } from "../privacy/actions";
+import { deleteUserData } from "../actions/delete-user-data";
 
 export default function Privacy()
 {

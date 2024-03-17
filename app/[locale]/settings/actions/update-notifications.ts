@@ -1,5 +1,5 @@
 //
-// Actions du serveur pour les paramètres des notifications.
+// Action de mise à jour des notifications utilisateur.
 //
 
 "use server";
@@ -8,9 +8,6 @@ import prisma from "@/utilities/prisma";
 import schema from "@/schemas/notifications";
 import { auth } from "@/utilities/next-auth";
 
-//
-// Mise à jour des notifications.
-//
 export async function updateNotifications(
 	_state: Record<string, unknown>,
 	formData: FormData

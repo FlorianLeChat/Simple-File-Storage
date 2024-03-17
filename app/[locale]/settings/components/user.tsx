@@ -48,6 +48,8 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
+import { updateUser } from "../actions/update-user";
+import { validateOTP } from "../actions/validate-otp";
 import { Dialog,
 	DialogClose,
 	DialogTitle,
@@ -55,7 +57,6 @@ import { Dialog,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
 import { Button, buttonVariants } from "../../components/ui/button";
-import { updateUser, validateOTP } from "../user/actions";
 
 // Déclaration des langues disponibles.
 const languages = [
