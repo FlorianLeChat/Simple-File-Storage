@@ -38,7 +38,7 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
-import { updateLayout } from "../layout/actions";
+import { updateLayout } from "../actions/update-layout";
 import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 
 // Déclaration des polices de caractères disponibles.

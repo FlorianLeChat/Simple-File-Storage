@@ -21,7 +21,7 @@ import { Form,
 	FormField,
 	FormControl,
 	FormDescription } from "../../components/ui/form";
-import { updateStorage } from "../storage/actions";
+import { updateStorage } from "../actions/update-storage";
 
 export default function Storage( { session }: { session: Session } )
 {

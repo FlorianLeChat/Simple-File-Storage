@@ -34,7 +34,7 @@ import { Form,
 	FormControl,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
-import { createIssue } from "../issue/actions";
+import { createIssue } from "../actions/create-issue";
 
 export default function Account()
 {

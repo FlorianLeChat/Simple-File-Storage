@@ -1,5 +1,5 @@
 //
-// Actions du serveur pour les paramètres du stockage.
+// Action de mise à jour des paramètres du stockage utilisateur.
 //
 
 "use server";
@@ -12,9 +12,6 @@ import * as Sentry from "@sentry/nextjs";
 import { existsSync } from "fs";
 import { join, parse } from "path";
 
-//
-// Mise à jour des paramètres de stockage.
-//
 export async function updateStorage(
 	_state: Record<string, unknown>,
 	formData: FormData

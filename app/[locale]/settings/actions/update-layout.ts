@@ -1,5 +1,5 @@
 //
-// Actions du serveur pour les paramètres d'apparence.
+// Action de mise à jour de l'apparence de l'interface utilisateur.
 //
 
 "use server";
@@ -8,9 +8,6 @@ import prisma from "@/utilities/prisma";
 import schema from "@/schemas/layout";
 import { auth } from "@/utilities/next-auth";
 
-//
-// Mise à jour des informations utilisateur.
-//
 export async function updateLayout(
 	_state: Record<string, unknown>,
 	formData: FormData
