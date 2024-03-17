@@ -6,7 +6,11 @@
         "jsx": "preserve",
         "paths": {
             "@/*": ["./*"],
+            "@/app/*": ["./app/[locale]/*"],
             "@/images/*": ["./public/assets/images/*"],
+            "@/settings/*": ["./app/[locale]/settings/*"],
+            "@/dashboard/*": ["./app/[locale]/dashboard/*"],
+            "@/components/*": ["./app/[locale]/components/*"],
         },
         "noEmit": true,
         "strict": true,
