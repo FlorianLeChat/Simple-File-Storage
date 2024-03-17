@@ -40,8 +40,10 @@ import { Dialog,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
+import { addSharedUser } from "../actions/shared-user-add";
 import { DropdownMenuItem } from "../../components/ui/dropdown-menu";
-import { addSharedUser, updateSharedUser, deleteSharedUser } from "../actions";
+import { updateSharedUser } from "../actions/shared-user-update";
+import { deleteSharedUser } from "../actions/shared-user-delete";
 
 export default function ShareManager( {
 	file,
