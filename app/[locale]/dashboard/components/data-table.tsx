@@ -6,6 +6,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import { columns } from "@/config/columns";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
@@ -31,7 +32,6 @@ import { Table,
 	TableHeader } from "../../components/ui/table";
 import Pagination from "./pagination";
 import FileUpload from "./file-upload";
-import { columns } from "./columns";
 import ColumnToggle from "./column-toggle";
 
 export default function DataTable( { data }: { data: FileAttributes[] } )
