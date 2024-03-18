@@ -54,7 +54,7 @@ export default async function Page( {
 	return (
 		<>
 			{/* En-tête de la page */}
-			<header className="mt-auto p-4 text-center max-sm:pt-8">
+			<header className="mt-auto p-4 pt-8 text-center">
 				{/* Titre du site */}
 				<h1 className="text-2xl font-semibold max-sm:overflow-hidden max-sm:text-ellipsis max-sm:whitespace-nowrap">
 					<Link href="/">💾 {title as string}</Link>
