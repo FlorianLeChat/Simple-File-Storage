@@ -5,7 +5,9 @@
 
 "use server";
 
+import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
+import { TOTP } from "otpauth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
@@ -80,9 +82,55 @@ export async function signInAccount(
 
 	try
 	{
-		// Dans le cas contraire, on tente alors une authentification via
-		//  les informations d'authentification fournies avant de rediriger
-		//  l'utilisateur vers la page de son tableau de bord.
+		// Dans le cas contraire, on vérifie si l'utilisateur a activé
+		//  l'authentification à double facteur et si un code a été fourni.
+		const user = await prisma.user.findFirst( {
+			where: {
+				email: result.data.email
+			},
+			include: {
+				otp: true
+			}
+		} );
+
+		if ( user?.otp )
+		{
+			// Vérification de la présence d'un code de double authentification.
+			if ( result.data.otp )
+			{
+				const otp = new TOTP( {
+					label: result.data.email,
+					secret: result.data.otp,
+					issuer: "Simple File Storage",
+					digits: 6,
+					period: 30,
+					algorithm: "SHA256"
+				} );
+
+				if (
+					otp.validate( { token: result.data.otp, window: 1 } ) === 0
+					&& user.otp.backup === result.data.otp
+				)
+				{
+					// Échec de validation avec le code de l'application ouverts
+					//  ou le code de secours.
+					return {
+						success: false,
+						reason: "form.errors.invalid_otp"
+					};
+				}
+			}
+
+			// Aucun code de double authentification n'a été fourni.
+			return {
+				success: false,
+				reason: "form.errors.otp_required"
+			};
+		}
+
+		// On tente alors une authentification via les informations
+		//  d'authentification fournies avant de rediriger l'utilisateur
+		//  vers la page de son tableau de bord.
 		const response = await signIn( "credentials", {
 			email: result.data.email,
 			password: result.data.password,
