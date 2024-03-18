@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { Eye, Mail, EyeOff, Loader2, KeyRound } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
@@ -28,6 +28,10 @@ import { Tooltip,
 	TooltipTrigger,
 	TooltipContent,
 	TooltipProvider } from "../../components/ui/tooltip";
+import { InputOTP,
+	InputOTPSlot,
+	InputOTPGroup,
+	InputOTPSeparator } from "../../components/ui/input-otp";
 import { signInAccount } from "../actions/signin";
 import { buttonVariants, Button } from "../../components/ui/button";
 
@@ -47,6 +51,7 @@ export default function SignInForm()
 	const form = useForm<z.infer<typeof schema>>( {
 		resolver: zodResolver( schema ),
 		defaultValues: {
+			otp: "",
 			email: "",
 			password: "",
 			remembered: false
@@ -245,6 +250,60 @@ export default function SignInForm()
 						passe.
 					</p>
 				)}
+
+				{/* Validation de l'authentification à deux facteurs */}
+				<FormField
+					name="otp"
+					control={form.control}
+					render={( { field } ) => (
+						<FormItem className="flex flex-col">
+							<FormLabel className="sr-only">
+								Authentification à deux facteurs
+							</FormLabel>
+
+							<FormControl>
+								<InputOTP
+									{...field}
+									render={( { slots } ) => (
+										<InputOTPGroup className="gap-2">
+											{slots.map( ( slot, index ) => (
+												<Fragment key={index}>
+													<InputOTPSlot
+														className="rounded-md border"
+														{...slot}
+													/>
+
+													{index
+														!== slots.length - 1 && (
+														<InputOTPSeparator />
+													)}
+												</Fragment>
+											) )}
+										</InputOTPGroup>
+									)}
+									onBlur={() => setFocused( field.value?.length > 0 )}
+									onFocus={() => setFocused( true )}
+									className={`justify-center transition-opacity ${
+										!isFocused ? "opacity-25" : ""
+									}`}
+									maxLength={6}
+								/>
+							</FormControl>
+
+							<FormDescription
+								className={`transition-opacity ${
+									!isFocused ? "opacity-25" : ""
+								}`}
+							>
+								L&lsquo;authentification à deux facteurs peut
+								être nécessaire en complément de votre mot de
+								passe pour vous connecter à votre compte.
+							</FormDescription>
+
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 
 				{/* Se souvenir de moi */}
 				<FormField
