@@ -111,7 +111,7 @@ model User {
 	emailVerified DateTime?
 	image         String?
 	role          String    @default("user")
-	otp           Otp[]
+	otp           Otp?
 	accounts      Account[]
 	sessions      Session[]
 	issues        Issue[]
