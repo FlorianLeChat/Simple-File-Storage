@@ -113,8 +113,8 @@ export async function updateUser(
 		} );
 
 		if (
-			otp.validate( { token: session.user.otp, window: 1 } ) !== 0
-			|| data?.backup !== result.data.otp
+			otp.validate( { token: result.data.otp, window: 1 } ) === 0
+			|| data?.backup === result.data.otp
 		)
 		{
 			// Suppression de l'autorisation à deux facteurs.
