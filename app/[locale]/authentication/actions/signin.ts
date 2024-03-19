@@ -109,8 +109,8 @@ export async function signInAccount(
 				} );
 
 				if (
-					otp.validate( { token: result.data.otp, window: 1 } ) === 0
-					&& user.otp.backup === result.data.otp
+					otp.validate( { token: result.data.otp, window: 1 } ) !== 0
+					&& user.otp.backup !== result.data.otp
 				)
 				{
 					// Échec de validation avec le code de l'application ouverts
