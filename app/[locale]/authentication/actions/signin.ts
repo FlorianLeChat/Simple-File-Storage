@@ -45,6 +45,7 @@ export async function signInAccount(
 	// Dans le cas contraire, on tente de valider les informations
 	//  d'authentification fournies par l'utilisateur.
 	const result = schema.safeParse( {
+		otp: formData.get( "otp" ),
 		email: formData.get( "email" ),
 		password: formData.get( "password" ),
 		remembered: formData.get( "remembered" ) === "on"
