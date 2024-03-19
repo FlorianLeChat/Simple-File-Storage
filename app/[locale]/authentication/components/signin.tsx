@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 import { Eye, Mail, EyeOff, Loader2, KeyRound } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
@@ -264,30 +264,27 @@ export default function SignInForm()
 							<FormControl>
 								<InputOTP
 									{...field}
-									render={( { slots } ) => (
-										<InputOTPGroup className="gap-2">
-											{slots.map( ( slot, index ) => (
-												<Fragment key={index}>
-													<InputOTPSlot
-														className="rounded-md border"
-														{...slot}
-													/>
-
-													{index
-														!== slots.length - 1 && (
-														<InputOTPSeparator />
-													)}
-												</Fragment>
-											) )}
-										</InputOTPGroup>
-									)}
 									onBlur={() => setFocused( field.value?.length > 0 )}
 									onFocus={() => setFocused( true )}
-									className={`justify-center transition-opacity ${
+									maxLength={6}
+									className={`!w-auto justify-center transition-opacity ${
 										!isFocused ? "opacity-25" : ""
 									}`}
-									maxLength={6}
-								/>
+								>
+									<InputOTPGroup>
+										<InputOTPSlot index={0} />
+										<InputOTPSlot index={1} />
+										<InputOTPSlot index={2} />
+									</InputOTPGroup>
+
+									<InputOTPSeparator />
+
+									<InputOTPGroup>
+										<InputOTPSlot index={3} />
+										<InputOTPSlot index={4} />
+										<InputOTPSlot index={5} />
+									</InputOTPGroup>
+								</InputOTP>
 							</FormControl>
 
 							<FormDescription
