@@ -27,9 +27,6 @@ import type { Session } from "next-auth";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../components/ui/input";
-import { InputOTP,
-	InputOTPSlot,
-	InputOTPGroup } from "../../components/ui/input-otp";
 import { Select,
 	SelectItem,
 	SelectValue,
@@ -47,6 +44,10 @@ import { Form,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
 import { updateUser } from "../actions/update-user";
+import { InputOTP,
+	InputOTPSlot,
+	InputOTPGroup,
+	InputOTPSeparator } from "../../components/ui/input-otp";
 import OTPValidationModal from "./otp-validation";
 import { Button, buttonVariants } from "../../components/ui/button";
 
@@ -370,18 +371,23 @@ export default function User( {
 								<FormControl>
 									<InputOTP
 										{...field}
-										render={( { slots } ) => (
-											<InputOTPGroup>
-												{slots.map( ( slot, index ) => (
-													<InputOTPSlot
-														key={index}
-														{...slot}
-													/>
-												) )}
-											</InputOTPGroup>
-										)}
 										maxLength={6}
-									/>
+										className="!w-auto"
+									>
+										<InputOTPGroup>
+											<InputOTPSlot index={0} />
+											<InputOTPSlot index={1} />
+											<InputOTPSlot index={2} />
+										</InputOTPGroup>
+
+										<InputOTPSeparator />
+
+										<InputOTPGroup>
+											<InputOTPSlot index={3} />
+											<InputOTPSlot index={4} />
+											<InputOTPSlot index={5} />
+										</InputOTPGroup>
+									</InputOTP>
 								</FormControl>
 
 								<FormDescription>

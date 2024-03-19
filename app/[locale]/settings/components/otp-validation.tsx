@@ -11,9 +11,7 @@ import { useState } from "react";
 import serverAction from "@/utilities/recaptcha";
 import { Check, Loader2, Smartphone } from "lucide-react";
 
-import { InputOTP,
-	InputOTPSlot,
-	InputOTPGroup } from "../../components/ui/input-otp";
+import OTPBackupModal from "./otp-backup";
 import { validateOTP } from "../actions/validate-otp";
 import { Dialog,
 	DialogTitle,
@@ -21,8 +19,11 @@ import { Dialog,
 	DialogTrigger,
 	DialogContent,
 	DialogDescription } from "../../components/ui/dialog";
+import { InputOTP,
+	InputOTPSlot,
+	InputOTPGroup,
+	InputOTPSeparator } from "../../components/ui/input-otp";
 import { Button, buttonVariants } from "../../components/ui/button";
-import OTPBackupModal from "./otp-backup";
 
 export default function OTPValidationModal( {
 	image,
@@ -33,6 +34,7 @@ export default function OTPValidationModal( {
 } )
 {
 	// Déclaration des variables d'état.
+	const [ otpCode, setOTPCode ] = useState( "" );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ backupCode, setBackupCode ] = useState( "" );
 
@@ -156,23 +158,29 @@ export default function OTPValidationModal( {
 						event.preventDefault();
 
 						// Récupération de la valeur du champ de saisie.
-						const element = event.currentTarget.children[ 0 ]
-							.children[ 1 ] as HTMLInputElement;
-
-						submitOTPValidation( element.value );
+						submitOTPValidation( otpCode );
 					}}
 				>
 					<InputOTP
-						name="code"
-						render={( { slots } ) => (
-							<InputOTPGroup>
-								{slots.map( ( slot, index ) => (
-									<InputOTPSlot {...slot} key={index} />
-								) )}
-							</InputOTPGroup>
-						)}
+						value={otpCode}
+						onChange={( value ) => setOTPCode( value )}
 						maxLength={6}
-					/>
+						className="!w-auto"
+					>
+						<InputOTPGroup>
+							<InputOTPSlot index={0} />
+							<InputOTPSlot index={1} />
+							<InputOTPSlot index={2} />
+						</InputOTPGroup>
+
+						<InputOTPSeparator />
+
+						<InputOTPGroup>
+							<InputOTPSlot index={3} />
+							<InputOTPSlot index={4} />
+							<InputOTPSlot index={5} />
+						</InputOTPGroup>
+					</InputOTP>
 				</form>
 
 				<Button
