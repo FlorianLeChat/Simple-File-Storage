@@ -256,7 +256,11 @@ export default function SignInForm()
 					name="otp"
 					control={form.control}
 					render={( { field } ) => (
-						<FormItem className="flex flex-col">
+						<FormItem
+							className={`!mt-4 flex flex-col items-center transition-opacity ${
+								!isFocused ? "opacity-25" : ""
+							}`}
+						>
 							<FormLabel className="sr-only">
 								Authentification à deux facteurs
 							</FormLabel>
@@ -267,9 +271,6 @@ export default function SignInForm()
 									onBlur={() => setFocused( field.value?.length > 0 )}
 									onFocus={() => setFocused( true )}
 									maxLength={6}
-									className={`!w-auto justify-center transition-opacity ${
-										!isFocused ? "opacity-25" : ""
-									}`}
 								>
 									<InputOTPGroup>
 										<InputOTPSlot index={0} />
