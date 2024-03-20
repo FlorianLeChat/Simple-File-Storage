@@ -10,6 +10,7 @@ import "./layout.css";
 import "@total-typescript/ts-reset";
 
 // Importation des dépendances.
+import pick from "lodash/pick";
 import { join } from "path";
 import { Toaster } from "sonner";
 import { existsSync } from "fs";
@@ -18,9 +19,10 @@ import { lazy,
 	type ReactNode,
 	type CSSProperties,
 	type ComponentProps } from "react";
+import { NextIntlClientProvider } from "next-intl";
 import { Inter, Poppins, Roboto } from "next/font/google";
-import { unstable_setRequestLocale } from "next-intl/server";
 import { mkdir, readFile, writeFile } from "fs/promises";
+import { unstable_setRequestLocale, getMessages } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
@@ -223,8 +225,11 @@ export default async function Layout( {
 		return null;
 	}
 
-	// Récupération des préférences de l'utilisateur.
+	// Déclaration des constantes.
 	const session = await auth();
+	const messages = await getMessages();
+
+	// Récupération des préférences de l'utilisateur.
 	const font = session?.user.preferences.font ?? "inter";
 	const theme = session?.user.preferences.theme ?? "light";
 	const color = session?.user.preferences.color ?? "blue";
@@ -268,39 +273,50 @@ export default async function Layout( {
 			<body className="flex min-h-screen flex-col">
 				{/* Écran de chargement de la page */}
 				<Suspense>
-					{/* Vidéo en arrière-plan */}
-					<video
-						loop
-						muted
-						autoPlay
-						className="absolute -z-10 hidden h-full object-none opacity-5 dark:block"
+					{/* Utilisation des traductions */}
+					<NextIntlClientProvider
+						locale={locale}
+						messages={pick(
+							messages,
+							"consentModal",
+							"preferencesModal"
+						)}
+						timeZone={process.env.NEXT_PUBLIC_TIMEZONE}
 					>
-						<source
-							src={`${ process.env.__NEXT_ROUTER_BASEPATH }/assets/videos/background.mp4`}
-							type="video/mp4"
+						{/* Vidéo en arrière-plan */}
+						<video
+							loop
+							muted
+							autoPlay
+							className="absolute -z-10 hidden h-full object-none opacity-5 dark:block"
+						>
+							<source
+								src={`${ process.env.__NEXT_ROUTER_BASEPATH }/assets/videos/background.mp4`}
+								type="video/mp4"
+							/>
+						</video>
+
+						{/* Composant enfant */}
+						{children}
+
+						{/* Consentement des cookies */}
+						<CookieConsent />
+
+						{/* Google reCAPTCHA */}
+						<Recaptcha />
+
+						{/* Composant des notifications */}
+						<Sonner
+							theme={
+								( session && !session?.user.preferences.default
+									? theme
+									: "system" ) as ToasterProps["theme"]
+							}
 						/>
-					</video>
 
-					{/* Composant enfant */}
-					{children}
-
-					{/* Consentement des cookies */}
-					<CookieConsent />
-
-					{/* Google reCAPTCHA */}
-					<Recaptcha />
-
-					{/* Composant des notifications */}
-					<Sonner
-						theme={
-							( session && !session?.user.preferences.default
-								? theme
-								: "system" ) as ToasterProps["theme"]
-						}
-					/>
-
-					{/* Pied de page */}
-					<Footer />
+						{/* Pied de page */}
+						<Footer />
+					</NextIntlClientProvider>
 				</Suspense>
 			</body>
 		</html>

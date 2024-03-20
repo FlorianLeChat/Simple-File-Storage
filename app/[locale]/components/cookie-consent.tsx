@@ -4,15 +4,22 @@
 
 "use client";
 
-import { run } from "vanilla-cookieconsent";
+import { useMessages } from "next-intl";
 import { usePathname } from "next/navigation";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { useEffect, useState } from "react";
+import { run,
+	type ConsentModalOptions,
+	type PreferencesModalOptions } from "vanilla-cookieconsent";
 
 export default function CookieConsent()
 {
 	// Déclaration des variables d'état.
 	const pathname = usePathname();
+	const messages = useMessages() as unknown as {
+		consentModal: ConsentModalOptions;
+		preferencesModal: PreferencesModalOptions;
+	};
 	const [ analytics, setAnalytics ] = useState( false );
 
 	// Affichage du consentement des cookies.
@@ -24,13 +31,13 @@ export default function CookieConsent()
 			// Désactivation de l'interaction avec la page.
 			disablePageInteraction: true,
 
+			// Disparition du mécanisme pour les robots.
+			hideFromBots: process.env.NEXT_PUBLIC_ENV === "production",
+
 			// Activation automatique de la fenêtre de consentement.
 			autoShow:
 				process.env.NEXT_PUBLIC_ENV === "production"
 				&& !pathname.startsWith( "/legal" ),
-
-			// Disparition du mécanisme pour les robots.
-			hideFromBots: process.env.NEXT_PUBLIC_ENV === "production",
 
 			// Paramètres internes des cookies.
 			cookie: {
@@ -78,10 +85,11 @@ export default function CookieConsent()
 			// Configuration des traductions.
 			language: {
 				default: "en",
-				autoDetect: "document",
 				translations: {
-					en: `${ process.env.__NEXT_ROUTER_BASEPATH }/locales/en.json`,
-					fr: `${ process.env.__NEXT_ROUTER_BASEPATH }/locales/fr.json`
+					en: {
+						consentModal: messages.consentModal,
+						preferencesModal: messages.preferencesModal
+					}
 				}
 			},
 
@@ -97,7 +105,7 @@ export default function CookieConsent()
 				}
 			}
 		} );
-	}, [ pathname ] );
+	}, [ pathname, messages.consentModal, messages.preferencesModal ] );
 
 	// Affichage conditionnel du rendu HTML du composant.
 	return (
