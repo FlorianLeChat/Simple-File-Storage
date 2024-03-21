@@ -44,6 +44,7 @@
 		"react/require-default-props": ["error", { "functions": "defaultArguments" }], // https://github.com/jsx-eslint/eslint-plugin-react/issues/2396
 		"react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
 		"react/jsx-props-no-spreading": "off",
-		"react/jsx-one-expression-per-line": "off"
+		"react/jsx-one-expression-per-line": "off",
+		"react/no-unstable-nested-components": "off" // https://next-intl-docs.vercel.app/docs/usage/messages#rich-text
 	}
 }
