@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
+import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 
 import { Button } from "../../components/ui/button";
@@ -20,6 +21,7 @@ import { signInAccount } from "../actions/signin";
 export default function OAuthForm()
 {
 	// Déclaration des variables d'état.
+	const t = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ signInState, signInAction ] = useFormState( signInAccount, {
 		success: true,
@@ -47,8 +49,8 @@ export default function OAuthForm()
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( "form.errors.auth_failed", {
-				description: "form.errors.server_error"
+			toast.error( t( "form.errors.auth_failed" ), {
+				description: t( "form.errors.server_error" )
 			} );
 
 			return;
@@ -72,17 +74,17 @@ export default function OAuthForm()
 		{
 			form.reset();
 
-			toast.info( "form.info.email_validation", {
+			toast.info( t( "form.infos.email_validation" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( "form.errors.auth_failed", {
+			toast.error( t( "form.errors.auth_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ form, signInState ] );
+	}, [ t, form, signInState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (

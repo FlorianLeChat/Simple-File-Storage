@@ -12,6 +12,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { auth, signIn } from "@/utilities/next-auth";
+import { getTranslations } from "next-intl/server";
 
 export async function signInAccount(
 	_state: Record<string, unknown>,
@@ -44,6 +45,7 @@ export async function signInAccount(
 
 	// Dans le cas contraire, on tente de valider les informations
 	//  d'authentification fournies par l'utilisateur.
+	const t = await getTranslations();
 	const result = schema.safeParse( {
 		otp: formData.get( "otp" ),
 		email: formData.get( "email" ),
@@ -57,7 +59,7 @@ export async function signInAccount(
 		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: `zod.errors.${ result.error.issues[ 0 ].code }`
+			reason: t( `zod.errors.${ result.error.issues[ 0 ].code }` )
 		};
 	}
 
@@ -76,8 +78,8 @@ export async function signInAccount(
 		return {
 			success: !!response,
 			reason: response
-				? "form.info.email_validation"
-				: "form.errors.email_error"
+				? t( "form.infos.email_validation" )
+				: t( "authjs.errors.EmailSignup" )
 		};
 	}
 
@@ -117,7 +119,7 @@ export async function signInAccount(
 					//  ou le code de secours.
 					return {
 						success: false,
-						reason: "form.errors.invalid_otp"
+						reason: t( "form.errors.invalid_otp" )
 					};
 				}
 			}
@@ -125,7 +127,7 @@ export async function signInAccount(
 			// Aucun code de double authentification n'a été fourni.
 			return {
 				success: false,
-				reason: "form.errors.otp_required"
+				reason: t( "form.errors.otp_required" )
 			};
 		}
 
@@ -179,6 +181,6 @@ export async function signInAccount(
 	//  ne correspondant à aucun des cas précédents.
 	return {
 		success: false,
-		reason: "form.errors.invalid_credentials"
+		reason: "authjs.errors.CredentialsSignin"
 	};
 }
