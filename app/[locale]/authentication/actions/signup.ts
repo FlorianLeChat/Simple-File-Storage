@@ -9,6 +9,7 @@ import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
 import { redirect } from "next/navigation";
 import { auth, signIn } from "@/utilities/next-auth";
+import { getTranslations } from "next-intl/server";
 
 export async function signUpAccount(
 	_state: Record<string, unknown>,
@@ -27,6 +28,7 @@ export async function signUpAccount(
 
 	// On tente de valider les informations d'authentification fournies
 	//  par l'utilisateur.
+	const t = await getTranslations();
 	const result = schema.safeParse( {
 		email: formData.get( "email" ),
 		password: ""
@@ -38,7 +40,7 @@ export async function signUpAccount(
 		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: `zod.errors.${ result.error.issues[ 0 ].code }`
+			reason: t( `zod.errors.${ result.error.issues[ 0 ].code }` )
 		};
 	}
 
@@ -56,7 +58,7 @@ export async function signUpAccount(
 		//  électronique fournie est déjà utilisée.
 		return {
 			success: false,
-			reason: "form.errors.email_used"
+			reason: t( "form.errors.email_used" )
 		};
 	}
 
@@ -86,7 +88,7 @@ export async function signUpAccount(
 			//  d'erreur sur la page d'authentification.
 			return {
 				success: false,
-				reason: "form.errors.email_error"
+				reason: t( "authjs.errors.EmailSignup" )
 			};
 		}
 	}
@@ -95,6 +97,6 @@ export async function signUpAccount(
 	//  qu'il puisse valider son adresse électronique.
 	return {
 		success: true,
-		reason: "form.info.email_validation"
+		reason: t( "form.infos.email_validation" )
 	};
 }
