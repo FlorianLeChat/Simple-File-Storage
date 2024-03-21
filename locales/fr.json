@@ -1,4 +1,62 @@
 {
+	"form": {
+		"infos": {
+			"email_validation": "Un courriel de confirmation a été envoyé à l'adresse que vous avez fournie. Veuillez vérifier votre boîte de réception et cliquer sur le lien de confirmation pour activer votre compte."
+		},
+		"errors": {
+			"email_used": "Cette adresse électronique est déjà utilisée.",
+			"auth_failed": "Échec de l'authentification.",
+			"server_error": "Une erreur s'est produite lors du traitement de votre demande par le serveur.",
+			"invalid_otp": "Le code de vérification que vous avez fourni est incorrect.",
+			"otp_required": "Un code de vérification est requis pour continuer.",
+			"internal_error": "Erreur interne"
+		}
+	},
+	"modals": {
+		"reset_password": {
+			"trigger": "Vous avez oublié votre mot de passe ?",
+			"title": "Oubli du mot de passe",
+			"description": "Si vous avez oublié votre mot de passe, essayez de vous connecter à votre compte avec un lien d'authentification à usage unique envoyé à votre adresse électronique. Une fois connecté, vous pourrez saisir un nouveau mot de passe pour votre compte. <strong>En cas de perte de l'accès à votre adresse électronique, vous devrez recréer un nouveau compte car le support technique ne sera pas légalement autorisé à vous aider à récupérer l'accès à votre compte.</strong>",
+			"close": "J'ai bien compris"
+		}
+	},
+	"header": {
+		"authenticate": "Authentification",
+		"dashboard": "Tableau de bord"
+	},
+	"index": {
+		"title": "Découvrez nos fonctionnalités",
+		"subtitle": "Nos fonctionnalités sont conçues pour garantir votre confidentialité et protéger vos données.",
+		"features": {
+			"title_1": "Sécurisé de bout en bout",
+			"title_2": "Simple d'utilisation",
+			"title_3": "Respect de la vie privée",
+			"title_4": "Haute performance",
+			"title_5": "Outils efficaces",
+			"title_6": "Espace de stockage partagé",
+			"description_1": "Toutes les données sont chiffrées et stockées sur des serveurs sécurisés et à l'abri des regards indiscrets.",
+			"description_2": "L'interface est conçue pour être simple et ergonomique pour tous les utilisateurs, même pour vos grands-parents.",
+			"description_3": "Vos données sont stockées sur des serveurs basés en Europe conformément au RGPD pour garantir une intégrité et une confidentialité totale.",
+			"description_4": "Nos serveurs sont prévus pour garantir une performance optimale et une disponibilité maximale.",
+			"description_5": "Nos outils sont peu nombreux mais efficaces pour l'enregistrement et le partage de vos fichiers avec d'autres utilisateurs.",
+			"description_6": "Nous ne pouvons pas vous garantir un espace de stockage illimité, mais il permet de stocker suffisamment de fichiers pour vos besoins quotidiens."
+		}
+	},
+	"authjs": {
+		"errors": {
+			"default": "Impossible d'effectuer l'authentification.",
+			"Signin": "Essayez de vous connecter avec un autre compte.",
+			"OAuthSignin": "Essayez de vous connecter avec un autre compte.",
+			"OAuthCallbackError": "Essayez de vous connecter avec un autre compte.",
+			"OAuthCreateAccount": "Essayez de vous connecter avec un autre compte.",
+			"EmailCreateAccount": "Essayez de vous connecter avec un autre compte.",
+			"Callback": "Essayez de vous connecter avec un autre compte.",
+			"OAuthAccountNotLinked": "Pour confirmer votre identité, connectez-vous avec le même compte que celui que vous avez utilisé initialement.",
+			"EmailSignup": "Le courriel de confirmation n'a pas pu être envoyé à l'adresse que vous avez fournie. Veuillez réessayer plus tard.",
+			"CredentialsSignin": "Échec de l'autorisation. Vérifiez les informations que vous avez fournies.",
+			"SessionRequired": "Veillez à vous connecter pour accéder à cette page."
+		}
+	},
 	"consentModal": {
 		"title": "Voulez-vous un cookie ? 🍪",
 		"footer": "<a href=\"legal/privacy\" target=\"_blank\">Politique de confidentialité</a><a href=\"legal/terms\" target=\"_blank\">Conditions d'utilisation</a>",
