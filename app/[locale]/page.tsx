@@ -14,7 +14,7 @@ import { Eye,
 	PocketKnife,
 	LayoutDashboard } from "lucide-react";
 import type { Metadata } from "next";
-import { unstable_setRequestLocale } from "next-intl/server";
+import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
@@ -40,6 +40,7 @@ export default async function Page( {
 	unstable_setRequestLocale( locale );
 
 	// Déclaration des constantes.
+	const t = await getTranslations();
 	const meta = await generateMetadata();
 	const session = await auth();
 
@@ -62,7 +63,7 @@ export default async function Page( {
 						)}
 					>
 						<LayoutDashboard className="mr-2 h-5 w-5" />
-						Tableau de bord
+						{t( "header.dashboard" )}
 					</Link>
 				) : (
 					<Link
@@ -73,7 +74,7 @@ export default async function Page( {
 						)}
 					>
 						<LogIn className="mr-2 h-5 w-5" />
-						Authentification
+						{t( "header.authenticate" )}
 					</Link>
 				)}
 
@@ -110,12 +111,11 @@ export default async function Page( {
 			{/* Contenu de la page */}
 			<section className="container mx-auto mb-4 p-4 text-center">
 				<h2 className="hyphens-auto bg-gradient-to-r bg-clip-text text-4xl font-bold tracking-tighter dark:from-white dark:to-gray-500 dark:text-transparent sm:text-5xl xl:text-6xl">
-					Découvrez nos fonctionnalités
+					{t( "index.title" )}
 				</h2>
 
 				<p className="mx-auto mt-2 max-w-[600px] md:text-xl">
-					Nos fonctionnalités sont conçues pour garantir votre
-					confidentialité et protéger vos données.
+					{t( "index.subtitle" )}
 				</p>
 
 				<ul className="grid gap-4 max-xl:mt-8 md:grid-cols-3 md:gap-8 xl:mt-[5%]">
@@ -123,13 +123,11 @@ export default async function Page( {
 						<Lock className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
-							Sécurisé de bout en bout
+							{t( "index.features.title_1" )}
 						</h2>
 
 						<p className="text-muted-foreground">
-							Toutes les données sont chiffrées et stockées sur
-							des serveurs sécurisés et à l&lsquo;abri des regards
-							indiscrets.
+							{t( "index.features.description_1" )}
 						</p>
 					</li>
 
@@ -137,13 +135,11 @@ export default async function Page( {
 						<Smile className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
-							Simple d&lsquo;utilisation
+							{t( "index.features.title_2" )}
 						</h2>
 
 						<p className="text-muted-foreground">
-							L&lsquo;interface est conçue pour être simple et
-							ergonomique pour tous les utilisateurs, même pour
-							vos grands-parents.
+							{t( "index.features.description_2" )}
 						</p>
 					</li>
 
@@ -151,36 +147,37 @@ export default async function Page( {
 						<Eye className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
-							Respect de la vie privée
+							{t( "index.features.title_3" )}
 						</h2>
 
 						<p className="text-muted-foreground">
-							Vos données sont stockées sur des serveurs basés en
-							Europe conformément au RGPD pour garantir une
-							intégrité et une confidentialité totale.
+							{t( "index.features.description_3" )}
 						</p>
 					</li>
 
 					<li className="space-y-2 p-4">
 						<Zap className="mx-auto mb-2 h-6 w-6" />
 
-						<h2 className="text-xl font-bold">Haute performance</h2>
+						<h2 className="text-xl font-bold">
+							{" "}
+							{t( "index.features.title_4" )}
+						</h2>
 
 						<p className="text-muted-foreground">
-							Nos serveurs sont prévus pour garantir une
-							performance optimale et une disponibilité maximale.
+							{t( "index.features.description_4" )}
 						</p>
 					</li>
 
 					<li className="space-y-2 p-4">
 						<PocketKnife className="mx-auto mb-2 h-6 w-6" />
 
-						<h2 className="text-xl font-bold">Outils efficaces</h2>
+						<h2 className="text-xl font-bold">
+							{" "}
+							{t( "index.features.title_5" )}
+						</h2>
 
 						<p className="text-muted-foreground">
-							Nos outils sont peu nombreux mais efficaces pour
-							l&lsquo;enregistrement et le partage de vos fichiers
-							avec d&lsquo;autres utilisateurs.
+							{t( "index.features.description_5" )}
 						</p>
 					</li>
 
@@ -188,14 +185,11 @@ export default async function Page( {
 						<Share2 className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
-							Espace de stockage partagé
+							{t( "index.features.title_6" )}
 						</h2>
 
 						<p className="text-muted-foreground">
-							Nous ne pouvons pas vous garantir un espace de
-							stockage illimité, mais il permet de stocker
-							suffisamment de fichiers pour vos besoins
-							quotidiens.
+							{t( "index.features.description_6" )}
 						</p>
 					</li>
 				</ul>
