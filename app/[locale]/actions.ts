@@ -19,10 +19,7 @@ export async function updateReadState()
 	{
 		// Si la session n'existe pas, on indique que l'utilisateur
 		//  n'est pas connecté.
-		return {
-			success: false,
-			reason: "form.errors.unauthenticated"
-		};
+		return false;
 	}
 
 	// On supprime ensuite toutes les notifications de l'utilisateur.
