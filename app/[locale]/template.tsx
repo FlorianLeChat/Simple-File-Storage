@@ -7,10 +7,14 @@
 
 // Importation des dépendances.
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect } from "react";
 
 export default function Template( { children }: { children: ReactNode } )
 {
+	// Déclaration des variables d'état.
+	const t = useTranslations( "form" );
+
 	// Affichage automatique des messages d'erreur.
 	useEffect( () =>
 	{
@@ -24,12 +28,12 @@ export default function Template( { children }: { children: ReactNode } )
 		{
 			setTimeout( () =>
 			{
-				toast.error( "Erreur interne", {
+				toast.error( t( "errors.internal_error" ), {
 					description: error
 				} );
 			}, 0 );
 		}
-	}, [] );
+	}, [ t ] );
 
 	// Affichage du rendu HTML de la page.
 	return children;
