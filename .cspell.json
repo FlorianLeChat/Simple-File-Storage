@@ -1,0 +1,11 @@
+{
+	"import": ["./node_modules/@cspell/dict-fr-fr/cspell-ext.json"],
+	"version": "0.2",
+	"language": "fr, en",
+	"words": [
+		"csrf",
+		"Signup",
+		"RGPD",
+		"authjs"
+	]
+}
