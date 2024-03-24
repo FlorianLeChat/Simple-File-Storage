@@ -45,11 +45,7 @@ export default function ResetPasswordModal()
 
 					<DialogDescription className="text-left">
 						{t.rich( "description", {
-							strong: ( chunks ) => (
-								<strong className="mt-1 inline-block">
-									{chunks}
-								</strong>
-							)
+							b: ( chunks ) => <strong>{chunks}</strong>
 						} )}
 					</DialogDescription>
 				</DialogHeader>
