@@ -9,8 +9,8 @@ import prisma from "@/utilities/prisma";
 import { lazy } from "react";
 import { parse } from "path";
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import type { FileAttributes } from "@/interfaces/File";
-import type { Metadata, ResolvingMetadata } from "next";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
@@ -26,15 +26,13 @@ const Navigation = lazy( () => import( "../components/navigation" ) );
 const Notification = lazy( () => import( "../components/notification" ) );
 
 // Déclaration des propriétés de la page.
-export async function generateMetadata(
-	_parameters: Record<string, unknown>,
-	parent: ResolvingMetadata
-): Promise<Metadata>
+export async function generateMetadata(): Promise<Metadata>
 {
-	const t = await getTranslations();
+	const metadata = await getMetadata();
+	const messages = await getTranslations();
 
 	return {
-		title: `${ t( "header.dashboard" ) } – ${ ( await parent ).title?.absolute }`
+		title: `${ messages( "header.dashboard" ) } – ${ metadata.title }`
 	};
 }
 
@@ -132,9 +130,9 @@ export default async function Page( {
 	unstable_setRequestLocale( locale );
 
 	// Déclaration des constantes.
-	const t = await getTranslations();
 	const meta = await getMetadata();
 	const session = await auth();
+	const messages = await getTranslations();
 
 	// Vérification de la session utilisateur.
 	if ( !session )
@@ -173,11 +171,11 @@ export default async function Page( {
 			<main className="container mx-auto max-w-[1440px] p-4 md:p-8">
 				{/* Titre et description de la page */}
 				<h2 className="text-2xl font-bold tracking-tight">
-					{t( "header.dashboard" )}
+					{messages( "header.dashboard" )}
 				</h2>
 
 				<p className="text-muted-foreground">
-					{t( "dashboard.description" )}
+					{messages( "dashboard.description" )}
 				</p>
 
 				{/* Barre verticale de séparation */}

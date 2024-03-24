@@ -5,8 +5,8 @@
 // Importation des dépendances.
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { lazy, type ReactNode } from "react";
-import type { Metadata, ResolvingMetadata } from "next";
 import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
@@ -22,15 +22,13 @@ const Navigation = lazy( () => import( "../components/navigation" ) );
 const Notification = lazy( () => import( "../components/notification" ) );
 
 // Déclaration des propriétés de la page.
-export async function generateMetadata(
-	_parameters: Record<string, unknown>,
-	parent: ResolvingMetadata
-): Promise<Metadata>
+export async function generateMetadata(): Promise<Metadata>
 {
-	const t = await getTranslations();
+	const metadata = await getMetadata();
+	const messages = await getTranslations();
 
 	return {
-		title: `${ t( "header.settings" ) } – ${ ( await parent ).title?.absolute }`
+		title: `${ messages( "header.settings" ) } – ${ metadata.title }`
 	};
 }
 

@@ -3,7 +3,7 @@
 //
 
 // Importation des dépendances.
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
@@ -13,15 +13,13 @@ import { generateMetadata as getMetadata } from "../../layout";
 import { Separator } from "../../components/ui/separator";
 
 // Déclaration des propriétés de la page.
-export async function generateMetadata(
-	_parameters: Record<string, unknown>,
-	parent: ResolvingMetadata
-): Promise<Metadata>
+export async function generateMetadata(): Promise<Metadata>
 {
-	const t = await getTranslations();
+	const metadata = await getMetadata();
+	const messages = await getTranslations();
 
 	return {
-		title: `${ t( "header.privacy_policy" ) } – ${ ( await parent ).title?.absolute }`
+		title: `${ messages( "header.privacy_policy" ) } – ${ metadata.title }`
 	};
 }
 
