@@ -13,7 +13,7 @@ import { type ReactNode, useEffect } from "react";
 export default function Template( { children }: { children: ReactNode } )
 {
 	// Déclaration des variables d'état.
-	const t = useTranslations( "form" );
+	const t = useTranslations( "form.errors" );
 
 	// Affichage automatique des messages d'erreur.
 	useEffect( () =>
@@ -28,7 +28,7 @@ export default function Template( { children }: { children: ReactNode } )
 		{
 			setTimeout( () =>
 			{
-				toast.error( t( "errors.internal_error" ), {
+				toast.error( t( "internal_error" ), {
 					description: error
 				} );
 			}, 0 );
