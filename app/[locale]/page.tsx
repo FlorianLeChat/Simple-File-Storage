@@ -13,7 +13,7 @@ import { Eye,
 	Share2,
 	PocketKnife,
 	LayoutDashboard } from "lucide-react";
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
@@ -25,15 +25,13 @@ import { generateMetadata as getMetadata } from "./layout";
 import { buttonVariants } from "./components/ui/button";
 
 // Déclaration des propriétés de la page.
-export async function generateMetadata(
-	_parameters: Record<string, unknown>,
-	parent: ResolvingMetadata
-): Promise<Metadata>
+export async function generateMetadata(): Promise<Metadata>
 {
-	const t = await getTranslations();
+	const metadata = await getMetadata();
+	const messages = await getTranslations();
 
 	return {
-		title: `${ t( "header.home" ) } – ${ ( await parent ).title?.absolute }`
+		title: `${ messages( "header.home" ) } – ${ metadata.title }`
 	};
 }
 
@@ -48,9 +46,9 @@ export default async function Page( {
 	unstable_setRequestLocale( locale );
 
 	// Déclaration des constantes.
-	const t = await getTranslations();
 	const meta = await getMetadata();
 	const session = await auth();
+	const messages = await getTranslations();
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -71,7 +69,7 @@ export default async function Page( {
 						)}
 					>
 						<LayoutDashboard className="mr-2 h-5 w-5" />
-						{t( "header.dashboard" )}
+						{messages( "header.dashboard" )}
 					</Link>
 				) : (
 					<Link
@@ -82,7 +80,7 @@ export default async function Page( {
 						)}
 					>
 						<LogIn className="mr-2 h-5 w-5" />
-						{t( "header.authenticate" )}
+						{messages( "header.authenticate" )}
 					</Link>
 				)}
 
@@ -119,11 +117,11 @@ export default async function Page( {
 			{/* Contenu de la page */}
 			<section className="container mx-auto mb-4 p-4 text-center">
 				<h2 className="hyphens-auto bg-gradient-to-r bg-clip-text text-4xl font-bold tracking-tighter dark:from-white dark:to-gray-500 dark:text-transparent sm:text-5xl xl:text-6xl">
-					{t( "index.title" )}
+					{messages( "index.title" )}
 				</h2>
 
 				<p className="mx-auto mt-2 max-w-[600px] md:text-xl">
-					{t( "index.subtitle" )}
+					{messages( "index.subtitle" )}
 				</p>
 
 				<ul className="grid gap-4 max-xl:mt-8 md:grid-cols-3 md:gap-8 xl:mt-[5%]">
@@ -131,11 +129,11 @@ export default async function Page( {
 						<Lock className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
-							{t( "index.features.title_1" )}
+							{messages( "index.features.title_1" )}
 						</h2>
 
 						<p className="text-muted-foreground">
-							{t( "index.features.description_1" )}
+							{messages( "index.features.description_1" )}
 						</p>
 					</li>
 
@@ -143,11 +141,11 @@ export default async function Page( {
 						<Smile className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
-							{t( "index.features.title_2" )}
+							{messages( "index.features.title_2" )}
 						</h2>
 
 						<p className="text-muted-foreground">
-							{t( "index.features.description_2" )}
+							{messages( "index.features.description_2" )}
 						</p>
 					</li>
 
@@ -155,11 +153,11 @@ export default async function Page( {
 						<Eye className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
-							{t( "index.features.title_3" )}
+							{messages( "index.features.title_3" )}
 						</h2>
 
 						<p className="text-muted-foreground">
-							{t( "index.features.description_3" )}
+							{messages( "index.features.description_3" )}
 						</p>
 					</li>
 
@@ -168,11 +166,11 @@ export default async function Page( {
 
 						<h2 className="text-xl font-bold">
 							{" "}
-							{t( "index.features.title_4" )}
+							{messages( "index.features.title_4" )}
 						</h2>
 
 						<p className="text-muted-foreground">
-							{t( "index.features.description_4" )}
+							{messages( "index.features.description_4" )}
 						</p>
 					</li>
 
@@ -180,12 +178,11 @@ export default async function Page( {
 						<PocketKnife className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
-							{" "}
-							{t( "index.features.title_5" )}
+							{messages( "index.features.title_5" )}
 						</h2>
 
 						<p className="text-muted-foreground">
-							{t( "index.features.description_5" )}
+							{messages( "index.features.description_5" )}
 						</p>
 					</li>
 
@@ -193,11 +190,11 @@ export default async function Page( {
 						<Share2 className="mx-auto mb-2 h-6 w-6" />
 
 						<h2 className="text-xl font-bold">
-							{t( "index.features.title_6" )}
+							{messages( "index.features.title_6" )}
 						</h2>
 
 						<p className="text-muted-foreground">
-							{t( "index.features.description_6" )}
+							{messages( "index.features.description_6" )}
 						</p>
 					</li>
 				</ul>
