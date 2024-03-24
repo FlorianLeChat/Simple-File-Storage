@@ -27,7 +27,7 @@ interface PaginationProps<TData> {
 export default function Pagination<TData>( { table }: PaginationProps<TData> )
 {
 	// Déclaration des variables d'état.
-	const t = useTranslations( "dashboard" );
+	const messages = useTranslations( "dashboard" );
 	const parameters = useSearchParams();
 
 	// Déclaration des constantes.
@@ -42,7 +42,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 		<div className="mt-4 flex items-center justify-end gap-2 max-md:flex-col md:gap-4 lg:gap-8">
 			{/* Nombre de lignes sélectionnées */}
 			<p className="flex-1 text-sm text-muted-foreground">
-				{t.rich( "rows_x", {
+				{messages.rich( "rows_x", {
 					selected: table.getFilteredSelectedRowModel().rows.length,
 					total: table.getFilteredRowModel().rows.length
 				} )}
@@ -50,7 +50,9 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 
 			{/* Nombre de lignes par page */}
 			<nav className="flex items-center space-x-2">
-				<p className="text-sm font-medium">{t( "lines_per_page" )}</p>
+				<p className="text-sm font-medium">
+					{messages( "lines_per_page" )}
+				</p>
 
 				<Select
 					value={`${ table.getState().pagination.pageSize }`}
@@ -90,14 +92,14 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 			{/* Changement de page */}
 			<nav className="flex items-center space-x-2">
 				<p className="flex w-[100px] items-center justify-center text-sm font-medium">
-					{t( "pages_x", {
+					{messages( "pages_x", {
 						page: currentPage,
 						pages: maxPages
 					} )}
 				</p>
 
 				<Button
-					title={t( "first_page" )}
+					title={messages( "first_page" )}
 					variant="outline"
 					onClick={() =>
 					{
@@ -117,7 +119,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 				</Button>
 
 				<Button
-					title={t( "previous_page" )}
+					title={messages( "previous_page" )}
 					variant="outline"
 					onClick={() =>
 					{
@@ -140,7 +142,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 				</Button>
 
 				<Button
-					title={t( "next_page" )}
+					title={messages( "next_page" )}
 					variant="outline"
 					onClick={() =>
 					{
@@ -163,7 +165,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 				</Button>
 
 				<Button
-					title={t( "last_page" )}
+					title={messages( "last_page" )}
 					variant="outline"
 					onClick={() =>
 					{

@@ -61,7 +61,7 @@ export default function User( {
 } )
 {
 	// Déclaration des variables d'état.
-	const t = useTranslations( "form" );
+	const messages = useTranslations( "form" );
 	const [ isLocked, setLocked ] = useState( false );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateUser, {
@@ -437,7 +437,7 @@ export default function User( {
 											key={language}
 											value={language}
 										>
-											{t(
+											{messages(
 												`fields.language_label_${ language }`
 											)}
 										</SelectItem>

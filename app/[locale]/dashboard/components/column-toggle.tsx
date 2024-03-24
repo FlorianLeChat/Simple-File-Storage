@@ -27,7 +27,7 @@ export default function ColumnToggle( {
 } )
 {
 	// Déclaration des variables d'état.
-	const t = useTranslations( "dashboard" );
+	const messages = useTranslations( "dashboard" );
 	const parameters = useSearchParams();
 
 	// Affichage du rendu HTML du composant.
@@ -42,12 +42,14 @@ export default function ColumnToggle( {
 			>
 				<SlidersHorizontal className="inline h-4 w-4 md:mr-2" />
 
-				<span className="max-md:hidden">{t( "columns" )}</span>
+				<span className="max-md:hidden">{messages( "columns" )}</span>
 			</DropdownMenuTrigger>
 
 			{/* Menu de sélection des colonnes */}
 			<DropdownMenuContent align="end" className="w-[150px]">
-				<DropdownMenuLabel>{t( "active_columns" )}</DropdownMenuLabel>
+				<DropdownMenuLabel>
+					{messages( "active_columns" )}
+				</DropdownMenuLabel>
 
 				<DropdownMenuSeparator />
 
@@ -82,7 +84,7 @@ export default function ColumnToggle( {
 								window.history.pushState( null, "", `?${ url }` );
 							}}
 						>
-							{t( column.id )}
+							{messages( column.id )}
 						</DropdownMenuCheckboxItem>
 					) )}
 			</DropdownMenuContent>
