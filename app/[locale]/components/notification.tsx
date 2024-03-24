@@ -7,6 +7,7 @@
 import { toast } from "sonner";
 import serverAction from "@/utilities/recaptcha";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { BellRing, Check, Loader2 } from "lucide-react";
 import { useEffect, useCallback, useState } from "react";
 
@@ -36,6 +37,8 @@ export default function Notifications()
 {
 	// Déclaration des variables d'état.
 	const router = useRouter();
+	const formMessages = useTranslations( "form" );
+	const modalMessages = useTranslations( "modals.notifications" );
 	const [ isOpen, setOpen ] = useState( false );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ unreadCount, setUnreadCount ] = useState( 0 );
@@ -143,15 +146,15 @@ export default function Notifications()
 			setNotifications( [] );
 
 			// Envoi d'une notification de succès.
-			toast.success( "form.info.action_success", {
-				description: "form.info.notifications_read"
+			toast.success( formMessages( "infos.action_success" ), {
+				description: formMessages( "infos.notifications_read" )
 			} );
 		}
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( "form.errors.file_deleted", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "infos.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 		}
 	};
@@ -197,7 +200,7 @@ export default function Notifications()
 						id="notifications"
 						className="hidden md:ml-2 md:inline-block"
 					>
-						Nouvelles notifications
+						{modalMessages( "trigger" )}
 					</span>
 				)}
 			</DialogTrigger>
@@ -206,13 +209,15 @@ export default function Notifications()
 				<DialogHeader>
 					<DialogTitle className="flex items-center">
 						<BellRing className="mr-2 inline h-5 w-5" />
-						Notifications
+						{modalMessages( "title" )}
 					</DialogTitle>
 
 					<DialogDescription className="text-left">
 						{unreadCount === 0
-							? "Vous n'avez aucune nouvelle notification."
-							: `Vous avez ${ unreadCount } nouvelle(s) notification(s).`}
+							? modalMessages( "empty" )
+							: modalMessages( "description", {
+								count: unreadCount
+							} )}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -228,11 +233,16 @@ export default function Notifications()
 
 									<section className="space-y-1">
 										<h3 className="text-sm font-medium leading-none">
-											{notification.title}
+											{modalMessages(
+												`title_${ notification.title }`
+											)}
 										</h3>
 
 										<p className="text-sm text-muted-foreground">
-											{notification.message}
+											{modalMessages(
+												`description_${
+													notification.message }`
+											)}
 										</p>
 
 										<time
@@ -265,12 +275,12 @@ export default function Notifications()
 							{isLoading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									Veuillez patienter...
+									{formMessages( "loading" )}
 								</>
 							) : (
 								<>
 									<Check className="mr-2 h-4 w-4" />
-									Tout marquer comme lu
+									{modalMessages( "read_all" )}
 								</>
 							)}
 						</Button>

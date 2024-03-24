@@ -19,7 +19,10 @@
 			"remembered_description": "Pour rester connecté à votre compte lorsque vous revenez sur le site."
 		},
 		"infos": {
+			"action_success": "Action réussie",
 			"action_required": "Action requise",
+			"action_failed": "Action échouée",
+			"notifications_read": "Toutes les notifications ont été marquées comme lues.",
 			"email_validation": "Un courriel de confirmation a été envoyé à l'adresse que vous avez fournie. Veuillez vérifier votre boîte de réception et cliquer sur le lien de confirmation pour activer votre compte."
 		},
 		"errors": {
@@ -37,11 +40,42 @@
 			"title": "Oubli du mot de passe",
 			"description": "Si vous avez oublié votre mot de passe, essayez de vous connecter à votre compte avec un lien d'authentification à usage unique envoyé à votre adresse électronique. Une fois connecté, vous pourrez saisir un nouveau mot de passe pour votre compte. <strong>En cas de perte de l'accès à votre adresse électronique, vous devrez recréer un nouveau compte car le support technique ne sera pas légalement autorisé à vous aider à récupérer l'accès à votre compte.</strong>",
 			"close": "J'ai bien compris"
+		},
+		"notifications": {
+			"trigger": "Nouvelles notifications",
+			"title": "Notifications",
+			"empty": "Vous n'avez aucune nouvelle notification.",
+			"description": "Vous avez {count} nouvelle(s) notification(s).",
+			"read_all": "Tout marquer comme lu",
+			"title_0": "Intervention de l'équipe technique",
+			"title_1": "Changement de mot de passe",
+			"title_2": "Partage de dossier",
+			"title_3": "Nouvelle version d'un fichier",
+			"title_4": "Suppression d'un fichier partagé",
+			"title_5": "Dépassement prochain du quota",
+			"title_6": "Stockage plein",
+			"description_0": "Votre compte a été modifié par l'équipe technique. En général, cela fait suite à une demande de votre part ou à une intervention de notre part pour résoudre un problème technique.",
+			"description_1": "Votre mot de passe a été modifié. Si vous n'êtes pas à l'origine de cette modification, veuillez contacter le support technique.",
+			"description_2": "Quelqu'un a partagé un dossier avec vous. Vous pouvez consulter le dossier partagé dans votre tableau de bord.",
+			"description_3": "Quelqu'un a ajouté une nouvelle version d'un fichier partagé. Vous pouvez consulter la nouvelle version dans votre tableau de bord.",
+			"description_4": "Quelqu'un a supprimé un fichier partagé. Il n'est plus disponible dans votre tableau de bord.",
+			"description_5": "Vous êtes proche du quota de stockage maximal. Veuillez supprimer des fichiers inutiles pour libérer de l'espace.",
+			"description_6": "Votre espace de stockage est plein. Veuillez supprimer des fichiers inutiles pour libérer de l'espace et continuer à utiliser notre service."
 		}
 	},
 	"header": {
 		"authenticate": "Authentification",
-		"dashboard": "Tableau de bord"
+		"dashboard": "Tableau de bord",
+		"settings": "Paramètres",
+		"logout": "Déconnexion",
+		"user_account": "Compte utilisateur",
+		"admin_account": "Compte administrateur",
+		"something_else": "Autre chose ?",
+		"github_tip": "Si les paramètres proposés ne correspondent pas à vos besoins, n'hésitez pas à <u>faire une demande</u> sur GitHub !"
+	},
+	"footer": {
+		"rights_reserved": "Tous droits réservés",
+		"recaptcha_protected": "Ce site est protégé par reCAPTCHA sur lequel s'appliquent les <a1>politiques de confidentialité</a1> et les <a2>conditions d'utilisation</a2> de Google."
 	},
 	"authentication": {
 		"register_button": "Inscription",
