@@ -8,6 +8,7 @@
 import { X } from "lucide-react";
 import { columns } from "@/config/columns";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 import { type TableMeta,
@@ -37,6 +38,7 @@ import ColumnToggle from "./column-toggle";
 export default function DataTable( { data }: { data: FileAttributes[] } )
 {
 	// Déclaration des variables d'état.
+	const t = useTranslations( "dashboard" );
 	const parameters = useSearchParams();
 	const [ files, setFiles ] = useState( data );
 	const [ sorting, setSorting ] = useState<SortingState>( [
@@ -146,7 +148,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 						window.history.pushState( null, "", `?${ url }` );
 					}}
 					className="md:max-w-sm"
-					placeholder="Filtrer par nom"
+					placeholder={t( "filter" )}
 				/>
 
 				{/* Réinitialisation du filtrage */}
@@ -168,7 +170,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 					>
 						<X className="inline h-4 w-4 sm:mr-2" />
 
-						<p className="max-sm:hidden">Réinitialiser</p>
+						<p className="max-sm:hidden">{t( "reset" )}</p>
 					</Button>
 				)}
 
@@ -210,7 +212,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 								colSpan={columns.length}
 								className="h-24 text-center"
 							>
-								Aucun fichier trouvé.
+								{t( "no_files" )}
 							</TableCell>
 						</TableRow>
 					)}

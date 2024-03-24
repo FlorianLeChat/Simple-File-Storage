@@ -10,6 +10,7 @@ import { useState } from "react";
 import serverAction from "@/utilities/recaptcha";
 import { formatSize } from "@/utilities/react-table";
 import type { TableMeta } from "@tanstack/react-table";
+import { useTranslations } from "next-intl";
 import type { FileAttributes } from "@/interfaces/File";
 import { Ban, Check, History, ArrowUpRight } from "lucide-react";
 
@@ -45,6 +46,9 @@ export default function FileHistory( {
 } )
 {
 	// Déclaration des variables d'état.
+	const formMessages = useTranslations( "form" );
+	const historyMessages = useTranslations( "modals.file_history" );
+	const restoreMessages = useTranslations( "modals.restore_version" );
 	const [ isOpen, setOpen ] = useState( false );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ identifier, setIdentifier ] = useState( "" );
@@ -99,15 +103,15 @@ export default function FileHistory( {
 			states.setFiles( states.files );
 
 			// Envoi d'une notification de succès.
-			toast.success( "form.info.action_success", {
-				description: "form.info.version_restored"
+			toast.success( formMessages( "infos.action_success" ), {
+				description: formMessages( "infos.version_restored" )
 			} );
 		}
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( "form.errors.action_failed", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 		}
 	};
@@ -132,7 +136,7 @@ export default function FileHistory( {
 					onSelect={( event ) => event.preventDefault()}
 				>
 					<History className="mr-2 h-4 w-4" />
-					Voir les révisions
+					{historyMessages( "trigger" )}
 				</DropdownMenuItem>
 			</DialogTrigger>
 
@@ -141,11 +145,11 @@ export default function FileHistory( {
 				<DialogHeader>
 					<DialogTitle>
 						<History className="mr-2 inline h-5 w-5 align-text-top" />
-						Révisions disponibles
+						{historyMessages( "title" )}
 					</DialogTitle>
 
 					<DialogDescription>
-						Accéder et restaurer une version antérieure du fichier.
+						{historyMessages( "description" )}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -177,20 +181,19 @@ export default function FileHistory( {
 							<li key={version.uuid} className="text-sm">
 								{/* Nom de la révision */}
 								<h3>
-									Version{" "}
-									{index === 0
-										? "actuelle"
-										: ( index === count - 1 && "initiale" )
-											|| "antérieure"}{" "}
-									du{" "}
-									{new Intl.DateTimeFormat( undefined, {
-										year: "numeric",
-										month: "long",
-										day: "numeric",
-										hour: "numeric",
-										minute: "numeric",
-										second: "numeric"
-									} ).format( version.date )}
+									{historyMessages( "details", {
+										date: new Intl.DateTimeFormat(
+											undefined,
+											{
+												year: "numeric",
+												month: "long",
+												day: "numeric",
+												hour: "numeric",
+												minute: "numeric",
+												second: "numeric"
+											}
+										).format( version.date )
+									} )}
 								</h3>
 
 								{/* Taille et différence de la révision */}
@@ -222,7 +225,7 @@ export default function FileHistory( {
 											)}
 										>
 											<ArrowUpRight className="mr-2 h-4 w-4" />
-											Accéder
+											{historyMessages( "reach" )}
 										</AlertDialogTrigger>
 									</RequestKey>
 								) : (
@@ -236,7 +239,7 @@ export default function FileHistory( {
 										)}
 									>
 										<ArrowUpRight className="mr-2 h-4 w-4" />
-										Accéder
+										{historyMessages( "reach" )}
 									</a>
 								)}
 
@@ -253,24 +256,18 @@ export default function FileHistory( {
 										)}
 									>
 										<History className="mr-2 h-4 w-4" />
-										Restaurer
+										{restoreMessages( "trigger" )}
 									</AlertDialogTrigger>
 
 									<AlertDialogContent>
 										<AlertDialogHeader>
 											<AlertDialogTitle>
 												<History className="mr-2 inline h-5 w-5 align-text-top" />
-												Êtes-vous sûr de vouloir
-												restaurer cette version du
-												fichier ?
+												{restoreMessages( "title" )}
 											</AlertDialogTitle>
 
 											<AlertDialogDescription>
-												La version actuelle du fichier
-												sera sauvegardée sous forme
-												d&lsquo;une nouvelle version et
-												remplacée par la version
-												sélectionnée.
+												{restoreMessages( "description" )}
 											</AlertDialogDescription>
 										</AlertDialogHeader>
 
@@ -279,7 +276,7 @@ export default function FileHistory( {
 												disabled={isLoading}
 											>
 												<Ban className="mr-2 h-4 w-4" />
-												Annuler
+												{formMessages( "cancel" )}
 											</AlertDialogCancel>
 
 											<AlertDialogAction
@@ -287,7 +284,7 @@ export default function FileHistory( {
 												disabled={isLoading}
 											>
 												<Check className="mr-2 h-4 w-4" />
-												Confirmer
+												{formMessages( "confirm" )}
 											</AlertDialogAction>
 										</AlertDialogFooter>
 									</AlertDialogContent>

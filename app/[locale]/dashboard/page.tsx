@@ -10,8 +10,8 @@ import { lazy } from "react";
 import { parse } from "path";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
+import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import type { FileAttributes } from "@/interfaces/File";
-import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
@@ -124,6 +124,7 @@ export default async function Page( {
 	unstable_setRequestLocale( locale );
 
 	// Déclaration des constantes.
+	const t = await getTranslations();
 	const meta = await generateMetadata();
 	const session = await auth();
 
@@ -164,12 +165,11 @@ export default async function Page( {
 			<main className="container mx-auto max-w-[1440px] p-4 md:p-8">
 				{/* Titre et description de la page */}
 				<h2 className="text-2xl font-bold tracking-tight">
-					Tableau de bord
+					{t( "header.dashboard" )}
 				</h2>
 
 				<p className="text-muted-foreground">
-					Téléverser et partager vos fichiers à partir de votre
-					ordinateur.
+					{t( "dashboard.description" )}
 				</p>
 
 				{/* Barre verticale de séparation */}

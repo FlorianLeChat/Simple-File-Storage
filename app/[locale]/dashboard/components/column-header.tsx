@@ -7,6 +7,7 @@
 
 import { merge } from "@/utilities/tailwind";
 import { Column } from "@tanstack/react-table";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { type HTMLAttributes } from "react";
 import { EyeOff, ArrowUp, ArrowDown, ArrowDownUp } from "lucide-react";
@@ -30,6 +31,7 @@ export default function ColumnHeader<TData, TValue>( {
 }: ColumnHeaderProps<TData, TValue> )
 {
 	// Déclaration des variables d'état.
+	const t = useTranslations( "dashboard" );
 	const parameters = useSearchParams();
 
 	// Déclaration des constantes.
@@ -81,7 +83,7 @@ export default function ColumnHeader<TData, TValue>( {
 					}}
 				>
 					<ArrowUp className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-					Ascendant
+					{t( "ascending" )}
 				</DropdownMenuItem>
 
 				<DropdownMenuItem
@@ -99,7 +101,7 @@ export default function ColumnHeader<TData, TValue>( {
 					}}
 				>
 					<ArrowDown className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-					Descendant
+					{t( "descending" )}
 				</DropdownMenuItem>
 
 				<DropdownMenuSeparator />
@@ -118,7 +120,7 @@ export default function ColumnHeader<TData, TValue>( {
 					}}
 				>
 					<EyeOff className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-					Cacher
+					{t( "hide" )}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
