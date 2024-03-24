@@ -1,15 +1,34 @@
 {
 	"form": {
+		"loading": "Veuillez patienter...",
+		"register": "Inscription par courriel",
+		"log_by_email": "Se connecter par courriel",
+		"log_by_password": "Se connecter par mot de passe",
+		"fields": {
+			"email_label": "Adresse électronique",
+			"email_placeholder": "prenom.nom@mon-domaine.fr",
+			"email_description": "L'adresse électronique associée à votre compte.",
+			"password_label": "Mot de passe",
+			"password_tooltip": "Voir ou masquer le mot de passe",
+			"password_capslock": "Les majuscules ont été activées pour la saisie du mot de passe.",
+			"password_placeholder": "@MonMotDePasse123!",
+			"password_description": "Le mot de passe utilisé pour vous connecter à votre compte.",
+			"otp_label": "Authentification à deux facteurs",
+			"otp_description": "L'authentification à deux facteurs peut être nécessaire en complément de votre mot de passe pour vous connecter à votre compte.",
+			"remembered_label": "Se souvenir de moi",
+			"remembered_description": "Pour rester connecté à votre compte lorsque vous revenez sur le site."
+		},
 		"infos": {
+			"action_required": "Action requise",
 			"email_validation": "Un courriel de confirmation a été envoyé à l'adresse que vous avez fournie. Veuillez vérifier votre boîte de réception et cliquer sur le lien de confirmation pour activer votre compte."
 		},
 		"errors": {
 			"email_used": "Cette adresse électronique est déjà utilisée.",
-			"auth_failed": "Échec de l'authentification.",
+			"auth_failed": "Échec de l'authentification",
 			"server_error": "Une erreur s'est produite lors du traitement de votre demande par le serveur.",
 			"invalid_otp": "Le code de vérification que vous avez fourni est incorrect.",
 			"otp_required": "Un code de vérification est requis pour continuer.",
-			"internal_error": "Erreur interne"
+			"internal_error": "Erreur interne du serveur"
 		}
 	},
 	"modals": {
@@ -23,6 +42,16 @@
 	"header": {
 		"authenticate": "Authentification",
 		"dashboard": "Tableau de bord"
+	},
+	"authentication": {
+		"register_button": "Inscription",
+		"register_title": "Création d'un compte",
+		"register_description": "Saisissez votre adresse électronique pour créer un nouveau compte utilisateur. Vous recevrez un lien d'activation pour valider votre compte et saisir un mot de passe.",
+		"login_button": "Connexion",
+		"login_title": "Connexion à votre compte",
+		"login_description": "Saisissez votre adresse électronique pour vous connecter à l'aide d'un lien d'authentification. Si vous avez associé un mot de passe à votre compte, vous pouvez également le saisir pour vous connecter directement.",
+		"continue_with": "Continuer avec",
+		"accept_terms": "En continuant, vous acceptez nos <a1>conditions d'utilisation</a1> et notre <a2>politique de confidentialité</a2>."
 	},
 	"index": {
 		"title": "Découvrez nos fonctionnalités",
