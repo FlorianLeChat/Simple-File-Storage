@@ -6,7 +6,7 @@
 import Link from "next/link";
 import { lazy } from "react";
 import { redirect } from "next/navigation";
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
@@ -26,15 +26,13 @@ const SignInForm = lazy( () => import( "./components/signin" ) );
 const ResetPasswordModal = lazy( () => import( "./components/reset-password" ) );
 
 // Déclaration des propriétés de la page.
-export async function generateMetadata(
-	_parameters: Record<string, unknown>,
-	parent: ResolvingMetadata
-): Promise<Metadata>
+export async function generateMetadata(): Promise<Metadata>
 {
-	const t = await getTranslations();
+	const metadata = await getMetadata();
+	const messages = await getTranslations();
 
 	return {
-		title: `${ t( "header.authenticate" ) } – ${ ( await parent ).title?.absolute }`
+		title: `${ messages( "header.authenticate" ) } – ${ metadata.title }`
 	};
 }
 
@@ -49,8 +47,8 @@ export default async function Page( {
 	unstable_setRequestLocale( locale );
 
 	// Déclaration des constantes.
-	const t = await getTranslations();
 	const session = await auth();
+	const messages = await getTranslations();
 	const { title } = await getMetadata();
 
 	// Vérification de la session utilisateur.
@@ -77,11 +75,11 @@ export default async function Page( {
 			>
 				<TabsList className="grid w-full grid-cols-2">
 					<TabsTrigger value="signUp">
-						{t( "authentication.register_button" )}
+						{messages( "authentication.register_button" )}
 					</TabsTrigger>
 
 					<TabsTrigger value="signIn">
-						{t( "authentication.login_button" )}
+						{messages( "authentication.login_button" )}
 					</TabsTrigger>
 				</TabsList>
 
@@ -89,11 +87,11 @@ export default async function Page( {
 				<TabsContent value="signUp" className="space-y-6">
 					{/* Titre et description du formulaire */}
 					<h2 className="text-xl font-semibold tracking-tight">
-						{t( "authentication.register_title" )}
+						{messages( "authentication.register_title" )}
 					</h2>
 
 					<p className="text-sm text-muted-foreground">
-						{t( "authentication.register_description" )}
+						{messages( "authentication.register_description" )}
 					</p>
 
 					<SignUpForm />
@@ -103,11 +101,11 @@ export default async function Page( {
 				<TabsContent value="signIn" className="space-y-6">
 					{/* Titre et description du formulaire */}
 					<h2 className="text-xl font-semibold tracking-tight">
-						{t( "authentication.login_title" )}
+						{messages( "authentication.login_title" )}
 					</h2>
 
 					<p className="text-sm text-muted-foreground">
-						{t( "authentication.login_description" )}{" "}
+						{messages( "authentication.login_description" )}{" "}
 						<ResetPasswordModal />
 					</p>
 
@@ -119,7 +117,7 @@ export default async function Page( {
 					<Separator className="w-auto flex-grow" />
 
 					<p className="text-xs uppercase text-muted-foreground">
-						{t( "authentication.continue_with" )}
+						{messages( "authentication.continue_with" )}
 					</p>
 
 					<Separator className="w-auto flex-grow" />
@@ -130,7 +128,7 @@ export default async function Page( {
 
 				{/* Conditions d'utilisation et politique de confidentialité */}
 				<p className="px-8 text-center text-sm text-muted-foreground">
-					{t.rich( "authentication.accept_terms", {
+					{messages.rich( "authentication.accept_terms", {
 						a1: ( chunks ) => (
 							<Link
 								href="/legal/terms"
