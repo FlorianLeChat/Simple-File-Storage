@@ -3,19 +3,27 @@
 //
 
 // Importation des dépendances.
-import type { Metadata } from "next";
-import { unstable_setRequestLocale } from "next-intl/server";
+import type { Metadata, ResolvingMetadata } from "next";
+import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
-import { generateMetadata } from "../../layout";
+import { generateMetadata as getMetadata } from "../../layout";
 
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
 
 // Déclaration des propriétés de la page.
-export const metadata: Metadata = {
-	title: "Politique de confidentialité – Simple File Storage"
-};
+export async function generateMetadata(
+	_parameters: Record<string, unknown>,
+	parent: ResolvingMetadata
+): Promise<Metadata>
+{
+	const t = await getTranslations();
+
+	return {
+		title: `${ t( "header.privacy_policy" ) } – ${ ( await parent ).title?.absolute }`
+	};
+}
 
 // Affichage de la page.
 export default async function Page( {
@@ -28,7 +36,7 @@ export default async function Page( {
 	unstable_setRequestLocale( locale );
 
 	// Déclaration des constantes.
-	const title = ( await generateMetadata() ).title as string;
+	const title = ( await getMetadata() ).title as string;
 
 	// Affichage du rendu HTML de la page.
 	return (

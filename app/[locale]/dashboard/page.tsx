@@ -9,13 +9,13 @@ import prisma from "@/utilities/prisma";
 import { lazy } from "react";
 import { parse } from "path";
 import { redirect } from "next/navigation";
-import type { Metadata } from "next";
-import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import type { FileAttributes } from "@/interfaces/File";
+import type { Metadata, ResolvingMetadata } from "next";
+import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
-import { generateMetadata } from "../layout";
+import { generateMetadata as getMetadata } from "../layout";
 
 // Importation des composants.
 import { Separator } from "../components/ui/separator";
@@ -26,9 +26,17 @@ const Navigation = lazy( () => import( "../components/navigation" ) );
 const Notification = lazy( () => import( "../components/notification" ) );
 
 // Déclaration des propriétés de la page.
-export const metadata: Metadata = {
-	title: "Tableau de bord – Simple File Storage"
-};
+export async function generateMetadata(
+	_parameters: Record<string, unknown>,
+	parent: ResolvingMetadata
+): Promise<Metadata>
+{
+	const t = await getTranslations();
+
+	return {
+		title: `${ t( "header.dashboard" ) } – ${ ( await parent ).title?.absolute }`
+	};
+}
 
 // Récupération des fichiers depuis le système de fichiers.
 async function getFiles(): Promise<FileAttributes[]>
@@ -125,7 +133,7 @@ export default async function Page( {
 
 	// Déclaration des constantes.
 	const t = await getTranslations();
-	const meta = await generateMetadata();
+	const meta = await getMetadata();
 	const session = await auth();
 
 	// Vérification de la session utilisateur.

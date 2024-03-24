@@ -6,12 +6,12 @@
 import Link from "next/link";
 import { lazy } from "react";
 import { redirect } from "next/navigation";
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
-import { generateMetadata } from "../layout";
+import { generateMetadata as getMetadata } from "../layout";
 
 // Importation des composants.
 import { Tabs,
@@ -26,9 +26,17 @@ const SignInForm = lazy( () => import( "./components/signin" ) );
 const ResetPasswordModal = lazy( () => import( "./components/reset-password" ) );
 
 // Déclaration des propriétés de la page.
-export const metadata: Metadata = {
-	title: "Authentification – Simple File Storage"
-};
+export async function generateMetadata(
+	_parameters: Record<string, unknown>,
+	parent: ResolvingMetadata
+): Promise<Metadata>
+{
+	const t = await getTranslations();
+
+	return {
+		title: `${ t( "header.authenticate" ) } – ${ ( await parent ).title?.absolute }`
+	};
+}
 
 // Affichage de la page.
 export default async function Page( {
@@ -43,7 +51,7 @@ export default async function Page( {
 	// Déclaration des constantes.
 	const t = await getTranslations();
 	const session = await auth();
-	const { title } = await generateMetadata();
+	const { title } = await getMetadata();
 
 	// Vérification de la session utilisateur.
 	if ( session )

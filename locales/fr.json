@@ -171,10 +171,13 @@
 		}
 	},
 	"header": {
+		"home": "Accueil",
 		"authenticate": "Authentification",
 		"dashboard": "Tableau de bord",
 		"settings": "Paramètres",
 		"logout": "Déconnexion",
+		"terms_of_service": "Conditions d'utilisation",
+		"privacy_policy": "Politique de confidentialité",
 		"user_account": "Compte utilisateur",
 		"admin_account": "Compte administrateur",
 		"something_else": "Autre chose ?",
