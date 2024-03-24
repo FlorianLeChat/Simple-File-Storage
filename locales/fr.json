@@ -147,7 +147,7 @@
 			"placeholder": "votre-clé-de-déchiffrement",
 			"description": "Pour accéder à cette ressource, vous devez saisir la clé de déchiffrement qui vous a été fournie lors de son téléversement. <b>En cas de perte, vous ne pourrez plus y accéder. Si c'est le cas, supprimez-la et téléversez-la à nouveau. Le support technique ne pourra pas vous aider car il ne possède pas la clé de déchiffrement.</b>"
 		},
-		"descryption_key": {
+		"decryption_key": {
 			"title": "Clé de déchiffrement",
 			"description": "Vous avez activé le chiffrement renforcé pour ce téléversement. Vos fichiers ont été chiffrés dans votre navigateur avec une clé de chiffrement aléatoire que vous seul pouvez utiliser pour les déchiffrer. Vous trouverez ci-dessous la clé de déchiffrement que vous devez conserver précieusement pour pouvoir accéder à vos fichiers ultérieurement. <b>Si vous perdez cette clé, vous ne pourrez plus accéder à vos fichiers.</b>",
 			"copy": "Copier dans le presse-papiers"
