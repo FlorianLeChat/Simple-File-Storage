@@ -21,7 +21,7 @@ import { signInAccount } from "../actions/signin";
 export default function OAuthForm()
 {
 	// Déclaration des variables d'état.
-	const t = useTranslations( "form" );
+	const messages = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ signInState, signInAction ] = useFormState( signInAccount, {
 		success: true,
@@ -49,8 +49,8 @@ export default function OAuthForm()
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( t( "errors.auth_failed" ), {
-				description: t( "errors.server_error" )
+			toast.error( messages( "errors.auth_failed" ), {
+				description: messages( "errors.server_error" )
 			} );
 
 			return;
@@ -74,17 +74,17 @@ export default function OAuthForm()
 		{
 			form.reset();
 
-			toast.info( t( "infos.action_required" ), {
+			toast.info( messages( "infos.action_required" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( t( "errors.auth_failed" ), {
+			toast.error( messages( "errors.auth_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ t, form, signInState ] );
+	}, [ form, messages, signInState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (

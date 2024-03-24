@@ -21,8 +21,8 @@ export async function uploadFiles(
 )
 {
 	// On récupère d'abord la session de l'utilisateur.
-	const t = await getTranslations();
 	const session = await auth();
+	const messages = await getTranslations();
 
 	if ( !session )
 	{
@@ -30,7 +30,7 @@ export async function uploadFiles(
 		//  n'est pas connecté.
 		return {
 			success: false,
-			reason: t( "authjs.errors.SessionRequired" )
+			reason: messages( "authjs.errors.SessionRequired" )
 		};
 	}
 
@@ -357,8 +357,8 @@ export async function uploadFiles(
 		return {
 			success: currentQuota <= maxQuota,
 			reason: quotaIsExceeded
-				? t( "form.errors.quota_exceeded" )
-				: t( "form.infos.upload_success" ),
+				? messages( "form.errors.quota_exceeded" )
+				: messages( "form.infos.upload_success" ),
 			data: ( await Promise.all( data ) ).flat()
 		};
 	}
@@ -370,7 +370,7 @@ export async function uploadFiles(
 
 		return {
 			success: false,
-			reason: t( "form.infos.upload_failed" )
+			reason: messages( "form.infos.upload_failed" )
 		};
 	}
 }

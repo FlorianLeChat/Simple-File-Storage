@@ -39,7 +39,7 @@ import { buttonVariants, Button } from "../../components/ui/button";
 export default function SignInForm()
 {
 	// Déclaration des variables d'état.
-	const t = useTranslations( "form" );
+	const messages = useTranslations( "form" );
 	const [ isLocked, setLocked ] = useState( false );
 	const [ isFocused, setFocused ] = useState( false );
 	const [ isLoading, setLoading ] = useState( false );
@@ -71,8 +71,8 @@ export default function SignInForm()
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( t( "errors.auth_failed" ), {
-				description: t( "errors.server_error" )
+			toast.error( messages( "errors.auth_failed" ), {
+				description: messages( "errors.server_error" )
 			} );
 
 			return;
@@ -96,17 +96,17 @@ export default function SignInForm()
 		{
 			form.reset();
 
-			toast.info( t( "infos.action_required" ), {
+			toast.info( messages( "infos.action_required" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( t( "errors.auth_failed" ), {
+			toast.error( messages( "errors.auth_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ t, form, signInState ] );
+	}, [ form, messages, signInState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -137,7 +137,7 @@ export default function SignInForm()
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel className="sr-only">
-								{t( "fields.email_label" )}
+								{messages( "fields.email_label" )}
 							</FormLabel>
 
 							<FormControl>
@@ -148,14 +148,16 @@ export default function SignInForm()
 										schema.shape.email.maxLength as number
 									}
 									spellCheck="false"
-									placeholder={t( "fields.email_placeholder" )}
+									placeholder={messages(
+										"fields.email_placeholder"
+									)}
 									autoComplete="email"
 									autoCapitalize="off"
 								/>
 							</FormControl>
 
 							<FormDescription className="sr-only">
-								{t( "fields.email_description" )}
+								{messages( "fields.email_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -170,7 +172,7 @@ export default function SignInForm()
 					render={( { field } ) => (
 						<FormItem className="flex gap-2">
 							<FormLabel className="sr-only">
-								{t( "fields.password_label" )}
+								{messages( "fields.password_label" )}
 							</FormLabel>
 
 							<TooltipProvider>
@@ -194,7 +196,7 @@ export default function SignInForm()
 												.options[ 0 ].maxLength as number
 										}
 										spellCheck="false"
-										placeholder={t(
+										placeholder={messages(
 											"fields.password_placeholder"
 										)}
 										autoComplete="current-password"
@@ -231,13 +233,13 @@ export default function SignInForm()
 									</TooltipTrigger>
 
 									<TooltipContent>
-										{t( "fields.password_tooltip" )}
+										{messages( "fields.password_tooltip" )}
 									</TooltipContent>
 								</Tooltip>
 							</TooltipProvider>
 
 							<FormDescription className="sr-only">
-								{t( "fields.password_description" )}
+								{messages( "fields.password_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -248,7 +250,7 @@ export default function SignInForm()
 				{/* Avertissements pour les majuscules */}
 				{isLocked && (
 					<p className="text-sm font-bold uppercase text-destructive">
-						{t( "fields.password_capslock" )}
+						{messages( "fields.password_capslock" )}
 					</p>
 				)}
 
@@ -263,7 +265,7 @@ export default function SignInForm()
 							}`}
 						>
 							<FormLabel className="sr-only">
-								{t( "fields.otp_label" )}
+								{messages( "fields.otp_label" )}
 							</FormLabel>
 
 							<FormControl>
@@ -294,7 +296,7 @@ export default function SignInForm()
 									!isFocused ? "opacity-25" : ""
 								}`}
 							>
-								{t( "fields.otp_description" )}
+								{messages( "fields.otp_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -318,11 +320,11 @@ export default function SignInForm()
 							</FormControl>
 
 							<FormLabel className="!mt-0">
-								{t( "fields.remembered_label" )}
+								{messages( "fields.remembered_label" )}
 							</FormLabel>
 
 							<FormDescription className="sr-only">
-								{t( "fields.remembered_description" )}
+								{messages( "fields.remembered_description" )}
 							</FormDescription>
 						</FormItem>
 					)}
@@ -333,18 +335,18 @@ export default function SignInForm()
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							{t( "loading" )}
+							{messages( "loading" )}
 						</>
 					) : (
 						( form.getValues( "password" ) === "" && (
 							<>
 								<Mail className="mr-2 h-4 w-4" />
-								{t( "log_by_email" )}
+								{messages( "log_by_email" )}
 							</>
 						) ) || (
 							<>
 								<KeyRound className="mr-2 h-4 w-4" />
-								{t( "log_by_password" )}
+								{messages( "log_by_password" )}
 							</>
 						)
 					)}

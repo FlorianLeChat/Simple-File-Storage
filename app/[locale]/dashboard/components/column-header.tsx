@@ -31,7 +31,7 @@ export default function ColumnHeader<TData, TValue>( {
 }: ColumnHeaderProps<TData, TValue> )
 {
 	// Déclaration des variables d'état.
-	const t = useTranslations( "dashboard" );
+	const messages = useTranslations( "dashboard" );
 	const parameters = useSearchParams();
 
 	// Déclaration des constantes.
@@ -83,7 +83,7 @@ export default function ColumnHeader<TData, TValue>( {
 					}}
 				>
 					<ArrowUp className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-					{t( "ascending" )}
+					{messages( "ascending" )}
 				</DropdownMenuItem>
 
 				<DropdownMenuItem
@@ -101,7 +101,7 @@ export default function ColumnHeader<TData, TValue>( {
 					}}
 				>
 					<ArrowDown className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-					{t( "descending" )}
+					{messages( "descending" )}
 				</DropdownMenuItem>
 
 				<DropdownMenuSeparator />
@@ -120,7 +120,7 @@ export default function ColumnHeader<TData, TValue>( {
 					}}
 				>
 					<EyeOff className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
-					{t( "hide" )}
+					{messages( "hide" )}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

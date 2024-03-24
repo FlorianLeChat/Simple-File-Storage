@@ -29,7 +29,7 @@ import { signUpAccount } from "../actions/signup";
 export default function SignUpForm()
 {
 	// Déclaration des variables d'état.
-	const t = useTranslations( "form" );
+	const messages = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ signUpState, signUpAction ] = useFormState( signUpAccount, {
 		success: true,
@@ -57,8 +57,8 @@ export default function SignUpForm()
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( t( "errors.auth_failed" ), {
-				description: t( "errors.server_error" )
+			toast.error( messages( "errors.auth_failed" ), {
+				description: messages( "errors.server_error" )
 			} );
 
 			return;
@@ -82,17 +82,17 @@ export default function SignUpForm()
 		{
 			form.reset();
 
-			toast.info( t( "infos.action_required" ), {
+			toast.info( messages( "infos.action_required" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( t( "errors.auth_failed" ), {
+			toast.error( messages( "errors.auth_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ t, form, signUpState ] );
+	}, [ form, messages, signUpState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -123,7 +123,7 @@ export default function SignUpForm()
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel className="sr-only">
-								{t( "fields.email_label" )}
+								{messages( "fields.email_label" )}
 							</FormLabel>
 
 							<FormControl>
@@ -134,14 +134,16 @@ export default function SignUpForm()
 										schema.shape.email.maxLength as number
 									}
 									spellCheck="false"
-									placeholder={t( "fields.email_placeholder" )}
+									placeholder={messages(
+										"fields.email_placeholder"
+									)}
 									autoComplete="email"
 									autoCapitalize="off"
 								/>
 							</FormControl>
 
 							<FormDescription className="sr-only">
-								{t( "fields.email_description" )}
+								{messages( "fields.email_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -154,12 +156,12 @@ export default function SignUpForm()
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							{t( "loading" )}
+							{messages( "loading" )}
 						</>
 					) : (
 						<>
 							<Mail className="mr-2 h-4 w-4" />
-							{t( "register" )}
+							{messages( "register" )}
 						</>
 					)}
 				</Button>

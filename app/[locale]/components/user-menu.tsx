@@ -27,8 +27,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 export default function UserMenu( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
-	const t = useTranslations( "header" );
 	const router = useRouter();
+	const messages = useTranslations( "header" );
 	const [ isOpen, setOpen ] = useState( false );
 
 	// Déclaration des constantes.
@@ -136,7 +136,9 @@ export default function UserMenu( { session }: { session: Session } )
 							isAdmin ? "text-destructive" : "text-primary"
 						}`}
 					>
-						{isAdmin ? t( "admin_account" ) : t( "user_account" )}
+						{isAdmin
+							? messages( "admin_account" )
+							: messages( "user_account" )}
 					</p>
 				</DropdownMenuLabel>
 
@@ -147,7 +149,8 @@ export default function UserMenu( { session }: { session: Session } )
 				<DropdownMenuGroup>
 					<Link href="/dashboard">
 						<DropdownMenuItem>
-							{t( "dashboard" )}
+							{messages( "dashboard" )}
+
 							<DropdownMenuShortcut>
 								ALT/⌥ + D
 							</DropdownMenuShortcut>
@@ -156,7 +159,8 @@ export default function UserMenu( { session }: { session: Session } )
 
 					<Link href="/settings">
 						<DropdownMenuItem>
-							{t( "settings" )}
+							{messages( "settings" )}
+
 							<DropdownMenuShortcut>
 								ALT/⌥ + S
 							</DropdownMenuShortcut>
@@ -173,7 +177,7 @@ export default function UserMenu( { session }: { session: Session } )
 						serverAction( signOutAccount, new FormData() );
 					}}
 				>
-					{t( "logout" )}
+					{messages( "logout" )}
 					<DropdownMenuShortcut>ALT/⌥ + L</DropdownMenuShortcut>
 				</DropdownMenuItem>
 			</DropdownMenuContent>

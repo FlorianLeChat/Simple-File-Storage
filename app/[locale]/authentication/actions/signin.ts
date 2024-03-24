@@ -45,7 +45,7 @@ export async function signInAccount(
 
 	// Dans le cas contraire, on tente de valider les informations
 	//  d'authentification fournies par l'utilisateur.
-	const t = await getTranslations();
+	const messages = await getTranslations();
 	const result = schema.safeParse( {
 		otp: formData.get( "otp" ),
 		email: formData.get( "email" ),
@@ -59,7 +59,7 @@ export async function signInAccount(
 		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: t( `zod.errors.${ result.error.issues[ 0 ].code }` )
+			reason: messages( `zod.errors.${ result.error.issues[ 0 ].code }` )
 		};
 	}
 
@@ -78,8 +78,8 @@ export async function signInAccount(
 		return {
 			success: !!response,
 			reason: response
-				? t( "form.infos.email_validation" )
-				: t( "authjs.errors.EmailSignup" )
+				? messages( "form.infos.email_validation" )
+				: messages( "authjs.errors.EmailSignup" )
 		};
 	}
 
@@ -119,7 +119,7 @@ export async function signInAccount(
 					//  ou le code de secours.
 					return {
 						success: false,
-						reason: t( "form.errors.invalid_otp" )
+						reason: messages( "form.errors.invalid_otp" )
 					};
 				}
 			}
@@ -127,7 +127,7 @@ export async function signInAccount(
 			// Aucun code de double authentification n'a été fourni.
 			return {
 				success: false,
-				reason: t( "form.errors.otp_required" )
+				reason: messages( "form.errors.otp_required" )
 			};
 		}
 

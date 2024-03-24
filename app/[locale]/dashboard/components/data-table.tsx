@@ -8,6 +8,7 @@
 import { X } from "lucide-react";
 import { columns } from "@/config/columns";
 import { useState } from "react";
+import { useMessages } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 import { type TableMeta,
@@ -21,7 +22,6 @@ import { type TableMeta,
 	getFilteredRowModel,
 	getPaginationRowModel } from "@tanstack/react-table";
 import type { FileAttributes } from "@/interfaces/File";
-import { useMessages, useTranslations } from "next-intl";
 
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -38,7 +38,6 @@ import ColumnToggle from "./column-toggle";
 export default function DataTable( { data }: { data: FileAttributes[] } )
 {
 	// Déclaration des variables d'état.
-	const t = useTranslations( "dashboard" );
 	const messages = useMessages() as {
 		dashboard: Record<string, string>;
 	};
@@ -151,7 +150,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 						window.history.pushState( null, "", `?${ url }` );
 					}}
 					className="md:max-w-sm"
-					placeholder={t( "filter" )}
+					placeholder={messages.dashboard.filter}
 				/>
 
 				{/* Réinitialisation du filtrage */}
@@ -173,7 +172,9 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 					>
 						<X className="inline h-4 w-4 sm:mr-2" />
 
-						<p className="max-sm:hidden">{t( "reset" )}</p>
+						<p className="max-sm:hidden">
+							{messages.dashboard.reset}
+						</p>
 					</Button>
 				)}
 
@@ -215,7 +216,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 								colSpan={columns.length}
 								className="h-24 text-center"
 							>
-								{t( "no_files" )}
+								{messages.dashboard.no_files}
 							</TableCell>
 						</TableRow>
 					)}
