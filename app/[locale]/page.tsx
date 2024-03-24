@@ -13,21 +13,29 @@ import { Eye,
 	Share2,
 	PocketKnife,
 	LayoutDashboard } from "lucide-react";
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
 import { merge } from "@/utilities/tailwind";
-import { generateMetadata } from "./layout";
+import { generateMetadata as getMetadata } from "./layout";
 
 // Importation des composants.
 import { buttonVariants } from "./components/ui/button";
 
 // Déclaration des propriétés de la page.
-export const metadata: Metadata = {
-	title: "Accueil – Simple File Storage"
-};
+export async function generateMetadata(
+	_parameters: Record<string, unknown>,
+	parent: ResolvingMetadata
+): Promise<Metadata>
+{
+	const t = await getTranslations();
+
+	return {
+		title: `${ t( "header.home" ) } – ${ ( await parent ).title?.absolute }`
+	};
+}
 
 // Affichage de la page.
 export default async function Page( {
@@ -41,7 +49,7 @@ export default async function Page( {
 
 	// Déclaration des constantes.
 	const t = await getTranslations();
-	const meta = await generateMetadata();
+	const meta = await getMetadata();
 	const session = await auth();
 
 	// Affichage du rendu HTML de la page.

@@ -5,13 +5,13 @@
 // Importation des dépendances.
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import type { Metadata } from "next";
 import { lazy, type ReactNode } from "react";
-import { unstable_setRequestLocale } from "next-intl/server";
+import type { Metadata, ResolvingMetadata } from "next";
+import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
-import { generateMetadata } from "../layout";
+import { generateMetadata as getMetadata } from "../layout";
 
 // Importation des composants.
 import { Separator } from "../components/ui/separator";
@@ -22,9 +22,17 @@ const Navigation = lazy( () => import( "../components/navigation" ) );
 const Notification = lazy( () => import( "../components/notification" ) );
 
 // Déclaration des propriétés de la page.
-export const metadata: Metadata = {
-	title: "Paramètres – Simple File Storage"
-};
+export async function generateMetadata(
+	_parameters: Record<string, unknown>,
+	parent: ResolvingMetadata
+): Promise<Metadata>
+{
+	const t = await getTranslations();
+
+	return {
+		title: `${ t( "header.settings" ) } – ${ ( await parent ).title?.absolute }`
+	};
+}
 
 export default async function Layout( {
 	children,
@@ -38,7 +46,7 @@ export default async function Layout( {
 	unstable_setRequestLocale( locale );
 
 	// Déclaration des constantes.
-	const meta = await generateMetadata();
+	const meta = await getMetadata();
 	const session = await auth();
 
 	// Vérification de la session utilisateur.
