@@ -12,6 +12,7 @@ import serverAction from "@/utilities/recaptcha";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { Mail, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../components/ui/input";
@@ -28,6 +29,7 @@ import { signUpAccount } from "../actions/signup";
 export default function SignUpForm()
 {
 	// Déclaration des variables d'état.
+	const t = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ signUpState, signUpAction ] = useFormState( signUpAccount, {
 		success: true,
@@ -55,8 +57,8 @@ export default function SignUpForm()
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( "form.errors.auth_failed", {
-				description: "form.errors.server_error"
+			toast.error( t( "errors.auth_failed" ), {
+				description: t( "errors.server_error" )
 			} );
 
 			return;
@@ -80,17 +82,17 @@ export default function SignUpForm()
 		{
 			form.reset();
 
-			toast.info( "form.info.email_validation", {
+			toast.info( t( "infos.action_required" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( "form.errors.auth_failed", {
+			toast.error( t( "errors.auth_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ form, signUpState ] );
+	}, [ t, form, signUpState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -121,7 +123,7 @@ export default function SignUpForm()
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel className="sr-only">
-								Adresse électronique
+								{t( "fields.email_label" )}
 							</FormLabel>
 
 							<FormControl>
@@ -132,15 +134,14 @@ export default function SignUpForm()
 										schema.shape.email.maxLength as number
 									}
 									spellCheck="false"
-									placeholder="example@domain.com"
+									placeholder={t( "fields.email_placeholder" )}
 									autoComplete="email"
 									autoCapitalize="off"
 								/>
 							</FormControl>
 
 							<FormDescription className="sr-only">
-								L&lsquo;adresse électronique associée à votre
-								compte.
+								{t( "fields.email_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -153,12 +154,12 @@ export default function SignUpForm()
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Traitement...
+							{t( "loading" )}
 						</>
 					) : (
 						<>
 							<Mail className="mr-2 h-4 w-4" />
-							Inscription par courriel
+							{t( "register" )}
 						</>
 					)}
 				</Button>

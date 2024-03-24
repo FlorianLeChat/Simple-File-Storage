@@ -7,7 +7,7 @@ import Link from "next/link";
 import { lazy } from "react";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { unstable_setRequestLocale } from "next-intl/server";
+import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
@@ -41,6 +41,7 @@ export default async function Page( {
 	unstable_setRequestLocale( locale );
 
 	// Déclaration des constantes.
+	const t = await getTranslations();
 	const session = await auth();
 	const { title } = await generateMetadata();
 
@@ -67,22 +68,24 @@ export default async function Page( {
 				defaultValue="signUp"
 			>
 				<TabsList className="grid w-full grid-cols-2">
-					<TabsTrigger value="signUp">Inscription</TabsTrigger>
-					<TabsTrigger value="signIn">Connexion</TabsTrigger>
+					<TabsTrigger value="signUp">
+						{t( "authentication.register_button" )}
+					</TabsTrigger>
+
+					<TabsTrigger value="signIn">
+						{t( "authentication.login_button" )}
+					</TabsTrigger>
 				</TabsList>
 
 				{/* Formulaire d'inscription */}
 				<TabsContent value="signUp" className="space-y-6">
 					{/* Titre et description du formulaire */}
 					<h2 className="text-xl font-semibold tracking-tight">
-						Création d&lsquo;un compte
+						{t( "authentication.register_title" )}
 					</h2>
 
 					<p className="text-sm text-muted-foreground">
-						Saisissez votre adresse électronique pour créer un
-						nouveau compte utilisateur. Vous recevrez un lien
-						d&lsquo;activation pour valider votre compte et saisir
-						un mot de passe.
+						{t( "authentication.register_description" )}
 					</p>
 
 					<SignUpForm />
@@ -92,15 +95,12 @@ export default async function Page( {
 				<TabsContent value="signIn" className="space-y-6">
 					{/* Titre et description du formulaire */}
 					<h2 className="text-xl font-semibold tracking-tight">
-						Connexion à un compte
+						{t( "authentication.login_title" )}
 					</h2>
 
 					<p className="text-sm text-muted-foreground">
-						Saisissez votre adresse électronique pour vous connecter
-						à l&lsquo;aide d&lsquo;un lien d&lsquo;authentification.
-						Si vous avez associé un mot de passe à votre compte,
-						vous pouvez également le saisir pour vous connecter
-						directement. <ResetPasswordModal />
+						{t( "authentication.login_description" )}{" "}
+						<ResetPasswordModal />
 					</p>
 
 					<SignInForm />
@@ -111,7 +111,7 @@ export default async function Page( {
 					<Separator className="w-auto flex-grow" />
 
 					<p className="text-xs uppercase text-muted-foreground">
-						Ou continuer avec
+						{t( "authentication.continue_with" )}
 					</p>
 
 					<Separator className="w-auto flex-grow" />
@@ -122,23 +122,26 @@ export default async function Page( {
 
 				{/* Conditions d'utilisation et politique de confidentialité */}
 				<p className="px-8 text-center text-sm text-muted-foreground">
-					En continuant, vous acceptez nos{" "}
-					<Link
-						href="/legal/terms"
-						target="_blank"
-						className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
-					>
-						conditions d&lsquo;utilisation
-					</Link>{" "}
-					et notre{" "}
-					<Link
-						href="/legal/privacy"
-						target="_blank"
-						className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
-					>
-						politique de confidentialité
-					</Link>
-					.
+					{t.rich( "authentication.accept_terms", {
+						a1: ( chunks ) => (
+							<Link
+								href="/legal/terms"
+								target="_blank"
+								className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
+							>
+								{chunks}
+							</Link>
+						),
+						a2: ( chunks ) => (
+							<Link
+								href="/legal/privacy"
+								target="_blank"
+								className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
+							>
+								{chunks}
+							</Link>
+						)
+					} )}
 				</p>
 			</Tabs>
 		</>
