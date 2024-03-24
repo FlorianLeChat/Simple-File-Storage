@@ -8,6 +8,7 @@ import Link from "next/link";
 import { merge } from "@/utilities/tailwind";
 import { useRouter } from "next/navigation";
 import type { Session } from "next-auth";
+import { useTranslations } from "next-intl";
 import { useEffect, useCallback, useState } from "react";
 
 import serverAction from "@/utilities/recaptcha";
@@ -26,6 +27,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 export default function UserMenu( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
+	const t = useTranslations( "header" );
 	const router = useRouter();
 	const [ isOpen, setOpen ] = useState( false );
 
@@ -134,9 +136,7 @@ export default function UserMenu( { session }: { session: Session } )
 							isAdmin ? "text-destructive" : "text-primary"
 						}`}
 					>
-						{isAdmin
-							? "Compte administrateur"
-							: "Compte utilisateur"}
+						{isAdmin ? t( "admin_account" ) : t( "user_account" )}
 					</p>
 				</DropdownMenuLabel>
 
@@ -147,7 +147,7 @@ export default function UserMenu( { session }: { session: Session } )
 				<DropdownMenuGroup>
 					<Link href="/dashboard">
 						<DropdownMenuItem>
-							Tableau de bord
+							{t( "dashboard" )}
 							<DropdownMenuShortcut>
 								ALT/⌥ + D
 							</DropdownMenuShortcut>
@@ -156,7 +156,7 @@ export default function UserMenu( { session }: { session: Session } )
 
 					<Link href="/settings">
 						<DropdownMenuItem>
-							Paramètres
+							{t( "settings" )}
 							<DropdownMenuShortcut>
 								ALT/⌥ + S
 							</DropdownMenuShortcut>
@@ -173,7 +173,7 @@ export default function UserMenu( { session }: { session: Session } )
 						serverAction( signOutAccount, new FormData() );
 					}}
 				>
-					Déconnexion
+					{t( "logout" )}
 					<DropdownMenuShortcut>ALT/⌥ + L</DropdownMenuShortcut>
 				</DropdownMenuItem>
 			</DropdownMenuContent>
