@@ -15,8 +15,8 @@ import { Button, buttonVariants } from "../../components/ui/button";
 export default function Routes()
 {
 	// Déclaration des variables d'état.
-	const t = useTranslations( "settings" );
 	const pathname = usePathname();
+	const messages = useTranslations( "settings" );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -36,7 +36,7 @@ export default function Routes()
 				>
 					{route.icon}
 
-					{t( `${ route.id }_title` )}
+					{messages( `${ route.id }_title` )}
 				</Link>
 			) )}
 
@@ -50,10 +50,10 @@ export default function Routes()
 				<Cookie className="mr-2" />
 
 				<span>
-					{t( "cookies_title" )}
+					{messages( "cookies_title" )}
 
 					<small className="hidden lg:block">
-						{t.rich( "cookies_description", {
+						{messages.rich( "cookies_description", {
 							u: ( chunks ) => <u>{chunks}</u>
 						} )}
 					</small>

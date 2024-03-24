@@ -28,7 +28,7 @@ export async function signUpAccount(
 
 	// On tente de valider les informations d'authentification fournies
 	//  par l'utilisateur.
-	const t = await getTranslations();
+	const messages = await getTranslations();
 	const result = schema.safeParse( {
 		email: formData.get( "email" ),
 		password: ""
@@ -40,7 +40,7 @@ export async function signUpAccount(
 		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: t( `zod.errors.${ result.error.issues[ 0 ].code }` )
+			reason: messages( `zod.errors.${ result.error.issues[ 0 ].code }` )
 		};
 	}
 
@@ -58,7 +58,7 @@ export async function signUpAccount(
 		//  électronique fournie est déjà utilisée.
 		return {
 			success: false,
-			reason: t( "form.errors.email_used" )
+			reason: messages( "form.errors.email_used" )
 		};
 	}
 
@@ -88,7 +88,7 @@ export async function signUpAccount(
 			//  d'erreur sur la page d'authentification.
 			return {
 				success: false,
-				reason: t( "authjs.errors.EmailSignup" )
+				reason: messages( "authjs.errors.EmailSignup" )
 			};
 		}
 	}
@@ -97,6 +97,6 @@ export async function signUpAccount(
 	//  qu'il puisse valider son adresse électronique.
 	return {
 		success: true,
-		reason: t( "form.infos.email_validation" )
+		reason: messages( "form.infos.email_validation" )
 	};
 }

@@ -7,7 +7,7 @@ import { Separator } from "./ui/separator";
 export default async function Footer()
 {
 	// Récupération des constantes.
-	const t = await getTranslations();
+	const messages = await getTranslations();
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -18,12 +18,11 @@ export default async function Footer()
 			{/* Informations sur le site */}
 			<p className="block p-4 text-sm">
 				© {new Date().getFullYear()} 💾 Simple File Storage.{" "}
-				{t( "footer.rights_reserved" )}
-
+				{messages( "footer.rights_reserved" )}
 				{/* Avertissement de Google reCAPTCHA */}
 				{process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true" && (
 					<small className="block text-xs leading-5 max-sm:mt-1">
-						{t.rich( "footer.recaptcha_protected", {
+						{messages.rich( "footer.recaptcha_protected", {
 							a1: ( chunks ) => (
 								<a
 									rel="noopener noreferrer"
