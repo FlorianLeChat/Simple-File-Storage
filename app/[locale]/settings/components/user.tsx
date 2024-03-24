@@ -18,13 +18,12 @@ import { Lock,
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { useLocale } from "next-intl";
-import { languages } from "@/config/languages";
 import { formatSize } from "@/utilities/react-table";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
 import { useState, useEffect } from "react";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Input } from "../../components/ui/input";
 import { Select,
@@ -62,6 +61,7 @@ export default function User( {
 } )
 {
 	// Déclaration des variables d'état.
+	const t = useTranslations( "form" );
 	const [ isLocked, setLocked ] = useState( false );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateUser, {
@@ -432,12 +432,14 @@ export default function User( {
 								</FormControl>
 
 								<SelectContent>
-									{languages.map( ( language ) => (
+									{[ "en", "fr" ].map( ( language ) => (
 										<SelectItem
-											key={language.value}
-											value={language.value}
+											key={language}
+											value={language}
 										>
-											{language.label}
+											{t(
+												`fields.language_label_${ language }`
+											)}
 										</SelectItem>
 									) )}
 								</SelectContent>

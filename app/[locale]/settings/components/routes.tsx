@@ -9,11 +9,13 @@ import { merge } from "@/utilities/tailwind";
 import { Cookie } from "lucide-react";
 import { routes } from "@/config/routes";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function Routes()
 {
 	// Déclaration des variables d'état.
+	const t = useTranslations( "settings" );
 	const pathname = usePathname();
 
 	// Affichage du rendu HTML du composant.
@@ -32,7 +34,9 @@ export default function Routes()
 						"h-auto min-h-[2.5rem] justify-start"
 					)}
 				>
-					{route.title}
+					{route.icon}
+
+					{t( `${ route.id }_title` )}
 				</Link>
 			) )}
 
@@ -46,9 +50,12 @@ export default function Routes()
 				<Cookie className="mr-2" />
 
 				<span>
-					Cookies
+					{t( "cookies_title" )}
+
 					<small className="hidden lg:block">
-						Service fourni par <u>Cookie Consent</u>
+						{t.rich( "cookies_description", {
+							u: ( chunks ) => <u>{chunks}</u>
+						} )}
 					</small>
 				</span>
 			</Button>

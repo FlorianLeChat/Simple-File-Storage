@@ -8,7 +8,6 @@
 import { X } from "lucide-react";
 import { columns } from "@/config/columns";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 import { type TableMeta,
@@ -22,6 +21,7 @@ import { type TableMeta,
 	getFilteredRowModel,
 	getPaginationRowModel } from "@tanstack/react-table";
 import type { FileAttributes } from "@/interfaces/File";
+import { useMessages, useTranslations } from "next-intl";
 
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -39,6 +39,9 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 {
 	// Déclaration des variables d'état.
 	const t = useTranslations( "dashboard" );
+	const messages = useMessages() as {
+		dashboard: Record<string, string>;
+	};
 	const parameters = useSearchParams();
 	const [ files, setFiles ] = useState( data );
 	const [ sorting, setSorting ] = useState<SortingState>( [
@@ -87,7 +90,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 			columnFilters,
 			columnVisibility
 		},
-		columns,
+		columns: columns( messages.dashboard ),
 		getRowId: ( row ) => row.uuid,
 		initialState: {
 			pagination: {

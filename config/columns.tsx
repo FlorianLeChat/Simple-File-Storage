@@ -7,7 +7,7 @@
 import { merge } from "@/utilities/tailwind";
 import { ColumnDef } from "@tanstack/react-table";
 import { formatSize } from "@/utilities/react-table";
-import { FileAttributes } from "@/interfaces/File";
+import type { FileAttributes } from "@/interfaces/File";
 
 import { Badge } from "@/components/ui/badge";
 import RowActions from "@/dashboard/components/row-actions";
@@ -20,7 +20,9 @@ import { buttonVariants } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 // Déclaration des colonnes du tableau.
-export const columns: ColumnDef<FileAttributes>[] = [
+export const columns: (
+	messages: Record<string, string>,
+) => ColumnDef<FileAttributes>[] = ( messages: Record<string, string> ) => [
 	{
 		// Case de sélection d'une ou plusieurs lignes.
 		id: "select",
@@ -30,14 +32,14 @@ export const columns: ColumnDef<FileAttributes>[] = [
 					table.getIsAllPageRowsSelected()
 					|| ( table.getIsSomePageRowsSelected() && "indeterminate" )
 				}
-				aria-label="Tout sélectionner"
+				aria-label={messages.select_all}
 				onCheckedChange={( value ) => table.toggleAllPageRowsSelected( !!value )}
 			/>
 		),
 		cell: ( { row } ) => (
 			<Checkbox
 				checked={row.getIsSelected()}
-				aria-label="Sélectionner la ligne"
+				aria-label={messages.select_line}
 				onCheckedChange={( value ) => row.toggleSelected( !!value )}
 			/>
 		),
@@ -47,13 +49,15 @@ export const columns: ColumnDef<FileAttributes>[] = [
 	{
 		// Nom du fichier.
 		accessorKey: "name",
-		header: ( { column } ) => <ColumnHeader column={column} title="Nom" />
+		header: ( { column } ) => (
+			<ColumnHeader column={column} title={messages.name} />
+		)
 	},
 	{
 		// Propriétaire du fichier.
 		accessorKey: "owner",
 		header: ( { column } ) => (
-			<ColumnHeader column={column} title="Propriétaire" />
+			<ColumnHeader column={column} title={messages.owner} />
 		),
 		cell: ( { row } ) => (
 			<HoverCard>
@@ -107,12 +111,16 @@ export const columns: ColumnDef<FileAttributes>[] = [
 	{
 		// Type du fichier.
 		accessorKey: "type",
-		header: ( { column } ) => <ColumnHeader column={column} title="Type" />
+		header: ( { column } ) => (
+			<ColumnHeader column={column} title={messages.type} />
+		)
 	},
 	{
 		// Taille du fichier (en octets).
 		accessorKey: "size",
-		header: ( { column } ) => <ColumnHeader column={column} title="Taille" />,
+		header: ( { column } ) => (
+			<ColumnHeader column={column} title={messages.type} />
+		),
 		cell: ( { row } ) => formatSize( row.original.versions[ 0 ].size )
 	},
 	{
@@ -125,7 +133,9 @@ export const columns: ColumnDef<FileAttributes>[] = [
 
 			return dateA > dateB ? 1 : ( dateA < dateB && -1 ) || 0;
 		},
-		header: ( { column } ) => <ColumnHeader column={column} title="Date" />,
+		header: ( { column } ) => (
+			<ColumnHeader column={column} title={messages.date} />
+		),
 		cell: ( { row } ) =>
 		{
 			const { date } = row.original.versions[ 0 ];
