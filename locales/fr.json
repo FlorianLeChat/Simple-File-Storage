@@ -1,6 +1,9 @@
 {
 	"form": {
+		"confirm": "Confirmer",
+		"cancel": "Annuler",
 		"loading": "Veuillez patienter...",
+		"update": "Mettre à jour",
 		"register": "Inscription par courriel",
 		"log_by_email": "Se connecter par courriel",
 		"log_by_password": "Se connecter par mot de passe",
@@ -16,16 +19,45 @@
 			"otp_label": "Authentification à deux facteurs",
 			"otp_description": "L'authentification à deux facteurs peut être nécessaire en complément de votre mot de passe pour vous connecter à votre compte.",
 			"remembered_label": "Se souvenir de moi",
-			"remembered_description": "Pour rester connecté à votre compte lorsque vous revenez sur le site."
+			"remembered_description": "Pour rester connecté à votre compte lorsque vous revenez sur le site.",
+			"upload_label": "Téléversement de fichiers",
+			"upload_description": "Tous les formats de fichiers sont acceptés. La vitesse de téléversement dépend de votre connexion Internet et des capacités matérielles de votre ordinateur. <b>Si un fichier du même nom existe déjà, il sera remplacé et une nouvelle révision sera créée pour être restaurée ultérieurement si besoin.</b>",
+			"compression_label": "Compression des images <i>(optionnel)</i>",
+			"compression_trigger": "Activer la compression des images",
+			"compression_description": "Si vous essayez de téléverser des images, vous pouvez activer cette option pour faire compresser les images automatiquement par le serveur. La compression des images peut réduire la taille des fichiers sur votre quota de stockage. <b>Attention, cette opération est irréversible et peut altérer la qualité des images. Certaines images ayant des extensions propriétaires ne sont pas prises en charge.</b>",
+			"encryption_label": "Chiffrement renforcé <i>(optionnel)</i>",
+			"encryption_trigger": "Activer le chiffrement renforcé",
+			"encryption_description": "Les fichiers sont chiffrés avec une clé de chiffrement connue uniquement par le serveur. Si vous activez cette option, le fichier sera chiffré dans votre navigateur avec une clé générée aléatoirement et ne sera pas transmise au serveur. <b>Attention, une fois le fichier téléversé, une clé de déchiffrement sera affichée et vous devrez la conserver afin de pouvoir accéder au fichier. Si vous perdez cette clé, vous ne pourrez plus accéder au fichier.</b>",
+			"expiration_label": "Date d'expiration <i>(optionnel)</i>",
+			"expiration_trigger": "Sélectionner une date d'expiration",
+			"expiration_preset": "Sélectionner une présélection",
+			"expiration_tomorrow": "Demain",
+			"expiration_three_days": "Dans trois jours",
+			"expiration_week": "Dans une semaine",
+			"expiration_month": "Dans un mois",
+			"expiration_description": "Les nouveaux fichiers téléversés n'ont pas de date d'expiration par défaut. Si vous souhaitez que le fichier soit supprimé automatiquement après une certaine durée, entrez une date d'expiration ici. <b>Attention, une fois le fichier téléversé, vous ne pourrez plus changer sa date d'expiration. La suppression du fichier sera effectuée à minuit le jour de l'expiration.</b>"
 		},
 		"infos": {
 			"action_success": "Action réussie",
+			"action_partial": "Action partiellement réussie",
 			"action_required": "Action requise",
 			"action_failed": "Action échouée",
+			"file_full_deleted": "Tous les fichiers ont été supprimés avec succès.",
+			"file_partial_deleted": "Certains fichiers n'ont pas pu être supprimés à cause d'une erreur inattendue.",
+			"name_full_updated": "Le nom de tous les fichiers a été mis à jour avec succès.",
+			"name_partial_updated": "Le nom de certains fichiers n'a pas pu être mis à jour à cause d'une erreur inattendue.",
+			"status_full_updated": "Le statut de tous les fichiers a été mis à jour avec succès.",
+			"status_partial_updated": "Le statut de certains fichiers n'a pas pu être mis à jour à cause d'une erreur inattendue.",
+			"sharing_updated": "Les partages du fichier ont été mis à jour avec succès.",
+			"all_sharing_updated": "Les partages de tous les fichiers ont été mis à jour avec succès.",
+			"version_restored": "La version sélectionnée a été restaurée avec succès.",
+			"upload_success": "Tous les fichiers ont été téléversés avec succès.",
+			"upload_failed": "Certains fichiers n'ont pas pu être téléversés à cause d'une erreur inattendue.",
 			"notifications_read": "Toutes les notifications ont été marquées comme lues.",
 			"email_validation": "Un courriel de confirmation a été envoyé à l'adresse que vous avez fournie. Veuillez vérifier votre boîte de réception et cliquer sur le lien de confirmation pour activer votre compte."
 		},
 		"errors": {
+			"quota_exceeded": "Le quota de stockage maximal a été dépassé. Certains fichiers n'ont pas pu être téléversés.",
 			"email_used": "Cette adresse électronique est déjà utilisée.",
 			"auth_failed": "Échec de l'authentification",
 			"server_error": "Une erreur s'est produite lors du traitement de votre demande par le serveur.",
@@ -38,8 +70,28 @@
 		"reset_password": {
 			"trigger": "Vous avez oublié votre mot de passe ?",
 			"title": "Oubli du mot de passe",
-			"description": "Si vous avez oublié votre mot de passe, essayez de vous connecter à votre compte avec un lien d'authentification à usage unique envoyé à votre adresse électronique. Une fois connecté, vous pourrez saisir un nouveau mot de passe pour votre compte. <strong>En cas de perte de l'accès à votre adresse électronique, vous devrez recréer un nouveau compte car le support technique ne sera pas légalement autorisé à vous aider à récupérer l'accès à votre compte.</strong>",
+			"description": "Si vous avez oublié votre mot de passe, essayez de vous connecter à votre compte avec un lien d'authentification à usage unique envoyé à votre adresse électronique. Une fois connecté, vous pourrez saisir un nouveau mot de passe pour votre compte. <b>En cas de perte de l'accès à votre adresse électronique, vous devrez recréer un nouveau compte car le support technique ne sera pas légalement autorisé à vous aider à récupérer l'accès à votre compte.</b>",
 			"close": "J'ai bien compris"
+		},
+		"make_public": {
+			"trigger": "Rendre public",
+			"title": "Êtes-vous sûr de vouloir rendre public {count, plural, =1 {ce fichier} other {ces # fichiers}} ?",
+			"description": "En rendant ce fichier public, il sera accessible à tout le monde, même aux utilisateurs en dehors du site Internet. <b>Les restrictions de partage seront réinitialisées et désactivées.</b>"
+		},
+		"make_private": {
+			"trigger": "Rendre privé",
+			"title": "Êtes-vous sûr de vouloir rendre privé {count, plural, =1 {ce fichier} other {ces # fichiers}} ?",
+			"description": "En rendant ce fichier privé, il ne sera plus accessible aux utilisateurs en dehors du site Internet, ni aux utilisateurs non autorisés via les options de partage. <b>Le fichier peut encore être accessible si celui-ci a été mis en cache par un tiers.</b>"
+		},
+		"reset_shares": {
+			"trigger": "Supprimer tous les partages",
+			"title": "Êtes-vous sûr de vouloir supprimer tous les partages de {count, plural, =1 {ce fichier} other {ces # fichiers}} ?",
+			"description": "<b>Cette action est irréversible.</b> Elle supprimera tous les partages du fichier et rendra le fichier privé."
+		},
+		"rename_file": {
+			"trigger": "Renommer la ressource",
+			"title": "Quel sera le nouveau nom de {count, plural, =1 {ce fichier} other {ces # fichiers}} ?",
+			"description": "<b>Cette action est irréversible.</b> Cela Cela ne modifiera pas le lien d'accès, ni son extension et ni les partages actuellement associés avec d'autres utilisateurs."
 		},
 		"notifications": {
 			"trigger": "Nouvelles notifications",
@@ -61,6 +113,59 @@
 			"description_4": "Quelqu'un a supprimé un fichier partagé. Il n'est plus disponible dans votre tableau de bord.",
 			"description_5": "Vous êtes proche du quota de stockage maximal. Veuillez supprimer des fichiers inutiles pour libérer de l'espace.",
 			"description_6": "Votre espace de stockage est plein. Veuillez supprimer des fichiers inutiles pour libérer de l'espace et continuer à utiliser notre service."
+		},
+		"share-manager": {
+			"trigger": "Gérer les partages",
+			"title": "Partage du fichier",
+			"shared_users": "Liste des utilisateurs en partage",
+			"copy": "Copier",
+			"copied": "Copié",
+			"read": "Lecture",
+			"add": "Ajouter",
+			"write": "Écriture",
+			"search": "Rechercher...",
+			"delete": "Supprimer définitivement",
+			"empty": "Aucun utilisateur n'a accès à ce fichier.",
+			"user_list": "Ajouts de nouveaux utilisateurs en partage",
+			"fetch_result": "résultat(s) trouvé(s) dans la base de données.",
+			"fetch_error": "Une erreur est survenue lors de la recherche. Veuillez réessayer.",
+			"fetch_loading": "Chargement des résultats...",
+			"description": "Copier et partager le lien d'accès aux utilisateurs de votre choix."
+		},
+		"file-upload": {
+			"trigger": "Ajouter un fichier",
+			"title": "Téléversement de fichiers",
+			"submit": "Téléverser",
+			"quota": "{percent}% du quota actuellement utilisé ({current} / {max}).",
+			"advanced": "Cliquez ici pour afficher les paramètres avancés.",
+			"description": "Ceci est le formulaire de téléversement de fichiers. Vous pouvez utiliser des paramètres supplémentaires pour contrôler la façon dont les fichiers sont téléversés."
+		},
+		"request-key": {
+			"title": "Veuillez saisir la clé de déchiffrement.",
+			"placeholder": "votre-clé-de-déchiffrement",
+			"description": "Pour accéder à cette ressource, vous devez saisir la clé de déchiffrement qui vous a été fournie lors de son téléversement. <b>En cas de perte, vous ne pourrez plus y accéder. Si c'est le cas, supprimez-la et téléversez-la à nouveau. Le support technique ne pourra pas vous aider car il ne possède pas la clé de déchiffrement.</b>"
+		},
+		"descryption_key": {
+			"title": "Clé de déchiffrement",
+			"description": "Vous avez activé le chiffrement renforcé pour ce téléversement. Vos fichiers ont été chiffrés dans votre navigateur avec une clé de chiffrement aléatoire que vous seul pouvez utiliser pour les déchiffrer. Vous trouverez ci-dessous la clé de déchiffrement que vous devez conserver précieusement pour pouvoir accéder à vos fichiers ultérieurement. <b>Si vous perdez cette clé, vous ne pourrez plus accéder à vos fichiers.</b>",
+			"copy": "Copier dans le presse-papiers"
+		},
+		"delete_file": {
+			"trigger": "Supprimer définitivement",
+			"title": "Êtes-vous sûr de vouloir supprimer {count, plural, =1 {ce fichier} other {ces # fichiers}} ?",
+			"description": "<b>Cette action est irréversible.</b> Elle supprimera définitivement le fichier de notre serveur et ne pourra pas être restaurée ultérieurement."
+		},
+		"file_history": {
+			"reach": "Accéder",
+			"trigger": "Voir les révisions",
+			"title": "Révisions disponibles",
+			"details": "Version du {date}",
+			"description": "Accéder et restaurer une version antérieure du fichier."
+		},
+		"restore_version": {
+			"trigger": "Restaurer",
+			"title": "Êtes-vous sûr de vouloir restaurer cette version du fichier ?",
+			"description": "La version actuelle du fichier sera sauvegardée sous forme d'une nouvelle version et remplacée par la version sélectionnée."
 		}
 	},
 	"header": {
@@ -76,6 +181,33 @@
 	"footer": {
 		"rights_reserved": "Tous droits réservés",
 		"recaptcha_protected": "Ce site est protégé par reCAPTCHA sur lequel s'appliquent les <a1>politiques de confidentialité</a1> et les <a2>conditions d'utilisation</a2> de Google."
+	},
+	"dashboard": {
+		"hide": "Cacher",
+		"reset": "Réinitialiser",
+		"filter": "Filtrer par nom...",
+		"columns": "Colonnes",
+		"copy_link": "Copier le lien d'accès",
+		"reach_file": "Accéder au fichier",
+		"actions": "Actions sur le fichier",
+		"description": "Téléverser et partager vos fichiers à partir de votre ordinateur.",
+		"rows_x": "{selected} sur {total} ligne(s) sélectionnée(s)",
+		"pages_x": "Page {page} sur {pages}",
+		"first_page": "Aller à la première page",
+		"last_page": "Aller à la dernière page",
+		"previous_page": "Aller à la page précédente",
+		"next_page": "Aller à la page suivante",
+		"no_files": "Aucun fichier trouvé",
+		"ascending": "Ordre croissant",
+		"descending": "Ordre décroissant",
+		"lines_per_page": "Lignes par page",
+		"active_columns": "Affichage des colonnes",
+		"name": "Nom",
+		"owner": "Propriétaire",
+		"type": "Type",
+		"size": "Taille",
+		"date": "Date",
+		"status": "Statut"
 	},
 	"authentication": {
 		"register_button": "Inscription",

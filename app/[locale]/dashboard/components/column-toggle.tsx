@@ -7,9 +7,10 @@
 
 import { merge } from "@/utilities/tailwind";
 import type { Table } from "@tanstack/react-table";
-import { FileAttributes } from "@/interfaces/File";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal } from "lucide-react";
+import type { FileAttributes } from "@/interfaces/File";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 
 import { buttonVariants } from "../../components/ui/button";
@@ -26,6 +27,7 @@ export default function ColumnToggle( {
 } )
 {
 	// Déclaration des variables d'état.
+	const t = useTranslations( "dashboard" );
 	const parameters = useSearchParams();
 
 	// Affichage du rendu HTML du composant.
@@ -40,12 +42,12 @@ export default function ColumnToggle( {
 			>
 				<SlidersHorizontal className="inline h-4 w-4 md:mr-2" />
 
-				<span className="max-md:hidden">Colonnes</span>
+				<span className="max-md:hidden">{t( "columns" )}</span>
 			</DropdownMenuTrigger>
 
 			{/* Menu de sélection des colonnes */}
 			<DropdownMenuContent align="end" className="w-[150px]">
-				<DropdownMenuLabel>Affichage des colonnes</DropdownMenuLabel>
+				<DropdownMenuLabel>{t( "active_columns" )}</DropdownMenuLabel>
 
 				<DropdownMenuSeparator />
 
@@ -80,7 +82,7 @@ export default function ColumnToggle( {
 								window.history.pushState( null, "", `?${ url }` );
 							}}
 						>
-							{column.id}
+							{t( column.id )}
 						</DropdownMenuCheckboxItem>
 					) )}
 			</DropdownMenuContent>
