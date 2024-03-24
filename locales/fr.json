@@ -257,6 +257,22 @@
 			"description_6": "Nous ne pouvons pas vous garantir un espace de stockage illimité, mais il permet de stocker suffisamment de fichiers pour vos besoins quotidiens."
 		}
 	},
+	"zod": {
+		"invalid_type": "Le type de valeur fournie n'est pas valide.",
+		"invalid_union": "Aucune des valeurs fournies n'est valide.",
+		"unrecognized_keys": "Des clés non reconnues ont été fournies dans l'objet.",
+		"invalid_enum_value": "La valeur fournie n'est pas une valeur valide de l'énumération.",
+		"invalid_arguments": "Les arguments fournis ne sont pas valides.",
+		"invalid_return_type": "Le type de retour de la fonction n'est pas valide.",
+		"invalid_date": "La date fournie n'est pas valide.",
+		"too_small": "La valeur fournie est trop petite.",
+		"too_big": "La valeur fournie est trop grande.",
+		"not_multiple_of": "La valeur fournie n'est pas un multiple valide.",
+		"wrong_file_object": "L'un des fichiers téléversés n'est pas un fichier valide.",
+		"wrong_file_size": "L'un des fichiers téléversés dépasse la taille maximale autorisée.",
+		"wrong_file_name": "L'un des fichiers téléversés a un nom de fichier invalide, vide ou trop long.",
+		"wrong_file_type": "L'un des fichiers téléversés n'est pas un type de fichier autorisé."
+	},
 	"authjs": {
 		"errors": {
 			"default": "Impossible d'effectuer l'authentification.",
