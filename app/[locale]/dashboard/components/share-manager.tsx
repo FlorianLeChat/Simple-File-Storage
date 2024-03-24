@@ -20,6 +20,7 @@ import { Trash,
 import type { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import type { TableMeta } from "@tanstack/react-table";
+import { useTranslations } from "next-intl";
 import type { FileAttributes } from "@/interfaces/File";
 import type { ShareAttributes } from "@/interfaces/Share";
 
@@ -60,6 +61,8 @@ export default function ShareManager( {
 
 	// Déclaration des variables d'état.
 	const session = useSession();
+	const formMessages = useTranslations( "form" );
+	const modalMessages = useTranslations( "modals.share-manager" );
 	const [ isOpen, setOpen ] = useState( false );
 	const [ search, setSearch ] = useState( "" );
 	const [ loading, setLoading ] = useState( false );
@@ -115,15 +118,15 @@ export default function ShareManager( {
 			states.setFiles( [ ...states.files ] );
 
 			// Envoi d'une notification de succès.
-			toast.success( "form.info.update_success", {
-				description: "form.info.sharing_updated"
+			toast.success( formMessages( "infos.action_success" ), {
+				description: formMessages( "infos.sharing_updated" )
 			} );
 		}
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( "form.errors.update_failed", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 		}
 	};
@@ -155,15 +158,15 @@ export default function ShareManager( {
 			states.setFiles( [ ...states.files ] );
 
 			// Envoi d'une notification de succès.
-			toast.success( "form.info.update_success", {
-				description: "form.info.sharing_updated"
+			toast.success( formMessages( "infos.action_success" ), {
+				description: formMessages( "infos.sharing_updated" )
 			} );
 		}
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( "form.errors.update_failed", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 		}
 	};
@@ -216,15 +219,15 @@ export default function ShareManager( {
 			}
 
 			// Envoi d'une notification de succès.
-			toast.success( "form.info.delete_success", {
-				description: "form.info.sharing_updated"
+			toast.success( formMessages( "infos.action_success" ), {
+				description: formMessages( "infos.sharing_updated" )
 			} );
 		}
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( "form.errors.delete_failed", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 		}
 	};
@@ -249,7 +252,7 @@ export default function ShareManager( {
 					onSelect={( event ) => event.preventDefault()}
 				>
 					<Share2 className="mr-2 h-4 w-4" />
-					Gérer les partages
+					{modalMessages( "trigger" )}
 				</DropdownMenuItem>
 			</DialogTrigger>
 
@@ -258,12 +261,11 @@ export default function ShareManager( {
 				<DialogHeader>
 					<DialogTitle>
 						<Share2 className="mr-2 inline h-5 w-5 align-text-top" />
-						Partage du fichier
+						{modalMessages( "title" )}
 					</DialogTitle>
 
 					<DialogDescription>
-						Copier et partager le lien d&lsquo;accès aux
-						utilisateurs de votre choix.
+						{modalMessages( "description" )}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -294,12 +296,12 @@ export default function ShareManager( {
 						{isCopied ? (
 							<>
 								<ClipboardCheck className="mr-2 h-4 w-4" />
-								Copié
+								{modalMessages( "copied" )}
 							</>
 						) : (
 							<>
 								<ClipboardCopy className="mr-2 h-4 w-4" />
-								Copier
+								{modalMessages( "copy" )}
 							</>
 						)}
 					</Button>
@@ -312,12 +314,12 @@ export default function ShareManager( {
 				<section>
 					<h4 className="text-sm font-medium">
 						<Users className="mr-2 inline h-4 w-4 align-text-top" />
-						Liste des utilisateurs en partage
+						{modalMessages( "shared_users" )}
 					</h4>
 
 					{file.shares.length === 0 ? (
 						<p className="mt-4 text-sm text-muted-foreground">
-							Aucun utilisateur n&lsquo;a accès à ce fichier.
+							{modalMessages( "empty" )}
 						</p>
 					) : (
 						file.shares.map( ( share ) => (
@@ -369,17 +371,17 @@ export default function ShareManager( {
 
 										<SelectContent className="gap-1">
 											<SelectItem value="read">
-												Lecture
+												{modalMessages( "read" )}
 											</SelectItem>
 
 											<SelectItem value="write">
-												Écriture
+												{modalMessages( "write" )}
 											</SelectItem>
 										</SelectContent>
 									</Select>
 
 									<Button
-										title="Supprimer définitivement"
+										title={modalMessages( "delete" )}
 										onClick={() => submitDeletion( share )}
 										variant="destructive"
 										disabled={loading}
@@ -403,7 +405,7 @@ export default function ShareManager( {
 				<section>
 					<h4 className="text-sm font-medium">
 						<UserCog className="mr-2 inline h-4 w-4 align-text-top" />
-						Ajouts de nouveaux utilisateurs en partage
+						{modalMessages( "user_list" )}
 					</h4>
 
 					<Input
@@ -414,21 +416,20 @@ export default function ShareManager( {
 						maxLength={50}
 						className="mt-3"
 						spellCheck="false"
-						placeholder="Rechercher..."
+						placeholder={modalMessages( "search" )}
 						autoComplete="off"
 						autoCapitalize="off"
 					/>
 
 					<p className="mt-3 text-sm text-muted-foreground">
-						<strong>{result.length}</strong> résultat(s) trouvé(s)
-						dans la base de données.
+						<strong>{result.length}</strong>{" "}
+						{modalMessages( "fetch_result" )}
 					</p>
 
 					{/* Message d'erreur de la recherche */}
 					{error && !isLoading && (
 						<p className="mt-4 text-sm font-bold text-destructive">
-							Une erreur est survenue lors de la recherche.
-							Veuillez réessayer.
+							{modalMessages( "fetch_error" )}
 						</p>
 					)}
 
@@ -436,7 +437,7 @@ export default function ShareManager( {
 					{isLoading && (
 						<p className="mt-4 text-sm text-muted-foreground">
 							<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
-							Chargement des résultats...
+							{modalMessages( "fetch_loading" )}
 						</p>
 					)}
 
@@ -490,7 +491,7 @@ export default function ShareManager( {
 									) : (
 										<UserPlus className="mr-2 h-4 w-4" />
 									)}
-									Ajouter
+									{modalMessages( "add" )}
 								</Button>
 
 								{/* Séparateur horizontal */}

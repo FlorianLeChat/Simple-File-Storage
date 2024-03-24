@@ -11,6 +11,7 @@ import * as Sentry from "@sentry/nextjs";
 import { statSync } from "fs";
 import { join, parse } from "path";
 import { compressFile } from "@/utilities/sharp";
+import { getTranslations } from "next-intl/server";
 import { fileTypeFromBuffer } from "file-type";
 import { rm, mkdir, readdir, link, writeFile } from "fs/promises";
 
@@ -20,6 +21,7 @@ export async function uploadFiles(
 )
 {
 	// On récupère d'abord la session de l'utilisateur.
+	const t = await getTranslations();
 	const session = await auth();
 
 	if ( !session )
@@ -28,7 +30,7 @@ export async function uploadFiles(
 		//  n'est pas connecté.
 		return {
 			success: false,
-			reason: "form.errors.unauthenticated"
+			reason: t( "authjs.errors.SessionRequired" )
 		};
 	}
 
@@ -179,9 +181,10 @@ export async function uploadFiles(
 			const versionId = (
 				await prisma.version.upsert( {
 					where: {
-						id: exists && !preferences.versions
-							? exists.versions[ 0 ].id
-							: ""
+						id:
+							exists && !preferences.versions
+								? exists.versions[ 0 ].id
+								: ""
 					},
 					update: {
 						createdAt: new Date()
@@ -354,8 +357,8 @@ export async function uploadFiles(
 		return {
 			success: currentQuota <= maxQuota,
 			reason: quotaIsExceeded
-				? "form.errors.quota_exceeded"
-				: "form.info.upload_success",
+				? t( "form.errors.quota_exceeded" )
+				: t( "form.infos.upload_success" ),
 			data: ( await Promise.all( data ) ).flat()
 		};
 	}
@@ -367,7 +370,7 @@ export async function uploadFiles(
 
 		return {
 			success: false,
-			reason: "form.errors.upload_failed"
+			reason: t( "form.infos.upload_failed" )
 		};
 	}
 }

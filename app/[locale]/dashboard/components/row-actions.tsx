@@ -22,7 +22,8 @@ import { Ban,
 	MoreHorizontal,
 	TextCursorInput } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { FileAttributes } from "@/interfaces/File";
+import { useTranslations } from "next-intl";
+import type { FileAttributes } from "@/interfaces/File";
 import type { Table, Row, TableMeta } from "@tanstack/react-table";
 
 import { Input } from "../../components/ui/input";
@@ -59,6 +60,9 @@ export default function RowActions( {
 } )
 {
 	// Déclaration des variables d'état.
+	const formMessages = useTranslations( "form" );
+	const modalMessages = useTranslations( "modals" );
+	const dashboardMessages = useTranslations( "dashboard" );
 	const [ isLoading, setLoading ] = useState( false );
 
 	// Déclaration des constantes.
@@ -121,23 +125,23 @@ export default function RowActions( {
 			if ( files.length === selectedFiles.length )
 			{
 				// Envoi d'une notification de succès (mise à jour complète).
-				toast.success( "form.info.action_success", {
-					description: "form.info.status_updated"
+				toast.success( formMessages( "infos.action_success" ), {
+					description: formMessages( "infos.status_full_updated" )
 				} );
 			}
 			else
 			{
 				// Envoi d'une notification d'avertissement (mise à jour partielle).
-				toast.warning( "form.info.action_partial", {
-					description: "form.info.status_updated"
+				toast.warning( formMessages( "infos.action_partial" ), {
+					description: formMessages( "infos.status_partial_updated" )
 				} );
 			}
 		}
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( "form.errors.file_deleted", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 		}
 	};
@@ -194,8 +198,8 @@ export default function RowActions( {
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( "form.errors.file_deleted", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 		}
 	};
@@ -237,23 +241,23 @@ export default function RowActions( {
 			if ( files.length === selectedFiles.length )
 			{
 				// Envoi d'une notification de succès (mise à jour complète).
-				toast.success( "form.info.action_success", {
-					description: "form.info.name_updated"
+				toast.success( formMessages( "infos.action_success" ), {
+					description: formMessages( "infos.name_full_updated" )
 				} );
 			}
 			else
 			{
 				// Envoi d'une notification d'avertissement (mise à jour partielle).
-				toast.warning( "form.info.action_partial", {
-					description: "form.info.name_updated"
+				toast.warning( formMessages( "infos.action_partial" ), {
+					description: formMessages( "infos.name_partial_updated" )
 				} );
 			}
 		}
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( "form.errors.file_deleted", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 		}
 	};
@@ -291,23 +295,23 @@ export default function RowActions( {
 			if ( files.length === selectedFiles.length )
 			{
 				// Envoi d'une notification de succès (mise à jour complète).
-				toast.success( "form.info.action_success", {
-					description: "form.info.file_deleted"
+				toast.success( formMessages( "infos.action_success" ), {
+					description: formMessages( "infos.file_full_deleted" )
 				} );
 			}
 			else
 			{
 				// Envoi d'une notification d'avertissement (mise à jour partielle).
-				toast.warning( "form.info.action_partial", {
-					description: "form.info.file_deleted"
+				toast.warning( formMessages( "infos.action_partial" ), {
+					description: formMessages( "infos.file_partial_deleted" )
 				} );
 			}
 		}
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( "form.errors.file_deleted", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 		}
 	};
@@ -353,15 +357,15 @@ export default function RowActions( {
 			);
 
 			// Envoi d'une notification de succès.
-			toast.success( "form.info.action_success", {
-				description: "form.info.sharing_updated"
+			toast.success( formMessages( "infos.action_success" ), {
+				description: formMessages( "infos.all_sharing_updated" )
 			} );
 		}
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( "form.errors.file_deleted", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 		}
 	};
@@ -386,7 +390,9 @@ export default function RowActions( {
 
 			{/* Actions disponibles */}
 			<DropdownMenuContent align="end">
-				<DropdownMenuLabel>Actions sur le fichier</DropdownMenuLabel>
+				<DropdownMenuLabel>
+					{dashboardMessages( "actions" )}
+				</DropdownMenuLabel>
 
 				{/* Rendre public */}
 				<AlertDialog>
@@ -397,7 +403,7 @@ export default function RowActions( {
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<Globe className="mr-2 h-4 w-4" />
-							Rendre public
+							{modalMessages( "make_public.trigger" )}
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
 
@@ -405,30 +411,30 @@ export default function RowActions( {
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								<Globe className="mr-2 inline h-5 w-5 align-text-top" />
-								Êtes-vous sûr de vouloir rendre public{" "}
-								{selectedCount} fichier(s) ?
+
+								{modalMessages( "make_public.title", {
+									count: selectedCount
+								} )}
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>
-								En rendant ce fichier public, il sera accessible
-								à tout le monde, même aux utilisateurs en dehors
-								du site Internet.{" "}
-								<strong>
-									Les restrictions de partage seront
-									réinitialisées et désactivées.
-								</strong>
+								{modalMessages.rich( "make_public.description", {
+									b: ( children ) => (
+										<strong>{children}</strong>
+									)
+								} )}
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 
 						<AlertDialogFooter>
 							<AlertDialogCancel>
 								<Ban className="mr-2 h-4 w-4" />
-								Annuler
+								{formMessages( "cancel" )}
 							</AlertDialogCancel>
 
 							<AlertDialogAction onClick={submitMakePublic}>
 								<Check className="mr-2 h-4 w-4" />
-								Confirmer
+								{formMessages( "confirm" )}
 							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
@@ -443,7 +449,7 @@ export default function RowActions( {
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<FolderLock className="mr-2 h-4 w-4" />
-							Rendre privé
+							{modalMessages( "make_private.trigger" )}
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
 
@@ -451,31 +457,33 @@ export default function RowActions( {
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								<FolderLock className="mr-2 inline h-5 w-5 align-text-top" />
-								Êtes-vous sûr de vouloir rendre privé{" "}
-								{selectedCount} fichier(s) ?
+
+								{modalMessages( "make_private.title", {
+									count: selectedCount
+								} )}
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>
-								En rendant ce fichier privé, il ne sera plus
-								accessible aux utilisateurs en dehors du site
-								Internet, ni aux utilisateurs non autorisés via
-								les options de partage.{" "}
-								<strong>
-									Le fichier peut encore être accessible si
-									celui-ci a été mis en cache par un tiers.
-								</strong>
+								{modalMessages.rich(
+									"make_private.description",
+									{
+										b: ( children ) => (
+											<strong>{children}</strong>
+										)
+									}
+								)}
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 
 						<AlertDialogFooter>
 							<AlertDialogCancel>
 								<Ban className="mr-2 h-4 w-4" />
-								Annuler
+								{formMessages( "cancel" )}
 							</AlertDialogCancel>
 
 							<AlertDialogAction onClick={submitMakePrivate}>
 								<Check className="mr-2 h-4 w-4" />
-								Confirmer
+								{formMessages( "confirm" )}
 							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
@@ -499,7 +507,7 @@ export default function RowActions( {
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<UserX className="mr-2 h-4 w-4" />
-							Supprimer tous les partages
+							{modalMessages( "reset_shares.trigger" )}
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
 
@@ -507,26 +515,33 @@ export default function RowActions( {
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								<UserX className="mr-2 inline h-5 w-5 align-text-top" />
-								Êtes-vous sûr de vouloir supprimer tous les
-								partages de {selectedCount} fichier(s) ?
+
+								{modalMessages( "reset_shares.title", {
+									count: selectedCount
+								} )}
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>
-								<strong>Cette action est irréversible.</strong>{" "}
-								Elle supprimera tous les partages du fichier et
-								rendra le fichier privé.
+								{modalMessages.rich(
+									"reset_shares.description",
+									{
+										b: ( children ) => (
+											<strong>{children}</strong>
+										)
+									}
+								)}
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 
 						<AlertDialogFooter>
 							<AlertDialogCancel>
 								<Ban className="mr-2 h-4 w-4" />
-								Annuler
+								{formMessages( "cancel" )}
 							</AlertDialogCancel>
 
 							<AlertDialogAction onClick={submitRemoveAllShares}>
 								<Check className="mr-2 h-4 w-4" />
-								Confirmer
+								{formMessages( "confirm" )}
 							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
@@ -543,7 +558,7 @@ export default function RowActions( {
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<TextCursorInput className="mr-2 h-4 w-4" />
-							Renommer la ressource
+							{modalMessages( "rename_file.trigger" )}
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
 
@@ -551,15 +566,18 @@ export default function RowActions( {
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								<TextCursorInput className="mr-2 inline h-5 w-5 align-text-top" />
-								Quel sera le nouveau nom de {selectedCount}{" "}
-								ressource(s) ?
+
+								{modalMessages( "rename_file.title", {
+									count: selectedCount
+								} )}
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>
-								<strong>Cette action est irréversible.</strong>{" "}
-								Cela ne modifiera pas le lien d&lsquo;accès, ni
-								son extension et ni les partages actuellement
-								associés avec d&lsquo;autres utilisateurs.
+								{modalMessages.rich( "rename_file.description", {
+									b: ( children ) => (
+										<strong>{children}</strong>
+									)
+								} )}
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 
@@ -594,7 +612,7 @@ export default function RowActions( {
 								form="rename-file-form"
 							>
 								<Ban className="mr-2 h-4 w-4" />
-								Annuler
+								{formMessages( "cancel" )}
 							</AlertDialogCancel>
 
 							<AlertDialogAction
@@ -605,12 +623,12 @@ export default function RowActions( {
 								{isLoading ? (
 									<>
 										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-										Mise à jour...
+										{formMessages( "loading" )}
 									</>
 								) : (
 									<>
 										<RefreshCw className="mr-2 h-4 w-4" />
-										Mettre à jour
+										{formMessages( "update" )}
 									</>
 								)}
 							</AlertDialogAction>
@@ -627,7 +645,7 @@ export default function RowActions( {
 								onSelect={( event ) => event.preventDefault()}
 							>
 								<ArrowUpRight className="mr-2 h-4 w-4" />
-								Accéder à la ressource
+								{dashboardMessages( "reach_file" )}
 							</DropdownMenuItem>
 						</AlertDialogTrigger>
 					</RequestKey>
@@ -639,7 +657,7 @@ export default function RowActions( {
 					>
 						<DropdownMenuItem>
 							<ArrowUpRight className="mr-2 h-4 w-4" />
-							Accéder à la ressource
+							{dashboardMessages( "reach_file" )}
 						</DropdownMenuItem>
 					</a>
 				)}
@@ -663,7 +681,7 @@ export default function RowActions( {
 					)}
 				>
 					<ClipboardCopy className="mr-2 h-4 w-4" />
-					Copier le lien d&lsquo;accès
+					{dashboardMessages( "copy_link" )}
 				</DropdownMenuItem>
 
 				{/* Suppression de la ressource */}
@@ -677,7 +695,9 @@ export default function RowActions( {
 						>
 							<Trash className="mr-2 h-4 w-4" />
 
-							<strong>Supprimer définitivement</strong>
+							<strong>
+								{modalMessages( "delete_file.trigger" )}
+							</strong>
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
 
@@ -685,26 +705,30 @@ export default function RowActions( {
 						<AlertDialogHeader>
 							<AlertDialogTitle>
 								<Trash className="mr-2 inline h-5 w-5 align-text-top" />
-								Êtes-vous sûr de vouloir supprimer{" "}
-								{selectedCount} fichier(s) ?
+
+								{modalMessages( "delete_file.title", {
+									count: selectedCount
+								} )}
 							</AlertDialogTitle>
 
 							<AlertDialogDescription>
-								<strong>Cette action est irréversible.</strong>{" "}
-								Elle supprimera définitivement le fichier de
-								votre espace de stockage.
+								{modalMessages.rich( "delete_file.description", {
+									b: ( children ) => (
+										<strong>{children}</strong>
+									)
+								} )}
 							</AlertDialogDescription>
 						</AlertDialogHeader>
 
 						<AlertDialogFooter>
 							<AlertDialogCancel>
 								<Ban className="mr-2 h-4 w-4" />
-								Annuler
+								{formMessages( "cancel" )}
 							</AlertDialogCancel>
 
 							<AlertDialogAction onClick={submitRemoveShare}>
 								<Check className="mr-2 h-4 w-4" />
-								Confirmer
+								{formMessages( "confirm" )}
 							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>

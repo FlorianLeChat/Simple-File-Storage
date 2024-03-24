@@ -5,6 +5,7 @@
 "use client";
 
 import { type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { Ban, ShieldCheck, ArrowUpRight } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
@@ -25,6 +26,10 @@ export default function RequestKey( {
 	children: ReactNode;
 } )
 {
+	// Déclaration des variables d'état.
+	const formMessages = useTranslations( "form" );
+	const modalMessages = useTranslations( "modals.request-key" );
+
 	// Déclaration des constantes.
 	const base = new URL( url, window.location.href );
 	const parameters = base.searchParams;
@@ -38,21 +43,13 @@ export default function RequestKey( {
 				<AlertDialogHeader>
 					<AlertDialogTitle>
 						<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
-						Veuillez saisir la clé de déchiffrement.
+						{modalMessages( "title" )}
 					</AlertDialogTitle>
 
 					<AlertDialogDescription>
-						Cette ressource est chiffrée par une clé que le serveur
-						ne possède pas. Pour accéder à celle-ci, veuillez saisir
-						la clé de déchiffrement qui vous a été fournie lors de
-						son téléversement.{" "}
-						<strong>
-							En cas de perte, vous ne pourrez plus y accéder. Si
-							c&lsquo;est le cas, supprimez-la et téléversez-la à
-							nouveau. L&lsquo;assistance technique ne pourra pas
-							vous aider car elle ne possède pas la clé de
-							déchiffrement.
-						</strong>
+						{modalMessages.rich( "description", {
+							b: ( text ) => <strong>{text}</strong>
+						} )}
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 
@@ -77,7 +74,7 @@ export default function RequestKey( {
 						name="key"
 						maxLength={64}
 						spellCheck="false"
-						placeholder="your_key"
+						placeholder={modalMessages( "placeholder" )}
 						autoComplete="off"
 						autoCapitalize="off"
 					/>
@@ -86,12 +83,12 @@ export default function RequestKey( {
 				<AlertDialogFooter>
 					<AlertDialogCancel type="reset" form="request-key-form">
 						<Ban className="mr-2 h-4 w-4" />
-						Annuler
+						{formMessages( "cancel" )}
 					</AlertDialogCancel>
 
 					<AlertDialogAction type="submit" form="request-key-form">
 						<ArrowUpRight className="mr-2 h-4 w-4" />
-						Accéder
+						{formMessages( "confirm" )}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

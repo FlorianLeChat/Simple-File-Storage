@@ -281,6 +281,8 @@ export default async function Layout( {
 							"form",
 							"modals",
 							"header",
+							"actions",
+							"dashboard",
 							"consentModal",
 							"preferencesModal"
 						)}

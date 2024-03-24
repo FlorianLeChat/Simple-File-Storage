@@ -10,6 +10,7 @@ import { ChevronLeft,
 	ChevronRight,
 	ChevronsLeft,
 	ChevronsRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 
 import { Button } from "../../components/ui/button";
@@ -26,6 +27,7 @@ interface PaginationProps<TData> {
 export default function Pagination<TData>( { table }: PaginationProps<TData> )
 {
 	// Déclaration des variables d'état.
+	const t = useTranslations( "dashboard" );
 	const parameters = useSearchParams();
 
 	// Déclaration des constantes.
@@ -40,14 +42,15 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 		<div className="mt-4 flex items-center justify-end gap-2 max-md:flex-col md:gap-4 lg:gap-8">
 			{/* Nombre de lignes sélectionnées */}
 			<p className="flex-1 text-sm text-muted-foreground">
-				{table.getFilteredSelectedRowModel().rows.length} sur{" "}
-				{table.getFilteredRowModel().rows.length} ligne(s)
-				sélectionnée(s).
+				{t.rich( "rows_x", {
+					selected: table.getFilteredSelectedRowModel().rows.length,
+					total: table.getFilteredRowModel().rows.length
+				} )}
 			</p>
 
 			{/* Nombre de lignes par page */}
 			<nav className="flex items-center space-x-2">
-				<p className="text-sm font-medium">Lignes par page</p>
+				<p className="text-sm font-medium">{t( "lines_per_page" )}</p>
 
 				<Select
 					value={`${ table.getState().pagination.pageSize }`}
@@ -87,11 +90,14 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 			{/* Changement de page */}
 			<nav className="flex items-center space-x-2">
 				<p className="flex w-[100px] items-center justify-center text-sm font-medium">
-					Page {currentPage} sur {maxPages}
+					{t( "pages_x", {
+						page: currentPage,
+						pages: maxPages
+					} )}
 				</p>
 
 				<Button
-					title="Aller à la première page"
+					title={t( "first_page" )}
 					variant="outline"
 					onClick={() =>
 					{
@@ -111,7 +117,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 				</Button>
 
 				<Button
-					title="Aller à la page précédente"
+					title={t( "previous_page" )}
 					variant="outline"
 					onClick={() =>
 					{
@@ -134,7 +140,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 				</Button>
 
 				<Button
-					title="Aller à la page suivante"
+					title={t( "next_page" )}
 					variant="outline"
 					onClick={() =>
 					{
@@ -157,7 +163,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 				</Button>
 
 				<Button
-					title="Aller à la dernière page"
+					title={t( "last_page" )}
 					variant="outline"
 					onClick={() =>
 					{

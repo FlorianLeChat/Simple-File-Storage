@@ -18,7 +18,6 @@ import { Loader2,
 	CalendarDays,
 	ClipboardCopy,
 	PlusCircleIcon } from "lucide-react";
-import { useLocale } from "next-intl";
 import { useSession } from "next-auth/react";
 import { formatSize } from "@/utilities/react-table";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,6 +26,7 @@ import type { TableMeta } from "@tanstack/react-table";
 import { addDays, format } from "date-fns";
 import { useEffect, useState } from "react";
 import { type FileAttributes } from "@/interfaces/File";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
@@ -66,6 +66,8 @@ export default function FileUpload( {
 {
 	// Déclaration des variables d'état.
 	const session = useSession();
+	const formMessages = useTranslations( "form" );
+	const modalMessages = useTranslations( "modals" );
 	const [ key, setKey ] = useState( "" );
 	const [ quota, setQuota ] = useState( 0 );
 	const [ isOpen, setOpen ] = useState( false );
@@ -195,8 +197,8 @@ export default function FileUpload( {
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( "form.errors.update_failed", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 
 			return;
@@ -261,45 +263,34 @@ export default function FileUpload( {
 
 			form.reset();
 
-			toast.success( "form.info.upload_success", {
+			toast.success( formMessages( "infos.action_success" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( "form.errors.upload_failed", {
+			toast.error( formMessages( "errors.action_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ form, setFiles, uploadState ] );
+	}, [ form, setFiles, formMessages, uploadState ] );
 
 	// Affichage de la fenêtre modale de clé de déchiffrement.
 	if ( key && !isOpen )
 	{
 		return (
-			<Dialog open onOpenChange={() => setKey( "" )}>
+			<Dialog defaultOpen onOpenChange={() => setKey( "" )}>
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>
 							<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
-							Clé de déchiffrement
+							{modalMessages( "decryption_key.title" )}
 						</DialogTitle>
 
 						<DialogDescription>
-							Vous avez activé le chiffrement renforcé pour ce
-							téléversement. Vos fichiers ont été chiffrés dans
-							votre navigateur avec une clé de chiffrement
-							aléatoire que vous seul pouvez utiliser pour les
-							déchiffrer.
-							<br />
-							<br />
-							Vous trouverez ci-dessous la clé de déchiffrement
-							que vous devez conserver précieusement pour pouvoir
-							accéder à vos fichiers ultérieurement.{" "}
-							<strong>
-								Si vous perdez cette clé, vous ne pourrez plus
-								accéder à vos fichiers.
-							</strong>
+							{modalMessages.rich( "decryption_key.description", {
+								b: ( chunks ) => <strong>{chunks}</strong>
+							} )}
 							<br />
 							<br />
 							<code>{key}</code>
@@ -318,7 +309,7 @@ export default function FileUpload( {
 						className={merge( buttonVariants(), "w-full" )}
 					>
 						<ClipboardCopy className="mr-2 h-4 w-4" />
-						Copier dans le presse-papiers
+						{modalMessages( "decryption_key.copy" )}
 					</DialogClose>
 				</DialogContent>
 			</Dialog>
@@ -345,18 +336,18 @@ export default function FileUpload( {
 				<PlusCircleIcon className="inline h-4 w-4 md:mr-2" />
 
 				<span id="file-upload" className="max-md:hidden">
-					Ajouter un fichier
+					{modalMessages( "file-upload.trigger" )}
 				</span>
 			</DialogTrigger>
 
 			<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[75%]">
 				<DialogHeader className="sr-only">
-					<DialogTitle>Téléversement de fichiers</DialogTitle>
+					<DialogTitle>
+						{modalMessages( "file-upload.title" )}
+					</DialogTitle>
 
 					<DialogDescription>
-						Ceci est le formulaire de téléversement de fichiers.
-						Vous pouvez utiliser des paramètres supplémentaires pour
-						contrôler la façon dont les fichiers sont téléversés.
+						{modalMessages( "file-upload.description" )}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -401,27 +392,27 @@ export default function FileUpload( {
 								<FormItem>
 									<FormLabel>
 										<UploadCloud className="mr-2 inline h-6 w-6" />
-										Téléversement de fichiers
+
+										{formMessages( "fields.upload_label" )}
 									</FormLabel>
 
 									<FormDescription>
-										Tous les formats de fichiers sont
-										acceptés. La vitesse de téléversement
-										dépend de votre connexion Internet et
-										des capacités matérielles de votre
-										ordinateur.{" "}
-										<strong
-											hidden={
-												!session.data?.user.preferences
-													.versions
+										{formMessages.rich(
+											"fields.upload_description",
+											{
+												b: ( chunks ) => (
+													<strong
+														hidden={
+															!session.data?.user
+																.preferences
+																.versions
+														}
+													>
+														{chunks}
+													</strong>
+												)
 											}
-										>
-											Si un fichier du même nom existe
-											déjà, il sera remplacé et une
-											nouvelle révision sera créée pour
-											être restaurée ultérieurement si
-											besoin.
-										</strong>
+										)}
 									</FormDescription>
 
 									<FormControl>
@@ -449,10 +440,18 @@ export default function FileUpload( {
 												className="!mt-1 text-sm text-muted-foreground"
 												suppressHydrationWarning
 											>
-												{percent.toLocaleString()}% du
-												quota actuellement utilisés (
-												{formatSize( quota )} /{" "}
-												{formatSize( maxQuota )})
+												{modalMessages(
+													"file-upload.quota",
+													{
+														percent:
+															percent.toLocaleString(),
+														current:
+															formatSize( quota ),
+														max: formatSize(
+															maxQuota
+														)
+													}
+												)}
 											</p>
 										</>
 									)}
@@ -465,7 +464,7 @@ export default function FileUpload( {
 						{/* Paramètres avancés */}
 						<details className="my-4">
 							<summary className="cursor-pointer text-sm">
-								Cliquez ici pour afficher les paramètres avancés
+								{modalMessages( "file-upload.advanced" )}
 							</summary>
 
 							{/* Compression */}
@@ -476,26 +475,28 @@ export default function FileUpload( {
 									<FormItem className="mt-4">
 										<FormLabel htmlFor={field.name}>
 											<FileArchive className="mr-2 inline h-6 w-6" />
-											Compression des images{" "}
-											<em>(optionnel)</em>
+
+											{formMessages.rich(
+												"fields.compression_label",
+												{
+													i: ( chunks ) => (
+														<em>{chunks}</em>
+													)
+												}
+											)}
 										</FormLabel>
 
 										<FormDescription>
-											Si vous essayez de téléverser des
-											images, vous pouvez activer cette
-											option pour faire compresser les
-											images automatiquement par le
-											serveur. La compression des images
-											peut réduire la taille des fichiers
-											sur votre quota de stockage.{" "}
-											<strong>
-												Attention, cette opération est
-												irréversible et peut altérer la
-												qualité des images. Certaines
-												images ayant des extensions
-												propriétaires ne sont pas prises
-												en charge.
-											</strong>
+											{formMessages.rich(
+												"fields.compression_description",
+												{
+													b: ( chunks ) => (
+														<strong>
+															{chunks}
+														</strong>
+													)
+												}
+											)}
 										</FormDescription>
 
 										<div className="flex items-center space-x-2">
@@ -515,8 +516,9 @@ export default function FileUpload( {
 												htmlFor={field.name}
 												className="leading-5"
 											>
-												Activer la compression des
-												images
+												{formMessages(
+													"fields.compression_trigger"
+												)}
 											</Label>
 										</div>
 
@@ -533,27 +535,28 @@ export default function FileUpload( {
 									<FormItem className="mt-4">
 										<FormLabel htmlFor={field.name}>
 											<ShieldCheck className="mr-2 inline h-6 w-6" />
-											Chiffrement renforcé{" "}
-											<em>(optionnel)</em>
+
+											{formMessages.rich(
+												"fields.encryption_label",
+												{
+													i: ( chunks ) => (
+														<em>{chunks}</em>
+													)
+												}
+											)}
 										</FormLabel>
 
 										<FormDescription>
-											Les fichiers sont chiffrés avec une
-											clé de chiffrement connue uniquement
-											par le serveur. Si vous activez
-											cette option, le fichier sera
-											chiffré dans votre navigateur avec
-											une clé générée aléatoirement et ne
-											sera pas transmise au serveur.{" "}
-											<strong>
-												Attention, une fois le fichier
-												téléversé, une clé de
-												déchiffrement sera affichée et
-												vous devrez la conserver afin de
-												pouvoir accéder au fichier. Si
-												vous perdez cette clé, vous ne
-												pourrez plus accéder au fichier.
-											</strong>
+											{formMessages.rich(
+												"fields.encryption_description",
+												{
+													b: ( chunks ) => (
+														<strong>
+															{chunks}
+														</strong>
+													)
+												}
+											)}
 										</FormDescription>
 
 										<div className="flex items-center space-x-2">
@@ -573,7 +576,9 @@ export default function FileUpload( {
 												htmlFor={field.name}
 												className="leading-5"
 											>
-												Activer le chiffrement renforcé
+												{formMessages(
+													"fields.encryption_trigger"
+												)}
 											</Label>
 										</div>
 
@@ -590,27 +595,28 @@ export default function FileUpload( {
 									<FormItem className="mt-4">
 										<FormLabel>
 											<CalendarDays className="mr-2 inline h-6 w-6" />
-											Date d&lsquo;expiration{" "}
-											<em>(optionnel)</em>
+
+											{formMessages.rich(
+												"fields.expiration_label",
+												{
+													i: ( chunks ) => (
+														<em>{chunks}</em>
+													)
+												}
+											)}
 										</FormLabel>
 
 										<FormDescription>
-											Les nouveaux fichiers téléversés
-											n&lsquo;ont pas de date
-											d&lsquo;expiration par défaut. Si
-											vous souhaitez que le fichier soit
-											supprimé automatiquement après une
-											certaine durée, entrez une date
-											d&lsquo;expiration ici.{" "}
-											<strong>
-												Attention, une fois le fichier
-												téléversé, vous ne pourrez plus
-												changer sa date
-												d&lsquo;expiration. La
-												suppression du fichier sera
-												effectuée à minuit le jour de
-												l&lsquo;expiration.
-											</strong>
+											{formMessages.rich(
+												"fields.expiration_description",
+												{
+													b: ( chunks ) => (
+														<strong>
+															{chunks}
+														</strong>
+													)
+												}
+											)}
 										</FormDescription>
 
 										<Popover>
@@ -628,8 +634,8 @@ export default function FileUpload( {
 												>
 													<CalendarDays className="mr-2 h-4 w-4" />
 
-													{field.value ? (
-														format(
+													{field.value
+														? format(
 															new Date(
 																field.value
 															),
@@ -638,13 +644,9 @@ export default function FileUpload( {
 																locale: dateFormat
 															}
 														)
-													) : (
-														<>
-															Sélectionner une
-															date
-															d&lsquo;expiration
-														</>
-													)}
+														: formMessages(
+															"fields.expiration_trigger"
+														)}
 												</PopoverTrigger>
 											</FormControl>
 
@@ -658,24 +660,36 @@ export default function FileUpload( {
 													)}
 												>
 													<SelectTrigger>
-														<SelectValue placeholder="Sélectionner une présélection" />
+														<SelectValue
+															placeholder={formMessages(
+																"fields.expiration_preset"
+															)}
+														/>
 													</SelectTrigger>
 
 													<SelectContent position="popper">
 														<SelectItem value="1">
-															Demain
+															{formMessages(
+																"fields.expiration_tomorrow"
+															)}
 														</SelectItem>
 
 														<SelectItem value="3">
-															Dans trois jours
+															{formMessages(
+																"fields.expiration_three_days"
+															)}
 														</SelectItem>
 
 														<SelectItem value="7">
-															Dans une semaine
+															{formMessages(
+																"fields.expiration_week"
+															)}
 														</SelectItem>
 
 														<SelectItem value="31">
-															Dans un mois
+															{formMessages(
+																"fields.expiration_month"
+															)}
 														</SelectItem>
 													</SelectContent>
 												</Select>
@@ -708,12 +722,12 @@ export default function FileUpload( {
 							{isLoading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									Téléversement...
+									{formMessages( "loading" )}
 								</>
 							) : (
 								<>
 									<PlusCircleIcon className="mr-2 h-4 w-4" />
-									Téléverser
+									{modalMessages( "file-upload.submit" )}
 								</>
 							)}
 						</Button>
