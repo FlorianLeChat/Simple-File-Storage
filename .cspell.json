@@ -6,6 +6,9 @@
 		"csrf",
 		"Signup",
 		"RGPD",
+		"recaptcha",
+		"capslock",
+		"prenom",
 		"authjs"
 	]
 }
