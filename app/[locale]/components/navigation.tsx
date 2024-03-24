@@ -7,6 +7,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { routes } from "@/config/routes";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Settings, LayoutDashboard } from "lucide-react";
 
@@ -29,6 +30,7 @@ export default function Navigation( {
 } )
 {
 	// Déclaration des variables d'état.
+	const t = useTranslations( "header" );
 	const [ image, setImage ] = useState(
 		theme === "dark" ? GitHubLight : GitHubDark
 	);
@@ -56,8 +58,9 @@ export default function Navigation( {
 							className={navigationMenuTriggerStyle()}
 						>
 							<LayoutDashboard className="h-5 w-5 md:hidden" />
+
 							<span className="hidden md:inline">
-								Tableau de bord
+								{t( "dashboard" )}
 							</span>
 						</Link>
 					</NavigationMenuLink>
@@ -70,7 +73,10 @@ export default function Navigation( {
 						aria-controls="settings"
 					>
 						<Settings className="h-5 w-5 md:hidden" />
-						<span className="hidden md:inline">Paramètres</span>
+
+						<span className="hidden md:inline">
+							{t( "settings" )}
+						</span>
 					</NavigationMenuTrigger>
 
 					<NavigationMenuContent>
@@ -90,14 +96,13 @@ export default function Navigation( {
 									/>
 
 									<h1 className="mb-2 mt-4 text-lg font-medium">
-										Autre chose ?
+										{t( "something_else" )}
 									</h1>
 
 									<p className="text-sm leading-tight text-muted-foreground">
-										Si les paramètres proposés ne
-										correspondent pas à vos besoins,
-										n&lsquo;hésitez pas à{" "}
-										<u>faire une demande</u> sur GitHub !
+										{t.rich( "github_tip", {
+											u: ( chunks ) => <u>{chunks}</u>
+										} )}
 									</p>
 								</NavigationMenuLink>
 							</li>

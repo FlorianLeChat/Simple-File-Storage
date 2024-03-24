@@ -280,6 +280,7 @@ export default async function Layout( {
 							messages,
 							"form",
 							"modals",
+							"header",
 							"consentModal",
 							"preferencesModal"
 						)}
