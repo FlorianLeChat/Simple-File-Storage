@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
+import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { Eye, Mail, EyeOff, Loader2, KeyRound } from "lucide-react";
 
@@ -38,6 +39,7 @@ import { buttonVariants, Button } from "../../components/ui/button";
 export default function SignInForm()
 {
 	// Déclaration des variables d'état.
+	const t = useTranslations( "form" );
 	const [ isLocked, setLocked ] = useState( false );
 	const [ isFocused, setFocused ] = useState( false );
 	const [ isLoading, setLoading ] = useState( false );
@@ -69,8 +71,8 @@ export default function SignInForm()
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( "form.errors.auth_failed", {
-				description: "form.errors.server_error"
+			toast.error( t( "errors.auth_failed" ), {
+				description: t( "errors.server_error" )
 			} );
 
 			return;
@@ -94,17 +96,17 @@ export default function SignInForm()
 		{
 			form.reset();
 
-			toast.info( "form.info.email_validation", {
+			toast.info( t( "infos.action_required" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( "form.errors.auth_failed", {
+			toast.error( t( "errors.auth_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ form, signInState ] );
+	}, [ t, form, signInState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -135,7 +137,7 @@ export default function SignInForm()
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel className="sr-only">
-								Adresse électronique
+								{t( "fields.email_label" )}
 							</FormLabel>
 
 							<FormControl>
@@ -146,15 +148,14 @@ export default function SignInForm()
 										schema.shape.email.maxLength as number
 									}
 									spellCheck="false"
-									placeholder="example@domain.com"
+									placeholder={t( "fields.email_placeholder" )}
 									autoComplete="email"
 									autoCapitalize="off"
 								/>
 							</FormControl>
 
 							<FormDescription className="sr-only">
-								L&lsquo;adresse électronique associée à votre
-								compte.
+								{t( "fields.email_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -169,7 +170,7 @@ export default function SignInForm()
 					render={( { field } ) => (
 						<FormItem className="flex gap-2">
 							<FormLabel className="sr-only">
-								Mot de passe
+								{t( "fields.password_label" )}
 							</FormLabel>
 
 							<TooltipProvider>
@@ -193,7 +194,9 @@ export default function SignInForm()
 												.options[ 0 ].maxLength as number
 										}
 										spellCheck="false"
-										placeholder="password"
+										placeholder={t(
+											"fields.password_placeholder"
+										)}
 										autoComplete="current-password"
 										autoCapitalize="off"
 									/>
@@ -228,14 +231,13 @@ export default function SignInForm()
 									</TooltipTrigger>
 
 									<TooltipContent>
-										Voir ou masquer le mot de passe
+										{t( "fields.password_tooltip" )}
 									</TooltipContent>
 								</Tooltip>
 							</TooltipProvider>
 
 							<FormDescription className="sr-only">
-								Le mot de passe utilisé pour vous connecter à
-								votre compte.
+								{t( "fields.password_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -246,8 +248,7 @@ export default function SignInForm()
 				{/* Avertissements pour les majuscules */}
 				{isLocked && (
 					<p className="text-sm font-bold uppercase text-destructive">
-						Les majuscules ont été activées pour la saisie du mot de
-						passe.
+						{t( "fields.password_capslock" )}
 					</p>
 				)}
 
@@ -262,7 +263,7 @@ export default function SignInForm()
 							}`}
 						>
 							<FormLabel className="sr-only">
-								Authentification à deux facteurs
+								{t( "fields.otp_label" )}
 							</FormLabel>
 
 							<FormControl>
@@ -293,9 +294,7 @@ export default function SignInForm()
 									!isFocused ? "opacity-25" : ""
 								}`}
 							>
-								L&lsquo;authentification à deux facteurs peut
-								être nécessaire en complément de votre mot de
-								passe pour vous connecter à votre compte.
+								{t( "fields.otp_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -319,12 +318,11 @@ export default function SignInForm()
 							</FormControl>
 
 							<FormLabel className="!mt-0">
-								Se souvenir de moi
+								{t( "fields.remembered_label" )}
 							</FormLabel>
 
 							<FormDescription className="sr-only">
-								Pour rester connecté à votre compte lorsque vous
-								revenez sur le site.
+								{t( "fields.remembered_description" )}
 							</FormDescription>
 						</FormItem>
 					)}
@@ -335,18 +333,18 @@ export default function SignInForm()
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Traitement...
+							{t( "loading" )}
 						</>
 					) : (
 						( form.getValues( "password" ) === "" && (
 							<>
 								<Mail className="mr-2 h-4 w-4" />
-								Connexion par courriel
+								{t( "log_by_email" )}
 							</>
 						) ) || (
 							<>
 								<KeyRound className="mr-2 h-4 w-4" />
-								Connexion par mot de passe
+								{t( "log_by_password" )}
 							</>
 						)
 					)}

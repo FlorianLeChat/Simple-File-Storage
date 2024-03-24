@@ -49,8 +49,8 @@ export default function OAuthForm()
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( t( "form.errors.auth_failed" ), {
-				description: t( "form.errors.server_error" )
+			toast.error( t( "errors.auth_failed" ), {
+				description: t( "errors.server_error" )
 			} );
 
 			return;
@@ -74,13 +74,13 @@ export default function OAuthForm()
 		{
 			form.reset();
 
-			toast.info( t( "form.infos.email_validation" ), {
+			toast.info( t( "infos.action_required" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( t( "form.errors.auth_failed" ), {
+			toast.error( t( "errors.auth_failed" ), {
 				description: reason
 			} );
 		}
