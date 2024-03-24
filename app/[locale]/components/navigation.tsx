@@ -30,7 +30,8 @@ export default function Navigation( {
 } )
 {
 	// Déclaration des variables d'état.
-	const t = useTranslations( "header" );
+	const headerMessages = useTranslations( "header" );
+	const settingsMessages = useTranslations( "settings" );
 	const [ image, setImage ] = useState(
 		theme === "dark" ? GitHubLight : GitHubDark
 	);
@@ -60,7 +61,7 @@ export default function Navigation( {
 							<LayoutDashboard className="h-5 w-5 md:hidden" />
 
 							<span className="hidden md:inline">
-								{t( "dashboard" )}
+								{headerMessages( "dashboard" )}
 							</span>
 						</Link>
 					</NavigationMenuLink>
@@ -75,7 +76,7 @@ export default function Navigation( {
 						<Settings className="h-5 w-5 md:hidden" />
 
 						<span className="hidden md:inline">
-							{t( "settings" )}
+							{headerMessages( "settings" )}
 						</span>
 					</NavigationMenuTrigger>
 
@@ -96,11 +97,11 @@ export default function Navigation( {
 									/>
 
 									<h1 className="mb-2 mt-4 text-lg font-medium">
-										{t( "something_else" )}
+										{headerMessages( "something_else" )}
 									</h1>
 
 									<p className="text-sm leading-tight text-muted-foreground">
-										{t.rich( "github_tip", {
+										{headerMessages.rich( "github_tip", {
 											u: ( chunks ) => <u>{chunks}</u>
 										} )}
 									</p>
@@ -116,11 +117,17 @@ export default function Navigation( {
 											className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
 										>
 											<h4 className="text-sm font-medium leading-none">
-												{route.title}
+												{route.icon}
+
+												{settingsMessages(
+													`${ route.id }_title`
+												)}
 											</h4>
 
 											<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-												{route.description}
+												{settingsMessages(
+													`${ route.id }_description`
+												)}
 											</p>
 										</Link>
 									</NavigationMenuLink>

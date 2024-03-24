@@ -4,72 +4,38 @@
 import { Bug, Bell, User, Cctv, Files, Palette } from "lucide-react";
 
 export const routes: {
-	title: JSX.Element;
+	id: string;
+	icon: JSX.Element;
 	href: string;
-	description: string;
 }[] = [
 	{
-		title: (
-			<>
-				<User className="mr-2 inline" />
-				Utilisateur
-			</>
-		),
-		href: "/settings/user",
-		description:
-			"Gestion des informations de votre profil et de votre compte."
+		id: "user",
+		icon: <User className="mr-2 inline" />,
+		href: "/settings/user"
 	},
 	{
-		title: (
-			<>
-				<Files className="mr-2 inline" />
-				Stockage
-			</>
-		),
-		href: "/settings/storage",
-		description:
-			"Personnalisation du mécanisme de téléversement des fichiers."
+		id: "storage",
+		icon: <Files className="mr-2 inline" />,
+		href: "/settings/storage"
 	},
 	{
-		title: (
-			<>
-				<Palette className="mr-2 inline" />
-				Apparence
-			</>
-		),
-		href: "/settings/layout",
-		description: "Personnalisation de l'apparence du site Internet."
+		id: "layout",
+		icon: <Palette className="mr-2 inline" />,
+		href: "/settings/layout"
 	},
 	{
-		title: (
-			<>
-				<Bell className="mr-2 inline" />
-				Notifications
-			</>
-		),
-		href: "/settings/notifications",
-		description:
-			"Gestion des notifications reçues par courriel ou sur le site Internet."
+		id: "notifications",
+		icon: <Bell className="mr-2 inline" />,
+		href: "/settings/notifications"
 	},
 	{
-		title: (
-			<>
-				<Bug className="mr-2 inline" />
-				Bogues
-			</>
-		),
-		href: "/settings/issue",
-		description: "Signalement d'un bogue rencontré sur le site Internet."
+		id: "issue",
+		icon: <Bug className="mr-2 inline" />,
+		href: "/settings/issue"
 	},
 	{
-		title: (
-			<>
-				<Cctv className="mr-2 inline" />
-				Confidentialité
-			</>
-		),
-		href: "/settings/privacy",
-		description:
-			"Gestion des données personnelles collectées par le site Internet."
+		id: "privacy",
+		icon: <Cctv className="mr-2 inline" />,
+		href: "/settings/privacy"
 	}
 ] as const;
