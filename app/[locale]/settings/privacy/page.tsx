@@ -4,7 +4,7 @@
 
 // Importation des dépendances.
 import { lazy } from "react";
-import { unstable_setRequestLocale } from "next-intl/server";
+import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
@@ -12,7 +12,7 @@ import { Separator } from "../../components/ui/separator";
 const Privacy = lazy( () => import( "../components/privacy" ) );
 
 // Affichage de la page.
-export default function Page( {
+export default async function Page( {
 	params: { locale }
 }: {
 	params: { locale: string };
@@ -21,17 +21,20 @@ export default function Page( {
 	// Définition de la langue de la page.
 	unstable_setRequestLocale( locale );
 
+	// Déclaration des constantes.
+	const messages = await getTranslations();
+
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
 			{/* En-tête de la page */}
 			<header>
-				<h3 className="text-lg font-medium">Confidentialité</h3>
+				<h3 className="text-lg font-medium">
+					{messages( "navigation.privacy_title" )}
+				</h3>
 
 				<p className="text-sm text-muted-foreground">
-					Vous voulez effacer vos traces et faire comme si vous
-					n&lsquo;aviez jamais utilisé le site ? C&lsquo;est ici que
-					ça se passe !
+					{messages( "settings.privacy" )}
 				</p>
 			</header>
 

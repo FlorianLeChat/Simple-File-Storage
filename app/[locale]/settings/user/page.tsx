@@ -7,7 +7,7 @@ import qrCode from "qrcode";
 import { lazy } from "react";
 import { TOTP, Secret } from "otpauth";
 import { type Session } from "next-auth";
-import { unstable_setRequestLocale } from "next-intl/server";
+import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
@@ -29,6 +29,7 @@ export default async function Page( {
 	unstable_setRequestLocale( locale );
 
 	// Déclaration des constantes.
+	const messages = await getTranslations();
 	const session = ( await auth() ) as Session;
 	const secret = new Secret();
 	const meta = await generateMetadata();
@@ -46,12 +47,12 @@ export default async function Page( {
 		<>
 			{/* En-tête de la page */}
 			<header>
-				<h3 className="text-lg font-medium">Utilisateur</h3>
+				<h3 className="text-lg font-medium">
+					{messages( "navigation.user_title" )}
+				</h3>
 
 				<p className="text-sm text-muted-foreground">
-					Vous voulez montrez qui vous êtes ? Modifier votre nom
-					d&lsquo;utilisateur ? Changer votre mot de passe ? Vous êtes
-					au bon endroit !
+					{messages( "settings.user" )}
 				</p>
 			</header>
 

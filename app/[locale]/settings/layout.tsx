@@ -46,6 +46,7 @@ export default async function Layout( {
 	// Déclaration des constantes.
 	const meta = await getMetadata();
 	const session = await auth();
+	const messages = await getTranslations();
 
 	// Vérification de la session utilisateur.
 	if ( !session )
@@ -85,11 +86,11 @@ export default async function Layout( {
 				{/* En-tête de la page */}
 				<header>
 					<h2 className="text-2xl font-bold tracking-tight">
-						Paramètres généraux
+						{messages( "settings.header" )}
 					</h2>
 
 					<p className="text-muted-foreground">
-						Gérer les paramètres de votre compte et du site.
+						{messages( "settings.description" )}
 					</p>
 				</header>
 
