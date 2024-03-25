@@ -16,7 +16,7 @@ export default function Routes()
 {
 	// Déclaration des variables d'état.
 	const pathname = usePathname();
-	const messages = useTranslations( "settings" );
+	const messages = useTranslations( "navigation" );
 
 	// Affichage du rendu HTML du composant.
 	return (

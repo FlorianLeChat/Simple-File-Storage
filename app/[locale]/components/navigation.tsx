@@ -31,7 +31,7 @@ export default function Navigation( {
 {
 	// Déclaration des variables d'état.
 	const headerMessages = useTranslations( "header" );
-	const settingsMessages = useTranslations( "settings" );
+	const navigationMessages = useTranslations( "navigation" );
 	const [ image, setImage ] = useState(
 		theme === "dark" ? GitHubLight : GitHubDark
 	);
@@ -119,13 +119,13 @@ export default function Navigation( {
 											<h4 className="text-sm font-medium leading-none">
 												{route.icon}
 
-												{settingsMessages(
+												{navigationMessages(
 													`${ route.id }_title`
 												)}
 											</h4>
 
 											<p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-												{settingsMessages(
+												{navigationMessages(
 													`${ route.id }_description`
 												)}
 											</p>
