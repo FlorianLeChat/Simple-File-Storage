@@ -187,6 +187,12 @@
 		"rights_reserved": "Tous droits réservés",
 		"recaptcha_protected": "Ce site est protégé par reCAPTCHA sur lequel s'appliquent les <a1>politiques de confidentialité</a1> et les <a2>conditions d'utilisation</a2> de Google."
 	},
+	"legal": {
+		"terms_title": "Conditions d'utilisation",
+		"terms_description": "Curieux de connaître les conditions d'utilisation du site ? C'est par ici !",
+		"privacy_title": "Politique de confidentialité",
+		"privacy_description": "Vous voulez en savoir plus sur la manière dont nous traitons vos données personnelles ? C'est bien par là !"
+	},
 	"dashboard": {
 		"hide": "Cacher",
 		"reset": "Réinitialiser",
