@@ -21,6 +21,7 @@ import serverAction from "@/utilities/recaptcha";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
+import { useTranslations } from "next-intl";
 import { useState, useEffect, type CSSProperties } from "react";
 
 import { Button } from "../../components/ui/button";
@@ -46,6 +47,7 @@ import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 export default function Layout( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
+	const messages = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateLayout, {
 		success: true,
@@ -75,8 +77,8 @@ export default function Layout( { session }: { session: Session } )
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( "form.errors.update_failed", {
-				description: "form.errors.server_error"
+			toast.error( messages( "errors.action_failed" ), {
+				description: messages( "errors.server_error" )
 			} );
 
 			return;
@@ -104,17 +106,17 @@ export default function Layout( { session }: { session: Session } )
 				"color"
 			) } ${ form.getValues( "theme" ) }`;
 
-			toast.success( "form.info.update_success", {
+			toast.success( messages( "infos.action_success" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( "form.errors.update_failed", {
+			toast.error( messages( "errors.action_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ form, updateState ] );
+	}, [ form, messages, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -150,7 +152,7 @@ export default function Layout( { session }: { session: Session } )
 						<FormItem>
 							<FormLabel>
 								<CaseUpper className="mr-2 inline h-6 w-6" />
-								Police de caractères
+								{messages( "fields.font_label" )}
 							</FormLabel>
 
 							<Select
@@ -178,8 +180,7 @@ export default function Layout( { session }: { session: Session } )
 							</Select>
 
 							<FormDescription>
-								Définissez la police que vous souhaitez utiliser
-								sur l&lsquo;ensemble des pages du site.
+								{messages( "fields.font_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -195,7 +196,7 @@ export default function Layout( { session }: { session: Session } )
 						<FormItem>
 							<FormLabel className="!block">
 								<Paintbrush className="mr-2 inline h-6 w-6" />
-								Couleurs
+								{messages( "fields.color_label" )}
 							</FormLabel>
 
 							<TooltipProvider>
@@ -251,9 +252,7 @@ export default function Layout( { session }: { session: Session } )
 							</TooltipProvider>
 
 							<FormDescription>
-								Définissez la couleur que vous souhaitez
-								utiliser sur l&lsquo;ensemble des éléments du
-								site.
+								{messages( "fields.color_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -269,12 +268,11 @@ export default function Layout( { session }: { session: Session } )
 						<FormItem className="space-y-1">
 							<FormLabel>
 								<SunMoon className="mr-2 inline h-6 w-6" />
-								Thème
+								{messages( "fields.theme_label" )}
 							</FormLabel>
 
 							<FormDescription>
-								Définissez le thème que vous souhaitez utiliser
-								sur l&lsquo;ensemble des pages du site.
+								{messages( "fields.theme_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -318,7 +316,9 @@ export default function Layout( { session }: { session: Session } )
 										</FormControl>
 
 										<p className="text-sm font-normal">
-											Clair
+											{messages(
+												"fields.theme_light_title"
+											)}
 										</p>
 									</div>
 
@@ -326,12 +326,13 @@ export default function Layout( { session }: { session: Session } )
 										htmlFor="light"
 										className="sr-only left-0 top-0 h-full w-full text-transparent [clip:unset]"
 									>
-										Clair
+										{messages( "fields.theme_light_title" )}
 									</FormLabel>
 
 									<FormDescription className="sr-only">
-										Le thème clair adapté à la lecture en
-										milieu lumineux.
+										{messages(
+											"fields.theme_light_description"
+										)}
 									</FormDescription>
 								</FormItem>
 
@@ -368,7 +369,9 @@ export default function Layout( { session }: { session: Session } )
 										</FormControl>
 
 										<p className="text-sm font-normal">
-											Sombre
+											{messages(
+												"fields.theme_dark_title"
+											)}
 										</p>
 									</div>
 
@@ -376,12 +379,13 @@ export default function Layout( { session }: { session: Session } )
 										htmlFor="dark"
 										className="sr-only left-0 top-0 h-full w-full text-transparent [clip:unset]"
 									>
-										Sombre
+										{messages( "fields.theme_dark_title" )}
 									</FormLabel>
 
 									<FormDescription className="sr-only">
-										Le thème sombre adapté à la lecture en
-										milieu sombre.
+										{messages(
+											"fields.theme_dark_description"
+										)}
 									</FormDescription>
 								</FormItem>
 							</RadioGroup>
@@ -394,12 +398,12 @@ export default function Layout( { session }: { session: Session } )
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Veuillez patienter...
+							{messages( "loading" )}
 						</>
 					) : (
 						<>
 							<RefreshCw className="mr-2 h-4 w-4" />
-							Mettre à jour
+							{messages( "update" )}
 						</>
 					)}
 				</Button>
