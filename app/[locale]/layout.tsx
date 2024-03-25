@@ -284,6 +284,7 @@ export default async function Layout( {
 							"actions",
 							"settings",
 							"dashboard",
+							"navigation",
 							"consentModal",
 							"preferencesModal"
 						)}
