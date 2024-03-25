@@ -10,6 +10,7 @@ import { join } from "path";
 import { existsSync } from "fs";
 import { readdir, rm } from "fs/promises";
 import { auth, signOut } from "@/utilities/next-auth";
+import { getTranslations } from "next-intl/server";
 
 export async function deleteUserData(
 	_state: Record<string, unknown>,
@@ -18,6 +19,7 @@ export async function deleteUserData(
 {
 	// On récupère d'abord la session de l'utilisateur.
 	const session = await auth();
+	const messages = await getTranslations();
 
 	if ( !session )
 	{
@@ -25,7 +27,7 @@ export async function deleteUserData(
 		//  n'est pas connecté.
 		return {
 			success: false,
-			reason: "form.errors.unauthenticated"
+			reason: messages( "authjs.errors.SessionRequired" )
 		};
 	}
 
@@ -46,7 +48,7 @@ export async function deleteUserData(
 		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: `zod.errors.${ result.error.issues[ 0 ].code }`
+			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
 		};
 	}
 
@@ -125,6 +127,6 @@ export async function deleteUserData(
 	// On retourne enfin un message de succès.
 	return {
 		success: true,
-		reason: "settings.privacy.success"
+		reason: messages( "form.infos.data_purged" )
 	};
 }

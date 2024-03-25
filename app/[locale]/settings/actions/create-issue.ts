@@ -7,6 +7,7 @@
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/issue";
 import { auth } from "@/utilities/next-auth";
+import { getTranslations } from "next-intl/server";
 
 export async function createIssue(
 	_state: Record<string, unknown>,
@@ -15,6 +16,7 @@ export async function createIssue(
 {
 	// On récupère d'abord la session de l'utilisateur.
 	const session = await auth();
+	const messages = await getTranslations();
 
 	if ( !session )
 	{
@@ -22,7 +24,7 @@ export async function createIssue(
 		//  n'est pas connecté.
 		return {
 			success: false,
-			reason: "form.errors.unauthenticated"
+			reason: messages( "authjs.errors.SessionRequired" )
 		};
 	}
 
@@ -40,7 +42,7 @@ export async function createIssue(
 		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: `zod.errors.${ result.error.issues[ 0 ].code }`
+			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
 		};
 	}
 
@@ -61,7 +63,7 @@ export async function createIssue(
 		//  formulaire.
 		return {
 			success: false,
-			reason: "form.errors.too_many"
+			reason: messages( "form.errors.too_many" )
 		};
 	}
 
@@ -79,6 +81,6 @@ export async function createIssue(
 	// On retourne enfin un message de succès.
 	return {
 		success: true,
-		reason: "settings.issue.success"
+		reason: messages( "form.infos.issue_created" )
 	};
 }

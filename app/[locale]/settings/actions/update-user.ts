@@ -12,6 +12,7 @@ import { TOTP } from "otpauth";
 import { auth } from "@/utilities/next-auth";
 import { cookies } from "next/headers";
 import * as Sentry from "@sentry/nextjs";
+import { getTranslations } from "next-intl/server";
 import { generateMetadata } from "@/app/layout";
 import { fileTypeFromBuffer } from "file-type";
 import { mkdir, readdir, rm, writeFile } from "fs/promises";
@@ -23,6 +24,7 @@ export async function updateUser(
 {
 	// On récupère d'abord la session de l'utilisateur.
 	const session = await auth();
+	const messages = await getTranslations();
 
 	if ( !session )
 	{
@@ -30,7 +32,7 @@ export async function updateUser(
 		//  n'est pas connecté.
 		return {
 			success: false,
-			reason: "form.errors.unauthenticated"
+			reason: messages( "authjs.errors.SessionRequired" )
 		};
 	}
 
@@ -52,7 +54,7 @@ export async function updateUser(
 
 		return {
 			success: false,
-			reason: `zod.errors.${ code === "custom" ? message : code }`
+			reason: messages( `zod.${ code === "custom" ? message : code }` )
 		};
 	}
 
@@ -157,7 +159,7 @@ export async function updateUser(
 			//  contient des données textuelles.
 			return {
 				success: false,
-				reason: "zod.errors.wrong_file_type"
+				reason: messages( "zod.wrong_file_type" )
 			};
 		}
 
@@ -176,7 +178,7 @@ export async function updateUser(
 			//  accepté, on indique que le type de fichier est incorrect.
 			return {
 				success: false,
-				reason: "zod.errors.wrong_file_type"
+				reason: messages( "zod.wrong_file_type" )
 			};
 		}
 
@@ -211,7 +213,7 @@ export async function updateUser(
 
 			return {
 				success: false,
-				reason: "form.errors.file_system"
+				reason: messages( "form.errors.file_system" )
 			};
 		}
 	}
@@ -219,6 +221,6 @@ export async function updateUser(
 	// On retourne enfin un message de succès.
 	return {
 		success: true,
-		reason: "settings.user.success"
+		reason: messages( "form.infos.user_updated" )
 	};
 }
