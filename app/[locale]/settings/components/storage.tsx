@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
+import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { Globe, Link2, RefreshCw, Loader2, History } from "lucide-react";
 
@@ -26,6 +27,7 @@ import { updateStorage } from "../actions/update-storage";
 export default function Storage( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
+	const formMessages = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateStorage, {
 		success: true,
@@ -52,8 +54,8 @@ export default function Storage( { session }: { session: Session } )
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( "form.errors.update_failed", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 
 			return;
@@ -74,17 +76,17 @@ export default function Storage( { session }: { session: Session } )
 		// On affiche enfin une notification avec la raison fournie.
 		if ( success )
 		{
-			toast.success( "form.info.update_success", {
+			toast.success( formMessages( "infos.action_success" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( "form.errors.update_failed", {
+			toast.error( formMessages( "errors.action_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ form, updateState ] );
+	}, [ form, updateState, formMessages ] );
 
 	// Affichage du rendu HTML du composant.
 	return (

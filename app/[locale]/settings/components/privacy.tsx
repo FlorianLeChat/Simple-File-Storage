@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useFormState } from "react-dom";
+import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { Files, KeyRound, Scale, Trash, Loader2 } from "lucide-react";
 
@@ -26,6 +27,8 @@ import { deleteUserData } from "../actions/delete-user-data";
 export default function Privacy()
 {
 	// Déclaration des variables d'état.
+	const formMessages = useTranslations( "form" );
+	const modalMessages = useTranslations( "modals.share-manager" );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ deleteState, deleteAction ] = useFormState( deleteUserData, {
 		success: true,
@@ -51,8 +54,8 @@ export default function Privacy()
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( "form.errors.deletion_failed", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 
 			return;
@@ -76,17 +79,17 @@ export default function Privacy()
 		{
 			form.reset();
 
-			toast.success( "form.info.update_success", {
+			toast.success( formMessages( "infos.action_success" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( "form.errors.update_failed", {
+			toast.error( formMessages( "errors.action_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ form, deleteState ] );
+	}, [ form, deleteState, formMessages, modalMessages ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -117,7 +120,7 @@ export default function Privacy()
 						<FormItem>
 							<Label>
 								<Scale className="mr-2 inline h-6 w-6" />
-								Documents légaux
+								{formMessages( "fields.legal_label" )}
 							</Label>
 
 							<ul className="list-inside list-disc text-sm text-muted-foreground underline decoration-dotted underline-offset-4">
@@ -126,9 +129,9 @@ export default function Privacy()
 										href="/legal/terms"
 										className="dark:hover:text-foreground"
 									>
-										Consulter les conditions
-										d&lsquo;utilisation (Français
-										seulement).
+										{formMessages(
+											"fields.legal_description_1"
+										)}
 									</Link>
 								</li>
 
@@ -137,8 +140,9 @@ export default function Privacy()
 										href="/legal/privacy"
 										className="dark:hover:text-foreground"
 									>
-										Consulter la politique de
-										confidentialité (Français seulement).
+										{formMessages(
+											"fields.legal_description_2"
+										)}
 									</Link>
 								</li>
 							</ul>
@@ -154,29 +158,24 @@ export default function Privacy()
 						<FormItem>
 							<FormLabel htmlFor={field.name}>
 								<Files className="mr-2 inline h-6 w-6" />
-								Fichiers utilisateur
+								{formMessages( "fields.user_files_label" )}
 							</FormLabel>
 
 							<FormDescription>
-								Lorsque vous téléversez un fichier sur le
-								serveur, ses données sont enregistrées dans le
-								système de fichiers (ou dans un système de
-								stockage en nuage selon la configuration du
-								site) et certaines informations sont ajoutées à
-								la base de données afin de le retrouver plus
-								facilement.
-								<br />
-								<br />
-								Si vous activez cette option,{" "}
-								<strong>
-									seuls vos fichiers seront supprimés
-									définitivement du serveur sans possibilité
-									de récupération via l&lsquo;assistance
-									technique.
-								</strong>{" "}
-								La suppression sera immédiate et inclura les
-								versions antérieures ainsi que les données de
-								partage à d&lsquo;autres utilisateurs.
+								{formMessages.rich(
+									"fields.user_files_description",
+									{
+										b: ( chunks ) => (
+											<strong>{chunks}</strong>
+										),
+										br: ( chunks ) => (
+											<>
+												{chunks}
+												<br />
+											</>
+										)
+									}
+								)}
 							</FormDescription>
 
 							<div className="flex items-center space-x-2">
@@ -194,10 +193,7 @@ export default function Privacy()
 									htmlFor={field.name}
 									className="leading-5"
 								>
-									Je veux supprimer mes fichiers ainsi que
-									toutes les données associées définitivement
-									sans possibilité de récupération via
-									l&lsquo;assistance technique.
+									{formMessages( "fields.user_files_switch" )}
 								</Label>
 							</div>
 						</FormItem>
@@ -212,37 +208,24 @@ export default function Privacy()
 						<FormItem>
 							<FormLabel htmlFor={field.name}>
 								<KeyRound className="mr-2 inline h-6 w-6" />
-								Compte utilisateur
+								{formMessages( "fields.user_account_label" )}
 							</FormLabel>
 
 							<FormDescription>
-								En accédant à votre espace utilisateur, vous
-								avez dû créer un compte en fournissant une
-								adresse email et un mot de passe. Ces
-								informations sont enregistrées dans la base de
-								données et permettent de vous identifier sur le
-								site. Si vous avez utilisé un fournisseur
-								d&lsquo;authentification externe (comme Google
-								ou GitHub), certaines données sont également
-								enregistrées afin de vous identifier
-								automatiquement (mais ils ne permettent pas
-								d&lsquo;accéder à vos informations
-								personnelles).
-								<br />
-								<br />
-								Si vous activez cette option,{" "}
-								<strong>
-									l&lsquo;ensemble de votre compte sera
-									supprimé définitivement du serveur sans
-									possibilité de récupération via
-									l&lsquo;assistance technique.
-								</strong>{" "}
-								La suppression sera immédiate et inclura les
-								données associées à votre compte (comme les
-								fichiers, les versions antérieures, les données
-								de partage à d&lsquo;autres utilisateurs, les
-								notifications, les signalements de bogues, les
-								données de session, l&lsquo;avatar, etc.).
+								{formMessages.rich(
+									"fields.user_account_description",
+									{
+										b: ( chunks ) => (
+											<strong>{chunks}</strong>
+										),
+										br: ( chunks ) => (
+											<>
+												{chunks}
+												<br />
+											</>
+										)
+									}
+								)}
 							</FormDescription>
 
 							<div className="flex items-center space-x-2">
@@ -269,11 +252,7 @@ export default function Privacy()
 									htmlFor={field.name}
 									className="leading-5"
 								>
-									Je veux supprimer mon compte utilisateur
-									ainsi que toutes les données associées
-									définitivement sans possibilité de
-									récupération via l&lsquo;assistance
-									technique.
+									{formMessages( "fields.user_account_switch" )}
 								</Label>
 							</div>
 						</FormItem>
@@ -291,12 +270,12 @@ export default function Privacy()
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Veuillez patienter...
+							{formMessages( "loading" )}
 						</>
 					) : (
 						<>
 							<Trash className="mr-2 h-4 w-4" />
-							Supprimer définitivement
+							{modalMessages( "delete" )}
 						</>
 					)}
 				</Button>

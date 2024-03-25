@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import type { Session } from "next-auth";
 import { useFormState } from "react-dom";
+import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 
 import { Switch } from "../../components/ui/switch";
@@ -34,6 +35,7 @@ export default function Notifications( { session }: { session: Session } )
 	const notifications = session.user.notification.split( "+" );
 
 	// Déclaration des variables d'état.
+	const messages = useTranslations( "form" );
 	const [ isPush, setPush ] = useState( notifications[ 0 ] !== "off" );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateNotifications, {
@@ -61,8 +63,8 @@ export default function Notifications( { session }: { session: Session } )
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( "form.errors.update_failed", {
-				description: "form.errors.server_error"
+			toast.error( messages( "errors.action_failed" ), {
+				description: messages( "errors.server_error" )
 			} );
 
 			return;
@@ -83,17 +85,17 @@ export default function Notifications( { session }: { session: Session } )
 		// On affiche enfin une notification avec la raison fournie.
 		if ( success )
 		{
-			toast.success( "form.info.update_success", {
+			toast.success( messages( "infos.action_success" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( "form.errors.update_failed", {
+			toast.error( messages( "errors.action_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ form, updateState ] );
+	}, [ form, messages, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -137,12 +139,13 @@ export default function Notifications( { session }: { session: Session } )
 									htmlFor={field.name}
 									className="text-sm font-medium leading-4"
 								>
-									Notifications par courriel
+									{messages( "fields.notifications_label" )}
 								</FormLabel>
 
 								<FormDescription className="text-sm text-muted-foreground">
-									Envoyer chaque notification par courriel en
-									plus de les afficher sur le site Internet.
+									{messages(
+										"fields.notifications_description"
+									)}
 								</FormDescription>
 							</div>
 
@@ -173,16 +176,15 @@ export default function Notifications( { session }: { session: Session } )
 
 								<div>
 									<h4 className="mb-2 text-sm font-medium leading-4 sm:mb-1">
-										Toutes les notifications
+										{messages(
+											"fields.notifications_all_label"
+										)}
 									</h4>
 
 									<p className="text-sm text-muted-foreground">
-										Recevez l&lsquo;intégralité des
-										notifications concernant la gestion de
-										votre compte utilisateur, de vos
-										fichiers par vous ou des tiers, ainsi
-										que les alertes de sécurité relatives au
-										site Internet et à votre compte.
+										{messages(
+											"fields.notifications_all_description"
+										)}
 									</p>
 								</div>
 
@@ -208,15 +210,15 @@ export default function Notifications( { session }: { session: Session } )
 
 								<div>
 									<h4 className="mb-2 text-sm font-medium leading-4 sm:mb-1">
-										Seulement les notifications nécessaires
+										{messages(
+											"fields.notifications_necessary_label"
+										)}
 									</h4>
 
 									<p className="text-sm text-muted-foreground">
-										Recevez seulement les notifications
-										importantes et nécessaires concernant la
-										gestion de votre compte utilisateur, les
-										fichiers partagés avec vous et les
-										alertes de sécurité critiques.
+										{messages(
+											"fields.notifications_necessary_description"
+										)}
 									</p>
 								</div>
 
@@ -242,14 +244,15 @@ export default function Notifications( { session }: { session: Session } )
 
 								<div>
 									<h4 className="mb-2 text-sm font-medium leading-4 sm:mb-1">
-										Aucune notification
+										{messages(
+											"fields.notifications_off_label"
+										)}
 									</h4>
 
 									<p className="text-sm text-muted-foreground">
-										Ne recevez aucune notification sauf les
-										alertes de sécurité importantes
-										concernant votre compte utilisateur et
-										le site Internet.
+										{messages(
+											"fields.notifications_off_description"
+										)}
 									</p>
 								</div>
 
@@ -280,12 +283,12 @@ export default function Notifications( { session }: { session: Session } )
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Mise à jour...
+							{messages( "loading" )}
 						</>
 					) : (
 						<>
 							<RefreshCw className="mr-2 h-4 w-4" />
-							Mettre à jour
+							{messages( "update" )}
 						</>
 					)}
 				</Button>

@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
+import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../components/ui/input";
@@ -39,6 +40,7 @@ import { createIssue } from "../actions/create-issue";
 export default function Account()
 {
 	// Déclaration des variables d'état.
+	const messages = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( createIssue, {
 		success: true,
@@ -67,8 +69,8 @@ export default function Account()
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( "form.errors.update_failed", {
-				description: "form.errors.server_error"
+			toast.error( messages( "errors.action_failed" ), {
+				description: messages( "errors.server_error" )
 			} );
 
 			return;
@@ -92,17 +94,17 @@ export default function Account()
 		{
 			form.reset();
 
-			toast.success( "form.info.update_success", {
+			toast.success( messages( "infos.action_success" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( "form.errors.update_failed", {
+			toast.error( messages( "errors.action_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ form, updateState ] );
+	}, [ form, messages, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -134,7 +136,7 @@ export default function Account()
 						<FormItem className="sm:inline-block sm:w-[calc(100%-160px-1rem)]">
 							<FormLabel>
 								<Globe className="mr-2 inline h-6 w-6" />
-								Domaine
+								{messages( "fields.domain_label" )}
 							</FormLabel>
 
 							<Select
@@ -151,27 +153,25 @@ export default function Account()
 
 								<SelectContent>
 									<SelectItem value="account">
-										Modification des informations du compte
+										{messages( "fields.domain_account" )}
 									</SelectItem>
 
 									<SelectItem value="upload">
-										Téléversement des fichiers vers le
-										serveur
+										{messages( "fields.domain_upload" )}
 									</SelectItem>
 
 									<SelectItem value="sharing">
-										Partages des fichiers avec
-										d&lsquo;autres utilisateurs
+										{messages( "fields.domain_sharing" )}
 									</SelectItem>
 
 									<SelectItem value="other">
-										Autres / Non classé
+										{messages( "fields.domain_other" )}
 									</SelectItem>
 								</SelectContent>
 							</Select>
 
 							<FormDescription className="sr-only">
-								Indiquez le domaine concerné par le bogue.
+								{messages( "fields.domain_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -187,7 +187,7 @@ export default function Account()
 						<FormItem className="sm:!mt-0 sm:ml-2 sm:inline-block">
 							<FormLabel>
 								<ShieldAlert className="mr-2 inline h-6 w-6" />
-								Sévérité
+								{messages( "fields.severity_label" )}
 							</FormLabel>
 
 							<Select
@@ -204,21 +204,25 @@ export default function Account()
 
 								<SelectContent>
 									<SelectItem value="critical">
-										Critique
+										{messages( "fields.severity_critical" )}
 									</SelectItem>
 
-									<SelectItem value="high">Élevé</SelectItem>
+									<SelectItem value="high">
+										{messages( "fields.severity_high" )}
+									</SelectItem>
 
 									<SelectItem value="medium">
-										Moyen
+										{messages( "fields.severity_medium" )}
 									</SelectItem>
 
-									<SelectItem value="low">Bas</SelectItem>
+									<SelectItem value="low">
+										{messages( "fields.severity_low" )}
+									</SelectItem>
 								</SelectContent>
 							</Select>
 
 							<FormDescription className="sr-only">
-								Indiquez la sévérité (selon vous) du bogue.
+								{messages( "fields.severity_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -234,7 +238,7 @@ export default function Account()
 						<FormItem>
 							<FormLabel>
 								<List className="mr-2 inline h-6 w-6" />
-								Sujet
+								{messages( "fields.subject_label" )}
 							</FormLabel>
 
 							<FormControl>
@@ -244,12 +248,14 @@ export default function Account()
 									maxLength={
 										schema.shape.subject.maxLength as number
 									}
-									placeholder="Il y a un problème avec..."
+									placeholder={messages(
+										"fields.subject_placeholder"
+									)}
 								/>
 							</FormControl>
 
 							<FormDescription className="sr-only">
-								Écrivez un sujet court pour décrire le bogue.
+								{messages( "fields.subject_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -265,7 +271,7 @@ export default function Account()
 						<FormItem>
 							<FormLabel>
 								<Subtitles className="mr-2 inline h-6 w-6" />
-								Description
+								{messages( "fields.description_label" )}
 							</FormLabel>
 
 							<FormControl>
@@ -277,13 +283,14 @@ export default function Account()
 											.maxLength as number
 									}
 									className="max-h-[150px]"
-									placeholder="Veillez inclure toutes les informations pertinentes à votre signalement."
+									placeholder={messages(
+										"fields.description_placeholder"
+									)}
 								/>
 							</FormControl>
 
 							<FormDescription className="sr-only">
-								Expliquez en détail le bogue que vous avez
-								rencontré et comment le reproduire.
+								{messages( "fields.description_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -296,12 +303,12 @@ export default function Account()
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Envoi...
+							{messages( "loading" )}
 						</>
 					) : (
 						<>
 							<Send className="mr-2 h-4 w-4" />
-							Envoyer
+							{messages( "update" )}
 						</>
 					)}
 				</Button>
