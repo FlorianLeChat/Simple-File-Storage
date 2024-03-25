@@ -183,15 +183,15 @@ export default function RowActions( {
 			if ( files.length === selectedFiles.length )
 			{
 				// Envoi d'une notification de succès (mise à jour complète).
-				toast.success( "form.info.action_success", {
-					description: "form.info.status_updated"
+				toast.success( formMessages( "infos.action_success" ), {
+					description: formMessages( "infos.status_full_updated" )
 				} );
 			}
 			else
 			{
 				// Envoi d'une notification d'avertissement (mise à jour partielle).
-				toast.warning( "form.info.action_partial", {
-					description: "form.info.status_updated"
+				toast.warning( formMessages( "infos.action_partial" ), {
+					description: formMessages( "infos.status_partial_updated" )
 				} );
 			}
 		}
