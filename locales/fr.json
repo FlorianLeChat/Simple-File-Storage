@@ -44,6 +44,12 @@
 			"action_partial": "Action partiellement réussie",
 			"action_required": "Action requise",
 			"action_failed": "Action échouée",
+			"data_purged": "Toutes les données sélectionnées ont été purgées avec succès.",
+			"issue_created": "Votre signalement de bogue a été créé avec succès.",
+			"layout_updated": "Les paramètres d'apparence ont été mis à jour avec succès.",
+			"notifications_updated": "Les paramètres de notification ont été mis à jour avec succès.",
+			"storage_updated": "Les paramètres de stockage ont été mis à jour avec succès.",
+			"user_updated": "Les informations de votre compte utilisateur ont été mises à jour avec succès.",
 			"file_full_deleted": "Tous les fichiers ont été supprimés avec succès.",
 			"file_partial_deleted": "Certains fichiers n'ont pas pu être supprimés à cause d'une erreur inattendue.",
 			"name_full_updated": "Le nom de tous les fichiers a été mis à jour avec succès.",
@@ -59,6 +65,8 @@
 			"email_validation": "Un courriel de confirmation a été envoyé à l'adresse que vous avez fournie. Veuillez vérifier votre boîte de réception et cliquer sur le lien de confirmation pour activer votre compte."
 		},
 		"errors": {
+			"file_system": "Une erreur s'est produite lors de l'accès au système de fichiers. Veuillez réessayer plus tard.",
+			"too_many": "Vous avez réalisé cette action trop de fois. Veuillez réessayer plus tard.",
 			"quota_exceeded": "Le quota de stockage maximal a été dépassé. Certains fichiers n'ont pas pu être téléversés.",
 			"email_used": "Cette adresse électronique est déjà utilisée.",
 			"auth_failed": "Échec de l'authentification",
@@ -304,7 +312,7 @@
 			"OAuthAccountNotLinked": "Pour confirmer votre identité, connectez-vous avec le même compte que celui que vous avez utilisé initialement.",
 			"EmailSignup": "Le courriel de confirmation n'a pas pu être envoyé à l'adresse que vous avez fournie. Veuillez réessayer plus tard.",
 			"CredentialsSignin": "Échec de l'autorisation. Vérifiez les informations que vous avez fournies.",
-			"SessionRequired": "Veillez à vous connecter pour accéder à cette page."
+			"SessionRequired": "Vous devez être authentifié pour accéder à cette ressource."
 		}
 	},
 	"consentModal": {

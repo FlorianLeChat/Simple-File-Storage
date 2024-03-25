@@ -7,6 +7,7 @@
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/layout";
 import { auth } from "@/utilities/next-auth";
+import { getTranslations } from "next-intl/server";
 
 export async function updateLayout(
 	_state: Record<string, unknown>,
@@ -15,6 +16,7 @@ export async function updateLayout(
 {
 	// On récupère d'abord la session de l'utilisateur.
 	const session = await auth();
+	const messages = await getTranslations();
 
 	if ( !session )
 	{
@@ -22,7 +24,7 @@ export async function updateLayout(
 		//  n'est pas connecté.
 		return {
 			success: false,
-			reason: "form.errors.unauthenticated"
+			reason: messages( "authjs.errors.SessionRequired" )
 		};
 	}
 
@@ -39,7 +41,7 @@ export async function updateLayout(
 		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: `zod.errors.${ result.error.issues[ 0 ].code }`
+			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
 		};
 	}
 
@@ -65,6 +67,6 @@ export async function updateLayout(
 	// On retourne enfin un message de succès.
 	return {
 		success: true,
-		reason: "settings.layout.success"
+		reason: messages( "form.infos.layout_updated" )
 	};
 }
