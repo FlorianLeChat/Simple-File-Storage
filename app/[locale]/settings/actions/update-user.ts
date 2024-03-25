@@ -12,6 +12,7 @@ import { TOTP } from "otpauth";
 import { auth } from "@/utilities/next-auth";
 import { cookies } from "next/headers";
 import * as Sentry from "@sentry/nextjs";
+import { generateMetadata } from "@/app/layout";
 import { fileTypeFromBuffer } from "file-type";
 import { mkdir, readdir, rm, writeFile } from "fs/promises";
 
@@ -103,10 +104,11 @@ export async function updateUser(
 		} );
 
 		// Code de validation généré par l'application.
+		const meta = await generateMetadata();
 		const otp = new TOTP( {
 			label: session.user.email as string,
 			secret: session.user.otp,
-			issuer: "Simple File Storage",
+			issuer: meta.title as string,
 			digits: 6,
 			period: 30,
 			algorithm: "SHA256"

@@ -8,6 +8,7 @@ import { z } from "zod";
 import prisma from "@/utilities/prisma";
 import { TOTP } from "otpauth";
 import { auth } from "@/utilities/next-auth";
+import { generateMetadata } from "@/app/layout";
 
 export async function validateOTP( formData: FormData )
 {
@@ -44,10 +45,11 @@ export async function validateOTP( formData: FormData )
 	// On génère ensuite une instance de double authentification
 	//  à partir du secret de l'utilisateur avant de valider ou non
 	//  le code fourni par l'utilisateur.
+	const meta = await generateMetadata();
 	const otp = new TOTP( {
 		label: session.user.email as string,
 		secret: result.data.secret,
-		issuer: "Simple File Storage",
+		issuer: meta.title as string,
 		digits: 6,
 		period: 30,
 		algorithm: "SHA256"
