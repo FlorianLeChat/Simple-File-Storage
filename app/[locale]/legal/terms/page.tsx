@@ -35,6 +35,7 @@ export default async function Page( {
 
 	// Déclaration des constantes.
 	const url = new URL( ( await getMetadata() )?.metadataBase ?? "" ).href;
+	const messages = await getTranslations();
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -42,12 +43,11 @@ export default async function Page( {
 			{/* En-tête de la page */}
 			<header>
 				<h2 className="text-2xl font-bold tracking-tight">
-					Conditions d&lsquo;utilisation
+					{messages( "legal.terms_title" )}
 				</h2>
 
 				<p className="text-muted-foreground">
-					Curieux de connaître les conditions d&lsquo;utilisation du
-					site ? C&lsquo;est par ici !
+					{messages( "legal.terms_description" )}
 				</p>
 			</header>
 
