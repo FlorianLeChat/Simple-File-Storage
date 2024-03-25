@@ -223,6 +223,16 @@
 		"status": "Statut"
 	},
 	"settings": {
+		"header": "Paramètres généraux",
+		"description": "Gérer les paramètres de votre compte et du site.",
+		"issue": "Vous avez trouvé un bogue ? Quelque chose ne fonctionne pas comme prévu ? Vous êtes au bon endroit pour nous le signaler !",
+		"layout": "Lassez du thème et des couleurs par défaut ? La police d'écriture ne vous plaît pas ? Vous êtes au bon endroit pour changer tout ça !",
+		"notifications": "Marre de recevoir des notifications ? Envie de recevoir des courriels de sécurité ou de rappel ? Vous êtes au bon endroit !",
+		"privacy": "Vous voulez effacer vos traces et faire comme si vous n'aviez jamais utilisé le site ? C'est ici que ça se passe !",
+		"storage": "Vous voulez contrôler davantage le comportement des fichiers lorsqu'ils sont téléversés sur le site ? Vous êtes au bon endroit !",
+		"user": "Vous voulez montrez qui vous êtes ? Modifier votre nom d'utilisateur ? Changer votre mot de passe ? Vous êtes au bon endroit !"
+	},
+	"navigation": {
 		"user_title": "Utilisateur",
 		"user_description": "Gestion des informations de votre profil et de votre compte.",
 		"storage_title": "Stockage",

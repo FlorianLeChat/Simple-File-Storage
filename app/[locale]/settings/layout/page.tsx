@@ -5,7 +5,7 @@
 // Importation des dépendances.
 import { lazy } from "react";
 import type { Session } from "next-auth";
-import { unstable_setRequestLocale } from "next-intl/server";
+import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
@@ -25,17 +25,20 @@ export default async function Page( {
 	// Définition de la langue de la page.
 	unstable_setRequestLocale( locale );
 
+	// Déclaration des constantes.
+	const messages = await getTranslations();
+
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
 			{/* En-tête de la page */}
 			<header>
-				<h3 className="text-lg font-medium">Apparence</h3>
+				<h3 className="text-lg font-medium">
+					{messages( "navigation.layout_title" )}
+				</h3>
 
 				<p className="text-sm text-muted-foreground">
-					Lassez du thème et des couleurs par défaut ? La police
-					d&lsquo;écriture ne vous plaît pas ? Vous êtes au bon
-					endroit pour changer tout ça !
+					{messages( "settings.layout" )}
 				</p>
 			</header>
 
