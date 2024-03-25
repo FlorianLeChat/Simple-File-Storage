@@ -50,7 +50,7 @@ export async function uploadFiles(
 
 		return {
 			success: false,
-			reason: `zod.errors.${ code === "custom" ? message : code }`
+			reason: messages( `zod.${ code === "custom" ? message : code }` )
 		};
 	}
 

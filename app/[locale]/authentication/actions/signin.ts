@@ -59,7 +59,7 @@ export async function signInAccount(
 		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: messages( `zod.errors.${ result.error.issues[ 0 ].code }` )
+			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
 		};
 	}
 
