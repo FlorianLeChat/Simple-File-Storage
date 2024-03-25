@@ -11,6 +11,7 @@ import { auth } from "@/utilities/next-auth";
 import * as Sentry from "@sentry/nextjs";
 import { existsSync } from "fs";
 import { join, parse } from "path";
+import { getTranslations } from "next-intl/server";
 
 export async function updateStorage(
 	_state: Record<string, unknown>,
@@ -19,6 +20,7 @@ export async function updateStorage(
 {
 	// On récupère d'abord la session de l'utilisateur.
 	const session = await auth();
+	const messages = await getTranslations();
 
 	if ( !session )
 	{
@@ -26,7 +28,7 @@ export async function updateStorage(
 		//  n'est pas connecté.
 		return {
 			success: false,
-			reason: "form.errors.unauthenticated"
+			reason: messages( "authjs.errors.SessionRequired" )
 		};
 	}
 
@@ -49,7 +51,7 @@ export async function updateStorage(
 		//  premier code d'erreur rencontré.
 		return {
 			success: false,
-			reason: `zod.errors.${ result.error.issues[ 0 ].code }`
+			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
 		};
 	}
 
@@ -150,6 +152,6 @@ export async function updateStorage(
 	// On retourne enfin un message de succès.
 	return {
 		success: true,
-		reason: "settings.storage.success"
+		reason: messages( "form.infos.storage_updated" )
 	};
 }
