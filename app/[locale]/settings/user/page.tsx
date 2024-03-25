@@ -11,6 +11,7 @@ import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
+import { generateMetadata } from "@/app/layout";
 
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
@@ -30,10 +31,11 @@ export default async function Page( {
 	// Déclaration des constantes.
 	const session = ( await auth() ) as Session;
 	const secret = new Secret();
+	const meta = await generateMetadata();
 	const otp = new TOTP( {
 		label: session.user.email as string,
 		secret,
-		issuer: "Simple File Storage",
+		issuer: meta.title as string,
 		digits: 6,
 		period: 30,
 		algorithm: "SHA256"

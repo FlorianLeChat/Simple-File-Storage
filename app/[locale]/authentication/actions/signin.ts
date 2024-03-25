@@ -13,6 +13,7 @@ import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { auth, signIn } from "@/utilities/next-auth";
 import { getTranslations } from "next-intl/server";
+import { generateMetadata } from "@/app/layout";
 
 export async function signInAccount(
 	_state: Record<string, unknown>,
@@ -101,10 +102,11 @@ export async function signInAccount(
 			// Vérification de la présence d'un code de double authentification.
 			if ( result.data.otp )
 			{
+				const meta = await generateMetadata();
 				const otp = new TOTP( {
 					label: result.data.email,
 					secret: result.data.otp,
-					issuer: "Simple File Storage",
+					issuer: meta.title as string,
 					digits: 6,
 					period: 30,
 					algorithm: "SHA256"
