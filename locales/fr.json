@@ -248,6 +248,7 @@
 	},
 	"dashboard": {
 		"hide": "Cacher",
+		"title": "Ouvrir le menu des actions",
 		"reset": "Réinitialiser",
 		"filter": "Filtrer par nom...",
 		"columns": "Colonnes",
