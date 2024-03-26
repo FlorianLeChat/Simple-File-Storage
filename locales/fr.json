@@ -361,6 +361,13 @@
 			"SessionRequired": "Vous devez être authentifié pour accéder à cette ressource."
 		}
 	},
+	"nodemailer": {
+		"subject": "Connexion à votre compte Simple File Storage",
+		"button": "Connexion directe",
+		"footer": "<strong>Ce lien est valable 30 minutes.</strong> Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce courriel.",
+		"long_title": "Connexion à <strong>{host}</strong> (<em>Simple File Storage</em>)",
+		"short_title": "Connectez-vous à {host}\n{url}\n\n"
+	},
 	"consentModal": {
 		"title": "Voulez-vous un cookie ? 🍪",
 		"footer": "<a href=\"legal/privacy\" target=\"_blank\">Politique de confidentialité</a><a href=\"legal/terms\" target=\"_blank\">Conditions d'utilisation</a>",
