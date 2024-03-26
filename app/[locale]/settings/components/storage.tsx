@@ -27,7 +27,7 @@ import { updateStorage } from "../actions/update-storage";
 export default function Storage( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
-	const formMessages = useTranslations( "form" );
+	const messages = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ updateState, updateAction ] = useFormState( updateStorage, {
 		success: true,
@@ -54,8 +54,8 @@ export default function Storage( { session }: { session: Session } )
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( formMessages( "errors.action_failed" ), {
-				description: formMessages( "errors.server_error" )
+			toast.error( messages( "errors.action_failed" ), {
+				description: messages( "errors.server_error" )
 			} );
 
 			return;
@@ -76,17 +76,17 @@ export default function Storage( { session }: { session: Session } )
 		// On affiche enfin une notification avec la raison fournie.
 		if ( success )
 		{
-			toast.success( formMessages( "infos.action_success" ), {
+			toast.success( messages( "infos.action_success" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( formMessages( "errors.action_failed" ), {
+			toast.error( messages( "errors.action_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ form, updateState, formMessages ] );
+	}, [ form, messages, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -118,20 +118,13 @@ export default function Storage( { session }: { session: Session } )
 						<FormItem>
 							<FormLabel htmlFor={field.name}>
 								<Globe className="mr-2 inline h-6 w-6" />
-								Publication des fichiers
+								{messages( "fields.public_label" )}
 							</FormLabel>
 
 							<FormDescription>
-								Par défaut, les fichiers téléversés sur le
-								serveur sont privés et ne sont pas accessibles
-								aux autres utilisateurs. Si vous activez cette
-								option,{" "}
-								<strong>
-									les nouveaux fichiers seront automatiquement
-									publiés et accessibles à tous les
-									utilisateurs disposant du lien d&lsquo;accès
-								</strong>
-								.
+								{messages.rich( "fields.public_description", {
+									b: ( chunks ) => <strong>{chunks}</strong>
+								} )}
 							</FormDescription>
 
 							<div className="flex items-center space-x-2">
@@ -149,8 +142,7 @@ export default function Storage( { session }: { session: Session } )
 									htmlFor={field.name}
 									className="leading-5"
 								>
-									Activer la publication automatique des
-									fichiers téléversés sur le serveur
+									{messages( "fields.public_trigger" )}
 								</Label>
 							</div>
 						</FormItem>
@@ -165,21 +157,13 @@ export default function Storage( { session }: { session: Session } )
 						<FormItem>
 							<FormLabel htmlFor={field.name}>
 								<Link2 className="mr-2 inline h-6 w-6" />
-								Affichage des extensions
+								{messages( "fields.extension_label" )}
 							</FormLabel>
 
 							<FormDescription>
-								Pour faciliter le partage des fichiers, le lien
-								d&lsquo;accès est généré de manière à ce que
-								l&lsquo;extension du fichier ne soit pas
-								visible. Si vous activez cette option,{" "}
-								<strong>
-									l&lsquo;extension sera affichée dans le lien
-									d&lsquo;accès
-								</strong>
-								. Cela peut être utile lorsque vous utilisez des
-								fichiers multimédias (comme des vidéos ou des
-								musiques) sur des lecteurs anciens.
+								{messages.rich( "fields.extension_description", {
+									b: ( chunks ) => <strong>{chunks}</strong>
+								} )}
 							</FormDescription>
 
 							<div className="flex items-center space-x-2">
@@ -197,8 +181,7 @@ export default function Storage( { session }: { session: Session } )
 									htmlFor={field.name}
 									className="leading-5"
 								>
-									Afficher les extensions des fichiers dans le
-									lien d&lsquo;accès
+									{messages( "fields.extension_trigger" )}
 								</Label>
 							</div>
 						</FormItem>
@@ -213,30 +196,15 @@ export default function Storage( { session }: { session: Session } )
 						<FormItem>
 							<FormLabel htmlFor={field.name}>
 								<History className="mr-2 inline h-6 w-6" />
-								Enregistrement des anciennes versions
+								{messages( "fields.versions_label" )}
 							</FormLabel>
 
 							<FormDescription>
-								Lorsque vous téléversez un fichier portant le
-								même nom qu&lsquo;un fichier déjà présent dans
-								votre espace de stockage, le fichier existant
-								est remplacé par le nouveau. Si vous activez
-								cette option,{" "}
-								<strong>
-									les anciennes versions des fichiers seront
-									automatiquement enregistrées
-								</strong>{" "}
-								et pourront être restaurées à tout moment.
-								<br />
-								<br />
-								<em>
-									Note : cette option peut augmenter
-									significativement la consommation de votre
-									espace de stockage. Si cette option était
-									précédemment activée, la désactivation aura
-									pour effet de supprimer toutes les anciennes
-									versions des fichiers.
-								</em>
+								{messages.rich( "fields.versions_description", {
+									i: ( chunks ) => <em>{chunks}</em>,
+									b: ( chunks ) => <strong>{chunks}</strong>,
+									br: () => <br />
+								} )}
 							</FormDescription>
 
 							<div className="flex items-center space-x-2">
@@ -254,8 +222,7 @@ export default function Storage( { session }: { session: Session } )
 									htmlFor={field.name}
 									className="leading-5"
 								>
-									Enregistrer automatiquement les anciennes
-									versions des fichiers
+									{messages( "fields.versions_trigger" )}
 								</Label>
 							</div>
 						</FormItem>

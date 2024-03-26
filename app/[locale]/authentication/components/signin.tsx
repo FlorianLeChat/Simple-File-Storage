@@ -157,7 +157,7 @@ export default function SignInForm()
 							</FormControl>
 
 							<FormDescription className="sr-only">
-								{messages( "fields.email_description" )}
+								{messages( "fields.email_description_short" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -239,7 +239,7 @@ export default function SignInForm()
 							</TooltipProvider>
 
 							<FormDescription className="sr-only">
-								{messages( "fields.password_description" )}
+								{messages( "fields.password_description_short" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -296,7 +296,7 @@ export default function SignInForm()
 									!isFocused ? "opacity-25" : ""
 								}`}
 							>
-								{messages( "fields.otp_description" )}
+								{messages( "fields.otp_description_short" )}
 							</FormDescription>
 
 							<FormMessage />
