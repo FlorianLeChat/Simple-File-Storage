@@ -375,7 +375,7 @@ export default function RowActions( {
 		<DropdownMenu open={isLoading ? false : undefined}>
 			{/* Bouton d'ouverture du menu */}
 			<DropdownMenuTrigger
-				title="Ouvrir le menu des actions"
+				title={dashboardMessages( "title" )}
 				className={merge(
 					buttonVariants( { variant: "ghost" } ),
 					"h-8 w-8 p-0"
