@@ -143,7 +143,7 @@ export default function SignUpForm()
 							</FormControl>
 
 							<FormDescription className="sr-only">
-								{messages( "fields.email_description" )}
+								{messages( "fields.email_description_short" )}
 							</FormDescription>
 
 							<FormMessage />

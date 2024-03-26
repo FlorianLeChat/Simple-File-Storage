@@ -168,12 +168,7 @@ export default function Privacy()
 										b: ( chunks ) => (
 											<strong>{chunks}</strong>
 										),
-										br: ( chunks ) => (
-											<>
-												{chunks}
-												<br />
-											</>
-										)
+										br: () => <br />
 									}
 								)}
 							</FormDescription>
@@ -218,12 +213,7 @@ export default function Privacy()
 										b: ( chunks ) => (
 											<strong>{chunks}</strong>
 										),
-										br: ( chunks ) => (
-											<>
-												{chunks}
-												<br />
-											</>
-										)
+										br: () => <br />
 									}
 								)}
 							</FormDescription>

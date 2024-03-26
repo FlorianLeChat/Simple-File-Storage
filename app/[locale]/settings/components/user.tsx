@@ -123,8 +123,8 @@ export default function User( {
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( "form.errors.update_failed", {
-				description: "form.errors.server_error"
+			toast.error( messages( "errors.action_failed" ), {
+				description: messages( "errors.server_error" )
 			} );
 
 			return;
@@ -148,17 +148,17 @@ export default function User( {
 		{
 			form.resetField( "avatar" );
 
-			toast.success( "form.info.update_success", {
+			toast.success( messages( "infos.action_success" ), {
 				description: reason
 			} );
 		}
 		else
 		{
-			toast.error( "form.errors.update_failed", {
+			toast.error( messages( "errors.action_failed" ), {
 				description: reason
 			} );
 		}
-	}, [ form, updateState ] );
+	}, [ form, messages, updateState ] );
 
 	// Affichage du rendu HTML du composant.
 	return (
@@ -190,7 +190,7 @@ export default function User( {
 						<FormItem>
 							<FormLabel>
 								<Contact className="mr-2 inline h-6 w-6" />
-								Nom d&lsquo;utilisateur
+								{messages( "fields.username_label" )}
 							</FormLabel>
 
 							<FormControl>
@@ -202,18 +202,16 @@ export default function User( {
 											.maxLength as number
 									}
 									spellCheck="false"
-									placeholder="John Doe"
+									placeholder={messages(
+										"fields.username_placeholder"
+									)}
 									autoComplete="name"
 									autoCapitalize="off"
 								/>
 							</FormControl>
 
 							<FormDescription>
-								Ceci est le nom d&lsquo;utilisateur qui sera
-								affiché publiquement sur votre profil et dans la
-								recherche d&lsquo;utilisateurs pour partager des
-								fichiers. Cela peut être votre nom complet ou un
-								simple pseudonyme.
+								{messages( "fields.username_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -230,7 +228,7 @@ export default function User( {
 							<FormItem>
 								<FormLabel>
 									<AtSign className="mr-2 inline h-6 w-6" />
-									Adresse électronique
+									{messages( "fields.email_label" )}
 								</FormLabel>
 
 								<FormControl>
@@ -242,18 +240,16 @@ export default function User( {
 												.maxLength as number
 										}
 										spellCheck="false"
-										placeholder="name@example.com"
+										placeholder={messages(
+											"fields.email_placeholder"
+										)}
 										autoComplete="email"
 										autoCapitalize="off"
 									/>
 								</FormControl>
 
 								<FormDescription>
-									Ceci est l&lsquo;adresse électronique
-									associée à votre compte. Elle est
-									indispensable pour vous connecter à votre
-									compte et recevoir les notifications via
-									courriel.
+									{messages( "fields.email_description_long" )}
 								</FormDescription>
 
 								<FormMessage />
@@ -271,7 +267,7 @@ export default function User( {
 							<FormItem>
 								<FormLabel>
 									<Lock className="mr-2 inline h-6 w-6" />
-									Mot de passe
+									{messages( "fields.password_label" )}
 								</FormLabel>
 
 								<TooltipProvider>
@@ -293,7 +289,9 @@ export default function User( {
 											}
 											className="inline-block w-[calc(100%-40px-0.5rem)]"
 											spellCheck="false"
-											placeholder="password"
+											placeholder={messages(
+												"fields.password_placeholder"
+											)}
 											autoComplete="new-password"
 											autoCapitalize="off"
 										/>
@@ -323,17 +321,17 @@ export default function User( {
 										</TooltipTrigger>
 
 										<TooltipContent>
-											Générer un mot de passe sécurisé
+											{messages(
+												"fields.password_generation"
+											)}
 										</TooltipContent>
 									</Tooltip>
 								</TooltipProvider>
 
 								<FormDescription>
-									Ceci est le mot de passe qui sera utilisé
-									pour vous connecter à votre compte si vous
-									ne souhaitez pas utiliser les liens
-									d&lsquo;authentification envoyés par
-									courriel.{" "}
+									{messages(
+										"fields.password_description_long"
+									)}{" "}
 									{!session.user.otp && (
 										<OTPValidationModal
 											image={image}
@@ -351,8 +349,7 @@ export default function User( {
 				{/* Avertissements pour les majuscules */}
 				{isLocked && (
 					<p className="!mt-4 text-sm font-bold uppercase text-destructive">
-						Les majuscules ont été activées pour la saisie du mot de
-						passe.
+						{messages( "fields.password_capslock" )}
 					</p>
 				)}
 
@@ -365,7 +362,7 @@ export default function User( {
 							<FormItem className="flex flex-col">
 								<FormLabel>
 									<Smartphone className="mr-2 inline h-6 w-6" />
-									Authentification à deux facteurs
+									{messages( "fields.otp_label" )}
 								</FormLabel>
 
 								<FormControl>
@@ -391,15 +388,14 @@ export default function User( {
 								</FormControl>
 
 								<FormDescription>
-									Vous pouvez désactiver
-									l&lsquo;authentification à deux facteurs en
-									saisissant un code provenant de votre
-									application.{" "}
-									<strong>
-										Si vous avez perdu votre téléphone,
-										veuillez utiliser le code de secours
-										fourni lors de l&lsquo;activation.
-									</strong>
+									{messages.rich(
+										"fields.otp_description_long",
+										{
+											b: ( chunks ) => (
+												<strong>{chunks}</strong>
+											)
+										}
+									)}
 								</FormDescription>
 
 								<FormMessage />
@@ -416,7 +412,7 @@ export default function User( {
 						<FormItem>
 							<FormLabel>
 								<Languages className="mr-2 inline h-6 w-6" />
-								Langue préférée
+								{messages( "fields.language_label" )}
 							</FormLabel>
 
 							<Select
@@ -446,11 +442,7 @@ export default function User( {
 							</Select>
 
 							<FormDescription>
-								Ceci est la langue qui sera utilisée sur
-								l&lsquo;ensemble des pages du site. Si votre
-								langue comporte des traductions incomplètes,
-								nous utiliserons la langue par défaut du site
-								pour les compléter.
+								{messages( "fields.language_description" )}
 							</FormDescription>
 
 							<FormMessage />
@@ -466,7 +458,7 @@ export default function User( {
 						<FormItem>
 							<FormLabel>
 								<FileImage className="mr-2 inline h-6 w-6" />
-								Avatar
+								{messages( "fields.avatar_label" )}
 							</FormLabel>
 
 							<FormControl>
@@ -483,13 +475,14 @@ export default function User( {
 							</FormControl>
 
 							<FormDescription>
-								Vous pouvez mettre à jour l&lsquo;avatar utilisé
-								pour votre compte utilisateur.{" "}
-								<strong suppressHydrationWarning>
-									Les avatars ne doivent pas dépasser{" "}
-									{formatSize( maxAvatarSize )} et doivent être
-									au format PNG, JPEG ou WEBP.
-								</strong>
+								{messages.rich( "fields.avatar_description", {
+									b: ( chunks ) => (
+										<strong suppressHydrationWarning>
+											{chunks}
+										</strong>
+									),
+									size: formatSize( maxAvatarSize )
+								} )}
 							</FormDescription>
 
 							<FormMessage />
@@ -502,12 +495,12 @@ export default function User( {
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Mise à jour...
+							{messages( "loading" )}
 						</>
 					) : (
 						<>
 							<RefreshCw className="mr-2 h-4 w-4" />
-							Mettre à jour
+							{messages( "update" )}
 						</>
 					)}
 				</Button>
