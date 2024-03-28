@@ -109,6 +109,7 @@
 			"action_partial": "Action partiellement réussie",
 			"action_required": "Action requise",
 			"action_failed": "Action échouée",
+			"otp_enabled": "L'authentification à deux facteurs a été activée avec succès.",
 			"data_purged": "Toutes les données sélectionnées ont été purgées avec succès.",
 			"issue_created": "Votre signalement de bogue a été créé avec succès.",
 			"layout_updated": "Les paramètres d'apparence ont été mis à jour avec succès.",
@@ -142,6 +143,17 @@
 		}
 	},
 	"modals": {
+		"otp_backup": {
+			"title": "Code de secours",
+			"description": "Votre compte est désormais protégé par l'authentification à deux facteurs. Ci-dessous se trouve un code de secours que vous pouvez utiliser afin de désactiver l'authentification à deux facteurs si vous perdez votre téléphone. <b>Si vous perdez ce code, vous devrez contacter le support technique mais votre demande pourra être refusée en cas de négligence constatée.</b>",
+			"close": "Copier dans le presse-papiers"
+		},
+		"otp_validation": {
+			"trigger": "Activation de l'authentification à deux facteurs",
+			"title": "Authentification à deux facteurs",
+			"description": "Afin de sécuriser davantage votre compte, vous pouvez activer l'authentification à deux facteurs. <br></br>1. Tout d'abord, vous devez scanner le code QR ci-dessus avec une application compatible comme <a1>Google Authenticator</a1> ou <a2>Authy</a2>. <br></br>2. Une fois activée, veuillez saisir ci-dessous le code de sécurité généré par votre application pour valider la double authentification. <br></br>3. Lorsque la double authentification est validée, vous serez invité à sauvegarder un code de secours pour désactiver la double authentification si vous perdez votre téléphone.",
+			"close": "Activer l'authentification à deux facteurs"
+		},
 		"reset_password": {
 			"trigger": "Vous avez oublié votre mot de passe ?",
 			"title": "Oubli du mot de passe",
