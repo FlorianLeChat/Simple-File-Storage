@@ -5,6 +5,7 @@
 "use client";
 
 import { merge } from "@/utilities/tailwind";
+import { useTranslations } from "next-intl";
 import { Smartphone, ClipboardCopy } from "lucide-react";
 
 import { Dialog,
@@ -17,6 +18,9 @@ import { buttonVariants } from "../../components/ui/button";
 
 export default function OTPBackupModal( { code }: { code: string } )
 {
+	// Déclaration des variables d'état.
+	const messages = useTranslations( "modals.otp_backup" );
+
 	// Affichage du rendu HTML du composant.
 	return (
 		<Dialog defaultOpen>
@@ -24,20 +28,13 @@ export default function OTPBackupModal( { code }: { code: string } )
 				<DialogHeader>
 					<DialogTitle className="flex items-center">
 						<Smartphone className="mr-2 inline h-5 w-5" />
-						Code de secours
+						{messages( "title" )}
 					</DialogTitle>
 
 					<DialogDescription className="text-left">
-						Votre compte est désormais protégé par
-						l&lsquo;authentification à deux facteurs. Ci-dessous se
-						trouve un code de secours que vous pouvez utiliser afin
-						de désactiver l&lsquo;authentification à deux facteurs
-						si vous perdez votre téléphone.{" "}
-						<strong>
-							Si vous perdez ce code, vous devrez contacter le
-							support technique mais votre demande pourra être
-							refusée en cas de négligence constatée.
-						</strong>
+						{messages.rich( "description", {
+							b: ( chunks ) => <strong>{chunks}</strong>
+						} )}
 						<br />
 						<br />
 						<code>{code}</code>
@@ -49,7 +46,7 @@ export default function OTPBackupModal( { code }: { code: string } )
 					className={merge( buttonVariants(), "w-full" )}
 				>
 					<ClipboardCopy className="mr-2 h-4 w-4" />
-					Copier dans le presse-papiers
+					{messages( "close" )}
 				</DialogClose>
 			</DialogContent>
 		</Dialog>

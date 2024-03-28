@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import { useState } from "react";
 import serverAction from "@/utilities/recaptcha";
+import { useTranslations } from "next-intl";
 import { Check, Loader2, Smartphone } from "lucide-react";
 
 import OTPBackupModal from "./otp-backup";
@@ -34,6 +35,8 @@ export default function OTPValidationModal( {
 } )
 {
 	// Déclaration des variables d'état.
+	const formMessages = useTranslations( "form" );
+	const modalMessages = useTranslations( "modals.otp_validation" );
 	const [ otpCode, setOTPCode ] = useState( "" );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ backupCode, setBackupCode ] = useState( "" );
@@ -63,15 +66,15 @@ export default function OTPValidationModal( {
 			setBackupCode( state as string );
 
 			// Envoi d'une notification de succès.
-			toast.success( "form.info.action_success", {
-				description: "form.info.otp_enabled"
+			toast.success( formMessages( "infos.action_success" ), {
+				description: formMessages( "infos.otp_enabled" )
 			} );
 		}
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( "form.errors.file_deleted", {
-				description: "form.errors.server_error"
+			toast.error( formMessages( "errors.action_failed" ), {
+				description: formMessages( "errors.server_error" )
 			} );
 		}
 	};
@@ -93,14 +96,14 @@ export default function OTPValidationModal( {
 					"h-auto p-0 text-muted-foreground underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
 				)}
 			>
-				Activation de l&lsquo;authentification à deux facteurs
+				{modalMessages( "trigger" )}
 			</DialogTrigger>
 
 			<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[50%]">
 				<DialogHeader>
 					<DialogTitle className="flex items-center">
 						<Smartphone className="mr-2 inline h-5 w-5" />
-						Authentification à deux facteurs
+						{modalMessages( "title" )}
 					</DialogTitle>
 
 					<Image
@@ -112,41 +115,30 @@ export default function OTPValidationModal( {
 					/>
 
 					<DialogDescription className="text-left">
-						Afin de sécuriser davantage votre compte, vous pouvez
-						activer l&lsquo;authentification à deux facteurs.
-						<br />
-						<br />
-						1. Tout d&lsquo;abord, vous devez scanner le code QR
-						ci-dessus avec une application compatible comme{" "}
-						<a
-							rel="noopener noreferrer"
-							href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
-							target="_blank"
-							className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
-						>
-							Google Authenticator
-						</a>{" "}
-						ou{" "}
-						<a
-							rel="noopener noreferrer"
-							href="https://play.google.com/store/apps/details?id=com.authy.authy"
-							target="_blank"
-							className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
-						>
-							Authy
-						</a>
-						.
-						<br />
-						<br />
-						2. Une fois activée, veuillez saisir ci-dessous le code
-						de sécurité généré par votre application pour valider la
-						double authentification.
-						<br />
-						<br />
-						3. Lorsque la double authentification est validée, vous
-						serez invité à sauvegarder un code de secours pour
-						désactiver la double authentification si vous perdez
-						votre téléphone.
+						{modalMessages.rich( "description", {
+							b: ( chunks ) => <strong>{chunks}</strong>,
+							br: () => <br />,
+							a1: ( chunks ) => (
+								<a
+									rel="noopener noreferrer"
+									href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2"
+									target="_blank"
+									className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
+								>
+									{chunks}
+								</a>
+							),
+							a2: ( chunks ) => (
+								<a
+									rel="noopener noreferrer"
+									href="https://play.google.com/store/apps/details?id=com.authy.authy"
+									target="_blank"
+									className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
+								>
+									{chunks}
+								</a>
+							)
+						} )}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -192,7 +184,7 @@ export default function OTPValidationModal( {
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Veuillez patienter...
+							{formMessages( "loading" )}
 						</>
 					) : (
 						<>
