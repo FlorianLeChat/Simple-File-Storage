@@ -4,6 +4,9 @@
 	"language": "fr, en",
 	"words": [
 		"csrf",
+		"Firstname",
+		"Lastname",
+		"Authy",
 		"Signup",
 		"RGPD",
 		"WEBP",
