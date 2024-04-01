@@ -88,9 +88,7 @@ export default function Notifications()
 										document.title,
 										{
 											icon: icon?.href,
-											body: notification.title,
-											timestamp:
-												notification.createdAt.getTime()
+											body: notification.title
 										}
 									);
 
@@ -240,8 +238,7 @@ export default function Notifications()
 
 										<p className="text-sm text-muted-foreground">
 											{modalMessages(
-												`description_${
-													notification.message }`
+												`description_${ notification.message }`
 											)}
 										</p>
 
