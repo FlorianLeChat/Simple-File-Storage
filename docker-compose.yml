@@ -39,6 +39,11 @@ services:
     node:
         image: simple-file-storage
         restart: always
+        develop:
+            watch:
+                - action: sync
+                  path: .
+                  target: /usr/src/app
         depends_on:
             - mariadb
         secrets:
