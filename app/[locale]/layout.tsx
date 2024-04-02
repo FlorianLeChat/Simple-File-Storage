@@ -247,7 +247,7 @@ export default async function Layout( {
 					"--roboto-font": roboto.style.fontFamily
 				} as CSSProperties
 			}
-			className={`${ font } ${ color } ${ factory ? theme : "" }`}
+			className={`${ font } ${ color } ${ factory ? theme : "light" }`}
 		>
 			{/* En-tête de la page */}
 			<head>
