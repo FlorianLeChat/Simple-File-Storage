@@ -16,6 +16,8 @@
 # misc
 .DS_Store
 *.pem
+/docker/database/
+/docker-compose.override.yml
 
 # debug
 npm-debug.log*
