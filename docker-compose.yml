@@ -13,27 +13,40 @@ services:
         restart: always
         volumes:
             - ./docker/database:/var/lib/mysql
-        secrets:
-            - db_password
-            - db_root_password
         environment:
-            MARIADB_DATABASE: simple_file_storage
-            MARIADB_PORT: 3306
-            MARIADB_USER: simple_file_storage
-            # > Default credentials (for test image)
-            MARIADB_PASSWORD: password
-            MARIADB_ROOT_PASSWORD: password
-            # > Custom credentials with secrets (for production image)
-            # MARIADB_PASSWORD_FILE: /run/secrets/db_password
-            # MARIADB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+            MARIADB_DATABASE: ${DATABASE_NAME}
+            MARIADB_PORT: ${DATABASE_PORT}
+            MARIADB_USER: ${DATABASE_USERNAME}
+            MARIADB_PASSWORD: ${DATABASE_PASSWORD}
+            MARIADB_RANDOM_ROOT_PASSWORD: 1
         networks:
             - simple_file_storage
         healthcheck:
-            test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+            test: healthcheck.sh --su-mysql --connect --innodb_initialized
             retries: 3
             timeout: 5s
         ports:
-            - 3306:3306
+            - "3306:${DATABASE_PORT}"
+
+    # https://hub.docker.com/_/phpmyadmin
+    phpmyadmin:
+        image: phpmyadmin:latest
+        restart: always
+        depends_on:
+            - mariadb
+        environment:
+            PMA_HOST: ${DATABASE_HOST}
+            PMA_PORT: ${DATABASE_PORT}
+            PMA_USER: ${DATABASE_USERNAME}
+            PMA_PASSWORD: ${DATABASE_PASSWORD}
+        networks:
+            - simple_file_storage
+        healthcheck:
+            test: curl -f http://localhost
+            retries: 3
+            timeout: 5s
+        ports:
+            - "8080:80"
 
     # https://github.com/FlorianLeChat/Simple-File-Storage
     node:
@@ -46,32 +59,16 @@ services:
                   target: /usr/src/app
         depends_on:
             - mariadb
-        secrets:
-            - db_password
         environment:
-            - WAIT_HOSTS=mariadb:3306
+            - WAIT_HOSTS=mariadb:${DATABASE_PORT}
         networks:
             - simple_file_storage
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:3000"]
+            test: curl -f http://localhost:3000
             retries: 3
             timeout: 5s
-        deploy:
-            resources:
-                limits:
-                    cpus: "1"
-                    memory: 512M
-                reservations:
-                    cpus: "0.25"
-                    memory: 128M
         build:
             context: .
-            dockerfile: ./Dockerfile
+            dockerfile: ./docker/Dockerfile.${NEXT_PUBLIC_ENV}
         ports:
-            - 3000:3000
-
-secrets:
-    db_password:
-        file: ./docker/config/db_password.txt
-    db_root_password:
-        file: ./docker/config/db_root_password.txt
+            - "3000:3000"
