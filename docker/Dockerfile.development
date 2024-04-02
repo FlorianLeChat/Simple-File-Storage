@@ -5,7 +5,7 @@
 FROM node:lts-alpine
 
 # Add cURL for health check and OpenSSL for generating random secret
-RUN apk --no-cache add curl openssl
+RUN apk update && apk add --no-cache curl openssl
 
 # Set the working directory to the website files
 WORKDIR /usr/src/app
@@ -15,6 +15,9 @@ RUN chown node:node .
 
 # Copy all files required to build the project
 COPY --chown=node:node . .
+
+# Create a directory for the Next.js build cache
+RUN mkdir -p .next && chown -R node:node .next
 
 # Install all dependencies
 # Use cache mount to speed up installation of existing dependencies
@@ -30,22 +33,9 @@ RUN chmod +x /wait
 USER node
 
 # Find and replace some default environment variables
-RUN sed -i "s/NEXT_PUBLIC_ENV=development/NEXT_PUBLIC_ENV=production/g" .env
 RUN sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env
-RUN sed -i "s/username:password@127.0.0.1:3306/simple_file_storage:password@mariadb:3306/g" .env
-RUN if [ -f "docker/config/db_root_password.txt" ]; then \
-	sed -i "s/simple_file_storage:password/simple_file_storage:$(cat \/usr\/src\/app\/docker\/config\/db_root_password.txt)/" .env; \
-fi
-
-# Build the entire project
-RUN npm run build
-
-# Remove all development dependencies
-RUN npm prune --production
 
 # Create a custom entrypoint script
-RUN mkdir -p docker
-RUN echo "/wait && npm run migrate && npm run start" > docker/entrypoint.sh
-RUN chmod +x docker/entrypoint.sh
+RUN echo "/wait && npm run migrate && npm run dev" > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
 
 CMD ["docker/entrypoint.sh"]
