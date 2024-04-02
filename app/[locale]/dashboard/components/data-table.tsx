@@ -213,7 +213,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 						<TableRow>
 							{/* Aucun fichier trouvé */}
 							<TableCell
-								colSpan={columns.length}
+								colSpan={table.getAllColumns().length}
 								className="h-24 text-center"
 							>
 								{messages.dashboard.no_files}
