@@ -54,7 +54,7 @@ export default function Storage( { session }: { session: Session } )
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( messages( "errors.action_failed" ), {
+			toast.error( messages( "infos.action_failed" ), {
 				description: messages( "errors.server_error" )
 			} );
 
@@ -82,7 +82,7 @@ export default function Storage( { session }: { session: Session } )
 		}
 		else
 		{
-			toast.error( messages( "errors.action_failed" ), {
+			toast.error( messages( "infos.action_failed" ), {
 				description: reason
 			} );
 		}
