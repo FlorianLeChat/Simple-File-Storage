@@ -54,7 +54,7 @@ export default function Privacy()
 			//  niveau du serveur.
 			setLoading( false );
 
-			toast.error( formMessages( "errors.action_failed" ), {
+			toast.error( formMessages( "infos.action_failed" ), {
 				description: formMessages( "errors.server_error" )
 			} );
 
@@ -85,7 +85,7 @@ export default function Privacy()
 		}
 		else
 		{
-			toast.error( formMessages( "errors.action_failed" ), {
+			toast.error( formMessages( "infos.action_failed" ), {
 				description: reason
 			} );
 		}

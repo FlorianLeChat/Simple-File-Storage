@@ -140,7 +140,7 @@ export default function RowActions( {
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( formMessages( "errors.action_failed" ), {
+			toast.error( formMessages( "infos.action_failed" ), {
 				description: formMessages( "errors.server_error" )
 			} );
 		}
@@ -198,7 +198,7 @@ export default function RowActions( {
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( formMessages( "errors.action_failed" ), {
+			toast.error( formMessages( "infos.action_failed" ), {
 				description: formMessages( "errors.server_error" )
 			} );
 		}
@@ -256,7 +256,7 @@ export default function RowActions( {
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( formMessages( "errors.action_failed" ), {
+			toast.error( formMessages( "infos.action_failed" ), {
 				description: formMessages( "errors.server_error" )
 			} );
 		}
@@ -310,7 +310,7 @@ export default function RowActions( {
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( formMessages( "errors.action_failed" ), {
+			toast.error( formMessages( "infos.action_failed" ), {
 				description: formMessages( "errors.server_error" )
 			} );
 		}
@@ -364,7 +364,7 @@ export default function RowActions( {
 		else
 		{
 			// Envoi d'une notification d'erreur.
-			toast.error( formMessages( "errors.action_failed" ), {
+			toast.error( formMessages( "infos.action_failed" ), {
 				description: formMessages( "errors.server_error" )
 			} );
 		}
