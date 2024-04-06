@@ -278,6 +278,7 @@ export default async function Layout( {
 						locale={locale}
 						messages={pick(
 							messages,
+							"zod",
 							"form",
 							"modals",
 							"header",

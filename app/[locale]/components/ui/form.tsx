@@ -10,6 +10,7 @@ import { Controller,
 	FormProvider,
 	useFormContext,
 	ControllerProps } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { useId,
 	useMemo,
@@ -174,6 +175,7 @@ const FormMessage = forwardRef<
 	HTMLAttributes<HTMLParagraphElement>
 >( ( { className, children, ...props }, ref ) =>
 {
+	const messages = useTranslations( "zod" );
 	const { error, formMessageId } = useFormField();
 	const body = error ? String( error?.type ) : children;
 
@@ -189,7 +191,7 @@ const FormMessage = forwardRef<
 			className={merge( "text-sm font-medium text-destructive", className )}
 			{...props}
 		>
-			{body}
+			{messages( body )}
 		</p>
 	);
 } );
