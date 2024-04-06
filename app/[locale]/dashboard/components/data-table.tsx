@@ -81,7 +81,9 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 		data: files,
 		meta: {
 			files,
-			setFiles
+			setFiles,
+			locale: useLocale(),
+			messages: messages.dashboard
 		},
 		state: {
 			sorting,
@@ -89,7 +91,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 			columnFilters,
 			columnVisibility
 		},
-		columns: columns( messages.dashboard, useLocale() ),
+		columns,
 		getRowId: ( row ) => row.uuid,
 		initialState: {
 			pagination: {

@@ -20,13 +20,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 // Déclaration des colonnes du tableau.
-export const columns: (
-	messages: Record<string, string>,
-	language: string,
-) => ColumnDef<FileAttributes>[] = (
-	messages: Record<string, string>,
-	language: string
-) => [
+export const columns: ColumnDef<FileAttributes>[] = [
 	{
 		// Case de sélection d'une ou plusieurs lignes.
 		id: "select",
@@ -36,14 +30,14 @@ export const columns: (
 					table.getIsAllPageRowsSelected()
 					|| ( table.getIsSomePageRowsSelected() && "indeterminate" )
 				}
-				aria-label={messages.select_all}
+				aria-label={table.options.meta?.messages.select_all}
 				onCheckedChange={( value ) => table.toggleAllPageRowsSelected( !!value )}
 			/>
 		),
-		cell: ( { row } ) => (
+		cell: ( { table, row } ) => (
 			<Checkbox
 				checked={row.getIsSelected()}
-				aria-label={messages.select_line}
+				aria-label={table.options.meta?.messages.select_line}
 				onCheckedChange={( value ) => row.toggleSelected( !!value )}
 			/>
 		),
@@ -53,15 +47,21 @@ export const columns: (
 	{
 		// Nom du fichier.
 		accessorKey: "name",
-		header: ( { column } ) => (
-			<ColumnHeader column={column} title={messages.name} />
+		header: ( { table, column } ) => (
+			<ColumnHeader
+				title={table.options.meta?.messages.name ?? ""}
+				column={column}
+			/>
 		)
 	},
 	{
 		// Propriétaire du fichier.
 		accessorKey: "owner",
-		header: ( { column } ) => (
-			<ColumnHeader column={column} title={messages.owner} />
+		header: ( { table, column } ) => (
+			<ColumnHeader
+				title={table.options.meta?.messages.owner ?? ""}
+				column={column}
+			/>
 		),
 		cell: ( { row } ) => (
 			<HoverCard>
@@ -115,15 +115,21 @@ export const columns: (
 	{
 		// Type du fichier.
 		accessorKey: "type",
-		header: ( { column } ) => (
-			<ColumnHeader column={column} title={messages.type} />
+		header: ( { table, column } ) => (
+			<ColumnHeader
+				title={table.options.meta?.messages.size ?? ""}
+				column={column}
+			/>
 		)
 	},
 	{
 		// Taille du fichier (en octets).
 		accessorKey: "size",
-		header: ( { column } ) => (
-			<ColumnHeader column={column} title={messages.type} />
+		header: ( { table, column } ) => (
+			<ColumnHeader
+				title={table.options.meta?.messages.type ?? ""}
+				column={column}
+			/>
 		),
 		cell: ( { row } ) => formatSize( row.original.versions[ 0 ].size )
 	},
@@ -137,16 +143,19 @@ export const columns: (
 
 			return dateA > dateB ? 1 : ( dateA < dateB && -1 ) || 0;
 		},
-		header: ( { column } ) => (
-			<ColumnHeader column={column} title={messages.date} />
+		header: ( { table, column } ) => (
+			<ColumnHeader
+				title={table.options.meta?.messages.date ?? ""}
+				column={column}
+			/>
 		),
-		cell: ( { row } ) =>
+		cell: ( { table, row } ) =>
 		{
 			const { date } = row.original.versions[ 0 ];
 
 			return (
 				<time dateTime={date.toISOString()} suppressHydrationWarning>
-					{new Intl.DateTimeFormat( language, {
+					{new Intl.DateTimeFormat( table.options.meta?.locale, {
 						year: "numeric",
 						month: "short",
 						day: "numeric",
