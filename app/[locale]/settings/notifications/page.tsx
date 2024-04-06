@@ -4,7 +4,7 @@
 
 // Importation des dépendances.
 import { lazy } from "react";
-import { type Session } from "next-auth";
+import { redirect } from "next/navigation";
 import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
@@ -26,7 +26,14 @@ export default async function Page( {
 	unstable_setRequestLocale( locale );
 
 	// Déclaration des constantes.
+	const session = await auth();
 	const messages = await getTranslations();
+
+	// Vérification de la session utilisateur.
+	if ( !session )
+	{
+		redirect( "/" );
+	}
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -46,7 +53,7 @@ export default async function Page( {
 			<Separator />
 
 			{/* Formulaire de signalement d'un bogue */}
-			<Notifications session={( await auth() ) as Session} />
+			<Notifications session={session} />
 		</>
 	);
 }

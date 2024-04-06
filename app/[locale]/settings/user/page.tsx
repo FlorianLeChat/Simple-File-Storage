@@ -5,8 +5,8 @@
 // Importation des dépendances.
 import qrCode from "qrcode";
 import { lazy } from "react";
+import { redirect } from "next/navigation";
 import { TOTP, Secret } from "otpauth";
-import { type Session } from "next-auth";
 import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
@@ -30,7 +30,15 @@ export default async function Page( {
 
 	// Déclaration des constantes.
 	const messages = await getTranslations();
-	const session = ( await auth() ) as Session;
+	const session = await auth();
+
+	// Vérification de la session utilisateur.
+	if ( !session )
+	{
+		redirect( "/" );
+	}
+
+	// Génération du code secret pour l'authentification à deux facteurs.
 	const secret = new Secret();
 	const meta = await generateMetadata();
 	const otp = new TOTP( {
