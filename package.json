@@ -74,6 +74,7 @@
     "lucide-react": "~0.363",
     "tailwind-merge": "~2.2",
     "@aws-sdk/types": "~3.535",
+    "@faker-js/faker": "~8.4",
     "@playwright/test": "~1.42",
     "@cspell/dict-fr-fr": "~2.2",
     "eslint-config-next": "~14.1",
