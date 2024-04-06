@@ -22,7 +22,11 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 // Déclaration des colonnes du tableau.
 export const columns: (
 	messages: Record<string, string>,
-) => ColumnDef<FileAttributes>[] = ( messages: Record<string, string> ) => [
+	language: string,
+) => ColumnDef<FileAttributes>[] = (
+	messages: Record<string, string>,
+	language: string
+) => [
 	{
 		// Case de sélection d'une ou plusieurs lignes.
 		id: "select",
@@ -142,7 +146,7 @@ export const columns: (
 
 			return (
 				<time dateTime={date.toISOString()} suppressHydrationWarning>
-					{new Intl.DateTimeFormat( undefined, {
+					{new Intl.DateTimeFormat( language, {
 						year: "numeric",
 						month: "short",
 						day: "numeric",

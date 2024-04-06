@@ -8,7 +8,6 @@
 import { X } from "lucide-react";
 import { columns } from "@/config/columns";
 import { useState } from "react";
-import { useMessages } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 import { type TableMeta,
@@ -22,6 +21,7 @@ import { type TableMeta,
 	getFilteredRowModel,
 	getPaginationRowModel } from "@tanstack/react-table";
 import type { FileAttributes } from "@/interfaces/File";
+import { useLocale, useMessages } from "next-intl";
 
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -89,7 +89,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 			columnFilters,
 			columnVisibility
 		},
-		columns: columns( messages.dashboard ),
+		columns: columns( messages.dashboard, useLocale() ),
 		getRowId: ( row ) => row.uuid,
 		initialState: {
 			pagination: {
