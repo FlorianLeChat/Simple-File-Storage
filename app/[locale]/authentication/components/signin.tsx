@@ -170,7 +170,7 @@ export default function SignInForm()
 					name="password"
 					control={form.control}
 					render={( { field } ) => (
-						<FormItem className="flex gap-2">
+						<FormItem>
 							<FormLabel className="sr-only">
 								{messages( "fields.password_label" )}
 							</FormLabel>
@@ -188,7 +188,7 @@ export default function SignInForm()
 										)}
 										onFocus={() => setFocused( true )}
 										disabled={isLoading}
-										className={`!mt-0 transition-opacity ${
+										className={`!mt-0 mr-2 inline-block w-[calc(100%-40px-0.5rem)] transition-opacity ${
 											!isFocused ? "opacity-25" : ""
 										}`}
 										maxLength={
@@ -208,7 +208,7 @@ export default function SignInForm()
 									<TooltipTrigger
 										type="button"
 										className={merge(
-											`!mt-0 transition-opacity ${
+											`!mt-0 align-bottom transition-opacity ${
 												!isFocused && "opacity-25"
 											}`,
 											buttonVariants( {
