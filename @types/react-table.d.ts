@@ -10,5 +10,11 @@ declare module "@tanstack/table-core" {
 
 		// Fonction de mise à jour des fichiers.
 		setFiles: Dispatch<SetStateAction<FileAttributes[]>>;
+
+		// Langue actuelle de l'utilisateur.
+		locale: string;
+
+		// Traductions des messages.
+		messages: Record<string, string>;
 	}
 }
