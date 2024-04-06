@@ -10,8 +10,8 @@ import { useState } from "react";
 import serverAction from "@/utilities/recaptcha";
 import { formatSize } from "@/utilities/react-table";
 import type { TableMeta } from "@tanstack/react-table";
-import { useTranslations } from "next-intl";
 import type { FileAttributes } from "@/interfaces/File";
+import { useLocale, useTranslations } from "next-intl";
 import { Ban, Check, History, ArrowUpRight } from "lucide-react";
 
 import RequestKey from "./request-key";
@@ -46,6 +46,7 @@ export default function FileHistory( {
 } )
 {
 	// Déclaration des variables d'état.
+	const locale = useLocale();
 	const formMessages = useTranslations( "form" );
 	const historyMessages = useTranslations( "modals.file_history" );
 	const restoreMessages = useTranslations( "modals.restore_version" );
@@ -182,17 +183,14 @@ export default function FileHistory( {
 								{/* Nom de la révision */}
 								<h3>
 									{historyMessages( "details", {
-										date: new Intl.DateTimeFormat(
-											undefined,
-											{
-												year: "numeric",
-												month: "long",
-												day: "numeric",
-												hour: "numeric",
-												minute: "numeric",
-												second: "numeric"
-											}
-										).format( version.date )
+										date: new Intl.DateTimeFormat( locale, {
+											year: "numeric",
+											month: "long",
+											day: "numeric",
+											hour: "numeric",
+											minute: "numeric",
+											second: "numeric"
+										} ).format( version.date )
 									} )}
 								</h3>
 

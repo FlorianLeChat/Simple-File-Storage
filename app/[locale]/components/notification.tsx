@@ -7,8 +7,8 @@
 import { toast } from "sonner";
 import serverAction from "@/utilities/recaptcha";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { BellRing, Check, Loader2 } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useCallback, useState } from "react";
 
 import { Dialog,
@@ -37,6 +37,7 @@ export default function Notifications()
 {
 	// Déclaration des variables d'état.
 	const router = useRouter();
+	const locale = useLocale();
 	const formMessages = useTranslations( "form" );
 	const modalMessages = useTranslations( "modals.notifications" );
 	const [ isOpen, setOpen ] = useState( false );
@@ -247,17 +248,14 @@ export default function Notifications()
 											className="text-xs text-muted-foreground"
 											suppressHydrationWarning
 										>
-											{new Intl.DateTimeFormat(
-												undefined,
-												{
-													year: "numeric",
-													month: "long",
-													day: "numeric",
-													hour: "numeric",
-													minute: "numeric",
-													second: "numeric"
-												}
-											).format( notification.createdAt )}
+											{new Intl.DateTimeFormat( locale, {
+												year: "numeric",
+												month: "long",
+												day: "numeric",
+												hour: "numeric",
+												minute: "numeric",
+												second: "numeric"
+											} ).format( notification.createdAt )}
 										</time>
 									</section>
 								</li>
