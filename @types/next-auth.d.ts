@@ -1,49 +1,42 @@
 // Types pour les propriétés personnalisées des sessions et des utilisateurs.
 // Source : https://next-auth.js.org/getting-started/typescript#module-augmentation
-import type { DefaultSession, User } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 
-declare module "@auth/core/types" {
+declare module "next-auth" {
+	// Types relatifs aux utilisateurs.
+	interface User {
+		id: string;
+		otp?: string;
+		role: string;
+		image?: string;
+		password?: password;
+		notification: string;
+		emailVerified: Date | null;
+	}
+
+	// Types relatifs aux sessions.
 	interface Session {
-		user: {
-			id: string;
-			otp?: string;
-			role: string;
-			oauth: boolean;
-			preferences: {
-				font: string;
-				theme: string;
-				color: string;
-				public: boolean;
-				extension: boolean;
-				versions: boolean;
-				default?: boolean;
-			};
-			notification: string;
-		} & DefaultSession["user"];
+		user: {} & JWT;
+		expires: ISODateString;
 	}
 }
 
-// Correctifs pour les différences entre les types d'adaptateurs.
-// Sources : https://github.com/nextauthjs/next-auth/issues/6640 et https://github.com/nextauthjs/next-auth/issues/7003
-declare module "@auth/core/adapters" {
-	interface AdapterUser extends User {
-		// Propriétés par défaut.
+declare module "next-auth/jwt" {
+	// Types relatifs aux jetons JWT.
+	export interface JWT {
 		id: string;
-		email: string;
-		password: string;
-		emailVerified?: Date;
-
-		// Propriétés personnalisées.
 		otp?: string;
 		role: string;
 		oauth: boolean;
-		preferences?: {
+		image?: string;
+		preferences: {
 			font: string;
 			theme: string;
 			color: string;
 			public: boolean;
 			extension: boolean;
 			versions: boolean;
+			default?: boolean;
 		};
 		notification: string;
 	}
