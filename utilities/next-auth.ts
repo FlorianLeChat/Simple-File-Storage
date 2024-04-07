@@ -2,15 +2,16 @@
 // Options de configuration de Next Auth.
 //  Source : https://authjs.dev/guides/providers/custom-provider
 //
-import Email from "@auth/core/providers/nodemailer";
+import Email from "next-auth/providers/nodemailer";
 import bcrypt from "bcrypt";
 import prisma from "@/utilities/prisma";
-import Google from "@auth/core/providers/google";
-import GitHub from "@auth/core/providers/github";
+import Google from "next-auth/providers/google";
+import GitHub from "next-auth/providers/github";
 import { join } from "path";
 import { readdir } from "fs/promises";
-import Credentials from "@auth/core/providers/credentials";
+import Credentials from "next-auth/providers/credentials";
 import { existsSync } from "fs";
+import type { Adapter } from "next-auth/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import sendVerificationRequest from "@/utilities/node-mailer";
 import NextAuth, { type NextAuthConfig } from "next-auth";
@@ -22,14 +23,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 		signOut: "/",
 		verifyRequest: "/authentication?error=ValidationRequired"
 	},
+	session: {
+		strategy: "jwt"
+	},
 	basePath: `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`,
-	adapter: PrismaAdapter( prisma ),
+	adapter: PrismaAdapter( prisma ) as Adapter, // https://github.com/nextauthjs/next-auth/issues/9493#issuecomment-1871601543
 	callbacks: {
-		// Gestion des rôles d'utilisateurs.
-		//  Source : https://authjs.dev/guides/basics/role-based-access-control#with-database
-		async session( { session, user } )
+		// Gestion des données du jeton JWT.
+		//  Source : https://authjs.dev/guides/basics/role-based-access-control#with-jwt
+		async jwt( { token, user } )
 		{
-			if ( session )
+			if ( token && user )
 			{
 				// Ajout de propriétés personnalisées à la session.
 				const otp = await prisma.otp.findUnique( {
@@ -44,11 +48,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 					}
 				} );
 
-				session.user.id = user.id;
-				session.user.otp = otp?.secret;
-				session.user.role = user.role;
-				session.user.oauth = !user.password && !user.emailVerified;
-				session.user.preferences = preferences ?? {
+				token.id = user.id as string;
+				token.otp = otp?.secret;
+				token.role = user.role;
+				token.oauth = !user.password && !user.emailVerified;
+				token.preferences = preferences ?? {
 					font: "inter",
 					theme: "light",
 					color: "blue",
@@ -57,7 +61,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 					versions: true,
 					default: true // Utilisation des préférences par défaut.
 				};
-				session.user.notification = user.notification;
+				token.notification = user.notification;
 
 				// Vérification de l'existence du dossier d'enregistrement
 				//  des avatars utilisateurs.
@@ -66,14 +70,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 				if ( existsSync( avatars ) )
 				{
 					// Vérification de l'existence d'un avatar personnalisé.
-					const avatar = ( await readdir( avatars ) ).find( ( file ) => file.includes( user.id ) );
+					const avatar = ( await readdir( avatars ) ).find( ( file ) => file.includes( token.id ) );
 
 					if ( avatar )
 					{
 						// Définition de l'avatar personnalisé de l'utilisateur.
-						session.user.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }`;
+						token.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }`;
 					}
 				}
+			}
+
+			return token;
+		},
+		// Gestion données de session en base de données.
+		//  Source : https://authjs.dev/guides/basics/role-based-access-control#with-database
+		async session( { session, token } )
+		{
+			if ( session && token )
+			{
+				session.user.id = token.id;
+				session.user.otp = token.otp;
+				session.user.role = token.role;
+				session.user.oauth = token.oauth;
+				session.user.image = token.image;
+				session.user.preferences = token.preferences;
+				session.user.notification = token.notification;
 			}
 
 			return session;
