@@ -22,6 +22,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 		signOut: "/",
 		verifyRequest: "/authentication?error=ValidationRequired"
 	},
+	basePath: `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`,
 	adapter: PrismaAdapter( prisma ),
 	callbacks: {
 		// Gestion des rôles d'utilisateurs.
