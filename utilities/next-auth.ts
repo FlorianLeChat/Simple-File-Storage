@@ -26,8 +26,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 	session: {
 		strategy: "jwt"
 	},
-	basePath: `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`,
 	adapter: PrismaAdapter( prisma ) as Adapter, // https://github.com/nextauthjs/next-auth/issues/9493#issuecomment-1871601543
+	basePath: `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`,
+	trustHost: true,
 	callbacks: {
 		// Gestion des données du jeton JWT.
 		//  Source : https://authjs.dev/guides/basics/role-based-access-control#with-jwt
