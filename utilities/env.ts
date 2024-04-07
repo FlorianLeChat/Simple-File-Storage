@@ -43,7 +43,6 @@ const schema = z.object( {
 	DKIM_SELECTOR: z.string().min( 1 ),
 	DKIM_PRIVATE_KEY: z.string().min( 1 ),
 
-	AUTH_URL: z.string().url(),
 	AUTH_SECRET: z.string().min( 1 ),
 
 	NEXT_PUBLIC_AUTH_GOOGLE_ENABLED: z.enum( [ "true", "false" ] ),
