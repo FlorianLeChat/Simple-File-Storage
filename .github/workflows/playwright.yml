@@ -25,6 +25,8 @@ jobs:
           sed -i 's#^DATABASE_URL=.*#DATABASE_URL="file:data.db"#' .env
           sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env
           npm run migrate
+          npx tsc scripts/create-fake-accounts.ts
+          node scripts/create-fake-accounts.js
       - name: Build website
         run: npm run build
       - name: Install Playwright Browsers
