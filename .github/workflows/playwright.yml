@@ -16,14 +16,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
+      - name: Install dependencies
+        run: npm install
       - name: Prepare test environment
         run: |
           sed -i 's/provider = "mysql"/provider = "sqlite"/g' prisma/schema.prisma
           sed -i 's/@db\.Text//g' prisma/schema.prisma
           sed -i 's#^DATABASE_URL=.*#DATABASE_URL="file:data.db"#' .env
           sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env
-      - name: Install dependencies
-        run: npm install
+          npm run migrate
       - name: Build website
         run: npm run build
       - name: Install Playwright Browsers
