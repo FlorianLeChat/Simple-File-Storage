@@ -29,9 +29,8 @@ export async function signUpAccount(
 	// On tente de valider les informations d'authentification fournies
 	//  par l'utilisateur.
 	const messages = await getTranslations();
-	const result = schema.safeParse( {
-		email: formData.get( "email" ),
-		password: ""
+	const result = schema.pick( { email: true } ).safeParse( {
+		email: formData.get( "email" )
 	} );
 
 	if ( !result.success )
