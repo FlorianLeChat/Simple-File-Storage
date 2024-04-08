@@ -18,6 +18,15 @@ const script = async () =>
 	//  d'un compte utilisateur factice.
 	const prisma = new PrismaClient();
 
+	// Suppression des anciens comptes utilisateurs factices.
+	await prisma.user.deleteMany( {
+		where: {
+			email: {
+				startsWith: "test"
+			}
+		}
+	} );
+
 	// Génération de 5 comptes utilisateurs factices.
 	await prisma.user.createMany( {
 		data: Array.from( [ 1, 2, 3, 4, 5 ], ( index ) => ( {
