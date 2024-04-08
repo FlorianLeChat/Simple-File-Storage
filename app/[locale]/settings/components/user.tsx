@@ -177,6 +177,13 @@ export default function User( {
 					// Activation de l'état de chargement.
 					setLoading( true );
 
+					// Définition d'une valeur par défaut pour le code
+					//  de l'authentification à deux facteurs.
+					if ( !formData.has( "otp" ) )
+					{
+						formData.set( "otp", form.getValues( "otp" ) );
+					}
+
 					// Exécution de l'action côté serveur.
 					return serverAction( updateAction, formData );
 				}}
