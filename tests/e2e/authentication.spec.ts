@@ -8,9 +8,6 @@ test.beforeEach( async ( { page } ) =>
 {
 	// Accès à la page d'authentification.
 	await page.goto( "/authentication" );
-
-	// Attente de la fin du chargement de la page.
-	await page.locator( ".loading" ).waitFor( { state: "hidden" } );
 } );
 
 //
@@ -21,7 +18,7 @@ test( "Création d'un compte utilisateur inédit", async ( { page } ) =>
 	// Clic sur l'onglet « Inscription ».
 	await page.getByRole( "tab", { name: "Register" } ).click();
 
-	// Remplissage du champ de saisie de l'adresse éléctronique.
+	// Remplissage du champ de saisie de l'adresse électronique.
 	await page.getByPlaceholder( "name@domain.com" ).fill( faker.internet.email() );
 
 	// Clic sur le bouton de création de compte.
@@ -43,14 +40,14 @@ test( "Création d'un compte utilisateur déjà existant", async ( { page } ) =>
 	// Clic sur l'onglet « Inscription ».
 	await page.getByRole( "tab", { name: "Register" } ).click();
 
-	// Remplissage du champ de saisie de l'adresse éléctronique.
+	// Remplissage du champ de saisie de l'adresse électronique.
 	await page.getByPlaceholder( "name@domain.com" ).fill( "test1@gmail.com" );
 
 	// Clic sur le bouton de création de compte.
 	await page.getByText( "Register by email" ).click();
 
 	// Attente de la réponse du serveur sous forme de notification.
-	//  Note : la réponse sera négative car l'adresse éléctronique
+	//  Note : la réponse sera négative car l'adresse électronique
 	//   est déjà utilisée par un autre compte utilisateur.
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = error]" )
@@ -65,7 +62,7 @@ test( "Connexion échouée à un compte utilisateur", async ( { page } ) =>
 	// Clic sur l'onglet « Connexion ».
 	await page.getByRole( "tab", { name: "Login" } ).click();
 
-	// Remplissage des champs de saisie de l'adresse éléctronique et du mot de passe.
+	// Remplissage des champs de saisie de l'adresse électronique et du mot de passe.
 	await page.getByPlaceholder( "name@domain.com" ).fill( "test1@gmail.com" );
 	await page.getByPlaceholder( "@MyPassword123!" ).fill( "WrongPassword!" );
 
@@ -87,7 +84,7 @@ test( "Connexion réussie à un compte utilisateur", async ( { page } ) =>
 	// Clic sur l'onglet « Connexion ».
 	await page.getByRole( "tab", { name: "Login" } ).click();
 
-	// Remplissage des champs de saisie de l'adresse éléctronique et du mot de passe.
+	// Remplissage des champs de saisie de l'adresse électronique et du mot de passe.
 	await page.getByPlaceholder( "name@domain.com" ).fill( "test1@gmail.com" );
 	await page.getByPlaceholder( "@MyPassword123!" ).fill( "Florian4016" );
 
@@ -106,7 +103,7 @@ test( "Déconnexion d'un compte utilisateur", async ( { page } ) =>
 	// Clic sur l'onglet « Connexion ».
 	await page.getByRole( "tab", { name: "Login" } ).click();
 
-	// Remplissage des champs de saisie de l'adresse éléctronique et du mot de passe.
+	// Remplissage des champs de saisie de l'adresse électronique et du mot de passe.
 	await page.getByPlaceholder( "name@domain.com" ).fill( "test1@gmail.com" );
 	await page.getByPlaceholder( "@MyPassword123!" ).fill( "Florian4016" );
 
