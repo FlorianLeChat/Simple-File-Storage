@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import { execSync } from "child_process";
 import { test, expect } from "@playwright/test";
 
 //
@@ -6,6 +7,9 @@ import { test, expect } from "@playwright/test";
 //
 test.beforeEach( async ( { page } ) =>
 {
+	// Réinitialisation des comptes utilisateurs factices.
+	execSync( "node scripts/create-fake-accounts.js" );
+
 	// Accès à la page d'authentification.
 	await page.goto( "/authentication" );
 } );
