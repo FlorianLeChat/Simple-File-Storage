@@ -144,6 +144,9 @@ export default function Notifications()
 			// Suppression de toutes les notifications.
 			setNotifications( [] );
 
+			// Récupération des notifications mises à jour.
+			fetchNotifications();
+
 			// Envoi d'une notification de succès.
 			toast.success( formMessages( "infos.action_success" ), {
 				description: formMessages( "infos.notifications_read" )
