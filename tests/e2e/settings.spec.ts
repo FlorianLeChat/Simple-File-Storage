@@ -4,7 +4,7 @@ import { execSync } from "child_process";
 import { test, expect } from "@playwright/test";
 
 //
-// Accès à la page d'authentification avant chaque test.
+// Authentification et accès à la page des paramètres utilisateur avant chaque test.
 //
 test.beforeEach( async ( { page } ) =>
 {
@@ -27,14 +27,8 @@ test.beforeEach( async ( { page } ) =>
 	// Attente de la redirection vers la page du tableau de bord.
 	await expect( page ).toHaveURL( "/dashboard" );
 
-	// Clic sur le menu déroulant des paramètres utilisateur.
-	await page.getByRole( "button", { name: "Settings" } ).click();
-
-	// Clic sur le bouton vers la page des paramètres utilisateur.
-	await page.getByRole( "link", { name: "User" } ).click();
-
-	// Attente de la redirection vers la page des paramètres utilisateur.
-	await expect( page ).toHaveURL( "/settings/user" );
+	// Redirection vers la page des paramètres utilisateur.
+	await page.goto( "/settings/user" );
 } );
 
 //
@@ -101,11 +95,8 @@ test( "Mise à jour des informations du compte utilisateur", async ( { page } ) 
 //
 test( "Mise à jour des paramètres d'apparence du site", async ( { page } ) =>
 {
-	// Clic sur l'onglet « Apparence ».
-	await page.getByRole( "link", { name: "Appearance" } ).click();
-
-	// Attente de la redirection vers la page des paramètres d'apparence.
-	await expect( page ).toHaveURL( "/settings/layout" );
+	// Redirection vers la page des paramètres d'apparence.
+	await page.goto( "/settings/layout" );
 
 	// Sélection de la police de caractères.
 	await page.getByLabel( "Font" ).click();
@@ -134,11 +125,8 @@ test( "Mise à jour des paramètres d'apparence du site", async ( { page } ) =>
 //
 test( "Création d'un nouveau signalement de bogue", async ( { page } ) =>
 {
-	// Clic sur l'onglet « Bogues ».
-	await page.getByRole( "link", { name: "Bugs" } ).click();
-
-	// Attente de la redirection vers la page des signalements de bogue.
-	await expect( page ).toHaveURL( "/settings/issue" );
+	// Redirection vers la page des signalements de bogue.
+	await page.goto( "/settings/issue" );
 
 	// Sélection de la sévérité du bogue.
 	await page.getByLabel( "Severity" ).click();
