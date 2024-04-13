@@ -18,13 +18,6 @@ const schema = z.object( {
 	SENTRY_PROJECT: z.string().min( 1 ),
 	SENTRY_AUTH_TOKEN: z.string().min( 1 ).startsWith( "sntrys_" ),
 
-	S3_ENABLED: z.enum( [ "true", "false" ] ),
-	S3_REGION: z.string().min( 1 ),
-	S3_ENDPOINT: z.string().url(),
-	S3_BUCKET_NAME: z.string().min( 1 ),
-	S3_ACCESS_KEY_ID: z.string().min( 16 ).max( 128 ),
-	S3_SECRET_ACCESS_KEY: z.string().min( 16 ).max( 128 ),
-
 	NEXT_PUBLIC_RECAPTCHA_ENABLED: z.enum( [ "true", "false" ] ),
 	NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY: z.string().length( 40 ).startsWith( "6Ld" ),
 	RECAPTCHA_SECRET_KEY: z.string().length( 40 ).startsWith( "6Ld" ),
