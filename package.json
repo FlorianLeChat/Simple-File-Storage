@@ -44,12 +44,10 @@
     "@sentry/nextjs": "~7.109",
     "react-hook-form": "~7.51",
     "react-day-picker": "~8.10",
-    "@aws-sdk/client-s3": "~3.540",
     "@hookform/resolvers": "~3.3",
     "@next/third-parties": "~14.1",
     "@auth/prisma-adapter": "~1.5",
-    "vanilla-cookieconsent": "~3.0",
-    "@aws-sdk/s3-presigned-post": "~3.540"
+    "vanilla-cookieconsent": "~3.0"
   },
   "devDependencies": {
     "@types/node": "~20.12",
@@ -73,7 +71,6 @@
     "autoprefixer": "~10.4",
     "lucide-react": "~0.363",
     "tailwind-merge": "~2.2",
-    "@aws-sdk/types": "~3.535",
     "@faker-js/faker": "~8.4",
     "@playwright/test": "~1.42",
     "@cspell/dict-fr-fr": "~2.2",
