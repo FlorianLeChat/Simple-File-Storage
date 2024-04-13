@@ -29,7 +29,7 @@ export default function Template( { children }: { children: ReactNode } )
 			setTimeout( () =>
 			{
 				toast.error( messages( "internal_error" ), {
-					description: error
+					description: messages( "server_error" )
 				} );
 			}, 0 );
 		}
