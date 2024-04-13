@@ -1,7 +1,5 @@
 name: simple-file-storage
 
-version: "3.8"
-
 networks:
     simple_file_storage:
         driver: bridge
