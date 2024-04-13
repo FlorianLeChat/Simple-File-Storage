@@ -10,20 +10,26 @@ datasource db {
 
 // Déclaration des modèles de données pour Next Auth.
 model Account {
-	user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-	userId            String
-	type              String
-	provider          String
-	providerAccountId String
-	refresh_token     String?  @map("refreshToken") @db.Text
-	access_token      String?  @map("accessToken") @db.Text
-	expires_at        Int?     @map("expiresAt")
-	token_type        String?  @map("tokenType")
-	scope             String?
-	id_token          String?  @map("idToken") @db.Text
-	session_state     String?  @map("sessionState")
+	id                       String  @id @default(uuid())
+	userId                   String  @unique
+	type                     String
+	provider                 String
+	providerAccountId        String
+	refresh_token            String? @map("refreshToken") @db.Text
+	access_token             String? @map("accessToken") @db.Text
+	expires_at               Int?    @map("expiresAt")
+	token_type               String? @map("tokenType")
+	scope                    String?
+	id_token                 String? @map("idToken") @db.Text
+	session_state            String? @map("sessionState")
+	refresh_token_expires_in Int?    @map("refreshTokenExpiresIn")
+	user                     User?   @relation(fields: [userId], references: [id])
 
-	@@id([provider, providerAccountId])
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+
+	@@unique([provider, providerAccountId])
+	@@index([userId])
 }
 
 model Issue {
@@ -102,6 +108,8 @@ model User {
 	password      String?
 	notification  String    @default("necessary")
 	emailVerified DateTime?
+	createdAt     DateTime  @default(now())
+	updatedAt     DateTime  @updatedAt
 	image         String?
 	role          String    @default("user")
 	otp           Otp?
@@ -115,8 +123,8 @@ model User {
 
 model VerificationToken {
 	identifier String
-	token      String   @unique
+	token      String
 	expires    DateTime
 
-	@@id([identifier, token])
+	@@unique([identifier, token])
 }
