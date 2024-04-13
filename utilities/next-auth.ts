@@ -52,6 +52,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( {
 				token.id = user.id as string;
 				token.otp = otp?.secret;
 				token.role = user.role;
+				token.image = user.image ?? undefined;
 				token.oauth = !user.password && !user.emailVerified;
 				token.preferences = preferences ?? {
 					font: "inter",

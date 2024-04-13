@@ -230,10 +230,10 @@ export default async function Layout( {
 	const messages = await getMessages();
 
 	// Récupération des préférences de l'utilisateur.
-	const font = session?.user.preferences.font ?? "inter";
-	const theme = session?.user.preferences.theme ?? "light";
-	const color = session?.user.preferences.color ?? "blue";
-	const factory = session?.user.preferences.default ?? true;
+	const font = session?.user.preferences?.font ?? "inter";
+	const theme = session?.user.preferences?.theme ?? "light";
+	const color = session?.user.preferences?.color ?? "blue";
+	const factory = session?.user.preferences?.default ?? true;
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -252,7 +252,7 @@ export default async function Layout( {
 			{/* En-tête de la page */}
 			<head>
 				{/* Mise à jour de l'apparence (utilisateurs anonymes ou sans préférences) */}
-				{( !session || session?.user.preferences.default ) && (
+				{( !session || session?.user.preferences?.default ) && (
 					<script
 						dangerouslySetInnerHTML={{
 							__html: `
