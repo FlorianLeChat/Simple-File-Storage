@@ -138,6 +138,7 @@ export async function signInAccount(
 		//  vers la page de son tableau de bord.
 		const response = await signIn( "credentials", {
 			email: result.data.email,
+			redirect: false,
 			password: result.data.password,
 			redirectTo: "/dashboard"
 		} );
@@ -154,10 +155,13 @@ export async function signInAccount(
 
 			if ( authCookie )
 			{
+				const time = 24 * 60 * 60 * ( result.data.remembered ? 30 : 1 );
+
 				cookiesList.set( {
 					// https://github.com/nextauthjs/next-auth/blob/065b7e9d9b8d046758e381c88ef351e65764ea5f/packages/core/src/index.ts#L238-L243
 					...authCookie,
-					maxAge: 24 * 60 * 60 * ( result.data.remembered ? 30 : 1 )
+					maxAge: time,
+					expires: new Date( Date.now() + time )
 				} );
 			}
 
