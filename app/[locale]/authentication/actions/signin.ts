@@ -8,7 +8,6 @@
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
 import { TOTP } from "otpauth";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { auth, signIn } from "@/utilities/next-auth";
@@ -136,37 +135,12 @@ export async function signInAccount(
 		// On tente alors une authentification via les informations
 		//  d'authentification fournies avant de rediriger l'utilisateur
 		//  vers la page de son tableau de bord.
-		const response = await signIn( "credentials", {
+		await signIn( "credentials", {
 			email: result.data.email,
-			redirect: false,
 			password: result.data.password,
+			remembered: result.data.remembered,
 			redirectTo: "/dashboard"
 		} );
-
-		if ( response )
-		{
-			// Lorsqu'une réponse semble avoir été récupérée précédemment,
-			//  on tente alors de mettre à jour la durée de vie du cookie
-			//  d'authentification de l'utilisateur avant de le rediriger
-			//  vers la page de la réponse.
-			//   Source : https://github.com/nextauthjs/next-auth/discussions/3794
-			const cookiesList = cookies();
-			const authCookie = cookiesList.get( "authjs.session-token" );
-
-			if ( authCookie )
-			{
-				const time = 24 * 60 * 60 * ( result.data.remembered ? 30 : 1 );
-
-				cookiesList.set( {
-					// https://github.com/nextauthjs/next-auth/blob/065b7e9d9b8d046758e381c88ef351e65764ea5f/packages/core/src/index.ts#L238-L243
-					...authCookie,
-					maxAge: time,
-					expires: new Date( Date.now() + time )
-				} );
-			}
-
-			redirect( response );
-		}
 	}
 	catch ( error )
 	{
