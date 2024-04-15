@@ -51,7 +51,7 @@ test( "Mise à jour des informations du compte utilisateur", async ( { page } ) 
 	// Téléversement d'un nouvel avatar.
 	await page
 		.getByLabel( "Avatar" )
-		.setInputFiles( join( __dirname, "static/avatar.jpg" ) );
+		.setInputFiles( join( __dirname, "static/duck.jpg" ) );
 	await page.getByRole( "button", { name: "Update" } ).click();
 
 	// Attente de la réponse du serveur sous forme de notification.
