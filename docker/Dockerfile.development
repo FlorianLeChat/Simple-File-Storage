@@ -4,8 +4,9 @@
 # https://hub.docker.com/_/node
 FROM node:lts-alpine
 
-# Add cURL for health check and OpenSSL for generating random secret
-RUN apk update && apk add --no-cache curl openssl
+# Add cURL for health check, OpenSSL for generating random secret
+#  and SuperCronic for cronjobs
+RUN apk update && apk add --no-cache curl openssl supercronic
 
 # Set the working directory to the website files
 WORKDIR /usr/src/app
@@ -25,6 +26,11 @@ RUN --mount=type=cache,target=.npm \
 	npm set cache .npm && \
 	npm install && chown -R node:node ./node_modules
 
+# Add some cronjobs for automated tasks
+RUN npx tsc scripts/create-fake-accounts.ts scripts/expired-files.ts scripts/outdated-notifications.ts
+RUN echo "*/5 * * * * node /usr/src/app/scripts/expired-files.js > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
+RUN echo "*/5 * * * * node /usr/src/app/scripts/outdated-notifications > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
+
 # Add wait script to wait for other services to be ready
 ADD https://github.com/ufoscout/docker-compose-wait/releases/latest/download/wait /wait
 RUN chmod +x /wait
@@ -36,6 +42,6 @@ USER node
 RUN sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env
 
 # Create a custom entrypoint script
-RUN echo "/wait && npm run migrate && npm run dev" > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
+RUN echo "/wait && npm run migrate && node scripts/create-fake-accounts.js && supercronic /etc/crontabs/node && npm run dev" > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
 
 CMD ["docker/entrypoint.sh"]
