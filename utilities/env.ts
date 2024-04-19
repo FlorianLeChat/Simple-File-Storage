@@ -16,7 +16,7 @@ const schema = z.object( {
 	SENTRY_DSN: z.string().url(),
 	SENTRY_ORG: z.string().min( 1 ),
 	SENTRY_PROJECT: z.string().min( 1 ),
-	SENTRY_AUTH_TOKEN: z.string().min( 1 ).startsWith( "sntrys_" ),
+	SENTRY_AUTH_TOKEN: z.string().min( 1 ),
 
 	NEXT_PUBLIC_RECAPTCHA_ENABLED: z.enum( [ "true", "false" ] ),
 	NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY: z.string().length( 40 ).startsWith( "6Ld" ),
