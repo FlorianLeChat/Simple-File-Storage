@@ -234,12 +234,12 @@ export default function Storage( { session }: { session: Session } )
 					{isLoading ? (
 						<>
 							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Veuillez patienter...
+							{messages( "loading" )}
 						</>
 					) : (
 						<>
 							<RefreshCw className="mr-2 h-4 w-4" />
-							Mettre à jour
+							{messages( "update" )}
 						</>
 					)}
 				</Button>
