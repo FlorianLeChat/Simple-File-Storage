@@ -265,6 +265,19 @@ export async function uploadFiles(
 					? await compressFile( buffer, extension.replace( ".", "" ) )
 					: buffer;
 
+				if ( result.data.compression )
+				{
+					// Mise à jour de la taille de la version après compression.
+					await prisma.version.update( {
+						where: {
+							id: versionId
+						},
+						data: {
+							size: `${ compressed.length }`
+						}
+					} );
+				}
+
 				await writeFile(
 					join( fileFolder, `${ versionId }${ extension }` ),
 					result.data.encryption
