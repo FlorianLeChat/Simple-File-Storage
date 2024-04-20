@@ -50,7 +50,45 @@ test( "Téléversement d'un fichier valide", async ( { page } ) =>
 } );
 
 //
-// Téléversement d'un deuxième fichier vide (sans contenu).
+// Téléversement d'un deuxième fichier valide et public.
+//
+test( "Téléversement d'un fichier public par défaut", async ( { page } ) =>
+{
+	// Accès aux paramètres utilisateur concernant le stockage.
+	await page.goto( "/settings/storage" );
+
+	// Activation de la publication automatique des fichiers téléversés.
+	await page
+		.getByLabel(
+			"Enable automatic publication of uploaded files to the server"
+		)
+		.click();
+	await page.getByRole( "button", { name: "Update" } ).click();
+
+	// Retour à la page du tableau de bord et ouverture de la fenêtre de dialogue
+	//  pour ajouter un fichier.
+	await page.goto( "/dashboard" );
+	await page.locator( "button" ).filter( { hasText: "Add a file" } ).click();
+
+	// Ajout d'une image quelconque.
+	await page
+		.getByRole( "textbox", { name: "File Upload" } )
+		.setInputFiles( join( __dirname, "static/cat.jpg" ) );
+
+	// Clic sur le bouton de téléversement.
+	await page.getByRole( "button", { name: "Upload" } ).click();
+
+	// Attente de la réponse du serveur et de la notification de succès.
+	await expect(
+		page.locator( "[data-sonner-toast][data-type = success]" )
+	).toHaveCount( 1 );
+
+	// Vérification de la visibilité du fichier téléversé.
+	await expect( page.getByText( "public" ) ).toHaveCount( 1 );
+} );
+
+//
+// Téléversement d'un troisième fichier vide (sans contenu).
 //
 test( "Téléversement d'un fichier vide", async ( { page } ) =>
 {
@@ -69,7 +107,7 @@ test( "Téléversement d'un fichier vide", async ( { page } ) =>
 } );
 
 //
-// Téléversement d'un troisième fichier avec compression côte serveur.
+// Téléversement d'un quatrième fichier avec compression côte serveur.
 //
 test( "Téléversement d'un fichier compressé", async ( { page } ) =>
 {
@@ -98,7 +136,7 @@ test( "Téléversement d'un fichier compressé", async ( { page } ) =>
 } );
 
 //
-// Téléversement d'un quatrième fichier avec chiffrement côte client.
+// Téléversement d'un cinquième fichier avec chiffrement côte client.
 //
 test( "Téléversement d'un fichier chiffré", async ( { page } ) =>
 {
