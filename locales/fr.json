@@ -397,7 +397,10 @@
 			"OAuthAccountNotLinked": "Pour confirmer votre identité, connectez-vous avec le même compte que celui que vous avez utilisé initialement.",
 			"EmailSignup": "Le courriel de confirmation n'a pas pu être envoyé à l'adresse que vous avez fournie. Veuillez réessayer plus tard.",
 			"CredentialsSignin": "Vérifiez les informations que vous avez fournies.",
-			"SessionRequired": "Vous devez être authentifié pour accéder à cette ressource."
+			"SessionRequired": "Vous devez être authentifié pour accéder à cette ressource.",
+			"Configuration": "Il y a un problème de configuration avec le mécanisme d'authentification. Veuillez contacter le support technique.",
+			"AccessDenied": "Vous n'avez pas l'autorisation d'accéder à cette ressource.",
+			"Verification": "Le jeton de vérification fourni a expiré ou a déjà été utilisé. Veuillez réessayer."
 		}
 	},
 	"nodemailer": {

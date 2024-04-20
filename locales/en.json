@@ -397,7 +397,10 @@
 			"OAuthAccountNotLinked": "To confirm your identity, log in with the same account you initially used.",
 			"EmailSignup": "The confirmation email could not be sent to the provided address. Please try again later.",
 			"CredentialsSignin": "Authorization failed. Check the information you provided.",
-			"SessionRequired": "You must be authenticated to access this resource."
+			"SessionRequired": "You must be authenticated to access this resource.",
+			"Configuration": "There is a problem with the server configuration. Check if your options are correct.",
+			"AccessDenied": "You do not have permission to access this resource.",
+			"Verification": "This token is invalid or has expired."
 		}
 	},
 	"nodemailer": {
