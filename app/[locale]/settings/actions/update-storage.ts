@@ -55,13 +55,19 @@ export async function updateStorage(
 		};
 	}
 
-	// On met à jour après les préférences de l'utilisateur dans la base de
-	//  données.
-	await prisma.preference.update( {
+	// On créé ou on met à jour après les préférences de l'utilisateur dans la
+	//  base de données.
+	await prisma.preference.upsert( {
 		where: {
 			userId: session.user.id
 		},
-		data: {
+		update: {
+			public: result.data.public,
+			extension: result.data.extension,
+			versions: result.data.versions
+		},
+		create: {
+			userId: session.user.id,
 			public: result.data.public,
 			extension: result.data.extension,
 			versions: result.data.versions
