@@ -53,6 +53,7 @@ test( "Vérification de la création d'une nouvelle version", async ( { page } )
 	await expect( page.getByText( "153.56 KB", { exact: true } ) ).toHaveCount( 1 );
 
 	// Rechargement de la page pour fermer le menu des actions.
+	//  Source : https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
 	await page.reload();
 
 	// Ajout d'une nouvelle version du fichier.
