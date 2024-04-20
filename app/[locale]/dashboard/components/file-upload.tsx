@@ -279,7 +279,7 @@ export default function FileUpload( {
 	if ( key && !isOpen )
 	{
 		return (
-			<Dialog defaultOpen onOpenChange={() => setKey( "" )}>
+			<Dialog defaultOpen open onOpenChange={() => setKey( "" )}>
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>
