@@ -214,7 +214,7 @@ export default function RowActions( {
 		const form = new FormData();
 		form.append( "name", name );
 
-		dataFiles.forEach( ( file ) =>
+		selectedFiles.forEach( ( file ) =>
 		{
 			form.append( "fileId", file.uuid );
 		} );
