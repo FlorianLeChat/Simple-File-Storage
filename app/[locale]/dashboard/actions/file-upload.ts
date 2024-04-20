@@ -262,7 +262,7 @@ export async function uploadFiles(
 					[ "encrypt", "decrypt" ]
 				);
 				const compressed = result.data.compression
-					? await compressFile( buffer, extension )
+					? await compressFile( buffer, extension.replace( ".", "" ) )
 					: buffer;
 
 				await writeFile(
