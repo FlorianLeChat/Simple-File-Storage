@@ -143,7 +143,6 @@ export async function updateUser(
 		avatar.size !== 0
 		&& avatar.name !== "undefined"
 		&& avatar.type !== "application/octet-stream"
-		&& process.env.S3_ENABLED !== "true"
 	)
 	{
 		// Si c'est le cas, on récupère le tampon de l'avatar téléversé
