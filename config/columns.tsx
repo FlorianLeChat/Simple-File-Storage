@@ -125,6 +125,13 @@ export const columns: ColumnDef<FileAttributes>[] = [
 	{
 		// Taille du fichier (en octets).
 		accessorKey: "size",
+		sortingFn: ( a, b ) =>
+		{
+			const sizeA = a.original.versions[ 0 ].size;
+			const sizeB = b.original.versions[ 0 ].size;
+
+			return sizeA > sizeB ? 1 : ( sizeA < sizeB && -1 ) || 0;
+		},
 		header: ( { table, column } ) => (
 			<ColumnHeader
 				title={table.options.meta?.messages.type ?? ""}
