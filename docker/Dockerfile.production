@@ -45,6 +45,6 @@ RUN npm run build
 RUN npm prune --production
 
 # Create a custom entrypoint script
-RUN echo "/wait && npm run migrate && supercronic /etc/crontabs/node && npm run start" > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
+RUN echo "/wait && npm run migrate && supercronic /etc/crontabs/node & npm run start" > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
 
 CMD ["docker/entrypoint.sh"]
