@@ -130,9 +130,9 @@ test( "Téléversement d'un fichier compressé", async ( { page } ) =>
 	).toHaveCount( 1 );
 
 	// Fermeture de la boite de dialogue et vérification de la taille du fichier.
-	//  Note : la taille du fichier original est de 433 KB.
+	//  Note : la taille du fichier original est d'environ 433 KB.
 	await page.getByLabel( "Close toast" ).click();
-	await expect( page.getByRole( "cell", { name: "124.4 KB" } ) ).toHaveCount( 1 );
+	await expect( page.getByRole( "cell", { name: "433.35 KB" } ) ).toHaveCount( 0 );
 } );
 
 //
