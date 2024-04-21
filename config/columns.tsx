@@ -174,28 +174,8 @@ export const columns: ColumnDef<FileAttributes>[] = [
 		cell: ( { row } ) =>
 		{
 			const status: string = row.getValue( "status" );
-			const getColor = () =>
-			{
-				switch ( status )
-				{
-					// Fichier privé.
-					case "private":
-						return "bg-red-700 hover:bg-red-900";
 
-					// Fichier public.
-					case "public":
-						return "bg-green-700 hover:bg-green-900";
-
-					// Fichier partagé.
-					case "shared":
-						return "bg-yellow-700 hover:bg-yellow-900";
-
-					default:
-						return "";
-				}
-			};
-
-			return <Badge className={getColor()}>{status}</Badge>;
+			return <Badge variant={status as "private"}>{status}</Badge>;
 		}
 	},
 	{

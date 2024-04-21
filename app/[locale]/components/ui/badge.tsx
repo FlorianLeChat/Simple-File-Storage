@@ -11,6 +11,13 @@ const badgeVariants = cva(
 	{
 		variants: {
 			variant: {
+				// Variants de couleur personnalisés.
+				//  Source : https://github.com/tailwindlabs/tailwindcss/discussions/11189
+				shared: "border-transparent bg-yellow-700 hover:bg-yellow-900 text-primary-foreground dark:text-secondary-foreground",
+				public: "border-transparent bg-green-700 hover:bg-green-900 text-primary-foreground dark:text-secondary-foreground",
+				private:
+					"border-transparent bg-red-700 hover:bg-red-900 text-primary-foreground dark:text-secondary-foreground",
+				// Variants de couleur prédéfinis.
 				default:
 					"border-transparent bg-primary text-primary-foreground dark:text-secondary-foreground hover:bg-primary/80",
 				secondary:
