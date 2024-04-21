@@ -72,7 +72,7 @@ export default function Notifications()
 					setLoading( false );
 
 					// Vérification de l'existence de l'API de notifications.
-					if ( typeof Notification !== "undefined" )
+					if ( typeof Notification !== "undefined" && filter.length > 0 )
 					{
 						// Demande de permission pour les notifications.
 						const icon: HTMLLinkElement | null =
@@ -86,10 +86,12 @@ export default function Notifications()
 								data.forEach( ( notification ) =>
 								{
 									const popup = new Notification(
-										document.title,
+										"Simple File Storage",
 										{
 											icon: icon?.href,
-											body: notification.title
+											body: modalMessages(
+												`description_${ notification.title }`
+											)
 										}
 									);
 
@@ -117,7 +119,7 @@ export default function Notifications()
 						.slice( 0, MAX_NOTIFICATIONS );
 				} );
 			} );
-	}, [ router ] );
+	}, [ modalMessages, router ] );
 
 	// Soumission de la requête de marquage de toutes les notifications comme lues.
 	const submitClearing = async () =>
