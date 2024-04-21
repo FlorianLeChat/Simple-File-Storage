@@ -55,6 +55,9 @@ services:
                 - action: sync
                   path: .
                   target: /usr/src/app
+        volumes:
+            - ./public/files:/usr/src/app/public/files
+            - ./public/avatars:/usr/src/app/public/avatars
         depends_on:
             - mariadb
         environment:
