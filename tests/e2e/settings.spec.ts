@@ -135,7 +135,7 @@ test( "Création d'un nouveau signalement de bogue", async ( { page } ) =>
 	// Clic sur le bouton de création du signalement.
 	await page.getByRole( "button", { name: "Update" } ).click();
 
-	// Attente de la réponse du serveur sous forme de notification.
+	// Attente de la réponse du serveur sous forme d'un message d'erreur.
 	//  Note : la réponse sera négative car les champs requis ne sont pas remplis.
 	await expect(
 		page.getByText( "The provided value is too small." )
@@ -158,5 +158,75 @@ test( "Création d'un nouveau signalement de bogue", async ( { page } ) =>
 	// Attente de la réponse du serveur sous forme de notification.
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
+	).toHaveCount( 1 );
+} );
+
+//
+// Suppression des fichiers utilisateur depuis les paramètres de confidentialité.
+//
+test( "Suppression RGPD des fichiers utilisateur", async ( { page } ) =>
+{
+	// Accès la page du tableau de bord et téléversement d'un fichier.
+	await page.goto( "/dashboard" );
+	await page.locator( "button" ).filter( { hasText: "Add a file" } ).click();
+	await page
+		.getByRole( "textbox", { name: "File Upload" } )
+		.setInputFiles( join( __dirname, "static/raccoon.jpg" ) );
+	await page.getByRole( "button", { name: "Upload" } ).click();
+
+	// Attente de la réponse du serveur sous forme de notification de succès
+	//  et vérification de la présence du fichier téléversé.
+	await expect(
+		page.locator( "[data-sonner-toast][data-type = success]" )
+	).toHaveCount( 1 );
+	await expect( page.getByRole( "cell", { name: "raccoon" } ) ).toHaveCount( 1 );
+
+	// Accès à la page des paramètres de confidentialité et suppression du fichier.
+	await page.goto( "/settings/privacy" );
+	await page
+		.getByLabel(
+			"I want to delete my files as well as all associated data permanently without the possibility of recovery via technical support."
+		)
+		.click();
+	await page.getByRole( "button", { name: "Permanently Delete" } ).click();
+
+	// Attente de la réponse du serveur sous forme de notification de succès.
+	await expect(
+		page.locator( "[data-sonner-toast][data-type = success]" )
+	).toHaveCount( 1 );
+
+	// Retour sur la page du tableau de bord et vérification de la suppression du fichier.
+	await page.goto( "/dashboard" );
+	await expect( page.getByRole( "cell", { name: "raccoon" } ) ).toHaveCount( 0 );
+} );
+
+//
+// Suppression du compte et fichiers utilisateurs depuis les paramètres de confidentialité.
+//
+test( "Suppression RGPD du compte utilisateur", async ( { page } ) =>
+{
+	// Accès à la page des paramètres de confidentialité et suppression du compte utilisateur.
+	await page.goto( "/settings/privacy" );
+	await page
+		.getByLabel(
+			"I want to delete my user account as well as all associated data permanently without the possibility of recovery via technical support."
+		)
+		.click();
+	await page.getByRole( "button", { name: "Permanently Delete" } ).click();
+
+	// Vérification de la redirection vers la page d'accueil.
+	await expect( page ).toHaveURL( "/" );
+
+	// Accès à la page d'authentification et tentative de connexion.
+	await page.goto( "/authentication" );
+	await page.getByRole( "tab", { name: "Login" } ).click();
+	await page.getByPlaceholder( "name@domain.com" ).fill( "test1@gmail.com" );
+	await page.getByPlaceholder( "@MyPassword123!" ).fill( "Florian4016" );
+	await page.getByText( "Log in by password" ).click();
+
+	// Attente de la réponse du serveur sous forme de notification.
+	//  Note : la réponse sera négative car le compte a été supprimé.
+	await expect(
+		page.locator( "[data-sonner-toast][data-type = error]" )
 	).toHaveCount( 1 );
 } );
