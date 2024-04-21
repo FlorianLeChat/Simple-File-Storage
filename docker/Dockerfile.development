@@ -42,6 +42,6 @@ USER node
 RUN sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env
 
 # Create a custom entrypoint script
-RUN echo "/wait && npm run migrate && node scripts/create-fake-accounts.js && supercronic /etc/crontabs/node && npm run dev" > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
+RUN echo "/wait && npm run migrate && node scripts/create-fake-accounts.js && supercronic /etc/crontabs/node & npm run dev" > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
 
 CMD ["docker/entrypoint.sh"]
