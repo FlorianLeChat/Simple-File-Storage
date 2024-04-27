@@ -53,10 +53,6 @@ export default function Recaptcha()
 		// On attend ensuite que les services de reCAPTCHA soient prêts.
 		window.grecaptcha.ready( async () =>
 		{
-			// On exécute après un événement personnalisé pour informer
-			//  les autres composants de la disponibilité de reCAPTCHA.
-			window.dispatchEvent( new Event( "onRecaptchaReady" ) );
-
 			// On génère alors un jeton d'authentification...
 			const token = await window.grecaptcha.execute(
 				process.env.NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY ?? "",
