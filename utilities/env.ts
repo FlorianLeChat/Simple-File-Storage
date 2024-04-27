@@ -19,8 +19,8 @@ const schema = z.object( {
 	SENTRY_AUTH_TOKEN: z.string().min( 1 ),
 
 	NEXT_PUBLIC_RECAPTCHA_ENABLED: z.enum( [ "true", "false" ] ),
-	NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY: z.string().length( 40 ).startsWith( "6Ld" ),
-	RECAPTCHA_SECRET_KEY: z.string().length( 40 ).startsWith( "6Ld" ),
+	NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY: z.string().length( 40 ).startsWith( "6L" ),
+	RECAPTCHA_SECRET_KEY: z.string().length( 40 ).startsWith( "6L" ),
 
 	NEXT_PUBLIC_ANALYTICS_ENABLED: z.enum( [ "true", "false" ] ),
 	NEXT_PUBLIC_ANALYTICS_TAG: z.string().length( 12 ).startsWith( "G-" ),
