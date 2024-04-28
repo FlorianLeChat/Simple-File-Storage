@@ -1,6 +1,7 @@
 //
 // Mécanisme de routage pour les pages de l'application.
 //
+import mime from "mime";
 import { Prisma } from "@prisma/client";
 import createIntlMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
@@ -39,7 +40,7 @@ export default async function middleware( request: NextRequest )
 				new URL(
 					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/file/${ identifier }/${ request.nextUrl.search }`,
 					request.url
-				),
+				).href.replace( "https", "http" ),
 				{ headers: request.headers }
 			);
 
@@ -59,8 +60,8 @@ export default async function middleware( request: NextRequest )
 				const content = await fetch(
 					new URL(
 						`${ process.env.__NEXT_ROUTER_BASEPATH }/files/${ file.userId }/${ file.id }/${ file.versions[ 0 ].id }.${ extension }`,
-						request.url
-					).href,
+						data.url
+					),
 					{ headers: request.headers }
 				);
 
@@ -92,7 +93,7 @@ export default async function middleware( request: NextRequest )
 					// Une fois récupérés, on déchiffre le contenu du fichier
 					//  avec son vecteur d'initialisation et on retourne le
 					//  résultat comme une réponse classique.
-					return new NextResponse(
+					const response = new NextResponse(
 						await crypto.subtle.decrypt(
 							{
 								iv: buffer.subarray( 0, 16 ),
@@ -102,6 +103,12 @@ export default async function middleware( request: NextRequest )
 							buffer.subarray( 16 )
 						)
 					);
+					response.headers.set(
+						"Content-Type",
+						mime.getType( file.name ) ?? "application/octet-stream"
+					);
+
+					return response;
 				}
 				catch
 				{
