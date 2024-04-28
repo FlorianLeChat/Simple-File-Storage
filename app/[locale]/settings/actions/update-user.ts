@@ -39,8 +39,8 @@ export async function updateUser(
 	// On tente ensuite de valider les données du formulaire.
 	const result = schema.safeParse( {
 		username: formData.get( "username" ),
-		email: formData.get( "email" ),
-		password: formData.get( "password" ),
+		email: formData.get( "email" ) ?? session.user.email,
+		password: formData.get( "password" ) ?? "",
 		otp: formData.get( "otp" ),
 		language: formData.get( "language" ),
 		avatar: formData.get( "avatar" )
