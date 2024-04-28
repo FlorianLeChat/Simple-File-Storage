@@ -10,16 +10,7 @@ export async function GET(
 	{ params }: { params: { id: string } }
 )
 {
-	// On vérifie si l'utilisateur est connecté afin de récupérer
-	//  ses informations.
-	const session = await auth();
-
-	if ( !session )
-	{
-		return new NextResponse( null, { status: 403 } );
-	}
-
-	// On récupère ensuite les informations du fichier à partir
+	// On récupère d'abord les informations du fichier à partir
 	//  de son identifiant dans la base de données et de la version
 	//  demandée dans les paramètres de l'URL.
 	const version = request.nextUrl.searchParams.get( "v" );
@@ -45,13 +36,6 @@ export async function GET(
 		return new NextResponse( null, { status: 400 } );
 	}
 
-	// On retourne ensuite les données du fichier si l'utilisateur
-	//  semble posséder les autorisations d'accès en partage.
-	if ( file.shares.some( ( share ) => share.userId === session.user.id ) )
-	{
-		return NextResponse.json( file );
-	}
-
 	// On vérifie également le statut de partage du fichier pour savoir
 	//   s'il est possible d'y accéder.
 	switch ( file.status )
@@ -63,7 +47,23 @@ export async function GET(
 		}
 
 		case "private": {
-			// Si le fichier est privé, on récupère d'abord la session
+			// Si le fichier est privé, on vérifie d'abord si l'utilisateur
+			//  est connecté afin de récupérer ses informations.
+			const session = await auth();
+
+			if ( !session )
+			{
+				return new NextResponse( null, { status: 403 } );
+			}
+
+			// On retourne ensuite les données du fichier si l'utilisateur
+			//  semble posséder les autorisations d'accès en partage.
+			if ( file.shares.some( ( share ) => share.userId === session.user.id ) )
+			{
+				return NextResponse.json( file );
+			}
+
+			// Si le fichier n'est pas partagé, on récupère la session
 			//  de l'utilisateur pour vérifier si c'est bien lui qui
 			//  a téléversé le fichier.
 			if ( !session || session.user.id !== file.userId )
