@@ -51,74 +51,80 @@ export default function Notifications()
 		// Activation de l'état de chargement.
 		setLoading( true );
 
-		// Lancement de la requête HTTP.
-		fetch( `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/notifications` )
-			.then( ( response ) => response.json() as Promise<Notification[]> )
-			.then( ( data ) =>
+		// Lancement de la requête HTTP et vérification de la réponse.
+		const response = await fetch(
+			`${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/notifications`
+		);
+
+		if ( !response.ok )
+		{
+			return;
+		}
+
+		// Récupération des données et conversion en tableau de notifications.
+		const data = ( await response.json() ) as Notification[];
+
+		setNotifications( ( existing ) =>
+		{
+			// Filtrage des notifications existantes.
+			const filter = data.filter(
+				( notification ) => !existing.some(
+					( cache ) => cache.title === notification.title
+				)
+			);
+
+			// Comptage du nombre de notifications non lues.
+			setUnreadCount( ( count ) => Math.min( data.length, count + filter.length ) );
+
+			// Désactivation de l'état de chargement.
+			setLoading( false );
+
+			// Vérification de l'existence de l'API de notifications.
+			if ( typeof Notification !== "undefined" && filter.length > 0 )
 			{
-				setNotifications( ( existing ) =>
+				// Demande de permission pour les notifications.
+				const icon: HTMLLinkElement | null = document.querySelector(
+					"link[sizes = \"512x512\"]"
+				);
+
+				Notification.requestPermission().then( ( permission ) =>
 				{
-					// Filtrage des notifications existantes.
-					const filter = data.filter(
-						( notification ) => !existing.some(
-							( cache ) => cache.title === notification.title
-						)
-					);
-
-					// Comptage du nombre de notifications non lues.
-					setUnreadCount( ( count ) => Math.min( data.length, count + filter.length ) );
-
-					// Désactivation de l'état de chargement.
-					setLoading( false );
-
-					// Vérification de l'existence de l'API de notifications.
-					if ( typeof Notification !== "undefined" && filter.length > 0 )
+					// Création d'une notification si la permission est accordée.
+					if ( permission === "granted" )
 					{
-						// Demande de permission pour les notifications.
-						const icon: HTMLLinkElement | null =
-							document.querySelector( "link[sizes = \"512x512\"]" );
-
-						Notification.requestPermission().then( ( permission ) =>
+						data.forEach( ( notification ) =>
 						{
-							// Création d'une notification si la permission est accordée.
-							if ( permission === "granted" )
-							{
-								data.forEach( ( notification ) =>
+							const popup = new Notification(
+								"Simple File Storage",
 								{
-									const popup = new Notification(
-										"Simple File Storage",
-										{
-											icon: icon?.href,
-											body: modalMessages(
-												`description_${ notification.title }`
-											)
-										}
-									);
-
-									popup.addEventListener( "click", () =>
-									{
-										// Redirection vers les paramètres de notifications.
-										router.push( "/settings/notifications" );
-									} );
-								} );
-							}
-						} );
-					}
-
-					// Conversion de la date de création en objet et limitation
-					//  à un nombre maximal de notifications.
-					return data
-						.map( ( notification ) =>
-						{
-							notification.createdAt = new Date(
-								notification.createdAt
+									icon: icon?.href,
+									body: modalMessages(
+										`description_${ notification.title }`
+									)
+								}
 							);
 
-							return notification;
-						} )
-						.slice( 0, MAX_NOTIFICATIONS );
+							popup.addEventListener( "click", () =>
+							{
+								// Redirection vers les paramètres de notifications.
+								router.push( "/settings/notifications" );
+							} );
+						} );
+					}
 				} );
-			} );
+			}
+
+			// Conversion de la date de création en objet et limitation
+			//  à un nombre maximal de notifications.
+			return data
+				.map( ( notification ) =>
+				{
+					notification.createdAt = new Date( notification.createdAt );
+
+					return notification;
+				} )
+				.slice( 0, MAX_NOTIFICATIONS );
+		} );
 	}, [ modalMessages, router ] );
 
 	// Soumission de la requête de marquage de toutes les notifications comme lues.
