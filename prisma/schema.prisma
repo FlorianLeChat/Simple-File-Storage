@@ -11,7 +11,7 @@ datasource db {
 // Déclaration des modèles de données pour Next Auth.
 model Account {
 	id                       String  @id @default(uuid())
-	userId                   String  @unique
+	userId                   String
 	type                     String
 	provider                 String
 	providerAccountId        String
@@ -22,14 +22,9 @@ model Account {
 	scope                    String?
 	id_token                 String? @map("idToken") @db.Text
 	session_state            String? @map("sessionState")
-	refresh_token_expires_in Int?    @map("refreshTokenExpiresIn")
-	user                     User?   @relation(fields: [userId], references: [id])
-
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+	user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
 	@@unique([provider, providerAccountId])
-	@@index([userId])
 }
 
 model Session {
