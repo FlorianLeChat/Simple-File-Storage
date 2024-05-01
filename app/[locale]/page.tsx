@@ -89,9 +89,9 @@ export default async function Page( {
 				<a
 					rel="noopener noreferrer"
 					href={meta.source}
-					title="GitHub"
 					target="_blank"
 					className="group fixed bottom-auto left-auto right-0 top-0 [clip-path:polygon(0_0,100%_0,100%_100%)] max-sm:hidden"
+					aria-label="GitHub"
 				>
 					<svg
 						width="80"
