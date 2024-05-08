@@ -40,7 +40,7 @@ export default async function middleware( request: NextRequest )
 				new URL(
 					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/file/${ identifier }/${ request.nextUrl.search }`,
 					request.url
-				).href.replace( "https", "http" ),
+				),
 				{ headers: request.headers }
 			);
 
