@@ -88,9 +88,9 @@ export async function deleteSharedUser( formData: FormData )
 					|| share.user.notification.includes( "all" )
 			)
 			.map( ( share ) => ( {
-				title: 3,
+				title: 4,
 				userId: share.userId,
-				message: 3
+				message: 4
 			} ) )
 	} );
 
