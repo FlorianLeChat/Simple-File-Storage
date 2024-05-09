@@ -25,7 +25,7 @@ export default getRequestConfig( async ( { locale } ) =>
 	//  Note : les traductions manquantes sont fusionnées avec celles de
 	//   la langue par défaut.
 	return {
-		timeZone: process.env.NEXT_PUBLIC_TIMEZONE,
+		timeZone: process.env.TZ,
 		messages: deepmerge(
 			( await import( "../locales/en.json" ) ).default,
 			( await import( `../locales/${ locale }.json` ) ).default,

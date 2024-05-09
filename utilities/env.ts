@@ -5,8 +5,8 @@
 import { z } from "zod";
 
 const schema = z.object( {
+	TZ: z.string().min( 1 ),
 	NEXT_PUBLIC_ENV: z.enum( [ "development", "production" ] ),
-	NEXT_PUBLIC_TIMEZONE: z.string().min( 1 ),
 	NEXT_PUBLIC_MAX_QUOTA: z.string().min( 1 ),
 	NEXT_PUBLIC_MAX_AVATAR_SIZE: z.string().min( 1 ),
 	NEXT_PUBLIC_ACCEPTED_FILE_TYPES: z.string().min( 1 ),
