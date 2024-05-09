@@ -3,6 +3,7 @@
 //
 import mime from "mime";
 import { Prisma } from "@prisma/client";
+import type { JWT } from "next-auth/jwt";
 import createIntlMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -57,12 +58,15 @@ export default async function middleware( request: NextRequest )
 
 				// On récupère le contenu du fichier à partir du système
 				//  de fichiers du serveur.
+				const headers = new Headers();
+				headers.set( "X-Auth-Secret", process.env.AUTH_SECRET ?? "" );
+
 				const content = await fetch(
 					new URL(
-						`${ process.env.__NEXT_ROUTER_BASEPATH }/files/${ file.userId }/${ file.id }/${ file.versions[ 0 ].id }.${ extension }`,
+						`${ process.env.__NEXT_ROUTER_BASEPATH }/api/public/files/${ file.userId }/${ file.id }/${ file.versions[ 0 ].id }.${ extension }`,
 						data.url
 					),
-					{ headers: request.headers }
+					{ headers }
 				);
 
 				if ( !content.ok )
@@ -145,7 +149,28 @@ export default async function middleware( request: NextRequest )
 		{
 			// La session existe, on retourne le fichier demandé
 			//  comme une requête classique.
-			return NextResponse.next();
+			const session = ( await data.json() ) as JWT;
+			const headers = new Headers();
+			headers.set( "X-Auth-Secret", process.env.AUTH_SECRET ?? "" );
+
+			const content = await fetch(
+				new URL(
+					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/public/${ session.image }`,
+					data.url
+				),
+				{ headers }
+			);
+
+			if ( !content.ok )
+			{
+				// Si l'avatar personnalisé n'existe pas, on retourne
+				//  une erreur 404.
+				return new NextResponse( null, { status: 400 } );
+			}
+
+			// Dans le cas contraire, on retourne le contenu du fichier
+			//  comme une réponse classique.
+			return new NextResponse( await content.arrayBuffer() );
 		}
 
 		// La session n'existe pas, on retourne une erreur 403.
@@ -224,7 +249,7 @@ export default async function middleware( request: NextRequest )
 export const config = {
 	matcher: [
 		"/",
-		"/((?!api/admin|api/user|api/version|api/versions|api/file|api/files|assets|locales|_next|_vercel|sitemap.xml|manifest.webmanifest).*)"
+		"/((?!api/admin|api/user|api/version|api/versions|api/file|api/public|api/files|assets|locales|_next|_vercel|sitemap.xml|manifest.webmanifest).*)"
 	]
 };
 
