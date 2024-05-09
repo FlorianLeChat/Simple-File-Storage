@@ -125,7 +125,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 					if ( avatar )
 					{
 						// Définition de l'avatar personnalisé de l'utilisateur.
-						session.user.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }`;
+						session.user.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }?version=${ Date.now() }`;
 					}
 				}
 			}
