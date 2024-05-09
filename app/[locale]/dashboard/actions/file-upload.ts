@@ -210,9 +210,9 @@ export async function uploadFiles(
 								|| share.user.notification.includes( "all" )
 						)
 						.map( ( share ) => ( {
-							title: 4,
+							title: 3,
 							userId: share.userId,
-							message: 4
+							message: 3
 						} ) )
 				} );
 			}
