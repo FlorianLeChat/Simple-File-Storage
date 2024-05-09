@@ -289,7 +289,7 @@ export default async function Layout( {
 							"consentModal",
 							"preferencesModal"
 						)}
-						timeZone={process.env.NEXT_PUBLIC_TIMEZONE}
+						timeZone={process.env.TZ}
 					>
 						{/* Vidéo en arrière-plan */}
 						<video
