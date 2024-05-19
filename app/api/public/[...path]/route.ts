@@ -1,6 +1,8 @@
 //
 // Route de récupération des fichiers dynamiques de l'application.
 //
+import { logger } from "@/utilities/pino";
+import * as Sentry from "@sentry/nextjs";
 import { readFile } from "fs/promises";
 import path, { sep } from "path";
 import { existsSync } from "fs";
@@ -13,8 +15,15 @@ export async function GET(
 {
 	// On vérifie d'abord si la requête courante est légitime et
 	//  en provenance du serveur.
-	if ( request.headers.get( "X-Auth-Secret" ) !== process.env.AUTH_SECRET )
+	const secret = request.headers.get( "X-Auth-Secret" );
+
+	if ( secret !== process.env.AUTH_SECRET )
 	{
+		logger.error(
+			{ source: __filename, secret },
+			"Unauthorized access to public files"
+		);
+
 		return new NextResponse( null, { status: 403 } );
 	}
 
@@ -23,6 +32,8 @@ export async function GET(
 
 	if ( !existsSync( filePath ) )
 	{
+		logger.debug( { source: __filename, path: filePath }, "File not found" );
+
 		return new NextResponse( null, { status: 400 } );
 	}
 
@@ -31,9 +42,13 @@ export async function GET(
 		// Si c'est le cas, on lit le contenu du fichier et on le renvoie.
 		return new NextResponse( await readFile( filePath ) );
 	}
-	catch
+	catch ( error )
 	{
 		// Dans le cas contraire, on renvoie enfin une erreur HTTP 500.
+		logger.error( { source: __filename, error }, "Error reading public file" );
+
+		Sentry.captureException( error );
+
 		return new NextResponse( null, { status: 500 } );
 	}
 }

@@ -7,6 +7,7 @@
 import { z } from "zod";
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 
 export async function updateSharedUser( formData: FormData )
 {
@@ -35,6 +36,8 @@ export async function updateSharedUser( formData: FormData )
 
 	if ( !result.success )
 	{
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return false;
 	}
 
@@ -66,5 +69,7 @@ export async function updateSharedUser( formData: FormData )
 	} );
 
 	// On retourne enfin une valeur de succès à la fin du traitement.
+	logger.debug( { source: __filename, share }, "Shared user updated" );
+
 	return share.count > 0;
 }

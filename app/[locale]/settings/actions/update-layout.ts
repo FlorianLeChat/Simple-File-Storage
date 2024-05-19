@@ -7,6 +7,7 @@
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/layout";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import { getTranslations } from "next-intl/server";
 
 export async function updateLayout(
@@ -39,6 +40,8 @@ export async function updateLayout(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return {
 			success: false,
 			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
@@ -65,6 +68,8 @@ export async function updateLayout(
 	} );
 
 	// On retourne enfin un message de succès.
+	logger.debug( { source: __filename, result }, "Layout preferences updated" );
+
 	return {
 		success: true,
 		reason: messages( "form.infos.layout_updated" )

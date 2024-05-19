@@ -7,6 +7,7 @@
 import { z } from "zod";
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 
 export async function deleteSharedUser( formData: FormData )
 {
@@ -33,6 +34,8 @@ export async function deleteSharedUser( formData: FormData )
 
 	if ( !result.success )
 	{
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return false;
 	}
 
@@ -95,5 +98,7 @@ export async function deleteSharedUser( formData: FormData )
 	} );
 
 	// On retourne enfin une valeur de succès à la fin du traitement.
+	logger.debug( { source: __filename, shares }, "Shared user deleted" );
+
 	return shares.length > 0;
 }
