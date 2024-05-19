@@ -8,6 +8,7 @@ import { z } from "zod";
 import prisma from "@/utilities/prisma";
 import { join } from "path";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import * as Sentry from "@sentry/nextjs";
 import { existsSync } from "fs";
 import { rm, readdir } from "fs/promises";
@@ -35,6 +36,8 @@ export async function deleteFile( formData: FormData )
 
 	if ( !result.success )
 	{
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return [];
 	}
 
@@ -75,6 +78,8 @@ export async function deleteFile( formData: FormData )
 	{
 		// Si aucun fichier n'a été trouvé dans la base de données,
 		//  on retourne une valeur d'échec.
+		logger.error( { source: __filename, query }, "No files found" );
+
 		return [];
 	}
 
@@ -117,10 +122,14 @@ export async function deleteFile( formData: FormData )
 	{
 		// Si une erreur s'est produite lors des opérations avec le
 		//  système de fichiers, on l'envoie tout simplement à Sentry.
+		logger.error( { source: __filename, error }, "File deletion error" );
+
 		Sentry.captureException( error );
 	}
 
 	// On retourne enfin la liste des identifiants des fichiers supprimés
 	//  à la fin du traitement.
+	logger.debug( { source: __filename, files }, "Files deleted" );
+
 	return files.map( ( file ) => file.id );
 }

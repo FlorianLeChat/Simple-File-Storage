@@ -7,6 +7,7 @@
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import * as Sentry from "@sentry/nextjs";
 import { statSync } from "fs";
 import { join, parse } from "path";
@@ -48,6 +49,8 @@ export async function uploadFiles(
 		//  premier code d'erreur rencontré.
 		const { code, message } = result.error.issues[ 0 ];
 
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return {
 			success: false,
 			reason: messages( `zod.${ code === "custom" ? message : code }` )
@@ -83,6 +86,11 @@ export async function uploadFiles(
 			} );
 		}
 
+		logger.debug(
+			{ source: __filename, currentQuota, maxQuota },
+			"Current and maximum quota"
+		);
+
 		// On téléverse chaque fichier dans le système de fichiers.
 		const { preferences } = session.user;
 		const types = process.env.NEXT_PUBLIC_ACCEPTED_FILE_TYPES?.split( "," );
@@ -109,6 +117,11 @@ export async function uploadFiles(
 				{
 					// Si le type du fichier ne correspond à aucun type de fichier
 					//  accepté, on retourne une liste vide.
+					logger.error(
+						{ source: __filename, result },
+						"File type not accepted"
+					);
+
 					return [];
 				}
 			}
@@ -155,6 +168,11 @@ export async function uploadFiles(
 			//  version d'un fichier déjà existant.
 			if ( exists && duplication && exists?.id === duplication?.fileId )
 			{
+				logger.error(
+					{ source: __filename, result },
+					"File already exists"
+				);
+
 				return [];
 			}
 
@@ -215,6 +233,11 @@ export async function uploadFiles(
 							message: 3
 						} ) )
 				} );
+
+				logger.debug(
+					{ source: __filename },
+					"Created version notification"
+				);
 			}
 
 			// Après la création de la notification, on créé le dossier du fichier
@@ -230,6 +253,11 @@ export async function uploadFiles(
 				//  le fichier existant et on créé un lien symbolique vers le
 				//  fichier dupliqué afin de réduire l'espace disque utilisé.
 				const filePath = join( fileFolder, `${ versionId + extension }` );
+
+				logger.debug(
+					{ source: __filename, filePath, duplication },
+					"File duplication detected"
+				);
 
 				await rm( filePath, { force: true } );
 				await link(
@@ -268,6 +296,15 @@ export async function uploadFiles(
 				if ( result.data.compression )
 				{
 					// Mise à jour de la taille de la version après compression.
+					logger.debug(
+						{
+							source: __filename,
+							versionId,
+							size: compressed.length
+						},
+						"Compressed file"
+					);
+
 					await prisma.version.update( {
 						where: {
 							id: versionId
@@ -297,6 +334,11 @@ export async function uploadFiles(
 						] )
 				);
 			}
+
+			logger.debug(
+				{ source: __filename, fileFolder, versionId },
+				"File uploaded"
+			);
 
 			// Suite à un problème dans React, on doit convertir les
 			//  fichiers sous format JSON pour pouvoir les envoyer
@@ -355,6 +397,11 @@ export async function uploadFiles(
 
 		if ( quotaIsNear || quotaIsExceeded )
 		{
+			logger.warn(
+				{ source: __filename, currentQuota, maxQuota },
+				"User quota exceeded"
+			);
+
 			await prisma.notification.create( {
 				data: {
 					title: quotaIsExceeded ? 6 : 5,
@@ -378,7 +425,9 @@ export async function uploadFiles(
 	catch ( error )
 	{
 		// Si une erreur survient lors du téléversement des fichiers,
-		//  on l'envoie à Sentry et on retourne un message d'erreur
+		//  on l'envoie à Sentry et on retourne un message d'erreur.
+		logger.error( { source: __filename, error }, "File upload failed" );
+
 		Sentry.captureException( error );
 
 		return {

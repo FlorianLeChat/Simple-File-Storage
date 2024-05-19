@@ -11,6 +11,7 @@ import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import { generateMetadata } from "@/app/layout";
 
 // Importation des composants.
@@ -49,6 +50,8 @@ export default async function Page( {
 		period: 30,
 		algorithm: "SHA256"
 	} );
+
+	logger.debug( { source: __filename, otp }, "Generated TOTP" );
 
 	// Affichage du rendu HTML de la page.
 	return (

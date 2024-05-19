@@ -7,6 +7,7 @@
 
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
+import { logger } from "@/utilities/pino";
 import { redirect } from "next/navigation";
 import { auth, signIn } from "@/utilities/next-auth";
 import { getTranslations } from "next-intl/server";
@@ -37,6 +38,8 @@ export async function signUpAccount(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return {
 			success: false,
 			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
@@ -55,6 +58,11 @@ export async function signUpAccount(
 	{
 		// Si c'est le cas, on indique à l'utilisateur que l'adresse
 		//  électronique fournie est déjà utilisée.
+		logger.error(
+			{ source: __filename, email: result.data.email },
+			"Email already used"
+		);
+
 		return {
 			success: false,
 			reason: messages( "form.errors.email_used" )
@@ -80,11 +88,21 @@ export async function signUpAccount(
 			sendVerificationRequest: true
 		} );
 
+		logger.info(
+			{ source: __filename, email: result.data.email },
+			"Sign up with email"
+		);
+
 		if ( !response )
 		{
 			// Lorsque la demande de validation de l'adresse électronique
 			//  semble ne pas renvoyer de réponse, on affiche un message
 			//  d'erreur sur la page d'authentification.
+			logger.error(
+				{ source: __filename, email: result.data.email },
+				"Email validation request failed"
+			);
+
 			return {
 				success: false,
 				reason: messages( "authjs.errors.EmailSignup" )
@@ -94,6 +112,11 @@ export async function signUpAccount(
 
 	// On retourne enfin un message de succès à l'utilisateur afin
 	//  qu'il puisse valider son adresse électronique.
+	logger.info(
+		{ source: __filename, email: result.data.email },
+		"Email validation request sent"
+	);
+
 	return {
 		success: true,
 		reason: messages( "form.infos.email_validation" )

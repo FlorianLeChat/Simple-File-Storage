@@ -7,6 +7,7 @@
 import { z } from "zod";
 import prisma from "@/utilities/prisma";
 import { join } from "path";
+import { logger } from "@/utilities/pino";
 import { existsSync } from "fs";
 import { readdir, rm } from "fs/promises";
 import { auth, signOut } from "@/utilities/next-auth";
@@ -46,6 +47,8 @@ export async function deleteUserData(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return {
 			success: false,
 			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
@@ -85,6 +88,8 @@ export async function deleteUserData(
 		{
 			// On demande la déconnexion de l'utilisateur de toutes les
 			//  sessions enregistrées.
+			logger.info( { source: __filename, session }, "User account deleted" );
+
 			await signOut( {
 				redirect: false
 			} );
@@ -116,6 +121,8 @@ export async function deleteUserData(
 			//  base de données.
 			//  Note : la suppression de ces données entraîne la suppression
 			//   en cascade de toutes les données annexes liées aux fichiers.
+			logger.info( { source: __filename, session }, "User files deleted" );
+
 			await prisma.file.deleteMany( {
 				where: {
 					userId: session.user.id

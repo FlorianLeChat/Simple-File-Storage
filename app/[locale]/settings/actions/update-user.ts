@@ -10,6 +10,7 @@ import schema from "@/schemas/user";
 import { join } from "path";
 import { TOTP } from "otpauth";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import { cookies } from "next/headers";
 import * as Sentry from "@sentry/nextjs";
 import { getTranslations } from "next-intl/server";
@@ -52,6 +53,8 @@ export async function updateUser(
 		//  premier code d'erreur rencontré.
 		const { code, message } = result.error.issues[ 0 ];
 
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return {
 			success: false,
 			reason: messages( `zod.${ code === "custom" ? message : code }` )
@@ -88,6 +91,8 @@ export async function updateUser(
 				message: 1
 			}
 		} );
+
+		logger.debug( { source: __filename }, "Created password notification" );
 	}
 
 	// On vérifie si l'utilisateur tente de désactiver la double
@@ -122,6 +127,8 @@ export async function updateUser(
 		)
 		{
 			// Suppression de l'autorisation à deux facteurs.
+			logger.debug( { source: __filename }, "Deleted OTP" );
+
 			await prisma.otp.delete( {
 				where: {
 					userId: session.user.id
@@ -135,8 +142,6 @@ export async function updateUser(
 	cookies().set( "NEXT_LOCALE", result.data.language );
 
 	// On vérifie également si un avatar a été fourni.
-	//  Note : si S3 est activé, l'utilisateur doit téléverser son
-	//   avatar directement sur le service de stockage depuis le navigateur.
 	const { avatar } = result.data;
 
 	if (
@@ -156,6 +161,11 @@ export async function updateUser(
 			// Si les informations de l'avatar ne sont pas disponibles,
 			//  on indique que le type de fichier est incorrect ou qu'il
 			//  contient des données textuelles.
+			logger.error(
+				{ source: __filename, result },
+				"Avatar file type not found"
+			);
+
 			return {
 				success: false,
 				reason: messages( "zod.wrong_file_type" )
@@ -175,6 +185,11 @@ export async function updateUser(
 		{
 			// Si le type du fichier ne correspond à aucun type d'avatar
 			//  accepté, on indique que le type de fichier est incorrect.
+			logger.error(
+				{ source: __filename, result },
+				"Avatar file type not accepted"
+			);
+
 			return {
 				success: false,
 				reason: messages( "zod.wrong_file_type" )
@@ -208,6 +223,8 @@ export async function updateUser(
 		{
 			// Si une erreur survient lors de la mise à jour de l'avatar,
 			//  on l'envoie à Sentry et on affiche un message d'erreur.
+			logger.error( { source: __filename, error }, "Error updating avatar" );
+
 			Sentry.captureException( error );
 
 			return {
@@ -218,6 +235,8 @@ export async function updateUser(
 	}
 
 	// On retourne enfin un message de succès.
+	logger.debug( { source: __filename, result }, "User preferences updated" );
+
 	return {
 		success: true,
 		reason: messages( "form.infos.user_updated" )

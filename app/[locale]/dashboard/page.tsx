@@ -15,6 +15,7 @@ import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import { generateMetadata as getMetadata } from "../layout";
 
 // Importation des composants.
@@ -82,6 +83,8 @@ async function getFiles(): Promise<FileAttributes[]>
 	// On retourne enfin une promesse contenant la liste des
 	//  des fichiers de l'utilisateur.
 	const { extension } = session.user.preferences;
+
+	logger.debug( { source: __filename, files }, "Files found" );
 
 	return Promise.all(
 		files.map( async ( file ) =>

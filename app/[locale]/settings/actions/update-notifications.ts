@@ -7,6 +7,7 @@
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/notifications";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import { getTranslations } from "next-intl/server";
 
 export async function updateNotifications(
@@ -38,6 +39,8 @@ export async function updateNotifications(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return {
 			success: false,
 			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
@@ -61,6 +64,11 @@ export async function updateNotifications(
 	} );
 
 	// On retourne enfin un message de succès.
+	logger.debug(
+		{ source: __filename, result },
+		"Notifications preferences updated"
+	);
+
 	return {
 		success: true,
 		reason: messages( "form.infos.notifications_updated" )

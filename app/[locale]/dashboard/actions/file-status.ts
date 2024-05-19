@@ -7,6 +7,7 @@
 import { z } from "zod";
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 
 export async function changeFileStatus( formData: FormData )
 {
@@ -33,6 +34,8 @@ export async function changeFileStatus( formData: FormData )
 
 	if ( !result.success )
 	{
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return [];
 	}
 
@@ -91,5 +94,7 @@ export async function changeFileStatus( formData: FormData )
 
 	// On retourne enfin la liste des identifiants des fichiers modifiés
 	//  à la fin du traitement.
+	logger.debug( { source: __filename, identifiers }, "File status changed" );
+
 	return identifiers;
 }

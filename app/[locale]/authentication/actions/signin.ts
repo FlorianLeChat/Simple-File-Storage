@@ -8,6 +8,7 @@
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
 import { TOTP } from "otpauth";
+import { logger } from "@/utilities/pino";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { auth, signIn } from "@/utilities/next-auth";
@@ -38,6 +39,8 @@ export async function signInAccount(
 		// Si c'est le cas, on tente une authentification via le fournisseur
 		//  d'authentification externe avant de rediriger l'utilisateur vers
 		//  la page de son tableau de bord.
+		logger.info( { source: __filename, provider }, "Sign in with provider" );
+
 		await signIn( provider as string, {
 			redirectTo: "/dashboard"
 		} );
@@ -57,6 +60,8 @@ export async function signInAccount(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return {
 			success: false,
 			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
@@ -74,6 +79,11 @@ export async function signInAccount(
 			redirectTo: "/dashboard",
 			sendVerificationRequest: true
 		} );
+
+		logger.info(
+			{ source: __filename, email: result.data.email },
+			"Sign in with email"
+		);
 
 		return {
 			success: !!response,
@@ -118,14 +128,26 @@ export async function signInAccount(
 				{
 					// Échec de validation avec le code de l'application ouverts
 					//  ou le code de secours.
+					logger.error(
+						{ source: __filename, email: result.data.email },
+						"Invalid OTP code"
+					);
+
 					return {
 						success: false,
 						reason: messages( "form.errors.invalid_otp" )
 					};
 				}
+
+				logger.info(
+					{ source: __filename, email: result.data.email },
+					"Requesting OTP code"
+				);
 			}
 
 			// Aucun code de double authentification n'a été fourni.
+			logger.error( { source: __filename }, "OTP code required" );
+
 			return {
 				success: false,
 				reason: messages( "form.errors.otp_required" )
@@ -135,6 +157,11 @@ export async function signInAccount(
 		// On tente alors une authentification via les informations
 		//  d'authentification fournies avant de rediriger l'utilisateur
 		//  vers la page de son tableau de bord.
+		logger.info(
+			{ source: __filename, email: result.data.email },
+			"Sign in with credentials"
+		);
+
 		await signIn( "credentials", {
 			email: result.data.email,
 			password: result.data.password,
@@ -148,17 +175,26 @@ export async function signInAccount(
 		//  d'authentification avant de relancer l'erreur.
 		if ( error instanceof AuthError )
 		{
+			logger.error( { source: __filename, error }, "Authentication error" );
+
 			return {
 				success: false,
 				reason: messages( `authjs.errors.${ error.type }` )
 			};
 		}
 
+		logger.error( { source: __filename, error }, "Sign in error" );
+
 		throw error;
 	}
 
 	// On retourne enfin un message d'erreur par défaut au l'utilisateur
 	//  ne correspondant à aucun des cas précédents.
+	logger.error(
+		{ source: __filename, email: result.data.email },
+		"Sign in error"
+	);
+
 	return {
 		success: false,
 		reason: messages( "authjs.errors.CredentialsSignin" )

@@ -8,6 +8,7 @@ import { z } from "zod";
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
 import { parse } from "path";
+import { logger } from "@/utilities/pino";
 
 export async function renameFile( formData: FormData )
 {
@@ -36,6 +37,8 @@ export async function renameFile( formData: FormData )
 
 	if ( !result.success )
 	{
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return [];
 	}
 
@@ -64,6 +67,8 @@ export async function renameFile( formData: FormData )
 
 	if ( !first )
 	{
+		logger.error( { source: __filename, result }, "Invalid file data" );
+
 		return [];
 	}
 
@@ -106,5 +111,7 @@ export async function renameFile( formData: FormData )
 
 	// On retourne enfin la liste des identifiants des fichiers renommés
 	//  à la fin du traitement.
+	logger.debug( { source: __filename, files }, "Files renamed" );
+
 	return files.map( ( file ) => file.id );
 }

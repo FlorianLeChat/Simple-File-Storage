@@ -7,6 +7,7 @@
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/issue";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import { getTranslations } from "next-intl/server";
 
 export async function createIssue(
@@ -40,6 +41,8 @@ export async function createIssue(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return {
 			success: false,
 			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
@@ -61,6 +64,8 @@ export async function createIssue(
 	{
 		// Dans ce cas là, on affiche un message d'erreur dans le
 		//  formulaire.
+		logger.error( { source: __filename, issue }, "Too many issues" );
+
 		return {
 			success: false,
 			reason: messages( "form.errors.too_many" )
@@ -79,6 +84,8 @@ export async function createIssue(
 	} );
 
 	// On retourne enfin un message de succès.
+	logger.info( { source: __filename, result }, "Issue created" );
+
 	return {
 		success: true,
 		reason: messages( "form.infos.issue_created" )

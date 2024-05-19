@@ -8,6 +8,7 @@ import { z } from "zod";
 import prisma from "@/utilities/prisma";
 import { TOTP } from "otpauth";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import { generateMetadata } from "@/app/layout";
 
 export async function validateOTP( formData: FormData )
@@ -39,6 +40,8 @@ export async function validateOTP( formData: FormData )
 
 	if ( !result.success )
 	{
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return false;
 	}
 
@@ -81,10 +84,14 @@ export async function validateOTP( formData: FormData )
 		} );
 
 		// Retour du code de sauvegarde pour l'utilisateur.
+		logger.debug( { source: __filename, data }, "Generated backup code" );
+
 		return data.backup;
 	}
 
 	// On retourne enfin l'état de validation de l'autorisation à
 	//  deux facteurs.
+	logger.debug( { source: __filename, state }, "OTP validation state" );
+
 	return state;
 }

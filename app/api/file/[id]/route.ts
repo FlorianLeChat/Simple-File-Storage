@@ -3,6 +3,7 @@
 //
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -33,6 +34,8 @@ export async function GET(
 
 	if ( !file || file.versions.length === 0 )
 	{
+		logger.error( { source: __filename, id: params.id }, "File not found" );
+
 		return new NextResponse( null, { status: 400 } );
 	}
 
@@ -43,6 +46,8 @@ export async function GET(
 		case "public": {
 			// Si le fichier est public, on retourne les données du fichier
 			//  comme une réponse JSON sans aucune vérification.
+			logger.debug( { source: __filename, file }, "Public file retrieved" );
+
 			return NextResponse.json( file );
 		}
 
@@ -60,6 +65,11 @@ export async function GET(
 			//  semble posséder les autorisations d'accès en partage.
 			if ( file.shares.some( ( share ) => share.userId === session.user.id ) )
 			{
+				logger.debug(
+					{ source: __filename, file },
+					"Shared file retrieved"
+				);
+
 				return NextResponse.json( file );
 			}
 
@@ -76,6 +86,11 @@ export async function GET(
 
 			// Dans le cas contraire, on retourne les données du fichier
 			//  comme une réponse JSON.
+			logger.debug(
+				{ source: __filename, file },
+				"Private file retrieved"
+			);
+
 			return NextResponse.json( file );
 		}
 

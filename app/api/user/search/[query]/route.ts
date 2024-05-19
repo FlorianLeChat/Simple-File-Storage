@@ -3,6 +3,7 @@
 //
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -47,12 +48,14 @@ export async function GET(
 	} );
 
 	// On retourne enfin les données des utilisateurs comme une réponse JSON.
-	return NextResponse.json(
-		users.map( ( user ) => ( {
-			id: user.id,
-			name: user.name,
-			email: user.email,
-			image: user.image
-		} ) )
-	);
+	const results = users.map( ( user ) => ( {
+		id: user.id,
+		name: user.name,
+		email: user.email,
+		image: user.image
+	} ) );
+
+	logger.debug( { source: __filename, results }, "Users found" );
+
+	return NextResponse.json( results );
 }
