@@ -27,6 +27,7 @@
   "dependencies": {
     "swr": "~2.2",
     "zod": "~3.23",
+    "pino": "~9.1",
     "mime": "~4.0",
     "next": "~14.2",
     "sharp": "~0.33",
@@ -39,6 +40,7 @@
     "next-auth": "5.0.0-beta.17",
     "nodemailer": "~6.9",
     "dotenv-cli": "~7.4",
+    "pino-pretty": "~11.0",
     "@prisma/client": "~5.13",
     "@sentry/nextjs": "~7.112",
     "@auth/prisma-adapter": "~2.0"
