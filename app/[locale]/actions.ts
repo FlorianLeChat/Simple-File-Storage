@@ -6,6 +6,7 @@
 
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 
 //
 // Mise à jour de l'état de lecture des notifications.
@@ -30,5 +31,10 @@ export async function updateReadState()
 	} );
 
 	// On retourne enfin un message de succès si l'opération a réussi.
+	logger.debug(
+		{ source: __filename, count: notifications.count },
+		"Deleted all notifications"
+	);
+
 	return notifications.count > 0;
 }

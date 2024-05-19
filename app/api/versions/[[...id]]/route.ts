@@ -3,6 +3,7 @@
 //
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -55,8 +56,12 @@ export async function GET(
 
 		if ( !versions )
 		{
+			logger.debug( { source: __filename }, "No versions found" );
+
 			return new NextResponse( null, { status: 400 } );
 		}
+
+		logger.debug( { source: __filename, versions }, "Versions retrieved" );
 
 		// On les renvoie ensuite sous forme de réponse JSON.
 		return NextResponse.json( versions );
@@ -75,8 +80,15 @@ export async function GET(
 
 	if ( !versions )
 	{
+		logger.debug(
+			{ source: __filename, id: params.id[ 0 ] },
+			"No versions found"
+		);
+
 		return new NextResponse( null, { status: 400 } );
 	}
+
+	logger.debug( { source: __filename, versions }, "Versions retrieved" );
 
 	// On retourne enfin les données de la version comme une réponse JSON.
 	return NextResponse.json( versions );

@@ -4,6 +4,7 @@
 //
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET( request: NextRequest )
@@ -50,9 +51,13 @@ export async function GET( request: NextRequest )
 
 	if ( !files )
 	{
+		logger.error( { source: __filename }, "Files not found" );
+
 		return new NextResponse( null, { status: 400 } );
 	}
 
 	// On renvoie enfin les fichiers sous forme de réponse JSON.
+	logger.debug( { source: __filename, files }, "Files retrieved" );
+
 	return NextResponse.json( files );
 }

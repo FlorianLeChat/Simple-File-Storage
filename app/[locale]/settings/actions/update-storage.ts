@@ -8,6 +8,7 @@ import { z } from "zod";
 import prisma from "@/utilities/prisma";
 import { rm } from "fs/promises";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import * as Sentry from "@sentry/nextjs";
 import { existsSync } from "fs";
 import { join, parse } from "path";
@@ -49,6 +50,8 @@ export async function updateStorage(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
+		logger.error( { source: __filename, result }, "Invalid form data" );
+
 		return {
 			success: false,
 			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
@@ -149,6 +152,11 @@ export async function updateStorage(
 				{
 					// Si une erreur survient dans les opérations du système
 					//  de fichiers, on l'envoie tout simplement à Sentry.
+					logger.error(
+						{ source: __filename, error },
+						"Error deleting file versions"
+					);
+
 					Sentry.captureException( error );
 				}
 			} )
@@ -156,6 +164,8 @@ export async function updateStorage(
 	}
 
 	// On retourne enfin un message de succès.
+	logger.debug( { source: __filename, result }, "Storage preferences updated" );
+
 	return {
 		success: true,
 		reason: messages( "form.infos.storage_updated" )

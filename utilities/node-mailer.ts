@@ -5,6 +5,7 @@
 import { createTransport } from "nodemailer";
 import { getTranslations } from "next-intl/server";
 import type { EmailConfig } from "@auth/core/providers/email";
+import { logger } from "./pino";
 
 // Couleurs utilisées dans les courriels.
 const colors = {
@@ -94,6 +95,11 @@ export default async function sendVerificationRequest( {
 
 	if ( failed.length )
 	{
+		logger.error(
+			{ source: __filename, failed },
+			"Email(s) could not be sent"
+		);
+
 		throw new Error( `Email(s) (${ failed.join( ", " ) }) could not be sent` );
 	}
 }

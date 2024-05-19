@@ -4,7 +4,6 @@
 //
 import Email from "next-auth/providers/nodemailer";
 import bcrypt from "bcrypt";
-import prisma from "@/utilities/prisma";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 import { join } from "path";
@@ -16,7 +15,10 @@ import Credentials from "next-auth/providers/credentials";
 import { existsSync } from "fs";
 import type { Adapter } from "next-auth/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import sendVerificationRequest from "@/utilities/node-mailer";
+
+import prisma from "./prisma";
+import { logger } from "./pino";
+import sendVerificationRequest from "./node-mailer";
 
 export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 	jwt: {
@@ -61,11 +63,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 				{
 					// Si la session n'a pas pu être créée, on casse
 					//  le processus d'authentification.
+					logger.error(
+						{ source: __filename, user, credentials },
+						"Session creation failed"
+					);
+
 					return false;
 				}
 
 				// Dans le cas contraire, on définit le jeton d'authentification
 				//  de session dans les cookies du navigateur.
+				logger.debug(
+					{ source: __filename, user, credentials },
+					"Session created"
+				);
+
 				cookies().set( {
 					name: "authjs.session-token",
 					value: sessionToken,
@@ -128,6 +140,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 						session.user.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }?version=${ Date.now() }`;
 					}
 				}
+
+				logger.debug(
+					{ source: __filename, user: session.user },
+					"Session updated"
+				);
 			}
 
 			return session;
@@ -169,6 +186,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 				//  ont été fournies.
 				if ( !credentials )
 				{
+					logger.error(
+						{ source: __filename },
+						"Credentials not provided"
+					);
+
 					return null;
 				}
 
@@ -190,10 +212,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 						exists.password
 					);
 
+					logger.debug(
+						{ source: __filename, user, exists },
+						"Credentials verified"
+					);
+
 					// Si les deux mots de passe correspondent, on retourne
 					//  le compte utilisateur.
 					return user ? exists : null;
 				}
+
+				logger.error(
+					{ source: __filename, exists },
+					"Credentials not verified"
+				);
 
 				// Dans le cas contraire, on retourne enfin une valeur nulle.
 				return null;

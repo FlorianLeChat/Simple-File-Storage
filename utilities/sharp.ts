@@ -3,6 +3,7 @@
 //  Source : https://sharp.pixelplumbing.com/api-resize
 //
 import sharp from "sharp";
+import { logger } from "./pino";
 
 // Qualité de compression des images.
 //  Note : plus la valeur est élevée, plus la qualité est élevée.
@@ -50,5 +51,12 @@ export async function compressFile(
 	}
 
 	// On retourne enfin la mémoire tampon compressée.
-	return instance.toBuffer();
+	const compressed = await instance.toBuffer();
+
+	logger.info(
+		{ source: __filename, before: buffer.length, after: compressed.length },
+		"Compressing file"
+	);
+
+	return compressed;
 }

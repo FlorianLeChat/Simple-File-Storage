@@ -3,6 +3,7 @@
 //
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
+import { logger } from "@/utilities/pino";
 import { NextResponse } from "next/server";
 
 // Nombre maximal de notifications par utilisateur.
@@ -29,5 +30,10 @@ export async function GET()
 	} );
 
 	// On retourne enfin les notifications sous forme de réponse JSON.
+	logger.debug(
+		{ source: __filename, notifications },
+		"Notifications retrieved"
+	);
+
 	return NextResponse.json( notifications );
 }
