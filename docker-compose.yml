@@ -1,9 +1,5 @@
 name: simple-file-storage
 
-networks:
-    simple_file_storage:
-        driver: bridge
-
 services:
     # https://hub.docker.com/_/mariadb
     mariadb:
@@ -17,8 +13,6 @@ services:
             MARIADB_USER: ${DATABASE_USERNAME}
             MARIADB_PASSWORD: ${DATABASE_PASSWORD}
             MARIADB_RANDOM_ROOT_PASSWORD: 1
-        networks:
-            - simple_file_storage
         healthcheck:
             test: healthcheck.sh --su-mysql --connect --innodb_initialized
             retries: 3
@@ -37,8 +31,6 @@ services:
             PMA_PORT: ${DATABASE_PORT}
             PMA_USER: ${DATABASE_USERNAME}
             PMA_PASSWORD: ${DATABASE_PASSWORD}
-        networks:
-            - simple_file_storage
         healthcheck:
             test: curl -f http://localhost
             retries: 3
@@ -62,8 +54,6 @@ services:
             - mariadb
         environment:
             - WAIT_HOSTS=mariadb:${DATABASE_PORT}
-        networks:
-            - simple_file_storage
         healthcheck:
             test: curl -f http://localhost:3000
             retries: 3
