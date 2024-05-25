@@ -5,11 +5,11 @@
 import { Slot } from "@radix-ui/react-slot";
 import { merge } from "@/utilities/tailwind";
 import { Controller,
-	FieldPath,
-	FieldValues,
 	FormProvider,
 	useFormContext,
-	ControllerProps } from "react-hook-form";
+	type FieldPath,
+	type FieldValues,
+	type ControllerProps } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { useId,
