@@ -6,7 +6,7 @@
 "use client";
 
 import { merge } from "@/utilities/tailwind";
-import { Column } from "@tanstack/react-table";
+import { type Column } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { type HTMLAttributes } from "react";

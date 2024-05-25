@@ -12,14 +12,14 @@ import { useSearchParams } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 import { type TableMeta,
 	flexRender,
-	SortingState,
 	useReactTable,
-	VisibilityState,
 	getCoreRowModel,
 	getSortedRowModel,
-	ColumnFiltersState,
+	type SortingState,
 	getFilteredRowModel,
-	getPaginationRowModel } from "@tanstack/react-table";
+	type VisibilityState,
+	getPaginationRowModel,
+	type ColumnFiltersState } from "@tanstack/react-table";
 import type { FileAttributes } from "@/interfaces/File";
 import { useLocale, useMessages } from "next-intl";
 

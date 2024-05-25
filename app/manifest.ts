@@ -2,7 +2,7 @@
 // Route vers le manifeste de l'application.
 //  Source : https://nextjs.org/docs/app/api-reference/file-conventions/metadata/manifest
 //
-import { MetadataRoute } from "next";
+import { type MetadataRoute } from "next";
 import { generateMetadata } from "./[locale]/layout";
 
 export default async function manifest(): Promise<MetadataRoute.Manifest>
