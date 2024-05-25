@@ -5,8 +5,8 @@
 "use client";
 
 import { merge } from "@/utilities/tailwind";
-import { ColumnDef } from "@tanstack/react-table";
 import { formatSize } from "@/utilities/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import type { FileAttributes } from "@/interfaces/File";
 
 import { Badge } from "@/components/ui/badge";
