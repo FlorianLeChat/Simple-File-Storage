@@ -16,6 +16,7 @@ export async function compressFile(
 {
 	// On créé d'abord une instance de sharp avec la mémoire tampon.
 	const instance = sharp( buffer );
+	instance.keepExif();
 
 	// On compresse l'image en fonction de son extension.
 	switch ( extension )
