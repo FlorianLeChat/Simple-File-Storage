@@ -41,10 +41,6 @@ export async function compressFile(
 			// https://sharp.pixelplumbing.com/api-output#avif
 			instance.avif( { quality: COMPRESSION_QUALITY } );
 			break;
-		case "heif":
-			// https://sharp.pixelplumbing.com/api-output#heif
-			instance.heif( { quality: COMPRESSION_QUALITY } );
-			break;
 		default:
 			// Si l'extension n'est pas reconnue, on retourne la
 			//  mémoire tampon telle quelle avant modification.
