@@ -55,7 +55,7 @@ services:
         environment:
             - WAIT_HOSTS=mariadb:${DATABASE_PORT}
         healthcheck:
-            test: curl -f http://localhost:3000
+            test: wget -O - http://localhost:3000
             retries: 3
             timeout: 5s
         build:
