@@ -4,9 +4,8 @@
 # https://hub.docker.com/_/node
 FROM node:lts-alpine
 
-# Add cURL for health check, OpenSSL for generating random secret
-#  and SuperCronic for cronjobs
-RUN apk update && apk add --no-cache curl openssl supercronic
+# Add OpenSSL for generating random secret and SuperCronic for cronjobs
+RUN apk update && apk add --no-cache openssl supercronic
 
 # Set the working directory to the website files
 WORKDIR /usr/src/app
