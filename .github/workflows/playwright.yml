@@ -28,7 +28,7 @@ jobs:
           sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env
           npx dotenv -e .env prisma migrate deploy # https://github.com/prisma/prisma/issues/10403#issuecomment-1500770484
           npm run migrate
-          npx tsc scripts/create-fake-accounts.ts
+          npx tsc --skipLibCheck scripts/create-fake-accounts.ts
           node scripts/create-fake-accounts.js
       - name: Build website
         run: npm run build
