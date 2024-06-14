@@ -392,10 +392,11 @@ export async function uploadFiles(
 
 		// On ajoute une notification à l'utilisateur si le quota de
 		//  celui-ci est proche d'être dépassé ou s'il est dépassé.
+		//  Note : cela ne concerne pas les administrateurs.
 		const quotaIsNear = currentQuota > maxQuota * 0.9;
 		const quotaIsExceeded = currentQuota > maxQuota;
 
-		if ( quotaIsNear || quotaIsExceeded )
+		if ( session.user.role !== "admin" && ( quotaIsNear || quotaIsExceeded ) )
 		{
 			logger.warn(
 				{ source: __filename, currentQuota, maxQuota },
