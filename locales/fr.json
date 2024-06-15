@@ -151,7 +151,7 @@
 		"otp_validation": {
 			"trigger": "Activation de l'authentification à deux facteurs",
 			"title": "Authentification à deux facteurs",
-			"description": "Afin de sécuriser davantage votre compte, vous pouvez activer l'authentification à deux facteurs. <br></br>1. Tout d'abord, vous devez scanner le code QR ci-dessus avec une application compatible comme <a1>Google Authenticator</a1> ou <a2>Authy</a2>. <br></br>2. Une fois activée, veuillez saisir ci-dessous le code de sécurité généré par votre application pour valider la double authentification. <br></br>3. Lorsque la double authentification est validée, vous serez invité à sauvegarder un code de secours pour désactiver la double authentification si vous perdez votre téléphone.",
+			"description": "Afin de sécuriser davantage votre compte, vous pouvez activer l'authentification à deux facteurs.<br></br><br></br>1. Tout d'abord, vous devez scanner le code QR ci-dessus avec une application compatible comme <a1>Google Authenticator</a1> ou <a2>Authy</a2>. <br></br>2. Une fois activée, veuillez saisir ci-dessous le code de sécurité généré par votre application pour valider la double authentification. <br></br>3. Lorsque la double authentification est validée, vous serez invité à sauvegarder un code de secours pour désactiver la double authentification si vous perdez votre téléphone.<br></br><br></br>Si vous rencontrez des difficultés pour scanner le code QR, vous pouvez saisir manuellement la clé secrète suivante dans votre application d'authentification : <code>{secret}</code>.",
 			"close": "Activer l'authentification à deux facteurs"
 		},
 		"reset_password": {
