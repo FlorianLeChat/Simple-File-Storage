@@ -137,7 +137,13 @@ export default function OTPValidationModal( {
 								>
 									{chunks}
 								</a>
-							)
+							),
+							code: ( chunks ) => (
+								<code className="bg-destructive px-1 font-black text-white">
+									{chunks}
+								</code>
+							),
+							secret
 						} )}
 					</DialogDescription>
 				</DialogHeader>
