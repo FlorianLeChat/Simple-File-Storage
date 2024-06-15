@@ -1,8 +1,11 @@
+//
+// Ajout la gestion des erreurs et de suivi des performances côté client avec Sentry.
+//  Source : https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/#create-initialization-config-files
+//
 import { init, replayIntegration } from "@sentry/nextjs";
 
 init( {
 	dsn: process.env.SENTRY_DSN,
-	debug: false,
 	integrations: [
 		replayIntegration( {
 			maskAllText: true,
