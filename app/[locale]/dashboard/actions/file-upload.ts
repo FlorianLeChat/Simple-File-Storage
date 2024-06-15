@@ -36,6 +36,7 @@ export async function uploadFiles(
 	}
 
 	// On tente ensuite de valider les données du formulaire.
+	const isUser = session.user.role !== "admin";
 	const result = schema.safeParse( {
 		upload: formData.getAll( "upload" ),
 		encryption: formData.get( "encryption" ) === "on",
@@ -76,7 +77,7 @@ export async function uploadFiles(
 		// On filtre la liste des fichiers à téléverser pour ne garder que
 		//  ceux qui ne dépassent pas le quota de l'utilisateur.
 		//  Note : cela ne concerne pas les administrateurs.
-		if ( session.user.role !== "admin" )
+		if ( isUser )
 		{
 			result.data.upload = result.data.upload.filter( ( file ) =>
 			{
@@ -102,7 +103,7 @@ export async function uploadFiles(
 			const buffer = new Uint8Array( await file.arrayBuffer() );
 			const info = await fileTypeFromBuffer( buffer );
 
-			if ( info )
+			if ( info && isUser )
 			{
 				// Si les informations du fichier sont disponibles, on vérifie
 				//  si le type du fichier correspond à l'un des types de fichiers
@@ -199,10 +200,9 @@ export async function uploadFiles(
 			const versionId = (
 				await prisma.version.upsert( {
 					where: {
-						id:
-							exists && !preferences.versions
-								? exists.versions[ 0 ].id
-								: ""
+						id: exists && !preferences.versions
+							? exists.versions[ 0 ].id
+							: ""
 					},
 					update: {
 						createdAt: new Date()
@@ -396,7 +396,7 @@ export async function uploadFiles(
 		const quotaIsNear = currentQuota > maxQuota * 0.9;
 		const quotaIsExceeded = currentQuota > maxQuota;
 
-		if ( session.user.role !== "admin" && ( quotaIsNear || quotaIsExceeded ) )
+		if ( isUser && ( quotaIsNear || quotaIsExceeded ) )
 		{
 			logger.warn(
 				{ source: __filename, currentQuota, maxQuota },
@@ -417,7 +417,7 @@ export async function uploadFiles(
 		//  fichiers téléversés avec succès.
 		return {
 			success: currentQuota <= maxQuota,
-			reason: quotaIsExceeded
+			reason: isUser && quotaIsExceeded
 				? messages( "form.errors.quota_exceeded" )
 				: messages( "form.infos.upload_success" ),
 			data: ( await Promise.all( data ) ).flat()
