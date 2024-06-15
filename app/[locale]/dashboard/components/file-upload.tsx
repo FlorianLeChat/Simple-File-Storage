@@ -72,6 +72,7 @@ export default function FileUpload( {
 	const [ quota, setQuota ] = useState( 0 );
 	const [ isOpen, setOpen ] = useState( false );
 	const [ isLoading, setLoading ] = useState( false );
+	const [ isEncrypted, setEncrypted ] = useState( false );
 	const [ uploadState, uploadAction ] = useFormState( uploadFiles, {
 		success: true,
 		reason: "",
@@ -505,7 +506,9 @@ export default function FileUpload( {
 													id={field.name}
 													name={field.name}
 													checked={field.value}
-													disabled={isLoading}
+													disabled={
+														isLoading || isEncrypted
+													}
 													onCheckedChange={
 														field.onChange
 													}
@@ -566,9 +569,23 @@ export default function FileUpload( {
 													name={field.name}
 													checked={field.value}
 													disabled={isLoading}
-													onCheckedChange={
-														field.onChange
-													}
+													onCheckedChange={( value ) =>
+													{
+														if ( value )
+														{
+															// Désactivation de la compression si
+															//  le fichier est chiffré avant envoi.
+															form.setValue(
+																"compression",
+																false
+															);
+														}
+
+														// Mise à jour de l'état de chiffrement.
+														field.onChange( value );
+
+														setEncrypted( value );
+													}}
 												/>
 											</FormControl>
 
