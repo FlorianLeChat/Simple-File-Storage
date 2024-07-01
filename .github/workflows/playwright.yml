@@ -24,9 +24,8 @@ jobs:
         run: |
           sed -i 's/provider = "mysql"/provider = "sqlite"/g' prisma/schema.prisma
           sed -i 's/@db\.Text//g' prisma/schema.prisma
-          sed -i 's#^DATABASE_URL=.*#DATABASE_URL="file:data.db?connection_limit=1"#' .env
+          sed -i 's#^DATABASE_URL=.*#DATABASE_URL="file:data.db"#' .env
           sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env
-          npx dotenv -e .env prisma migrate deploy # https://github.com/prisma/prisma/issues/10403#issuecomment-1500770484
           npm run migrate
           npx tsc --skipLibCheck scripts/create-fake-accounts.ts
           node scripts/create-fake-accounts.js
