@@ -394,6 +394,7 @@
 			"OAuthCreateAccount": "Try signing in with another account.",
 			"EmailCreateAccount": "Try signing in with another account.",
 			"Callback": "Try signing in with another account.",
+			"CallbackRouteError": "Unable to finish the authentication process.",
 			"OAuthAccountNotLinked": "To confirm your identity, log in with the same account you initially used.",
 			"EmailSignup": "The confirmation email could not be sent to the provided address. Please try again later.",
 			"CredentialsSignin": "Authorization failed. Check the information you provided.",
