@@ -52,8 +52,7 @@ export async function signInAccount(
 	const result = schema.safeParse( {
 		otp: formData.get( "otp" ),
 		email: formData.get( "email" ),
-		password: formData.get( "password" ),
-		remembered: formData.get( "remembered" ) === "on"
+		password: formData.get( "password" )
 	} );
 
 	if ( !result.success )
@@ -165,7 +164,6 @@ export async function signInAccount(
 		await signIn( "credentials", {
 			email: result.data.email,
 			password: result.data.password,
-			remembered: result.data.remembered,
 			redirectTo: "/dashboard"
 		} );
 	}

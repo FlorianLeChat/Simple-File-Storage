@@ -48,7 +48,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 				// Si c'est le cas, on tente de générer un jeton
 				//  d'authentification de session pour l'utilisateur.
 				//  Source : https://github.com/nextauthjs/next-auth/discussions/3794
-				const time = 24 * 60 * 60 * ( credentials.remembered ? 30 : 1 );
+				const time = 24 * 60 * 60 * 30;
 				const adapter = PrismaAdapter( prisma ) as Adapter;
 				const sessionToken = crypto.randomUUID();
 				const createdSession = adapter?.createSession

@@ -40,8 +40,6 @@
 			"versions_label": "Enregistrement des anciennes versions",
 			"versions_description": "Lorsque vous téléversez un fichier portant le même nom qu'un fichier déjà présent dans votre espace de stockage, le fichier existant est remplacé par le nouveau. Si vous activez cette option, <b>les anciennes versions des fichiers seront automatiquement enregistrées</b> et pourront être restaurées à tout moment.<br></br><i>Note : cette option peut augmenter significativement la consommation de votre espace de stockage. Si cette option était précédemment activée, la désactivation aura pour effet de supprimer toutes les anciennes versions des fichiers.</i>",
 			"versions_trigger": "Enregistrer automatiquement les anciennes versions des fichiers",
-			"remembered_label": "Se souvenir de moi",
-			"remembered_description": "Pour rester connecté à votre compte lorsque vous revenez sur le site.",
 			"upload_label": "Téléversement de fichiers",
 			"upload_description": "Tous les formats de fichiers sont acceptés. La vitesse de téléversement dépend de votre connexion Internet et des capacités matérielles de votre ordinateur. <b>Si un fichier du même nom existe déjà, il sera remplacé et une nouvelle révision sera créée pour être restaurée ultérieurement si besoin.</b>",
 			"compression_label": "Compression des images <i>(optionnel)</i>",
