@@ -42,8 +42,7 @@ export default function SignUpForm()
 		defaultValues: {
 			otp: "",
 			email: "",
-			password: "",
-			remembered: false
+			password: ""
 		}
 	} );
 

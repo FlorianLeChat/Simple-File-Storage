@@ -17,7 +17,6 @@ import { useState, useEffect } from "react";
 import { Eye, Mail, EyeOff, Loader2, KeyRound } from "lucide-react";
 
 import { Input } from "../../components/ui/input";
-import { Switch } from "../../components/ui/switch";
 import { Form,
 	FormItem,
 	FormField,
@@ -55,8 +54,7 @@ export default function SignInForm()
 		defaultValues: {
 			otp: "",
 			email: "",
-			password: "",
-			remembered: false
+			password: ""
 		}
 	} );
 
@@ -300,32 +298,6 @@ export default function SignInForm()
 							</FormDescription>
 
 							<FormMessage />
-						</FormItem>
-					)}
-				/>
-
-				{/* Se souvenir de moi */}
-				<FormField
-					name="remembered"
-					control={form.control}
-					render={( { field } ) => (
-						<FormItem className="flex items-center justify-center space-x-2">
-							<FormControl>
-								<Switch
-									name="remembered"
-									checked={field.value}
-									disabled={isLoading}
-									onCheckedChange={field.onChange}
-								/>
-							</FormControl>
-
-							<FormLabel className="!mt-0">
-								{messages( "fields.remembered_label" )}
-							</FormLabel>
-
-							<FormDescription className="sr-only">
-								{messages( "fields.remembered_description" )}
-							</FormDescription>
 						</FormItem>
 					)}
 				/>
