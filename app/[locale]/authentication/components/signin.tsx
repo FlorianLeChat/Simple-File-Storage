@@ -187,7 +187,7 @@ export default function SignInForm()
 										onFocus={() => setFocused( true )}
 										disabled={isLoading}
 										className={`!mt-0 mr-2 inline-block w-[calc(100%-40px-0.5rem)] transition-opacity ${
-											!isFocused ? "opacity-25" : ""
+											!isFocused ? "opacity-50" : ""
 										}`}
 										maxLength={
 											schema.shape.password._def
@@ -207,7 +207,7 @@ export default function SignInForm()
 										type="button"
 										className={merge(
 											`!mt-0 align-bottom transition-opacity ${
-												!isFocused && "opacity-25"
+												!isFocused && "opacity-50"
 											}`,
 											buttonVariants( {
 												size: "icon",
@@ -259,7 +259,7 @@ export default function SignInForm()
 					render={( { field } ) => (
 						<FormItem
 							className={`!mt-4 flex flex-col items-center transition-opacity ${
-								!isFocused ? "opacity-25" : ""
+								!isFocused ? "opacity-50" : ""
 							}`}
 						>
 							<FormLabel className="sr-only">
@@ -291,7 +291,7 @@ export default function SignInForm()
 
 							<FormDescription
 								className={`transition-opacity ${
-									!isFocused ? "opacity-25" : ""
+									!isFocused ? "opacity-50" : ""
 								}`}
 							>
 								{messages( "fields.otp_description_short" )}
