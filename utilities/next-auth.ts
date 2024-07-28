@@ -31,70 +31,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 		verifyRequest: "/authentication?error=ValidationRequired"
 	},
 	adapter: PrismaAdapter( prisma ) as Adapter, // https://github.com/nextauthjs/next-auth/issues/9493#issuecomment-1871601543
+	strategy: "jwt",
 	basePath: `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`,
 	trustHost: true,
 	callbacks: {
-		// Modification du comportement du mécanisme d'authentification
-		//  afin de supporter la persistance de la session utilisateur
-		//  dans la base de données au lieu des JWT.
-		//  Source : https://github.com/nextauthjs/next-auth/discussions/4394#discussioncomment-7807750
-		async signIn( { user, credentials } )
+		// Gestion des données du jeton JWT.
+		//  Source : https://authjs.dev/guides/basics/role-based-access-control#with-jwt
+		async jwt( { token, user } )
 		{
-			// On vérifie d'abord si un utilisateur a été fourni
-			//  et si la requête d'authentification est basée sur
-			//  des informations d'identification.
-			if ( user.id && credentials )
-			{
-				// Si c'est le cas, on tente de générer un jeton
-				//  d'authentification de session pour l'utilisateur.
-				//  Source : https://github.com/nextauthjs/next-auth/discussions/3794
-				const time = 24 * 60 * 60 * 30;
-				const adapter = PrismaAdapter( prisma ) as Adapter;
-				const sessionToken = crypto.randomUUID();
-				const createdSession = adapter?.createSession
-					? await adapter?.createSession( {
-						userId: user.id,
-						expires: new Date( Date.now() + time * 1000 ),
-						sessionToken
-					} )
-					: false;
-
-				if ( !createdSession )
-				{
-					// Si la session n'a pas pu être créée, on casse
-					//  le processus d'authentification.
-					logger.error(
-						{ source: __filename, user, credentials },
-						"Session creation failed"
-					);
-
-					return false;
-				}
-
-				// Dans le cas contraire, on définit le jeton d'authentification
-				//  de session dans les cookies du navigateur.
-				logger.debug(
-					{ source: __filename, user, credentials },
-					"Session created"
-				);
-
-				cookies().set( {
-					name: "authjs.session-token",
-					value: sessionToken,
-					maxAge: time * 1000,
-					httpOnly: true,
-					sameSite: "lax"
-				} );
-			}
-
-			// Dans tous les cas, on continue le processus d'authentification.
-			return true;
-		},
-		// Gestion données de session en base de données.
-		//  Source : https://authjs.dev/guides/basics/role-based-access-control#with-database
-		async session( { session, user } )
-		{
-			if ( session )
+			if ( token && user )
 			{
 				// Ajout de propriétés personnalisées à la session.
 				const otp = await prisma.otp.findUnique( {
@@ -109,11 +54,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 					}
 				} );
 
-				session.user.id = user.id;
-				session.user.otp = otp?.secret;
-				session.user.role = user.role;
-				session.user.oauth = !user.password && !user.emailVerified;
-				session.user.preferences = preferences ?? {
+				token.id = user.id as string;
+				token.otp = otp?.secret;
+				token.role = user.role;
+				token.image = user.image ?? undefined;
+				token.oauth = !user.password && !user.emailVerified;
+				token.preferences = preferences ?? {
 					font: "inter",
 					theme: "light",
 					color: "blue",
@@ -122,29 +68,40 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 					versions: true,
 					default: true // Utilisation des préférences par défaut.
 				};
-				session.user.notification = user.notification;
+				token.notification = user.notification;
 
 				// Vérification de l'existence du dossier d'enregistrement
 				//  des avatars utilisateurs.
-				const directory = join( process.cwd(), "public/avatars" );
+				const avatars = join( process.cwd(), "public/avatars" );
 
-				if ( existsSync( directory ) )
+				if ( existsSync( avatars ) )
 				{
 					// Vérification de l'existence d'un avatar personnalisé.
-					const avatars = await readdir( directory );
-					const avatar = avatars.find( ( file ) => file.includes( user.id ) );
+					const avatar = ( await readdir( avatars ) ).find( ( file ) => file.includes( token.id ) );
 
 					if ( avatar )
 					{
 						// Définition de l'avatar personnalisé de l'utilisateur.
-						session.user.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }?version=${ Date.now() }`;
+						token.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }`;
 					}
 				}
+			}
 
-				logger.debug(
-					{ source: __filename, user: session.user },
-					"Session updated"
-				);
+			return token;
+		},
+		// Gestion données de session en base de données.
+		//  Source : https://authjs.dev/guides/basics/role-based-access-control#with-database
+		async session( { session, token } )
+		{
+			if ( session && token )
+			{
+				session.user.id = token.id;
+				session.user.otp = token.otp;
+				session.user.role = token.role;
+				session.user.oauth = token.oauth;
+				session.user.image = token.image;
+				session.user.preferences = token.preferences;
+				session.user.notification = token.notification;
 			}
 
 			return session;
