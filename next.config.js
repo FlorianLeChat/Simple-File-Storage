@@ -9,6 +9,9 @@ const withNextIntl = require( "next-intl/plugin" )( "./utilities/i18n.ts" );
 const nextConfig = withNextIntl( {
 	poweredByHeader: false,
 	experimental: {
+		// https://docs.sentry.io/platforms/javascript/guides/nextjs/migration/v7-to-v8/#updated-sdk-initialization
+		instrumentationHook: true,
+
 		// https://github.com/vercel/next.js/discussions/46987#discussioncomment-8464812
 		serverComponentsExternalPackages: ["pino", "pino-pretty"]
 	},
