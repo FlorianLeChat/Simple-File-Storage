@@ -8,8 +8,6 @@ import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 import { join } from "path";
 import NextAuth from "next-auth";
-import { encode } from "next-auth/jwt";
-import { cookies } from "next/headers";
 import { readdir } from "fs/promises";
 import Credentials from "next-auth/providers/credentials";
 import { existsSync } from "fs";
@@ -21,9 +19,6 @@ import { logger } from "./pino";
 import sendVerificationRequest from "./node-mailer";
 
 export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
-	jwt: {
-		encode: async ( params ) => cookies().get( "authjs.session-token" )?.value ?? encode( params )
-	},
 	pages: {
 		error: "/",
 		signIn: "/authentication",
@@ -31,7 +26,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 		verifyRequest: "/authentication?error=ValidationRequired"
 	},
 	adapter: PrismaAdapter( prisma ) as Adapter, // https://github.com/nextauthjs/next-auth/issues/9493#issuecomment-1871601543
-	strategy: "jwt",
+	session: {
+		strategy: "jwt"
+	},
 	basePath: `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`,
 	trustHost: true,
 	callbacks: {
