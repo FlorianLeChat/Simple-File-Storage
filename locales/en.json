@@ -40,8 +40,6 @@
 			"versions_label": "Old Versions Recording",
 			"versions_description": "When you upload a file with the same name as a file already present in your storage space, the existing file is replaced by the new one. If you enable this option, <b>old versions of files will be automatically saved</b> and can be restored at any time.<br></br><i>Note: This option may significantly increase your storage space consumption. If this option was previously enabled, disabling it will delete all old versions of files.</i>",
 			"versions_trigger": "Automatically save old versions of files",
-			"remembered_label": "Remember Me",
-			"remembered_description": "To stay logged in to your account when you return to the site.",
 			"upload_label": "File Upload",
 			"upload_description": "All file formats are accepted. The upload speed depends on your Internet connection and the hardware capabilities of your computer. <b>If a file with the same name already exists, it will be replaced, and a new revision will be created to be restored later if needed.</b>",
 			"compression_label": "Image Compression <i>(optional)</i>",

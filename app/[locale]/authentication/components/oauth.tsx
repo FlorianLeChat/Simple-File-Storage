@@ -33,8 +33,7 @@ export default function OAuthForm()
 		resolver: zodResolver( schema ),
 		defaultValues: {
 			email: "",
-			password: "",
-			remembered: false
+			password: ""
 		}
 	} );
 
