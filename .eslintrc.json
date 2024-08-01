@@ -7,6 +7,16 @@
 		"JSX": "readonly",
 		"NodeJS": "readonly"
 	},
+	"overrides": [
+		{
+			// https://github.com/shadcn-ui/ui/issues/120#issuecomment-1828081539
+			"files": ["**/components/ui/*.tsx"],
+			"rules": {
+				"react/prop-types": "off",
+				"@typescript-eslint/no-empty-object-type": "off"
+			}
+		}
+	],
 	"extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "plugin:@typescript-eslint/strict", "plugin:jsx-a11y/strict", "airbnb"],
 	"plugins": ["@typescript-eslint"],
 	"parser": "@typescript-eslint/parser",
