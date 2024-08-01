@@ -12,8 +12,8 @@ import "@total-typescript/ts-reset";
 // Importation des dépendances.
 import pick from "lodash/pick";
 import { join } from "path";
-import { Toaster } from "sonner";
 import { existsSync } from "fs";
+import type { Toaster } from "sonner";
 import { lazy,
 	Suspense,
 	type ReactNode,
