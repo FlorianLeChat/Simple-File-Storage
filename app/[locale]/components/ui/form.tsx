@@ -11,7 +11,7 @@ import { Controller,
 	type FieldValues,
 	type ControllerProps } from "react-hook-form";
 import { useTranslations } from "next-intl";
-import * as LabelPrimitive from "@radix-ui/react-label";
+import type * as LabelPrimitive from "@radix-ui/react-label";
 import { useId,
 	useMemo,
 	useContext,
