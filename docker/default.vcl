@@ -70,8 +70,9 @@ sub vcl_recv {
 	}
 
 	# Suppression de la mise en cache pour toutes les pages
-	#  en dehors de la page d'accueil.
-	if (req.url ~ "/") {
+	#  en dehors de la page d'accueil et celles réservées
+	#  aux informations juridiques du site Internet.
+	if (req.url ~ "/" || req.url ~ "/legal/terms" || req.url ~ "/legal/policy") {
 		return (pass);
 	}
 
