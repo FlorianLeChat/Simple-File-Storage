@@ -10,7 +10,7 @@
 	"overrides": [
 		{
 			// https://github.com/shadcn-ui/ui/issues/120#issuecomment-1828081539
-			"files": ["**/components/ui/*.tsx"],
+			"files": ["**/components/ui/*.tsx", "**/utilities/env.ts"],
 			"rules": {
 				"react/prop-types": "off",
 				"@typescript-eslint/no-empty-object-type": "off"
