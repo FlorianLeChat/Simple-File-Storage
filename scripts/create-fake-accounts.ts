@@ -5,6 +5,7 @@
 // Importation des dépendances.
 import { join } from "path";
 import { faker } from "@faker-js/faker";
+import * as bcrypt from "bcrypt";
 import * as dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 
@@ -28,12 +29,13 @@ const script = async () =>
 	} );
 
 	// Génération de 5 comptes utilisateurs factices.
+	const hash = await bcrypt.hash( "Florian4016", 15 );
+
 	await prisma.user.createMany( {
 		data: Array.from( [ 1, 2, 3, 4, 5 ], ( index ) => ( {
 			name: faker.person.fullName(),
 			email: `test${ index }@gmail.com`,
-			password:
-				"$2a$15$ztEyG.IzUf5mIO9kynUeoOZarLtxIRY7o.Eynzc501/MsrG6.DjGW"
+			password: hash
 		} ) )
 	} );
 
