@@ -3,9 +3,6 @@
 //  Source : https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts#root-layout-required
 //
 
-// Importation de la feuille de style globale.
-import "./layout.css";
-
 // Importation du normalisateur TypeScript.
 import "@total-typescript/ts-reset";
 
