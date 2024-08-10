@@ -9,6 +9,7 @@ import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
+import { generateMetadata } from "../layout";
 
 // Importation des composants.
 import { Separator } from "../components/ui/separator";
@@ -29,6 +30,7 @@ export default async function Layout( {
 	unstable_setRequestLocale( locale );
 
 	// Déclaration des constantes.
+	const meta = await generateMetadata();
 	const session = await auth();
 
 	// Affichage du rendu HTML de la page.
@@ -37,7 +39,7 @@ export default async function Layout( {
 			<header className="container mx-auto flex min-h-[4rem] flex-wrap items-center justify-center gap-y-4 px-4 py-8 md:gap-x-4 md:py-4">
 				{/* Titre du site */}
 				<h1 className="text-center text-2xl font-semibold max-md:w-full max-md:overflow-hidden max-md:text-ellipsis max-md:whitespace-nowrap md:max-w-fit md:text-xl">
-					<Link href="/">💾 Simple File Storage</Link>
+					<Link href="/">💾 {meta.title as string}</Link>
 				</h1>
 
 				{session && (
@@ -45,7 +47,7 @@ export default async function Layout( {
 						{/* Navigation du site */}
 						<Navigation
 							theme={session.user.preferences.theme}
-							source="/"
+							source={meta.source}
 						/>
 
 						{/* Éléments latéraux */}
