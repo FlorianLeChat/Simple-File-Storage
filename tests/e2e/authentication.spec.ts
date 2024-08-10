@@ -29,10 +29,10 @@ test( "Création d'un compte utilisateur inédit", async ( { page } ) =>
 	await page.getByText( "Register by email" ).click();
 
 	// Attente de la réponse du serveur sous forme de notification.
-	//  Note : la réponse sera négative car le serveur de messagerie
-	//   ne sera pas configuré dans l'environnement de test.
+	//  Note : la réponse sera positive même si le serveur de messagerie
+	//   n'est pas configuré dans l'environnement de test.
 	await expect(
-		page.locator( "[data-sonner-toast][data-type = error]" )
+		page.locator( "[data-sonner-toast][data-type = info]" )
 	).toHaveCount( 1 );
 } );
 
