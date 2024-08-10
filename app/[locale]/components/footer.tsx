@@ -19,6 +19,7 @@ export default async function Footer()
 			<p className="block p-4 text-sm">
 				© {new Date().getFullYear()} 💾 Simple File Storage.{" "}
 				{messages( "footer.rights_reserved" )}
+
 				{/* Avertissement de Google reCAPTCHA */}
 				{process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true" && (
 					<small className="block text-xs leading-5 max-sm:mt-1">

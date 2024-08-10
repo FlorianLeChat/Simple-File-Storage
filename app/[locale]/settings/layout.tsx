@@ -44,7 +44,6 @@ export default async function Layout( {
 	unstable_setRequestLocale( locale );
 
 	// Déclaration des constantes.
-	const meta = await getMetadata();
 	const session = await auth();
 	const messages = await getTranslations();
 
@@ -60,14 +59,11 @@ export default async function Layout( {
 			<header className="container mx-auto flex min-h-[4rem] flex-wrap items-center justify-center gap-y-4 px-4 py-8 md:gap-x-4 md:py-4">
 				{/* Titre du site */}
 				<h1 className="text-center text-2xl font-semibold max-md:w-full max-md:overflow-hidden max-md:text-ellipsis max-md:whitespace-nowrap md:max-w-fit md:text-xl">
-					<Link href="/">💾 {meta.title as string}</Link>
+					<Link href="/">💾 Simple File Storage</Link>
 				</h1>
 
 				{/* Navigation du site */}
-				<Navigation
-					theme={session.user.preferences.theme}
-					source={meta.source}
-				/>
+				<Navigation theme={session.user.preferences.theme} source="/" />
 
 				{/* Éléments latéraux */}
 				<aside className="flex items-center justify-center space-x-4 md:ml-auto">
