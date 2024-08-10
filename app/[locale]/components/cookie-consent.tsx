@@ -4,6 +4,7 @@
 
 "use client";
 
+import { toast } from "sonner";
 import { useMessages } from "next-intl";
 import { usePathname } from "next/navigation";
 import { GoogleTagManager } from "@next/third-parties/google";
@@ -17,6 +18,7 @@ export default function CookieConsent()
 	// Déclaration des variables d'état.
 	const pathname = usePathname();
 	const messages = useMessages() as unknown as {
+		form: Record<string, Record<string, string>>;
 		consentModal: ConsentModalOptions;
 		preferencesModal: PreferencesModalOptions;
 	};
@@ -103,9 +105,21 @@ export default function CookieConsent()
 						process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true"
 					);
 				}
+
+				// Google reCAPTCHA.
+				if (
+					!cookie.categories.includes( "security" )
+					&& process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true"
+				)
+				{
+					toast.warning( messages.form.errors.recaptcha_failed, {
+						duration: 10000,
+						description: messages.form.errors.recaptcha_error
+					} );
+				}
 			}
 		} );
-	}, [ pathname, messages.consentModal, messages.preferencesModal ] );
+	}, [ pathname, messages ] );
 
 	// Affichage conditionnel du rendu HTML du composant.
 	return (
