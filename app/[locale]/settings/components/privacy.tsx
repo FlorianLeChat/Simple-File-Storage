@@ -7,6 +7,7 @@
 import Link from "next/link";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
+import { redirect } from "next/navigation";
 import serverAction from "@/utilities/recaptcha";
 import { useFormState } from "react-dom";
 import { useTranslations } from "next-intl";
@@ -77,11 +78,21 @@ export default function Privacy()
 		//  avant de réinitialiser le formulaire en cas de succès.
 		if ( success )
 		{
-			form.reset();
-
 			toast.success( formMessages( "infos.action_success" ), {
 				description: reason
 			} );
+
+			if ( form.getValues( "files" ) && form.getValues( "account" ) )
+			{
+				// Si on supprime totalement le compte utilisateur, on
+				//  redirige vers la page d'accueil.
+				redirect( "/" );
+			}
+			else
+			{
+				// Sinon, on réinitialise le formulaire.
+				form.reset();
+			}
 		}
 		else
 		{
