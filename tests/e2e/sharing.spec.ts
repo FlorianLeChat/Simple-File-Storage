@@ -225,7 +225,7 @@ test( "Partage d'un fichier en écriture pour partage", async ( { page } ) =>
 	await page.getByLabel( "Write" ).click();
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
-	).toHaveCount( 1 );
+	).toHaveCount( 2 );
 
 	// Rechargement de la page pour fermer le menu des actions.
 	//  Source : https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
@@ -337,7 +337,7 @@ test( "Partage d'un fichier en écriture pour renommage", async ( { page } ) =>
 	await page.getByLabel( "Write" ).click();
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
-	).toHaveCount( 1 );
+	).toHaveCount( 2 );
 
 	// Rechargement de la page pour fermer le menu des actions.
 	//  Source : https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
@@ -425,7 +425,7 @@ test( "Partage d'un fichier en écriture pour suppression", async ( { page } ) =
 	await page.getByLabel( "Write" ).click();
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
-	).toHaveCount( 1 );
+	).toHaveCount( 2 );
 
 	// Rechargement de la page pour fermer le menu des actions.
 	//  Source : https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
@@ -512,7 +512,7 @@ test( "Partage d'un fichier en écriture pour versionnage", async ( { page } ) =
 	await page.getByLabel( "Write" ).click();
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
-	).toHaveCount( 1 );
+	).toHaveCount( 2 );
 
 	// Rechargement de la page pour fermer le menu des actions.
 	//  Source : https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
