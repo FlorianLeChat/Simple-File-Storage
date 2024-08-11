@@ -11,6 +11,7 @@ import { Eye,
 	Smile,
 	LogIn,
 	Share2,
+	Cookie,
 	PocketKnife,
 	LayoutDashboard } from "lucide-react";
 import type { Metadata } from "next";
@@ -18,11 +19,10 @@ import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
-import { merge } from "@/utilities/tailwind";
 import { generateMetadata as getMetadata } from "./layout";
 
 // Importation des composants.
-import { buttonVariants } from "./components/ui/button";
+import { Button, buttonVariants } from "./components/ui/button";
 
 // Déclaration des propriétés de la page.
 export async function generateMetadata(): Promise<Metadata>
@@ -53,36 +53,61 @@ export default async function Page( {
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
-			<header className="mb-auto flex items-center justify-between gap-4 p-4 max-sm:mt-4 max-sm:flex-col">
+			<header className="mb-auto flex items-center gap-4 p-4 max-sm:mt-4 max-sm:flex-col">
 				{/* Titre du site */}
 				<h1 className="text-2xl font-semibold max-sm:w-full max-sm:max-w-fit max-sm:overflow-hidden max-sm:text-ellipsis max-sm:whitespace-nowrap">
 					<Link href="/">💾 {meta.title as string}</Link>
 				</h1>
 
-				{/* Bouton vers l'authentification */}
-				{session ? (
-					<Link
-						href="/dashboard"
-						className={merge(
-							buttonVariants( { variant: "outline" } ),
-							"sm:mr-16"
-						)}
+				<nav className="flex gap-4 sm:ml-auto">
+					{/* Bouton vers l'authentification */}
+					{session ? (
+						<Link
+							href="/dashboard"
+							className={buttonVariants( { variant: "outline" } )}
+						>
+							<LayoutDashboard className="h-5 w-5" />
+
+							<span className="max-sm:sr-only sm:ml-2">
+								{messages( "header.dashboard" )}
+							</span>
+						</Link>
+					) : (
+						<Link
+							href="/authentication"
+							className={buttonVariants( { variant: "outline" } )}
+						>
+							<LogIn className="mr-2 h-5 w-5" />
+
+							<span className="max-sm:sr-only sm:ml-2">
+								{messages( "header.authenticate" )}
+							</span>
+						</Link>
+					)}
+
+					{/* Gestion des cookies */}
+					<Button
+						type="button"
+						variant="outline"
+						data-cc="show-preferencesModal"
+						className="justify-start text-left sm:mr-16"
 					>
-						<LayoutDashboard className="mr-2 h-5 w-5" />
-						{messages( "header.dashboard" )}
-					</Link>
-				) : (
-					<Link
-						href="/authentication"
-						className={merge(
-							buttonVariants( { variant: "outline" } ),
-							"sm:mr-16"
-						)}
-					>
-						<LogIn className="mr-2 h-5 w-5" />
-						{messages( "header.authenticate" )}
-					</Link>
-				)}
+						<Cookie />
+
+						<span className="sr-only">
+							{messages( "navigation.cookies_title" )}
+
+							<small className="hidden lg:block">
+								{messages.rich(
+									"navigation.cookies_description",
+									{
+										u: ( chunks ) => <u>{chunks}</u>
+									}
+								)}
+							</small>
+						</span>
+					</Button>
+				</nav>
 
 				{/* Affichage de l'animation du logo vers le dépôt GitHub */}
 				{/* Source : https://tholman.com/github-corners/ */}
