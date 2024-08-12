@@ -25,7 +25,7 @@ sub vcl_recv {
 	if (req.http.Cookie) {
 		set req.http.Cookie = ";" + req.http.Cookie;
 		set req.http.Cookie = regsuball(req.http.Cookie, "; +", ";");
-		set req.http.Cookie = regsuball(req.http.Cookie, ";(NEXT_COOKIE|NEXT_LOCALE|authjs\.[^;]*)=", "; \1=");
+		set req.http.Cookie = regsuball(req.http.Cookie, ";(NEXT_COOKIE|NEXT_LOCALE|authjs\.[^;]*|__Host-authjs\.[^;]*|__Secure-authjs\.[^;]*)=", "; \1=");
 		set req.http.Cookie = regsuball(req.http.Cookie, ";[^ ][^;]*", "");
 		set req.http.Cookie = regsuball(req.http.Cookie, "^[; ]+|[; ]+$", "");
 
