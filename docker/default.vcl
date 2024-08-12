@@ -69,14 +69,14 @@ sub vcl_recv {
 		return (pass);
 	}
 
-	# Ajout de la mise en cache de certaines pages qui peuvent
-	#  être accessibles sans authentification.
-	if (req.url ~ "^/$" || req.url ~ "^/authentication$" || req.url ~ "^/legal/terms$" || req.url ~ "^/legal/policy$") {
-		return (hash);
+	# Suppression de la mise en cache pour toutes les pages
+	#  nécessitant une authentification utilisateur.
+	if (req.url ~ "^dashboard$" || req.url ~ "^api$" || req.url ~ "^settings$") {
+		return (pass);
 	}
 
-	# Suppression de la mise en cache pour le reste des pages.
-	return (pass);
+	# Tentative de récupération de la page en cache.
+	return (hash);
 }
 
 sub vcl_deliver {
