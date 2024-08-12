@@ -7,6 +7,9 @@ import { test, expect } from "@playwright/test";
 //
 test( "Vérification du contrôle des notifications", async ( { page } ) =>
 {
+	// Déclaration du test comme étant lent/instable.
+	test.slow();
+
 	// Réinitialisation des comptes utilisateurs factices.
 	execSync( "node scripts/create-fake-accounts.js" );
 
