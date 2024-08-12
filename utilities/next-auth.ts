@@ -29,7 +29,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 	session: {
 		strategy: "jwt"
 	},
-	basePath: `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`,
+	basePath: process.env.AUTH_URL
+		? undefined
+		: `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`,
 	trustHost: true,
 	callbacks: {
 		// Gestion des données du jeton JWT.
