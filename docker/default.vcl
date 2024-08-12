@@ -69,15 +69,14 @@ sub vcl_recv {
 		return (pass);
 	}
 
-	# Suppression de la mise en cache pour toutes les pages
-	#  en dehors de la page d'accueil et celles réservées
-	#  aux informations juridiques du site Internet.
-	if (req.url ~ "/" || req.url ~ "/legal/terms" || req.url ~ "/legal/policy") {
-		return (pass);
+	# Ajout de la mise en cache de certaines pages qui peuvent
+	#  être accessibles sans authentification.
+	if (req.url ~ "^/$" || req.url ~ "^/authentication$" || req.url ~ "^/legal/terms$" || req.url ~ "^/legal/policy$") {
+		return (hash);
 	}
 
-	# Tentative de récupération de la page en cache.
-	return (hash);
+	# Suppression de la mise en cache pour le reste des pages.
+	return (pass);
 }
 
 sub vcl_deliver {
