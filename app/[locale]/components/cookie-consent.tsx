@@ -95,6 +95,22 @@ export default function CookieConsent()
 				}
 			},
 
+			// Exécution des actions de changement.
+			onChange: ( { cookie } ) =>
+			{
+				// Google reCAPTCHA.
+				if (
+					!cookie.categories.includes( "security" )
+					&& process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true"
+				)
+				{
+					toast.warning( messages.form.errors.recaptcha_failed, {
+						duration: 10000,
+						description: messages.form.errors.recaptcha_error
+					} );
+				}
+			},
+
 			// Exécution des actions de consentement.
 			onConsent: ( { cookie } ) =>
 			{
