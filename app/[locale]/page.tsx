@@ -77,7 +77,7 @@ export default async function Page( {
 							href="/authentication"
 							className={buttonVariants( { variant: "outline" } )}
 						>
-							<LogIn className="mr-2 h-5 w-5" />
+							<LogIn className="h-5 w-5" />
 
 							<span className="max-sm:sr-only sm:ml-2">
 								{messages( "header.authenticate" )}
