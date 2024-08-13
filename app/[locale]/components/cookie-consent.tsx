@@ -24,6 +24,33 @@ export default function CookieConsent()
 	};
 	const [ analytics, setAnalytics ] = useState( false );
 
+	// Filtrage des catégories de cookies en fonction des
+	//  paramètres du site Internet.
+	messages.preferencesModal.sections =
+		messages.preferencesModal.sections.filter( ( section ) =>
+		{
+			if (
+				section.linkedCategory === "analytics"
+				&& process.env.NEXT_PUBLIC_ANALYTICS_ENABLED !== "true"
+			)
+			{
+				// Google Analytics est désactivé.
+				return false;
+			}
+
+			if (
+				section.linkedCategory === "security"
+				&& process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED !== "true"
+			)
+			{
+				// Google reCAPTCHA est désactivé.
+				return false;
+			}
+
+			// Autres catégories de cookies.
+			return true;
+		} );
+
 	// Affichage du consentement des cookies.
 	//  Source : https://cookieconsent.orestbida.com/reference/api-reference.html
 	useEffect( () =>
