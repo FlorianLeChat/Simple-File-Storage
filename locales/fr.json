@@ -135,7 +135,7 @@
 			"email_used": "Cette adresse électronique est déjà utilisée.",
 			"auth_failed": "Échec de l'authentification",
 			"recaptcha_failed": "Échec de la vérification reCAPTCHA",
-			"recaptcha_error": "Les services de vérification de Google reCAPTCHA sont actuellement indisponibles. Si les cookies de sécurité sont désactivés, certaines fonctionnalités du site peuvent ne pas fonctionner correctement.",
+			"recaptcha_error": "Les services de vérification de Google reCAPTCHA sont actuellement désactivés ou indisponibles. Si les cookies de sécurité ont été désactivés, certaines fonctionnalités du site peuvent ne pas fonctionner correctement.",
 			"server_error": "Une erreur s'est produite lors du traitement de votre demande par le serveur.",
 			"invalid_otp": "Le code de vérification que vous avez fourni est incorrect.",
 			"otp_required": "Un code de vérification est requis pour continuer.",
