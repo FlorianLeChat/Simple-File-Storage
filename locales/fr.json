@@ -364,7 +364,7 @@
 	},
 	"valibot": {
 		"wrong_file_object": "L'un des fichiers téléversés n'est pas un fichier valide.",
-		"wrong_file_size": "L'un des fichiers téléversés dépasse la taille maximale autorisée.",
+		"wrong_file_size": "L'un des fichiers téléversés est vide ou dépasse la taille maximale autorisée.",
 		"wrong_file_name": "L'un des fichiers téléversés a un nom de fichier invalide, vide ou trop long.",
 		"wrong_file_type": "L'un des fichiers téléversés n'est pas un type de fichier autorisé."
 	},

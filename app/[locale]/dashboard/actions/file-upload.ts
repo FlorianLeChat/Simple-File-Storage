@@ -49,13 +49,15 @@ export async function uploadFiles(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
-		const { type, message } = result.issues[ 0 ];
+		const { message } = result.issues[ 0 ];
 
 		logger.error( { source: __filename, result }, "Invalid form data" );
 
 		return {
 			success: false,
-			reason: type === "custom" ? messages( `valibot.${ type }` ) : message
+			reason: message.startsWith( "custom." )
+				? messages( `valibot.${ message.slice( 7 ) }` )
+				: message
 		};
 	}
 
