@@ -4,7 +4,7 @@
 
 "use client";
 
-import * as z from "zod";
+import * as v from "valibot";
 import schema from "@/schemas/layout";
 import { Check,
 	SunMoon,
@@ -18,10 +18,10 @@ import { merge } from "@/utilities/tailwind";
 import { colors } from "@/config/colors";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
 import { useTranslations } from "next-intl";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useState, useEffect, type CSSProperties } from "react";
 
 import { Button } from "../../components/ui/button";
@@ -55,8 +55,8 @@ export default function Layout( { session }: { session: Session } )
 	} );
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
+	const form = useForm<v.InferOutput<typeof schema>>( {
+		resolver: valibotResolver( schema ),
 		defaultValues: {
 			font: session.user.preferences
 				.font as ( typeof fonts )[number]["value"],

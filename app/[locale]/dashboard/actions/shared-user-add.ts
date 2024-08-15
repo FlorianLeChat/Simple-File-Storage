@@ -4,7 +4,7 @@
 
 "use server";
 
-import { z } from "zod";
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
@@ -21,13 +21,13 @@ export async function addSharedUser( formData: FormData )
 
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
-	const validation = z.object( {
-		fileId: z.string().uuid(),
-		userId: z.string().uuid()
+	const validation = v.object( {
+		fileId: v.pipe( v.string(), v.uuid() ),
+		userId: v.pipe( v.string(), v.uuid() )
 	} );
 
 	// On tente alors de valider les données du formulaire.
-	const result = validation.safeParse( {
+	const result = v.safeParse( validation, {
 		fileId: formData.get( "fileId" ),
 		userId: formData.get( "userId" )
 	} );
@@ -43,7 +43,7 @@ export async function addSharedUser( formData: FormData )
 	//  données et si l'utilisateur a le droit de le partager.
 	const file = await prisma.file.findFirst( {
 		where: {
-			id: result.data.fileId,
+			id: result.output.fileId,
 			OR: [
 				{
 					userId: session.user.id
@@ -71,7 +71,7 @@ export async function addSharedUser( formData: FormData )
 	//  de données et si celui-ci n'est pas déjà en partage avec le fichier.
 	const user = await prisma.user.findUnique( {
 		where: {
-			id: result.data.userId,
+			id: result.output.userId,
 			AND: {
 				NOT: {
 					OR: [

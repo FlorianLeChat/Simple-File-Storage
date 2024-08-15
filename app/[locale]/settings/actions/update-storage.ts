@@ -4,7 +4,7 @@
 
 "use server";
 
-import { z } from "zod";
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import { rm } from "fs/promises";
 import { auth } from "@/utilities/next-auth";
@@ -34,13 +34,13 @@ export async function updateStorage(
 	}
 
 	// On tente ensuite de valider les données du formulaire.
-	const validation = z.object( {
-		public: z.boolean(),
-		extension: z.boolean(),
-		versions: z.boolean()
+	const validation = v.object( {
+		public: v.boolean(),
+		extension: v.boolean(),
+		versions: v.boolean()
 	} );
 
-	const result = validation.safeParse( {
+	const result = v.safeParse( validation, {
 		public: formData.get( "public" ) === "on",
 		extension: formData.get( "extension" ) === "on",
 		versions: formData.get( "versions" ) === "on"
@@ -54,7 +54,7 @@ export async function updateStorage(
 
 		return {
 			success: false,
-			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
+			reason: messages( `zod.${ result.issues[ 0 ].type }` )
 		};
 	}
 
@@ -65,23 +65,23 @@ export async function updateStorage(
 			userId: session.user.id
 		},
 		update: {
-			public: result.data.public,
-			extension: result.data.extension,
-			versions: result.data.versions
+			public: result.output.public,
+			extension: result.output.extension,
+			versions: result.output.versions
 		},
 		create: {
 			userId: session.user.id,
-			public: result.data.public,
-			extension: result.data.extension,
-			versions: result.data.versions
+			public: result.output.public,
+			extension: result.output.extension,
+			versions: result.output.versions
 		}
 	} );
 
 	// On vérifie si l'utilisateur a désactivé le mécanisme de versionnement
 	//  des fichiers et qu'il l'avait activé auparavant.
 	if (
-		!result.data.versions
-		&& session.user.preferences.versions !== result.data.versions
+		!result.output.versions
+		&& session.user.preferences.versions !== result.output.versions
 	)
 	{
 		// Si c'est le cas, on doit enclencher une suppression des anciennes

@@ -1,14 +1,14 @@
 //
 // Schéma de validation pour les paramètres de notification.
 //
-import { z } from "zod";
+import * as v from "valibot";
 
-const schema = z.object( {
+const schema = v.object( {
 	// Notifications par courriel.
-	push: z.boolean(),
+	push: v.boolean(),
 
 	// Niveau de notification.
-	level: z.enum( [ "all", "necessary", "off" ] )
+	level: v.picklist( [ "all", "necessary", "off" ] )
 } );
 
 export default schema;

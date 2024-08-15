@@ -4,6 +4,7 @@
 
 "use server";
 
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/notifications";
 import { auth } from "@/utilities/next-auth";
@@ -30,7 +31,7 @@ export async function updateNotifications(
 	}
 
 	// On tente ensuite de valider les données du formulaire.
-	const result = schema.safeParse( {
+	const result = v.safeParse( schema, {
 		push: formData.get( "push" ) === "on",
 		level: formData.get( "level" )
 	} );
@@ -43,16 +44,16 @@ export async function updateNotifications(
 
 		return {
 			success: false,
-			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
+			reason: messages( `zod.${ result.issues[ 0 ].type }` )
 		};
 	}
 
 	// On met à jour après le niveau de notifications de l'utilisateur dans la
 	//  base de données.
 	const notification =
-		result.data.push && result.data.level !== "off"
-			? `${ result.data.level }+mail`
-			: result.data.level;
+		result.output.push && result.output.level !== "off"
+			? `${ result.output.level }+mail`
+			: result.output.level;
 
 	await prisma.user.update( {
 		where: {

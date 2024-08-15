@@ -4,6 +4,7 @@
 
 "use server";
 
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/layout";
 import { auth } from "@/utilities/next-auth";
@@ -30,7 +31,7 @@ export async function updateLayout(
 	}
 
 	// On tente ensuite de valider les données du formulaire.
-	const result = schema.safeParse( {
+	const result = v.safeParse( schema, {
 		font: formData.get( "font" ),
 		color: formData.get( "color" ),
 		theme: formData.get( "theme" )
@@ -44,7 +45,7 @@ export async function updateLayout(
 
 		return {
 			success: false,
-			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
+			reason: messages( `zod.${ result.issues[ 0 ].type }` )
 		};
 	}
 
@@ -55,15 +56,15 @@ export async function updateLayout(
 			userId: session.user.id
 		},
 		update: {
-			font: result.data.font,
-			color: result.data.color,
-			theme: result.data.theme
+			font: result.output.font,
+			color: result.output.color,
+			theme: result.output.theme
 		},
 		create: {
 			userId: session.user.id,
-			font: result.data.font,
-			color: result.data.color,
-			theme: result.data.theme
+			font: result.output.font,
+			color: result.output.color,
+			theme: result.output.theme
 		}
 	} );
 

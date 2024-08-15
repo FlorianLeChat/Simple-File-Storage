@@ -5,6 +5,7 @@
 
 "use server";
 
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
 import { TOTP } from "otpauth";
@@ -49,7 +50,7 @@ export async function signInAccount(
 	// Dans le cas contraire, on tente de valider les informations
 	//  d'authentification fournies par l'utilisateur.
 	const messages = await getTranslations();
-	const result = schema.safeParse( {
+	const result = v.safeParse( schema, {
 		otp: formData.get( "otp" ),
 		email: formData.get( "email" ),
 		password: formData.get( "password" )
@@ -63,24 +64,24 @@ export async function signInAccount(
 
 		return {
 			success: false,
-			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
+			reason: messages( `zod.${ result.issues[ 0 ].type }` )
 		};
 	}
 
-	if ( !result.data.password )
+	if ( !result.output.password )
 	{
 		// Dans certains cas, le mot de passe fourni peut être vide, ce qui
 		//  signifie que l'utilisateur a tenté de se connecter via une
 		//  validation de son adresse électronique.
 		const response = await signIn( "nodemailer", {
-			email: result.data.email,
+			email: result.output.email,
 			redirect: false,
 			redirectTo: "/dashboard",
 			sendVerificationRequest: true
 		} );
 
 		logger.info(
-			{ source: __filename, email: result.data.email },
+			{ source: __filename, email: result.output.email },
 			"Sign in with email"
 		);
 
@@ -98,7 +99,7 @@ export async function signInAccount(
 		//  l'authentification à double facteur et si un code a été fourni.
 		const user = await prisma.user.findFirst( {
 			where: {
-				email: result.data.email
+				email: result.output.email
 			},
 			include: {
 				otp: true
@@ -108,12 +109,12 @@ export async function signInAccount(
 		if ( user?.otp )
 		{
 			// Vérification de la présence d'un code de double authentification.
-			if ( result.data.otp )
+			if ( result.output.otp )
 			{
 				const meta = await generateMetadata();
 				const otp = new TOTP( {
-					label: result.data.email,
-					secret: result.data.otp,
+					label: result.output.email,
+					secret: result.output.otp,
 					issuer: meta.title as string,
 					digits: 6,
 					period: 30,
@@ -121,14 +122,15 @@ export async function signInAccount(
 				} );
 
 				if (
-					otp.validate( { token: result.data.otp, window: 1 } ) !== 0
-					&& user.otp.backup !== result.data.otp
+					otp.validate( { token: result.output.otp, window: 1 } )
+						!== 0
+					&& user.otp.backup !== result.output.otp
 				)
 				{
 					// Échec de validation avec le code de l'application ouverts
 					//  ou le code de secours.
 					logger.error(
-						{ source: __filename, email: result.data.email },
+						{ source: __filename, email: result.output.email },
 						"Invalid OTP code"
 					);
 
@@ -139,7 +141,7 @@ export async function signInAccount(
 				}
 
 				logger.info(
-					{ source: __filename, email: result.data.email },
+					{ source: __filename, email: result.output.email },
 					"Requesting OTP code"
 				);
 			}
@@ -157,13 +159,13 @@ export async function signInAccount(
 		//  d'authentification fournies avant de rediriger l'utilisateur
 		//  vers la page de son tableau de bord.
 		logger.info(
-			{ source: __filename, email: result.data.email },
+			{ source: __filename, email: result.output.email },
 			"Sign in with credentials"
 		);
 
 		await signIn( "credentials", {
-			email: result.data.email,
-			password: result.data.password,
+			email: result.output.email,
+			password: result.output.password,
 			redirectTo: "/dashboard"
 		} );
 	}
@@ -189,7 +191,7 @@ export async function signInAccount(
 	// On retourne enfin un message d'erreur par défaut au l'utilisateur
 	//  ne correspondant à aucun des cas précédents.
 	logger.error(
-		{ source: __filename, email: result.data.email },
+		{ source: __filename, email: result.output.email },
 		"Sign in error"
 	);
 

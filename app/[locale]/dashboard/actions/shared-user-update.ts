@@ -4,7 +4,7 @@
 
 "use server";
 
-import { z } from "zod";
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
@@ -21,14 +21,14 @@ export async function updateSharedUser( formData: FormData )
 
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
-	const validation = z.object( {
-		fileId: z.string().uuid(),
-		userId: z.string().uuid(),
-		status: z.enum( [ "read", "write" ] )
+	const validation = v.object( {
+		fileId: v.pipe( v.string(), v.uuid() ),
+		userId: v.pipe( v.string(), v.uuid() ),
+		status: v.picklist( [ "read", "write" ] )
 	} );
 
 	// On tente alors de valider les données du formulaire.
-	const result = validation.safeParse( {
+	const result = v.safeParse( validation, {
 		fileId: formData.get( "fileId" ),
 		userId: formData.get( "userId" ),
 		status: formData.get( "status" )
@@ -46,7 +46,7 @@ export async function updateSharedUser( formData: FormData )
 	const share = await prisma.share.updateMany( {
 		where: {
 			file: {
-				id: result.data.fileId,
+				id: result.output.fileId,
 				OR: [
 					{
 						userId: session.user.id
@@ -61,10 +61,10 @@ export async function updateSharedUser( formData: FormData )
 					}
 				]
 			},
-			userId: result.data.userId
+			userId: result.output.userId
 		},
 		data: {
-			status: result.data.status
+			status: result.output.status
 		}
 	} );
 
