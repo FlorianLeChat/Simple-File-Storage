@@ -2,10 +2,13 @@
 // Options de configuration de Next Intl.
 //  Source : https://next-intl-docs.vercel.app/docs/getting-started/app-router-server-components
 //
+import * as v from "valibot";
 import deepmerge from "deepmerge";
 import { notFound } from "next/navigation";
 import { getRequestConfig } from "next-intl/server";
 import type { AbstractIntlMessages } from "next-intl";
+
+import "@valibot/i18n/fr";
 import { logger } from "./pino";
 
 export function getLanguages()
@@ -22,6 +25,9 @@ export default getRequestConfig( async ( { locale } ) =>
 		logger.error( { source: __filename, locale }, "Unsupported language" );
 		notFound();
 	}
+
+	// Définition de la langue utilisée par Valibot.
+	v.setGlobalConfig( { lang: locale } );
 
 	// Récupération des traductions dans le système de fichiers.
 	//  Note : les traductions manquantes sont fusionnées avec celles de
