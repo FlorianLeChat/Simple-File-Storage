@@ -2,15 +2,17 @@
 // Composant générique des formulaires.
 //  Source : https://ui.shadcn.com/docs/components/form
 //
+import "@valibot/i18n/fr";
+import * as v from "valibot";
 import { Slot } from "@radix-ui/react-slot";
 import { merge } from "@/utilities/tailwind";
+import { useLocale } from "next-intl";
 import { Controller,
 	FormProvider,
 	useFormContext,
 	type FieldPath,
 	type FieldValues,
 	type ControllerProps } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import type * as LabelPrimitive from "@radix-ui/react-label";
 import { useId,
 	useMemo,
@@ -175,7 +177,8 @@ const FormMessage = forwardRef<
 	HTMLAttributes<HTMLParagraphElement>
 >( ( { className, children, ...props }, ref ) =>
 {
-	const messages = useTranslations( "zod" );
+	v.setGlobalConfig( { lang: useLocale() } );
+
 	const { error, formMessageId } = useFormField();
 	const body = error ? String( error?.type ) : children;
 
@@ -191,7 +194,7 @@ const FormMessage = forwardRef<
 			className={merge( "text-sm font-medium text-destructive", className )}
 			{...props}
 		>
-			{messages( body )}
+			{error?.message}
 		</p>
 	);
 } );
