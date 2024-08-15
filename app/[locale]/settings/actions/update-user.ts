@@ -58,7 +58,7 @@ export async function updateUser(
 
 		return {
 			success: false,
-			reason: messages( `zod.${ type === "custom" ? message : type }` )
+			reason: type === "custom" ? messages( `valibot.${ type }` ) : message
 		};
 	}
 

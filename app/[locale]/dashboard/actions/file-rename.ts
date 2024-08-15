@@ -22,7 +22,7 @@ export async function renameFile( formData: FormData )
 
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
-	//  Note : les validations Zod du nom doivent correspondre à
+	//  Note : les validations Valibot du nom doivent correspondre à
 	//   celles utilisées lors du téléversement de fichiers.
 	const validation = v.object( {
 		fileIds: v.array( v.pipe( v.string(), v.uuid() ) ),
