@@ -138,8 +138,12 @@ test( "Création d'un nouveau signalement de bogue", async ( { page } ) =>
 	// Attente de la réponse du serveur sous forme d'un message d'erreur.
 	//  Note : la réponse sera négative car les champs requis ne sont pas remplis.
 	await expect(
-		page.getByText( "The provided value is too small." )
-	).toHaveCount( 2 );
+		page.getByText( "Invalid length: Expected >=10 but received 0" )
+	).toHaveCount( 1 );
+
+	await expect(
+		page.getByText( "Invalid length: Expected >=50 but received 0" )
+	).toHaveCount( 1 );
 
 	// Remplissage des champs de saisie du titre et de la description du bogue.
 	await page
