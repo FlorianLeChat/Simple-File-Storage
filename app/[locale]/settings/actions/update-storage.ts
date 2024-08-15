@@ -54,7 +54,7 @@ export async function updateStorage(
 
 		return {
 			success: false,
-			reason: messages( `zod.${ result.issues[ 0 ].type }` )
+			reason: result.issues[ 0 ].message
 		};
 	}
 
