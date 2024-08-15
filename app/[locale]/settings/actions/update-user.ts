@@ -169,7 +169,7 @@ export async function updateUser(
 
 			return {
 				success: false,
-				reason: messages( "zod.wrong_file_type" )
+				reason: messages( "valibot.wrong_file_type" )
 			};
 		}
 
@@ -193,7 +193,7 @@ export async function updateUser(
 
 			return {
 				success: false,
-				reason: messages( "zod.wrong_file_type" )
+				reason: messages( "valibot.wrong_file_type" )
 			};
 		}
 
