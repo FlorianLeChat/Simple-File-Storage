@@ -4,7 +4,7 @@
 
 "use server";
 
-import { z } from "zod";
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import { TOTP } from "otpauth";
 import { auth } from "@/utilities/next-auth";
@@ -24,16 +24,13 @@ export async function validateOTP( formData: FormData )
 
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
-	const validation = z.object( {
-		secret: z
-			.string()
-			.length( 32 )
-			.regex( /^[A-Z2-7]+$/ ),
-		code: z.string().length( 6 ).regex( /^\d+$/ )
+	const validation = v.object( {
+		secret: v.pipe( v.string(), v.length( 32 ), v.regex( /^[A-Z2-7]+$/ ) ),
+		code: v.pipe( v.string(), v.length( 6 ), v.regex( /^\d+$/ ) )
 	} );
 
 	// On tente alors de valider les données du formulaire.
-	const result = validation.safeParse( {
+	const result = v.safeParse( validation, {
 		secret: formData.get( "secret" ),
 		code: formData.get( "code" )
 	} );
@@ -51,14 +48,14 @@ export async function validateOTP( formData: FormData )
 	const meta = await generateMetadata();
 	const otp = new TOTP( {
 		label: session.user.email as string,
-		secret: result.data.secret,
+		secret: result.output.secret,
 		issuer: meta.title as string,
 		digits: 6,
 		period: 30,
 		algorithm: "SHA256"
 	} );
 
-	const state = otp.validate( { token: result.data.code, window: 1 } ) === 0;
+	const state = otp.validate( { token: result.output.code, window: 1 } ) === 0;
 
 	// Si le code est valide, on génère un code de sauvegarde et
 	//  on enregistre le secret dans la base de données.
@@ -74,11 +71,11 @@ export async function validateOTP( formData: FormData )
 				userId: session.user.id
 			},
 			update: {
-				secret: result.data.secret
+				secret: result.output.secret
 			},
 			create: {
 				userId: session.user.id,
-				secret: result.data.secret,
+				secret: result.output.secret,
 				backup: numbers.join( "" )
 			}
 		} );

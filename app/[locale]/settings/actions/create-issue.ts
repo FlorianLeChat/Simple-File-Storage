@@ -4,6 +4,7 @@
 
 "use server";
 
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/issue";
 import { auth } from "@/utilities/next-auth";
@@ -30,7 +31,7 @@ export async function createIssue(
 	}
 
 	// On tente ensuite de valider les données du formulaire.
-	const result = schema.safeParse( {
+	const result = v.safeParse( schema, {
 		area: formData.get( "area" ),
 		subject: formData.get( "subject" ),
 		severity: formData.get( "severity" ),
@@ -45,7 +46,7 @@ export async function createIssue(
 
 		return {
 			success: false,
-			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
+			reason: messages( `zod.${ result.issues[ 0 ].type }` )
 		};
 	}
 
@@ -75,11 +76,11 @@ export async function createIssue(
 	// Si tout est bon, on crée le signalement dans la base de données.
 	await prisma.issue.create( {
 		data: {
-			area: result.data.area,
+			area: result.output.area,
 			userId: session.user.id,
-			subject: result.data.subject,
-			severity: result.data.severity,
-			description: result.data.description
+			subject: result.output.subject,
+			severity: result.output.severity,
+			description: result.output.description
 		}
 	} );
 

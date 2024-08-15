@@ -4,7 +4,7 @@
 
 "use server";
 
-import { z } from "zod";
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
@@ -21,13 +21,13 @@ export async function changeFileStatus( formData: FormData )
 
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
-	const validation = z.object( {
-		fileIds: z.array( z.string().uuid() ),
-		status: z.enum( [ "private", "public" ] )
+	const validation = v.object( {
+		fileIds: v.array( v.pipe( v.string(), v.uuid() ) ),
+		status: v.picklist( [ "private", "public" ] )
 	} );
 
 	// On tente alors de valider les données du formulaire.
-	const result = validation.safeParse( {
+	const result = v.safeParse( validation, {
 		fileIds: formData.getAll( "fileId" ),
 		status: formData.get( "status" )
 	} );
@@ -44,7 +44,7 @@ export async function changeFileStatus( formData: FormData )
 	const query = {
 		where: {
 			id: {
-				in: result.data.fileIds
+				in: result.output.fileIds
 			},
 			OR: [
 				{
@@ -59,10 +59,10 @@ export async function changeFileStatus( formData: FormData )
 					}
 				}
 			],
-			status: result.data.status === "private" ? "public" : undefined
+			status: result.output.status === "private" ? "public" : undefined
 		},
 		data: {
-			status: result.data.status
+			status: result.output.status
 		}
 	};
 
@@ -81,7 +81,7 @@ export async function changeFileStatus( formData: FormData )
 	//  deviennent publiquement accessibles.
 	const identifiers = files.map( ( file ) => file.id );
 
-	if ( result.data.status === "public" )
+	if ( result.output.status === "public" )
 	{
 		await prisma.share.deleteMany( {
 			where: {

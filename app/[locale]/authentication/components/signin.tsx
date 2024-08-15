@@ -4,15 +4,15 @@
 
 "use client";
 
-import { z } from "zod";
+import * as v from "valibot";
 import schema from "@/schemas/authentication";
 import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { useTranslations } from "next-intl";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useState, useEffect } from "react";
 import { Eye, Mail, EyeOff, Loader2, KeyRound } from "lucide-react";
 
@@ -49,8 +49,8 @@ export default function SignInForm()
 	} );
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
+	const form = useForm<v.InferOutput<typeof schema>>( {
+		resolver: valibotResolver( schema ),
 		defaultValues: {
 			otp: "",
 			email: "",
@@ -143,7 +143,7 @@ export default function SignInForm()
 									{...field}
 									disabled={isLoading}
 									maxLength={
-										schema.shape.email.maxLength as number
+										schema.entries.email.pipe[ 2 ].requirement
 									}
 									spellCheck="false"
 									placeholder={messages(
@@ -190,8 +190,8 @@ export default function SignInForm()
 											!isFocused ? "opacity-50" : ""
 										}`}
 										maxLength={
-											schema.shape.password._def
-												.options[ 0 ].maxLength as number
+											schema.entries.password.options[ 0 ]
+												.pipe[ 2 ].requirement
 										}
 										spellCheck="false"
 										placeholder={messages(

@@ -4,7 +4,7 @@
 
 "use client";
 
-import { z } from "zod";
+import * as v from "valibot";
 import schema from "@/schemas/file-upload";
 import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
@@ -20,10 +20,10 @@ import { Loader2,
 	PlusCircleIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { formatSize } from "@/utilities/react-table";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import type { TableMeta } from "@tanstack/react-table";
 import { addDays, format } from "date-fns";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useEffect, useState } from "react";
 import { type FileAttributes } from "@/interfaces/File";
 import { useLocale, useTranslations } from "next-intl";
@@ -85,18 +85,19 @@ export default function FileUpload( {
 	const oneYear = addDays( today, 365 );
 	const maxQuota = Number( process.env.NEXT_PUBLIC_MAX_QUOTA ?? 0 );
 	const dateFormat = locale === "fr" ? fr : enGB;
-	const fileSchema = schema.omit( { upload: true } ).extend( {
+	const fileSchema = v.object( {
 		// Modification de la vérification du fichier pour prendre en compte
 		//  la différence entre les données côté client et celles envoyées
 		//  côté serveur.
-		upload: z.string().min( 1 )
+		...v.omit( schema, [ "upload" ] ).entries,
+		...v.object( { upload: v.pipe( v.string(), v.minLength( 1 ) ) } ).entries
 	} );
 	const { setFiles } = states;
 
 	// Déclaration du formulaire.
 	const percent = Number( ( ( quota / maxQuota ) * 100 ).toFixed( 2 ) );
-	const form = useForm<z.infer<typeof fileSchema>>( {
-		resolver: zodResolver( fileSchema ),
+	const form = useForm<v.InferOutput<typeof fileSchema>>( {
+		resolver: valibotResolver( fileSchema ),
 		defaultValues: {
 			upload: "",
 			expiration: "",

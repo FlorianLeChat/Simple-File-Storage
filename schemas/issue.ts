@@ -1,20 +1,20 @@
 //
 // Schéma de validation pour les informations de signalement d'un bogue.
 //
-import { z } from "zod";
+import * as v from "valibot";
 
-const schema = z.object( {
+const schema = v.object( {
 	// Domaine.
-	area: z.enum( [ "account", "upload", "sharing", "other" ] ),
+	area: v.picklist( [ "account", "upload", "sharing", "other" ] ),
 
 	// Sévérité.
-	severity: z.enum( [ "critical", "high", "medium", "low" ] ),
+	severity: v.picklist( [ "critical", "high", "medium", "low" ] ),
 
 	// Sujet.
-	subject: z.string().min( 10 ).max( 50 ),
+	subject: v.pipe( v.string(), v.minLength( 10 ), v.maxLength( 50 ) ),
 
 	// Description.
-	description: z.string().min( 50 ).max( 1000 )
+	description: v.pipe( v.string(), v.minLength( 50 ), v.maxLength( 1000 ) )
 } );
 
 export default schema;

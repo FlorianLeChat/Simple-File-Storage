@@ -4,7 +4,7 @@
 
 "use server";
 
-import { z } from "zod";
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
 import { parse } from "path";
@@ -24,13 +24,13 @@ export async function renameFile( formData: FormData )
 	//  les données du formulaire.
 	//  Note : les validations Zod du nom doivent correspondre à
 	//   celles utilisées lors du téléversement de fichiers.
-	const validation = z.object( {
-		fileIds: z.array( z.string().uuid() ),
-		name: z.string().min( 1 ).max( 100 )
+	const validation = v.object( {
+		fileIds: v.array( v.pipe( v.string(), v.uuid() ) ),
+		name: v.pipe( v.string(), v.minLength( 1 ), v.maxLength( 100 ) )
 	} );
 
 	// On tente alors de valider les données du formulaire.
-	const result = validation.safeParse( {
+	const result = v.safeParse( validation, {
 		fileIds: formData.getAll( "fileId" ),
 		name: formData.get( "name" )
 	} );
@@ -47,7 +47,7 @@ export async function renameFile( formData: FormData )
 	const first = await prisma.file.findFirst( {
 		where: {
 			id: {
-				in: result.data.fileIds
+				in: result.output.fileIds
 			},
 			OR: [
 				{
@@ -77,7 +77,7 @@ export async function renameFile( formData: FormData )
 	const query = {
 		where: {
 			id: {
-				in: result.data.fileIds
+				in: result.output.fileIds
 			},
 			OR: [
 				{
@@ -94,7 +94,7 @@ export async function renameFile( formData: FormData )
 			]
 		},
 		data: {
-			name: result.data.name + parse( first.name ).ext
+			name: result.output.name + parse( first.name ).ext
 		}
 	};
 

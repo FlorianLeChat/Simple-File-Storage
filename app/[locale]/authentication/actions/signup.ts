@@ -5,6 +5,7 @@
 
 "use server";
 
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
 import { logger } from "@/utilities/pino";
@@ -30,7 +31,7 @@ export async function signUpAccount(
 	// On tente de valider les informations d'authentification fournies
 	//  par l'utilisateur.
 	const messages = await getTranslations();
-	const result = schema.pick( { email: true } ).safeParse( {
+	const result = v.safeParse( v.pick( schema, [ "email" ] ), {
 		email: formData.get( "email" )
 	} );
 
@@ -42,7 +43,7 @@ export async function signUpAccount(
 
 		return {
 			success: false,
-			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
+			reason: messages( `zod.${ result.issues[ 0 ].type }` )
 		};
 	}
 
@@ -50,7 +51,7 @@ export async function signUpAccount(
 	//  dans la base de données avec l'adresse électronique fournie.
 	const user = await prisma.user.findUnique( {
 		where: {
-			email: result.data.email
+			email: result.output.email
 		}
 	} );
 
@@ -59,7 +60,7 @@ export async function signUpAccount(
 		// Si c'est le cas, on indique à l'utilisateur que l'adresse
 		//  électronique fournie est déjà utilisée.
 		logger.error(
-			{ source: __filename, email: result.data.email },
+			{ source: __filename, email: result.output.email },
 			"Email already used"
 		);
 
@@ -73,7 +74,7 @@ export async function signUpAccount(
 	//  électronique a déjà été envoyée.
 	const validation = await prisma.verificationToken.findFirst( {
 		where: {
-			identifier: result.data.email
+			identifier: result.output.email
 		}
 	} );
 
@@ -82,14 +83,14 @@ export async function signUpAccount(
 		// Si ce n'est pas le cas, on envoie immédiatement une demande
 		//  de validation de l'adresse électronique fournie.
 		const response = await signIn( "nodemailer", {
-			email: result.data.email,
+			email: result.output.email,
 			redirect: false,
 			redirectTo: "/dashboard",
 			sendVerificationRequest: true
 		} );
 
 		logger.info(
-			{ source: __filename, email: result.data.email },
+			{ source: __filename, email: result.output.email },
 			"Sign up with email"
 		);
 
@@ -99,7 +100,7 @@ export async function signUpAccount(
 			//  semble ne pas renvoyer de réponse, on affiche un message
 			//  d'erreur sur la page d'authentification.
 			logger.error(
-				{ source: __filename, email: result.data.email },
+				{ source: __filename, email: result.output.email },
 				"Email validation request failed"
 			);
 
@@ -113,7 +114,7 @@ export async function signUpAccount(
 	// On retourne enfin un message de succès à l'utilisateur afin
 	//  qu'il puisse valider son adresse électronique.
 	logger.info(
-		{ source: __filename, email: result.data.email },
+		{ source: __filename, email: result.output.email },
 		"Email validation request sent"
 	);
 

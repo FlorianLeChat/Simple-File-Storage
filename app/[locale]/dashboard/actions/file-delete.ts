@@ -4,7 +4,7 @@
 
 "use server";
 
-import { z } from "zod";
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import { join } from "path";
 import { auth } from "@/utilities/next-auth";
@@ -25,12 +25,12 @@ export async function deleteFile( formData: FormData )
 
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
-	const validation = z.object( {
-		fileIds: z.array( z.string().uuid() )
+	const validation = v.object( {
+		fileIds: v.array( v.pipe( v.string(), v.uuid() ) )
 	} );
 
 	// On tente alors de valider les données du formulaire.
-	const result = validation.safeParse( {
+	const result = v.safeParse( validation, {
 		fileIds: formData.getAll( "fileId" )
 	} );
 
@@ -45,7 +45,7 @@ export async function deleteFile( formData: FormData )
 	//  de données pour vérifier si l'opération a réussi.
 	const query = {
 		id: {
-			in: result.data.fileIds
+			in: result.output.fileIds
 		},
 		OR: [
 			{

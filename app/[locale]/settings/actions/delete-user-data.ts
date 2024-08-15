@@ -4,7 +4,7 @@
 
 "use server";
 
-import { z } from "zod";
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import { join } from "path";
 import { logger } from "@/utilities/pino";
@@ -33,12 +33,12 @@ export async function deleteUserData(
 	}
 
 	// On tente ensuite de valider les données du formulaire.
-	const validation = z.object( {
-		files: z.boolean(),
-		account: z.boolean()
+	const validation = v.object( {
+		files: v.boolean(),
+		account: v.boolean()
 	} );
 
-	const result = validation.safeParse( {
+	const result = v.safeParse( validation, {
 		files: formData.get( "files" ) === "on",
 		account: formData.get( "account" ) === "on"
 	} );
@@ -51,7 +51,7 @@ export async function deleteUserData(
 
 		return {
 			success: false,
-			reason: messages( `zod.${ result.error.issues[ 0 ].code }` )
+			reason: messages( `zod.${ result.issues[ 0 ].type }` )
 		};
 	}
 
@@ -59,7 +59,7 @@ export async function deleteUserData(
 	//  son compte utilisateur et/ou de ses fichiers.
 	const userFolder = join( process.cwd(), "public/files", session.user.id );
 
-	if ( result.data.account )
+	if ( result.output.account )
 	{
 		try
 		{
@@ -88,7 +88,10 @@ export async function deleteUserData(
 		{
 			// On demande la déconnexion de l'utilisateur de toutes les
 			//  sessions enregistrées.
-			logger.info( { source: __filename, session }, "User account deleted" );
+			logger.info(
+				{ source: __filename, session },
+				"User account deleted"
+			);
 
 			await signOut( {
 				redirect: false
@@ -104,7 +107,7 @@ export async function deleteUserData(
 			} );
 		}
 	}
-	else if ( result.data.files )
+	else if ( result.output.files )
 	{
 		try
 		{

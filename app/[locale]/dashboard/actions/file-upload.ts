@@ -4,6 +4,7 @@
 
 "use server";
 
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
@@ -37,7 +38,7 @@ export async function uploadFiles(
 
 	// On tente ensuite de valider les données du formulaire.
 	const isUser = session.user.role !== "admin";
-	const result = schema.safeParse( {
+	const result = v.safeParse( schema, {
 		upload: formData.getAll( "upload" ),
 		encryption: formData.get( "encryption" ) === "on",
 		expiration: formData.get( "expiration" ),
@@ -48,13 +49,13 @@ export async function uploadFiles(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
-		const { code, message } = result.error.issues[ 0 ];
+		const { type, message } = result.issues[ 0 ];
 
 		logger.error( { source: __filename, result }, "Invalid form data" );
 
 		return {
 			success: false,
-			reason: messages( `zod.${ code === "custom" ? message : code }` )
+			reason: messages( `zod.${ type === "custom" ? message : type }` )
 		};
 	}
 
@@ -79,7 +80,7 @@ export async function uploadFiles(
 		//  Note : cela ne concerne pas les administrateurs.
 		if ( isUser )
 		{
-			result.data.upload = result.data.upload.filter( ( file ) =>
+			result.output.upload = result.output.upload.filter( ( file ) =>
 			{
 				currentQuota += file.size;
 
@@ -95,7 +96,7 @@ export async function uploadFiles(
 		// On téléverse chaque fichier dans le système de fichiers.
 		const { preferences } = session.user;
 		const types = process.env.NEXT_PUBLIC_ACCEPTED_FILE_TYPES?.split( "," );
-		const data = result.data.upload.map( async ( file ) =>
+		const data = result.output.upload.map( async ( file ) =>
 		{
 			// On tente de récupérer le tampon du fichier téléversé pour vérifier
 			//  son type au travers des nombres magiques.
@@ -189,8 +190,8 @@ export async function uploadFiles(
 							userId: session.user.id,
 							status,
 							expiration:
-								result.data.expiration !== ""
-									? new Date( result.data.expiration )
+								result.output.expiration !== ""
+									? new Date( result.output.expiration )
 									: null
 						}
 					} )
@@ -211,7 +212,7 @@ export async function uploadFiles(
 						hash,
 						size: `${ file.size }`,
 						fileId,
-						encrypted: result.data.encryption
+						encrypted: result.output.encryption
 					}
 				} )
 			).id;
@@ -289,11 +290,11 @@ export async function uploadFiles(
 					true,
 					[ "encrypt", "decrypt" ]
 				);
-				const compressed = result.data.compression && !result.data.encryption
+				const compressed = result.output.compression && !result.output.encryption
 					? await compressFile( buffer, extension.replace( ".", "" ) )
 					: buffer;
 
-				if ( result.data.compression )
+				if ( result.output.compression )
 				{
 					// Mise à jour de la taille de la version après compression.
 					logger.debug(
@@ -317,7 +318,7 @@ export async function uploadFiles(
 
 				await writeFile(
 					join( fileFolder, `${ versionId }${ extension }` ),
-					result.data.encryption
+					result.output.encryption
 						? compressed
 						: Buffer.concat( [
 							iv,
@@ -369,7 +370,7 @@ export async function uploadFiles(
 				status:
 					exists?.shares && exists?.shares.length > 0
 						? "shared"
-						: exists?.status ?? status,
+						: ( exists?.status ?? status ),
 				shares:
 					exists?.shares.map( ( share ) => ( {
 						user: {

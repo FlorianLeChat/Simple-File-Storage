@@ -2,53 +2,61 @@
 // Types pour les variables d'environnement avec le validateur Zod.
 //  Source : https://github.com/t3-oss/t3-env/blob/ac21b7ad1ebfb3958dec6d32cd32b716518c0e43/examples/nextjs/app/env.ts
 //
-import { z } from "zod";
+import * as v from "valibot";
 
-const schema = z.object( {
-	TZ: z.string().min( 1 ),
-	NEXT_LOGGING: z.enum( [ "true", "false" ] ),
-	NEXT_PUBLIC_ENV: z.enum( [ "development", "production" ] ),
-	NEXT_PUBLIC_MAX_QUOTA: z.string().min( 1 ),
-	NEXT_PUBLIC_MAX_AVATAR_SIZE: z.string().min( 1 ),
-	NEXT_PUBLIC_ACCEPTED_FILE_TYPES: z.string().min( 1 ),
-	NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES: z.string().min( 1 ),
+const schema = v.object( {
+	TZ: v.pipe( v.string(), v.minLength( 1 ) ),
+	NEXT_LOGGING: v.picklist( [ "true", "false" ] ),
+	NEXT_PUBLIC_ENV: v.picklist( [ "development", "production" ] ),
+	NEXT_PUBLIC_MAX_QUOTA: v.pipe( v.string(), v.minLength( 1 ) ),
+	NEXT_PUBLIC_MAX_AVATAR_SIZE: v.pipe( v.string(), v.minLength( 1 ) ),
+	NEXT_PUBLIC_ACCEPTED_FILE_TYPES: v.pipe( v.string(), v.minLength( 1 ) ),
+	NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES: v.pipe( v.string(), v.minLength( 1 ) ),
 
-	SENTRY_ENABLED: z.enum( [ "true", "false" ] ),
-	SENTRY_DSN: z.string().url(),
-	SENTRY_ORG: z.string().min( 1 ),
-	SENTRY_PROJECT: z.string().min( 1 ),
-	SENTRY_AUTH_TOKEN: z.string().min( 1 ),
+	SENTRY_ENABLED: v.picklist( [ "true", "false" ] ),
+	SENTRY_DSN: v.pipe( v.string(), v.url() ),
+	SENTRY_ORG: v.pipe( v.string(), v.minLength( 1 ) ),
+	SENTRY_PROJECT: v.pipe( v.string(), v.minLength( 1 ) ),
+	SENTRY_AUTH_TOKEN: v.pipe( v.string(), v.minLength( 1 ) ),
 
-	NEXT_PUBLIC_RECAPTCHA_ENABLED: z.enum( [ "true", "false" ] ),
-	NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY: z.string().length( 40 ).startsWith( "6L" ),
-	RECAPTCHA_SECRET_KEY: z.string().length( 40 ).startsWith( "6L" ),
+	NEXT_PUBLIC_RECAPTCHA_ENABLED: v.picklist( [ "true", "false" ] ),
+	NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY: v.pipe(
+		v.string(),
+		v.length( 40 ),
+		v.startsWith( "6L" )
+	),
+	RECAPTCHA_SECRET_KEY: v.pipe( v.string(), v.length( 40 ), v.startsWith( "6L" ) ),
 
-	NEXT_PUBLIC_ANALYTICS_ENABLED: z.enum( [ "true", "false" ] ),
-	NEXT_PUBLIC_ANALYTICS_TAG: z.string().length( 12 ).startsWith( "G-" ),
+	NEXT_PUBLIC_ANALYTICS_ENABLED: v.picklist( [ "true", "false" ] ),
+	NEXT_PUBLIC_ANALYTICS_TAG: v.pipe(
+		v.string(),
+		v.length( 12 ),
+		v.startsWith( "G-" )
+	),
 
-	DATABASE_URL: z.string().url(),
+	DATABASE_URL: v.pipe( v.string(), v.url() ),
 
-	SMTP_HOST: z.string().min( 1 ),
-	SMTP_PORT: z.string().min( 1 ).max( 5 ),
-	SMTP_USERNAME: z.string().min( 1 ),
-	SMTP_PASSWORD: z.string().min( 1 ),
+	SMTP_HOST: v.pipe( v.string(), v.minLength( 1 ) ),
+	SMTP_PORT: v.pipe( v.string(), v.minLength( 1 ), v.maxLength( 5 ) ),
+	SMTP_USERNAME: v.pipe( v.string(), v.minLength( 1 ) ),
+	SMTP_PASSWORD: v.pipe( v.string(), v.minLength( 1 ) ),
 
-	DKIM_DOMAIN: z.string().min( 1 ),
-	DKIM_SELECTOR: z.string().min( 1 ),
-	DKIM_PRIVATE_KEY: z.string().min( 1 ),
+	DKIM_DOMAIN: v.pipe( v.string(), v.minLength( 1 ) ),
+	DKIM_SELECTOR: v.pipe( v.string(), v.minLength( 1 ) ),
+	DKIM_PRIVATE_KEY: v.pipe( v.string(), v.minLength( 1 ) ),
 
-	AUTH_SECRET: z.string().min( 1 ),
+	AUTH_SECRET: v.pipe( v.string(), v.minLength( 1 ) ),
 
-	NEXT_PUBLIC_AUTH_GOOGLE_ENABLED: z.enum( [ "true", "false" ] ),
-	AUTH_GOOGLE_ID: z.string().min( 1 ),
-	AUTH_GOOGLE_SECRET: z.string().min( 1 ),
+	NEXT_PUBLIC_AUTH_GOOGLE_ENABLED: v.picklist( [ "true", "false" ] ),
+	AUTH_GOOGLE_ID: v.pipe( v.string(), v.minLength( 1 ) ),
+	AUTH_GOOGLE_SECRET: v.pipe( v.string(), v.minLength( 1 ) ),
 
-	NEXT_PUBLIC_AUTH_GITHUB_ENABLED: z.enum( [ "true", "false" ] ),
-	AUTH_GITHUB_ID: z.string().min( 1 ),
-	AUTH_GITHUB_SECRET: z.string().min( 1 )
+	NEXT_PUBLIC_AUTH_GITHUB_ENABLED: v.picklist( [ "true", "false" ] ),
+	AUTH_GITHUB_ID: v.pipe( v.string(), v.minLength( 1 ) ),
+	AUTH_GITHUB_SECRET: v.pipe( v.string(), v.minLength( 1 ) )
 } );
 
-schema.parse( process.env );
+v.parse( schema, process.env );
 
 // Exportation des types pour les variables d'environnement.
-export interface ProcessEnv extends z.infer<typeof schema> {}
+export interface ProcessEnv extends v.InferOutput<typeof schema> {}

@@ -4,7 +4,7 @@
 
 "use client";
 
-import * as z from "zod";
+import * as v from "valibot";
 import schema from "@/schemas/user";
 import { toast } from "sonner";
 import { Lock,
@@ -19,9 +19,9 @@ import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { formatSize } from "@/utilities/react-table";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -74,16 +74,17 @@ export default function User( {
 	const maxAvatarSize = Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE ?? 0 );
 	const characters =
 		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
-	const userSchema = schema.omit( { avatar: true } ).extend( {
+	const userSchema = v.object( {
 		// Modification de la vérification de l'avatar pour prendre en compte
 		//  la différence entre les données côté client et celles envoyées
 		//  côté serveur.
-		avatar: z.string().optional()
+		...v.omit( schema, [ "avatar" ] ).entries,
+		...v.object( { avatar: v.optional( v.string() ) } ).entries
 	} );
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof userSchema>>( {
-		resolver: zodResolver( userSchema ),
+	const form = useForm<v.InferOutput<typeof userSchema>>( {
+		resolver: valibotResolver( userSchema ),
 		defaultValues: {
 			username: session.user.name ?? "",
 			email: session.user.email ?? "",
@@ -205,8 +206,8 @@ export default function User( {
 									{...field}
 									disabled={isLoading}
 									maxLength={
-										schema.shape.username
-											.maxLength as number
+										schema.entries.username.pipe[ 2 ]
+											.requirement
 									}
 									spellCheck="false"
 									placeholder={messages(
@@ -243,8 +244,8 @@ export default function User( {
 										{...field}
 										disabled={isLoading}
 										maxLength={
-											schema.shape.email
-												.maxLength as number
+											schema.entries.email.pipe[ 2 ]
+												.requirement
 										}
 										spellCheck="false"
 										placeholder={messages(
@@ -290,9 +291,9 @@ export default function User( {
 											disabled={isLoading}
 											onKeyDown={() => setPasswordType( "password" )}
 											maxLength={
-												schema.shape.password._def
-													.options[ 0 ]
-													.maxLength as number
+												schema.entries.password
+													.options[ 0 ].pipe[ 2 ]
+													.requirement
 											}
 											className="inline-block w-[calc(100%-40px-0.5rem)]"
 											spellCheck="false"

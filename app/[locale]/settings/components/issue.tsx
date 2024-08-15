@@ -4,7 +4,7 @@
 
 "use client";
 
-import * as z from "zod";
+import * as v from "valibot";
 import schema from "@/schemas/issue";
 import { toast } from "sonner";
 import { List,
@@ -15,9 +15,9 @@ import { List,
 	ShieldAlert } from "lucide-react";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { useTranslations } from "next-intl";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../components/ui/input";
@@ -48,8 +48,8 @@ export default function Account()
 	} );
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
+	const form = useForm<v.InferOutput<typeof schema>>( {
+		resolver: valibotResolver( schema ),
 		defaultValues: {
 			area: "account",
 			subject: "",
@@ -246,7 +246,8 @@ export default function Account()
 									{...field}
 									disabled={isLoading}
 									maxLength={
-										schema.shape.subject.maxLength as number
+										schema.entries.subject.pipe[ 2 ]
+											.requirement
 									}
 									placeholder={messages(
 										"fields.subject_placeholder"
@@ -279,8 +280,8 @@ export default function Account()
 									{...field}
 									disabled={isLoading}
 									maxLength={
-										schema.shape.description
-											.maxLength as number
+										schema.entries.description.pipe[ 2 ]
+											.requirement
 									}
 									className="max-h-[150px]"
 									placeholder={messages(
