@@ -45,7 +45,7 @@ export async function updateLayout(
 
 		return {
 			success: false,
-			reason: messages( `zod.${ result.issues[ 0 ].type }` )
+			reason: result.issues[ 0 ].message
 		};
 	}
 

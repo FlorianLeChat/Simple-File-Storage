@@ -1,5 +1,5 @@
 //
-// Types pour les variables d'environnement avec le validateur Zod.
+// Types pour les variables d'environnement avec le validateur Valibot.
 //  Source : https://github.com/t3-oss/t3-env/blob/ac21b7ad1ebfb3958dec6d32cd32b716518c0e43/examples/nextjs/app/env.ts
 //
 import * as v from "valibot";

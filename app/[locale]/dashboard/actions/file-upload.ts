@@ -55,7 +55,7 @@ export async function uploadFiles(
 
 		return {
 			success: false,
-			reason: messages( `zod.${ type === "custom" ? message : type }` )
+			reason: type === "custom" ? messages( `valibot.${ type }` ) : message
 		};
 	}
 
