@@ -37,10 +37,10 @@ const schema = v.object( {
 	avatar: v.union( [
 		v.pipe(
 			v.custom<File>( ( value ) => value instanceof File ),
-			v.check( ( file ) => file instanceof File, "wrong_file_object" ),
+			v.check( ( file ) => file instanceof File, "custom.wrong_file_object" ),
 			v.check(
 				( file ) => file.size > 0 && file.size <= MAX_FILE_SIZE,
-				"wrong_file_size"
+				"custom.wrong_file_size"
 			),
 			v.check(
 				( file ) => ACCEPTED_FILE_TYPES.some( ( type ) =>
@@ -48,7 +48,7 @@ const schema = v.object( {
 					const acceptedType = type.trim().slice( 0, -1 );
 					return file.type.startsWith( acceptedType );
 				} ),
-				"wrong_file_type"
+				"custom.wrong_file_type"
 			)
 		),
 		v.custom<File>(
