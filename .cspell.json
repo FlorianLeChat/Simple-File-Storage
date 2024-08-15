@@ -4,6 +4,7 @@
 	"language": "fr, en",
 	"words": [
 		"csrf",
+		"valibot",
 		"Firstname",
 		"Lastname",
 		"Authy",
