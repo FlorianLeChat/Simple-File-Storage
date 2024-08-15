@@ -25,7 +25,6 @@
   },
   "dependencies": {
     "swr": "~2.2",
-    "zod": "~3.23",
     "pino": "~9.3",
     "mime": "~4.0",
     "next": "~14.2",
@@ -34,6 +33,7 @@
     "bcrypt": "~5.1",
     "lodash": "~4.17",
     "otpauth": "~9.3",
+    "valibot": "~0.37",
     "next-intl": "~3.17",
     "file-type": "~19.3",
     "next-auth": "5.0.0-beta.20",
@@ -66,6 +66,7 @@
     "lint-staged": "~15.2",
     "autoprefixer": "~10.4",
     "lucide-react": "~0.418",
+    "@valibot/i18n": "~0.17",
     "tailwind-merge": "~2.4",
     "react-hook-form": "~7.52",
     "@faker-js/faker": "~8.4",

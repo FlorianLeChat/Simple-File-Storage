@@ -362,24 +362,7 @@
 			"description_6": "Nous ne pouvons pas vous garantir un espace de stockage illimité, mais il permet de stocker suffisamment de fichiers pour vos besoins quotidiens."
 		}
 	},
-	"zod": {
-		"invalid_type": "Le type de valeur fournie n'est pas valide.",
-		"invalid_type_received_undefined": "La type de valeur est obligatoire.",
-		"invalid_literal": "La valeur fournie n'est pas une valeur valide.",
-		"invalid_union": "Aucune des valeurs fournies n'est valide.",
-		"invalid_union_discriminator": "La valeur du discriminateur est invalide.",
-		"invalid_intersection_types": "Les résultats d'intersection n'ont pas pu être fusionnés",
-		"unrecognized_keys": "Des clés non reconnues ont été fournies dans l'objet.",
-		"invalid_enum_value": "La valeur fournie n'est pas une valeur valide de l'énumération.",
-		"invalid_arguments": "Les arguments fournis ne sont pas valides.",
-		"invalid_return_type": "Le type de retour de la fonction n'est pas valide.",
-		"invalid_date": "La date fournie n'est pas valide.",
-		"too_small": "La valeur fournie est trop petite.",
-		"too_big": "La valeur fournie est trop grande.",
-		"custom": "La valeur fournie n'est pas valide.",
-		"invalid_string": "La valeur fournie n'est pas une chaîne de caractères valide.",
-		"not_multiple_of": "La valeur fournie n'est pas un multiple valide.",
-		"not_finite": "La valeur fournie doit être finie.",
+	"valibot": {
 		"wrong_file_object": "L'un des fichiers téléversés n'est pas un fichier valide.",
 		"wrong_file_size": "L'un des fichiers téléversés dépasse la taille maximale autorisée.",
 		"wrong_file_name": "L'un des fichiers téléversés a un nom de fichier invalide, vide ou trop long.",
