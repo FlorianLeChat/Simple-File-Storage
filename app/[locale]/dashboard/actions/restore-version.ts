@@ -4,7 +4,7 @@
 
 "use server";
 
-import { z } from "zod";
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
@@ -29,13 +29,13 @@ export async function restoreVersion( formData: FormData )
 
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
-	const validation = z.object( {
-		fileId: z.string().uuid(),
-		versionId: z.string().uuid()
+	const validation = v.object( {
+		fileId: v.pipe( v.string(), v.uuid() ),
+		versionId: v.pipe( v.string(), v.uuid() )
 	} );
 
 	// On tente alors de valider les données du formulaire.
-	const result = validation.safeParse( {
+	const result = v.safeParse( validation, {
 		fileId: formData.get( "fileId" ),
 		versionId: formData.get( "versionId" )
 	} );
@@ -52,7 +52,7 @@ export async function restoreVersion( formData: FormData )
 	//  et si elle est différente de la version actuelle.
 	const file = await prisma.file.findUnique( {
 		where: {
-			id: result.data.fileId,
+			id: result.output.fileId,
 			OR: [
 				{
 					userId: session.user.id
@@ -81,7 +81,7 @@ export async function restoreVersion( formData: FormData )
 		}
 	} );
 
-	if ( !file || file.versions[ 0 ].id === result.data.versionId )
+	if ( !file || file.versions[ 0 ].id === result.output.versionId )
 	{
 		logger.error( { source: __filename, result }, "Invalid file data" );
 
@@ -91,7 +91,7 @@ export async function restoreVersion( formData: FormData )
 	// On vérifie si le dossier de l'utilisateur et celui du fichier
 	//  existent bien dans le système de fichiers.
 	const userFolder = join( process.cwd(), "public/files", file.userId );
-	const fileFolder = join( userFolder, result.data.fileId );
+	const fileFolder = join( userFolder, result.output.fileId );
 
 	if ( !existsSync( userFolder ) || !existsSync( fileFolder ) )
 	{
@@ -102,7 +102,7 @@ export async function restoreVersion( formData: FormData )
 
 	// On tente après de récupérer la version à restaurer.
 	const targetVersion = file.versions.find(
-		( version ) => version.id === result.data.versionId
+		( version ) => version.id === result.output.versionId
 	);
 
 	if ( !targetVersion )
@@ -156,7 +156,7 @@ export async function restoreVersion( formData: FormData )
 		data: {
 			hash: targetVersion.hash,
 			size: targetVersion.size,
-			fileId: result.data.fileId
+			fileId: result.output.fileId
 		}
 	} );
 

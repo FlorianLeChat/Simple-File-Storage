@@ -4,7 +4,7 @@
 
 "use server";
 
-import { z } from "zod";
+import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
@@ -21,13 +21,13 @@ export async function deleteSharedUser( formData: FormData )
 
 	// On créé ensuite un schéma de validation personnalisé pour
 	//  les données du formulaire.
-	const validation = z.object( {
-		fileId: z.array( z.string().uuid() ),
-		userId: z.string().uuid().optional()
+	const validation = v.object( {
+		fileId: v.array( v.pipe( v.string(), v.uuid() ) ),
+		userId: v.optional( v.pipe( v.string(), v.uuid() ) )
 	} );
 
 	// On tente alors de valider les données du formulaire.
-	const result = validation.safeParse( {
+	const result = v.safeParse( validation, {
 		fileId: formData.getAll( "fileId" ),
 		userId: formData.get( "userId" ) ?? undefined
 	} );
@@ -45,7 +45,7 @@ export async function deleteSharedUser( formData: FormData )
 		where: {
 			file: {
 				id: {
-					in: result.data.fileId
+					in: result.output.fileId
 				},
 				OR: [
 					{
@@ -61,7 +61,7 @@ export async function deleteSharedUser( formData: FormData )
 					}
 				]
 			},
-			userId: result.data.userId
+			userId: result.output.userId
 		}
 	};
 

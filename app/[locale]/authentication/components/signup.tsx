@@ -4,15 +4,15 @@
 
 "use client";
 
-import { z } from "zod";
+import * as v from "valibot";
 import schema from "@/schemas/authentication";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { Mail, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useState, useEffect } from "react";
 
 import { Input } from "../../components/ui/input";
@@ -37,8 +37,8 @@ export default function SignUpForm()
 	} );
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
+	const form = useForm<v.InferOutput<typeof schema>>( {
+		resolver: valibotResolver( schema ),
 		defaultValues: {
 			otp: "",
 			email: "",
@@ -131,7 +131,7 @@ export default function SignUpForm()
 									{...field}
 									disabled={isLoading}
 									maxLength={
-										schema.shape.email.maxLength as number
+										schema.entries.email.pipe[ 2 ].requirement
 									}
 									spellCheck="false"
 									placeholder={messages(

@@ -1,17 +1,17 @@
 //
 // Schéma de validation pour les paramètres de l'apparence générale.
 //
-import { z } from "zod";
+import * as v from "valibot";
 
-const schema = z.object( {
+const schema = v.object( {
 	// Polices de caractères.
-	font: z.enum( [ "inter", "poppins", "roboto" ] ),
+	font: v.picklist( [ "inter", "poppins", "roboto" ] ),
 
 	// Thèmes de couleurs.
-	theme: z.enum( [ "light", "dark" ] ),
+	theme: v.picklist( [ "light", "dark" ] ),
 
 	// Couleurs d'accentuation.
-	color: z.enum( [
+	color: v.picklist( [
 		"zinc",
 		"slate",
 		"stone",

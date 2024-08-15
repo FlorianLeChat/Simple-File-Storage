@@ -4,6 +4,7 @@
 
 "use server";
 
+import * as v from "valibot";
 import bcrypt from "bcrypt";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/user";
@@ -38,7 +39,7 @@ export async function updateUser(
 	}
 
 	// On tente ensuite de valider les données du formulaire.
-	const result = schema.safeParse( {
+	const result = v.safeParse( schema, {
 		username: formData.get( "username" ),
 		email: formData.get( "email" ) ?? session.user.email,
 		password: formData.get( "password" ) ?? "",
@@ -51,13 +52,13 @@ export async function updateUser(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
-		const { code, message } = result.error.issues[ 0 ];
+		const { type, message } = result.issues[ 0 ];
 
 		logger.error( { source: __filename, result }, "Invalid form data" );
 
 		return {
 			success: false,
-			reason: messages( `zod.${ code === "custom" ? message : code }` )
+			reason: messages( `zod.${ type === "custom" ? message : type }` )
 		};
 	}
 
@@ -71,18 +72,18 @@ export async function updateUser(
 			id: session.user.id
 		},
 		data: {
-			name: result.data.username,
-			email: !session.user.oauth ? result.data.email : undefined,
+			name: result.output.username,
+			email: !session.user.oauth ? result.output.email : undefined,
 			password:
-				!session.user.oauth && result.data.password
-					? await bcrypt.hash( result.data.password, 15 )
+				!session.user.oauth && result.output.password
+					? await bcrypt.hash( result.output.password, 15 )
 					: undefined
 		}
 	} );
 
 	// On ajoute une notification pour prévenir l'utilisateur que son
 	//  mot de passe a été modifié récemment.
-	if ( result.data.password && !session.user.oauth )
+	if ( result.output.password && !session.user.oauth )
 	{
 		await prisma.notification.create( {
 			data: {
@@ -98,7 +99,7 @@ export async function updateUser(
 	// On vérifie si l'utilisateur tente de désactiver la double
 	//  authentification grâce à son code de secours ou au code
 	//  de validation généré par l'application d'authentification.
-	if ( result.data.otp && session.user.otp )
+	if ( result.output.otp && session.user.otp )
 	{
 		// Code de secours enregistré dans la base de données.
 		const data = await prisma.otp.findUnique( {
@@ -122,8 +123,8 @@ export async function updateUser(
 		} );
 
 		if (
-			otp.validate( { token: result.data.otp, window: 1 } ) === 0
-			|| data?.backup === result.data.otp
+			otp.validate( { token: result.output.otp, window: 1 } ) === 0
+			|| data?.backup === result.output.otp
 		)
 		{
 			// Suppression de l'autorisation à deux facteurs.
@@ -139,10 +140,10 @@ export async function updateUser(
 
 	// On modifie la langue sélectionnée par l'utilisateur dans les
 	//  cookies de son navigateur.
-	cookies().set( "NEXT_LOCALE", result.data.language );
+	cookies().set( "NEXT_LOCALE", result.output.language );
 
 	// On vérifie également si un avatar a été fourni.
-	const { avatar } = result.data;
+	const { avatar } = result.output;
 
 	if (
 		avatar.size !== 0
@@ -153,7 +154,7 @@ export async function updateUser(
 		// Si c'est le cas, on récupère le tampon de l'avatar téléversé
 		//   pour vérifier son type au travers des nombres magiques.
 		const info = await fileTypeFromBuffer(
-			new Uint8Array( await result.data.avatar.arrayBuffer() )
+			new Uint8Array( await result.output.avatar.arrayBuffer() )
 		);
 
 		if ( !info )
@@ -223,7 +224,10 @@ export async function updateUser(
 		{
 			// Si une erreur survient lors de la mise à jour de l'avatar,
 			//  on l'envoie à Sentry et on affiche un message d'erreur.
-			logger.error( { source: __filename, error }, "Error updating avatar" );
+			logger.error(
+				{ source: __filename, error },
+				"Error updating avatar"
+			);
 
 			Sentry.captureException( error );
 

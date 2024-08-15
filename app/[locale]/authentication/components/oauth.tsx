@@ -4,15 +4,15 @@
 
 "use client";
 
-import { z } from "zod";
+import * as v from "valibot";
 import schema from "@/schemas/authentication";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { useTranslations } from "next-intl";
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useState, useEffect } from "react";
 
 import { Button } from "../../components/ui/button";
@@ -29,8 +29,8 @@ export default function OAuthForm()
 	} );
 
 	// Déclaration du formulaire.
-	const form = useForm<z.infer<typeof schema>>( {
-		resolver: zodResolver( schema ),
+	const form = useForm<v.InferOutput<typeof schema>>( {
+		resolver: valibotResolver( schema ),
 		defaultValues: {
 			email: "",
 			password: ""

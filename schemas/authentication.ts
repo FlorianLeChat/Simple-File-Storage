@@ -1,17 +1,23 @@
 //
 // Schéma de validation pour les informations d'authentification.
 //
-import { z } from "zod";
+import * as v from "valibot";
 
-const schema = z.object( {
+const schema = v.object( {
 	// Adresse électronique.
-	email: z.string().min( 10 ).max( 100 ).email(),
+	email: v.pipe( v.string(), v.minLength( 10 ), v.maxLength( 100 ), v.email() ),
 
 	// Mot de passe.
-	password: z.string().min( 10 ).max( 50 ).or( z.literal( "" ) ),
+	password: v.union( [
+		v.pipe( v.string(), v.minLength( 10 ), v.maxLength( 50 ) ),
+		v.literal( "" )
+	] ),
 
 	// Authentification à deux facteurs.
-	otp: z.string().length( 6 ).regex( /^\d+$/ ).or( z.literal( "" ) )
+	otp: v.union( [
+		v.pipe( v.string(), v.length( 6 ), v.regex( /^\d+$/ ) ),
+		v.literal( "" )
+	] )
 } );
 
 export default schema;
