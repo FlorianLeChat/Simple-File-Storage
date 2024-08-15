@@ -14,17 +14,17 @@ const schema = v.object( {
 		v.array( v.custom<File>( ( value ) => value instanceof File ) ),
 		v.check(
 			( files ) => files.every( ( file ) => file instanceof File ),
-			"wrong_file_object"
+			"custom.wrong_file_object"
 		),
 		v.check(
 			( files ) => files.every( ( file ) => file.size > 0 ),
-			"wrong_file_size"
+			"custom.wrong_file_size"
 		),
 		v.check(
 			( files ) => files.every(
 				( file ) => file.name.length > 0 && file.name.length <= 100
 			),
-			"wrong_file_name"
+			"custom.wrong_file_name"
 		),
 		v.check(
 			( files ) => files.every( ( file ) => ACCEPTED_FILE_TYPES.some( ( type ) =>
@@ -32,7 +32,7 @@ const schema = v.object( {
 				const acceptedType = type.trim().slice( 0, -1 );
 				return file.type.startsWith( acceptedType );
 			} ) ),
-			"wrong_file_type"
+			"custom.wrong_file_type"
 		)
 	),
 
