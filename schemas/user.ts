@@ -36,23 +36,18 @@ const schema = v.object( {
 	//  Source : https://github.com/colinhacks/zod/issues/387
 	avatar: v.union( [
 		v.pipe(
-			v.array( v.custom<File>( ( value ) => value instanceof File ) ),
+			v.custom<File>( ( value ) => value instanceof File ),
+			v.check( ( file ) => file instanceof File, "wrong_file_object" ),
 			v.check(
-				( files ) => files.every( ( file ) => file instanceof File ),
-				"wrong_file_object"
-			),
-			v.check(
-				( files ) => files.every(
-					( file ) => file.size > 0 && file.size <= MAX_FILE_SIZE
-				),
+				( file ) => file.size > 0 && file.size <= MAX_FILE_SIZE,
 				"wrong_file_size"
 			),
 			v.check(
-				( files ) => files.every( ( file ) => ACCEPTED_FILE_TYPES.some( ( type ) =>
+				( file ) => ACCEPTED_FILE_TYPES.some( ( type ) =>
 				{
 					const acceptedType = type.trim().slice( 0, -1 );
 					return file.type.startsWith( acceptedType );
-				} ) ),
+				} ),
 				"wrong_file_type"
 			)
 		),
