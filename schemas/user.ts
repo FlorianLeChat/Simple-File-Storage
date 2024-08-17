@@ -36,26 +36,18 @@ const schema = v.object( {
 	//  Source : https://github.com/colinhacks/zod/issues/387
 	avatar: v.union( [
 		v.pipe(
-			v.custom<File>( ( value ) => value instanceof File ),
-			v.check( ( file ) => file instanceof File, "custom.wrong_file_object" ),
-			v.check(
-				( file ) => file.size > 0 && file.size <= MAX_FILE_SIZE,
-				"custom.wrong_file_size"
-			),
-			v.check(
-				( file ) => ACCEPTED_FILE_TYPES.some( ( type ) =>
-				{
-					const acceptedType = type.trim().slice( 0, -1 );
-					return file.type.startsWith( acceptedType );
-				} ),
-				"custom.wrong_file_type"
+			v.file(),
+			v.minSize( 1 ),
+			v.maxSize( MAX_FILE_SIZE ),
+			v.mimeType(
+				ACCEPTED_FILE_TYPES.map( ( type ) => type.trim() ) as `${ string }/${ string }`[]
 			)
 		),
-		v.custom<File>(
-			( file ) => file instanceof File
-				&& file.name === "undefined"
-				&& file.size === 0
-				&& file.type === "application/octet-stream"
+		v.pipe(
+			v.file(),
+			v.size( 0 ),
+			v.check( ( file ) => file.name === "undefined" ),
+			v.mimeType( [ "application/octet-stream" ] )
 		)
 	] )
 } );
