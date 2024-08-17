@@ -363,8 +363,6 @@
 		}
 	},
 	"valibot": {
-		"wrong_file_object": "One of the uploaded files is not a valid file.",
-		"wrong_file_size": "One of the uploaded files is empty or exceeds the maximum allowed size.",
 		"wrong_file_name": "One of the uploaded files has an invalid, empty, or too long filename.",
 		"wrong_file_type": "One of the uploaded files is not an allowed file type."
 	},
