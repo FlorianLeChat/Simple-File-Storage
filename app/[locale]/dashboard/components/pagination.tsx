@@ -114,6 +114,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 					}}
 					disabled={!table.getCanPreviousPage()}
 					className="hidden h-8 w-8 p-0 lg:flex"
+					aria-label={messages( "first_page" )}
 				>
 					<ChevronsLeft className="h-4 w-4" />
 				</Button>
@@ -137,6 +138,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 					}}
 					disabled={!table.getCanPreviousPage()}
 					className="h-8 w-8 p-0"
+					aria-label={messages( "previous_page" )}
 				>
 					<ChevronLeft className="h-4 w-4" />
 				</Button>
@@ -160,6 +162,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 					}}
 					disabled={!table.getCanNextPage()}
 					className="h-8 w-8 p-0"
+					aria-label={messages( "next_page" )}
 				>
 					<ChevronRight className="h-4 w-4" />
 				</Button>
@@ -180,6 +183,7 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 					}}
 					disabled={!table.getCanNextPage()}
 					className="hidden h-8 w-8 p-0 lg:flex"
+					aria-label={messages( "last_page" )}
 				>
 					<ChevronsRight className="h-4 w-4" />
 				</Button>
