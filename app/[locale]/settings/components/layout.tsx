@@ -228,6 +228,12 @@ export default function Layout( { session }: { session: Session } )
 														? "relative bottom-1 border-[--theme-primary]"
 														: "border-transparent"
 												)}
+												aria-label={
+													value.name
+														.charAt( 0 )
+														.toUpperCase()
+													+ value.name.slice( 1 )
+												}
 											>
 												<span className="flex h-6 w-6 items-center justify-center rounded-full bg-[--theme-primary]">
 													{field.value

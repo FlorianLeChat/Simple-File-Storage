@@ -380,6 +380,7 @@ export default function RowActions( {
 					buttonVariants( { variant: "ghost" } ),
 					"h-8 w-8 p-0"
 				)}
+				aria-label={dashboardMessages( "title" )}
 			>
 				{isLoading ? (
 					<Loader2 className="h-4 w-4 animate-spin" />
