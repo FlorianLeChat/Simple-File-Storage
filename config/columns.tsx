@@ -26,6 +26,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 		id: "select",
 		header: ( { table } ) => (
 			<Checkbox
+				title={table.options.meta?.messages.select_all}
 				checked={
 					table.getIsAllPageRowsSelected()
 					|| ( table.getIsSomePageRowsSelected() && "indeterminate" )
@@ -36,6 +37,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 		),
 		cell: ( { table, row } ) => (
 			<Checkbox
+				title={table.options.meta?.messages.select_line}
 				checked={row.getIsSelected()}
 				aria-label={table.options.meta?.messages.select_line}
 				onCheckedChange={( value ) => row.toggleSelected( !!value )}
@@ -51,6 +53,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 			<ColumnHeader
 				title={table.options.meta?.messages.name ?? ""}
 				column={column}
+				aria-label={table.options.meta?.messages.name}
 			/>
 		)
 	},
@@ -61,6 +64,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 			<ColumnHeader
 				title={table.options.meta?.messages.owner ?? ""}
 				column={column}
+				aria-label={table.options.meta?.messages.owner}
 			/>
 		),
 		cell: ( { row } ) => (
@@ -119,6 +123,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 			<ColumnHeader
 				title={table.options.meta?.messages.size ?? ""}
 				column={column}
+				aria-label={table.options.meta?.messages.size}
 			/>
 		)
 	},
@@ -136,6 +141,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 			<ColumnHeader
 				title={table.options.meta?.messages.type ?? ""}
 				column={column}
+				aria-label={table.options.meta?.messages.type}
 			/>
 		),
 		cell: ( { row } ) => formatSize( row.original.versions[ 0 ].size )
@@ -154,6 +160,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 			<ColumnHeader
 				title={table.options.meta?.messages.date ?? ""}
 				column={column}
+				aria-label={table.options.meta?.messages.date}
 			/>
 		),
 		cell: ( { table, row } ) =>

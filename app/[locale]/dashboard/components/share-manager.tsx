@@ -385,6 +385,7 @@ export default function ShareManager( {
 										onClick={() => submitDeletion( share )}
 										variant="destructive"
 										disabled={loading}
+										aria-label={modalMessages( "delete" )}
 									>
 										{loading ? (
 											<Loader2 className="h-4 w-4 animate-spin" />
