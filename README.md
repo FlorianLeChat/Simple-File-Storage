@@ -12,7 +12,7 @@ Ce projet a été conçu initialement dans le but d'exploiter les dernières tec
 Au niveau des fonctionnalités, ce projet vous permet de stocker des fichiers sur un serveur distant, de les télécharger, de les supprimer et de les partager. Vous pouvez également créer un compte utilisateur pour accéder à vos fichiers depuis n'importe où. Ce projet est également responsive et s'adapte à tous les écrans. De plus, il offre de nombreuses options de personnalisation pour les utilisateurs et il est respectueux des normes de confidentialité liées au RGPD.
 
 > [!TIP]
-> Voir le fichier [SETUP.md](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/README.md) pour consulter les instructions d'installation.
+> Voir le fichier [SETUP.md](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/SETUP.md) pour consulter les instructions d'installation.
 >
 > Si vous êtes à la recherche de la première version sous PHP, veuillez utiliser la branche `no-nextjs`. 🐘
 
@@ -28,7 +28,7 @@ This project was initially designed to exploit the latest technologies and trend
 In terms of features, this project allows you to store files on a remote server, download them, delete them and share them. You can also create a user account to access your files from anywhere. This project is also responsive and adapts to all screens. In addition, it offers many customization options for users and is respectful of privacy standards related to the GDPR.
 
 > [!TIP]
-> See the [SETUP.md](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/README.md) file for setup instructions.
+> See the [SETUP.md](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/SETUP.md) file for setup instructions.
 >
 > If you are looking for the first version under PHP, please use the `no-nextjs` branch. 🐘
 
