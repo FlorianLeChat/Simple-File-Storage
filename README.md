@@ -12,11 +12,11 @@ Ce projet a été conçu initialement dans le but d'exploiter les dernières tec
 Au niveau des fonctionnalités, ce projet vous permet de stocker des fichiers sur un serveur distant, de les télécharger, de les supprimer et de les partager. Vous pouvez également créer un compte utilisateur pour accéder à vos fichiers depuis n'importe où. Ce projet est également responsive et s'adapte à tous les écrans. De plus, il offre de nombreuses options de personnalisation pour les utilisateurs et il est respectueux des normes de confidentialité liées au RGPD.
 
 > [!TIP]
-> Pour tester le projet, vous devez être en posession de [Docker](https://www.docker.com/). Une fois installé, il suffit de lancer l'image Docker de développement à l'aide de la commande `docker compose up --detach --build`. Le site devrait être accessible à l'adresse suivante : http://localhost:3000/. Si vous souhaitez travailler sur le projet avec Docker, vous devez utiliser la commande `docker compose watch --no-up` pour que vos changements locaux soient automatiquement synchronisés avec le conteneur. 🐳
+> Voir le fichier [SETUP.md](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/README.md) pour consulter les instructions d'installation.
 >
 > Si vous êtes à la recherche de la première version sous PHP, veuillez utiliser la branche `no-nextjs`. 🐘
 
-> [!WARNING]
+> [!IMPORTANT]
 > L'entièreté du code de ce projet est commenté dans ma langue natale (en français) et n'est pas voué à être traduit en anglais par soucis de simplicité de développement.
 
 ## In English
@@ -28,11 +28,11 @@ This project was initially designed to exploit the latest technologies and trend
 In terms of features, this project allows you to store files on a remote server, download them, delete them and share them. You can also create a user account to access your files from anywhere. This project is also responsive and adapts to all screens. In addition, it offers many customization options for users and is respectful of privacy standards related to the GDPR.
 
 > [!TIP]
-> To try the project, you must have [Docker](https://www.docker.com/) installed. Once installed, simply start the development Docker image with `docker compose up --detach --build` command. The website should be available at http://localhost:3000/. If you want to work on the project with Docker, you need to use `docker compose watch --no-up` to automatically synchronize your local changes with the container. 🐳
+> See the [SETUP.md](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/README.md) file for setup instructions.
 >
 > If you are looking for the first version under PHP, please use the `no-nextjs` branch. 🐘
 
-> [!WARNING]
+> [!IMPORTANT]
 > The whole code of this project is commented in my native language (in French) and will not be translated in English for easier programming.
 
 ![image](https://github.com/FlorianLeChat/Simple-File-Storage/assets/26360935/f751419f-cf82-48f9-90cd-c1975768fe26)
