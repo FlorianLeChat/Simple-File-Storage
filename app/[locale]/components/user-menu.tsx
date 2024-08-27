@@ -44,9 +44,14 @@ export default function UserMenu( { session }: { session: Session } )
 			// On vérifie que la touche ALT est pressée.
 			if ( event.altKey )
 			{
-				// On vérifie enfin la touche pressée.
-				event.preventDefault();
+				// On vérifie ensuite que l'utilisateur n'est pas en train
+				//  de saisir du texte dans un champ de formulaire.
+				if ( document.activeElement?.tagName === "INPUT" )
+				{
+					return;
+				}
 
+				// On vérifie enfin la touche pressée.
 				switch ( event.key )
 				{
 					case "m":
