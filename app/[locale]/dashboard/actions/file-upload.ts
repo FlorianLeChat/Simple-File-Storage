@@ -191,10 +191,9 @@ export async function uploadFiles(
 							name: file.name.slice( 0, 128 ),
 							userId: session.user.id,
 							status,
-							expiration:
-								result.output.expiration !== ""
-									? new Date( result.output.expiration )
-									: null
+							expiration: result.output.expiration !== ""
+								? new Date( result.output.expiration )
+								: null
 						}
 					} )
 				).id
