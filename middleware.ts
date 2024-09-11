@@ -71,7 +71,7 @@ export default async function middleware( request: NextRequest )
 
 				if ( !content.ok )
 				{
-					return new NextResponse( null, { status: 400 } );
+					return new NextResponse( "File not found", { status: 404 } );
 				}
 
 				try
@@ -95,18 +95,36 @@ export default async function middleware( request: NextRequest )
 					);
 
 					// Une fois récupérés, on déchiffre le contenu du fichier
-					//  avec son vecteur d'initialisation et on retourne le
-					//  résultat comme une réponse classique.
-					const response = new NextResponse(
-						await crypto.subtle.decrypt(
-							{
-								iv: buffer.subarray( 0, 16 ),
-								name: "AES-GCM"
-							},
-							cipher,
-							buffer.subarray( 16 )
-						)
+					//  avec son vecteur d'initialisation et on vérifie le
+					//  hachage du contenu déchiffré pour détecter toute altération.
+					const decrypted = await crypto.subtle.decrypt(
+						{
+							iv: buffer.subarray( 0, 16 ),
+							name: "AES-GCM"
+						},
+						cipher,
+						buffer.subarray( 16 )
 					);
+
+					const digest = await crypto.subtle.digest(
+						"SHA-256",
+						decrypted
+					);
+
+					const hash = Array.from( new Uint8Array( digest ) )
+						.map( ( byte ) => byte.toString( 16 ).padStart( 2, "0" ) )
+						.join( "" );
+
+					if ( hash !== file.versions[ 0 ].hash )
+					{
+						return new NextResponse( "File integrity compromised", {
+							status: 422
+						} );
+					}
+
+					// Lorsque la vérification est terminée, on retourne le
+					//  contenu du fichier déchiffré comme une réponse classique.
+					const response = new NextResponse( decrypted );
 					response.headers.set(
 						"Content-Type",
 						mime.getType( file.name ) ?? "application/octet-stream"
@@ -118,7 +136,9 @@ export default async function middleware( request: NextRequest )
 				{
 					// Si une erreur survient lors du déchiffrement du contenu
 					//  du fichier, on retourne une erreur.
-					return new NextResponse( null, { status: 400 } );
+					return new NextResponse( "File decryption failed", {
+						status: 503
+					} );
 				}
 			}
 		}
@@ -165,7 +185,7 @@ export default async function middleware( request: NextRequest )
 			{
 				// Si l'avatar personnalisé n'existe pas, on retourne
 				//  une erreur 404.
-				return new NextResponse( null, { status: 400 } );
+				return new NextResponse( null, { status: 404 } );
 			}
 
 			// Dans le cas contraire, on retourne le contenu du fichier
