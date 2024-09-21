@@ -41,12 +41,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 			if ( token && user )
 			{
 				// Ajout de propriétés personnalisées à la session.
-				const otp = await prisma.otp.findUnique( {
-					where: {
-						userId: user.id
-					}
-				} );
-
 				const preferences = await prisma.preference.findUnique( {
 					where: {
 						userId: user.id
@@ -54,7 +48,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 				} );
 
 				token.id = user.id as string;
-				token.otp = otp?.secret;
 				token.role = user.role;
 				token.image = user.image ?? undefined;
 				token.oauth = !user.password && !user.emailVerified;
@@ -95,7 +88,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 			if ( session && token )
 			{
 				session.user.id = token.id;
-				session.user.otp = token.otp;
 				session.user.role = token.role;
 				session.user.oauth = token.oauth;
 				session.user.image = token.image;

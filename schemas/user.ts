@@ -23,12 +23,6 @@ const schema = v.object( {
 		v.literal( "" )
 	] ),
 
-	// Authentification à deux facteurs.
-	otp: v.union( [
-		v.pipe( v.string(), v.length( 6 ), v.regex( /^\d+$/ ) ),
-		v.literal( "" )
-	] ),
-
 	// Langue préférée.
 	language: v.picklist( [ "en", "fr" ] ),
 

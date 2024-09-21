@@ -40,7 +40,6 @@ export default function SignUpForm()
 	const form = useForm<v.InferOutput<typeof schema>>( {
 		resolver: valibotResolver( schema ),
 		defaultValues: {
-			otp: "",
 			email: "",
 			password: ""
 		}

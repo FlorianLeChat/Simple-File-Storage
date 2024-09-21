@@ -28,10 +28,6 @@ import { Tooltip,
 	TooltipTrigger,
 	TooltipContent,
 	TooltipProvider } from "../../components/ui/tooltip";
-import { InputOTP,
-	InputOTPSlot,
-	InputOTPGroup,
-	InputOTPSeparator } from "../../components/ui/input-otp";
 import { signInAccount } from "../actions/signin";
 import { buttonVariants, Button } from "../../components/ui/button";
 
@@ -52,7 +48,6 @@ export default function SignInForm()
 	const form = useForm<v.InferOutput<typeof schema>>( {
 		resolver: valibotResolver( schema ),
 		defaultValues: {
-			otp: "",
 			email: "",
 			password: ""
 		}
@@ -251,56 +246,6 @@ export default function SignInForm()
 						{messages( "fields.password_capslock" )}
 					</p>
 				)}
-
-				{/* Validation de l'authentification à deux facteurs */}
-				<FormField
-					name="otp"
-					control={form.control}
-					render={( { field } ) => (
-						<FormItem
-							className={`!mt-4 flex flex-col items-center transition-opacity ${
-								!isFocused ? "opacity-50" : ""
-							}`}
-						>
-							<FormLabel className="sr-only">
-								{messages( "fields.otp_label" )}
-							</FormLabel>
-
-							<FormControl>
-								<InputOTP
-									{...field}
-									onBlur={() => setFocused( field.value?.length > 0 )}
-									onFocus={() => setFocused( true )}
-									maxLength={6}
-								>
-									<InputOTPGroup>
-										<InputOTPSlot index={0} />
-										<InputOTPSlot index={1} />
-										<InputOTPSlot index={2} />
-									</InputOTPGroup>
-
-									<InputOTPSeparator />
-
-									<InputOTPGroup>
-										<InputOTPSlot index={3} />
-										<InputOTPSlot index={4} />
-										<InputOTPSlot index={5} />
-									</InputOTPGroup>
-								</InputOTP>
-							</FormControl>
-
-							<FormDescription
-								className={`transition-opacity ${
-									!isFocused ? "opacity-50" : ""
-								}`}
-							>
-								{messages( "fields.otp_description_short" )}
-							</FormDescription>
-
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
 
 				{/* Bouton de validation du formulaire */}
 				<Button disabled={isLoading}>

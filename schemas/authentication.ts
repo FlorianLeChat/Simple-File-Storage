@@ -11,12 +11,6 @@ const schema = v.object( {
 	password: v.union( [
 		v.pipe( v.string(), v.minLength( 10 ), v.maxLength( 50 ) ),
 		v.literal( "" )
-	] ),
-
-	// Authentification à deux facteurs.
-	otp: v.union( [
-		v.pipe( v.string(), v.length( 6 ), v.regex( /^\d+$/ ) ),
-		v.literal( "" )
 	] )
 } );
 
