@@ -13,8 +13,7 @@ import { Lock,
 	Loader2,
 	RefreshCw,
 	FileImage,
-	Languages,
-	Smartphone } from "lucide-react";
+	Languages } from "lucide-react";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
@@ -43,22 +42,9 @@ import { Form,
 	FormMessage,
 	FormDescription } from "../../components/ui/form";
 import { updateUser } from "../actions/update-user";
-import { InputOTP,
-	InputOTPSlot,
-	InputOTPGroup,
-	InputOTPSeparator } from "../../components/ui/input-otp";
-import OTPValidationModal from "./otp-validation";
 import { Button, buttonVariants } from "../../components/ui/button";
 
-export default function User( {
-	image,
-	secret,
-	session
-}: {
-	image: string;
-	secret: string;
-	session: Session;
-} )
+export default function User( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
@@ -89,7 +75,6 @@ export default function User( {
 			username: session.user.name ?? "",
 			email: session.user.email ?? "",
 			password: "",
-			otp: "",
 			language: useLocale() as "en" | "fr",
 			avatar: ""
 		}
@@ -177,13 +162,6 @@ export default function User( {
 
 					// Activation de l'état de chargement.
 					setLoading( true );
-
-					// Définition d'une valeur par défaut pour le code
-					//  de l'authentification à deux facteurs.
-					if ( !formData.has( "otp" ) )
-					{
-						formData.set( "otp", form.getValues( "otp" ) );
-					}
 
 					// Exécution de l'action côté serveur.
 					return serverAction( updateAction, formData );
@@ -339,12 +317,6 @@ export default function User( {
 								<FormDescription>
 									{messages(
 										"fields.password_description_long"
-									)}{" "}
-									{!session.user.otp && (
-										<OTPValidationModal
-											image={image}
-											secret={secret}
-										/>
 									)}
 								</FormDescription>
 
@@ -359,57 +331,6 @@ export default function User( {
 					<p className="!mt-4 text-sm font-bold uppercase text-destructive">
 						{messages( "fields.password_capslock" )}
 					</p>
-				)}
-
-				{/* Authentification à deux facteurs */}
-				{session.user.otp && (
-					<FormField
-						name="otp"
-						control={form.control}
-						render={( { field } ) => (
-							<FormItem className="flex flex-col">
-								<FormLabel>
-									<Smartphone className="mr-2 inline h-6 w-6" />
-									{messages( "fields.otp_label" )}
-								</FormLabel>
-
-								<FormControl>
-									<InputOTP
-										{...field}
-										maxLength={6}
-										className="!w-auto"
-									>
-										<InputOTPGroup>
-											<InputOTPSlot index={0} />
-											<InputOTPSlot index={1} />
-											<InputOTPSlot index={2} />
-										</InputOTPGroup>
-
-										<InputOTPSeparator />
-
-										<InputOTPGroup>
-											<InputOTPSlot index={3} />
-											<InputOTPSlot index={4} />
-											<InputOTPSlot index={5} />
-										</InputOTPGroup>
-									</InputOTP>
-								</FormControl>
-
-								<FormDescription>
-									{messages.rich(
-										"fields.otp_description_long",
-										{
-											b: ( chunks ) => (
-												<strong>{chunks}</strong>
-											)
-										}
-									)}
-								</FormDescription>
-
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
 				)}
 
 				{/* Langue préférée */}

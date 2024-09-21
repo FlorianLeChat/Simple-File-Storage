@@ -6,7 +6,6 @@ declare module "next-auth" {
 	// Types relatifs aux utilisateurs.
 	interface User {
 		id: string;
-		otp?: string;
 		role: string;
 		image?: string;
 		password?: password;
@@ -25,7 +24,6 @@ declare module "next-auth/jwt" {
 	// Types relatifs aux jetons JWT.
 	export interface JWT {
 		id: string;
-		otp?: string;
 		role: string;
 		oauth: boolean;
 		image?: string;

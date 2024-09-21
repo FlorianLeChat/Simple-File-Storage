@@ -3,16 +3,12 @@
 //
 
 // Importation des dépendances.
-import qrCode from "qrcode";
 import { lazy } from "react";
 import { redirect } from "next/navigation";
-import { TOTP, Secret } from "otpauth";
 import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
-import { logger } from "@/utilities/pino";
-import { generateMetadata } from "@/app/layout";
 
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
@@ -39,20 +35,6 @@ export default async function Page( {
 		redirect( "/" );
 	}
 
-	// Génération du code secret pour l'authentification à deux facteurs.
-	const secret = new Secret();
-	const meta = await generateMetadata();
-	const otp = new TOTP( {
-		label: session.user.email as string,
-		secret,
-		issuer: meta.title as string,
-		digits: 6,
-		period: 30,
-		algorithm: "SHA256"
-	} );
-
-	logger.debug( { source: __filename, otp }, "Generated TOTP" );
-
 	// Affichage du rendu HTML de la page.
 	return (
 		<>
@@ -71,11 +53,7 @@ export default async function Page( {
 			<Separator />
 
 			{/* Formulaire de modification du profil utilisateur */}
-			<User
-				image={await qrCode.toDataURL( otp.toString() )}
-				secret={secret.base32}
-				session={session}
-			/>
+			<User session={session} />
 		</>
 	);
 }
