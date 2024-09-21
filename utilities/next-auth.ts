@@ -41,6 +41,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 			if ( token && user )
 			{
 				// Ajout de propriétés personnalisées à la session.
+				const avatars = join( process.cwd(), "public/avatars" );
 				const preferences = await prisma.preference.findUnique( {
 					where: {
 						userId: user.id
@@ -64,14 +65,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 
 				// Vérification de l'existence du dossier d'enregistrement
 				//  des avatars utilisateurs.
-				const avatars = join( process.cwd(), "public/avatars" );
-
 				if ( existsSync( avatars ) )
 				{
 					// Vérification de l'existence d'un avatar personnalisé.
-					const avatar = ( await readdir( avatars ) ).find( ( file ) => file.includes( token.id ) );
+					const avatar = await readdir( avatars );
 
-					if ( avatar )
+					if ( avatar.find( ( file ) => file.includes( token.id ) ) )
 					{
 						// Définition de l'avatar personnalisé de l'utilisateur.
 						token.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }`;
@@ -83,16 +82,55 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 		},
 		// Gestion données de session en base de données.
 		//  Source : https://authjs.dev/guides/basics/role-based-access-control#with-database
-		async session( { session, token } )
+		async session( { session, token, user } )
 		{
-			if ( session && token )
+			if ( session )
 			{
-				session.user.id = token.id;
-				session.user.role = token.role;
-				session.user.oauth = token.oauth;
-				session.user.image = token.image;
-				session.user.preferences = token.preferences;
-				session.user.notification = token.notification;
+				if ( token )
+				{
+					// Données de session via JWT.
+					session.user.id = token.id;
+					session.user.role = token.role;
+					session.user.oauth = token.oauth;
+					session.user.image = token.image;
+					session.user.preferences = token.preferences;
+					session.user.notification = token.notification;
+				}
+				else if ( user )
+				{
+					// Données de session via base de données.
+					const avatars = join( process.cwd(), "public/avatars" );
+					const preferences = await prisma.preference.findUnique( {
+						where: {
+							userId: user.id
+						}
+					} );
+
+					session.user.id = user.id;
+					session.user.role = user.role;
+					session.user.image = user.image ?? undefined;
+					session.user.oauth = !user.password && !user.emailVerified;
+					session.user.preferences = preferences ?? {
+						font: "inter",
+						theme: "light",
+						color: "blue",
+						public: false,
+						extension: false,
+						versions: true,
+						default: true
+					};
+					session.user.notification = user.notification;
+
+					if ( existsSync( avatars ) )
+					{
+						const avatar = await readdir( avatars );
+
+						if ( avatar.find( ( file ) => file.includes( user.id ) ) )
+						{
+							session.user.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }`;
+						}
+					}
+				}
 			}
 
 			return session;
