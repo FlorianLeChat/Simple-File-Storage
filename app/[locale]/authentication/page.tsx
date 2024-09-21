@@ -23,7 +23,6 @@ import { Separator } from "../components/ui/separator";
 const OAuthForm = lazy( () => import( "./components/oauth" ) );
 const SignUpForm = lazy( () => import( "./components/signup" ) );
 const SignInForm = lazy( () => import( "./components/signin" ) );
-const ResetPasswordModal = lazy( () => import( "./components/reset-password" ) );
 
 // Déclaration des propriétés de la page.
 export async function generateMetadata(): Promise<Metadata>
@@ -105,8 +104,7 @@ export default async function Page( {
 					</h2>
 
 					<p className="text-sm text-muted-foreground">
-						{messages( "authentication.login_description" )}{" "}
-						<ResetPasswordModal />
+						{messages( "authentication.login_description" )}
 					</p>
 
 					<SignInForm />

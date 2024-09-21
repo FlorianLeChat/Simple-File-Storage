@@ -64,11 +64,11 @@ export async function signInAccount(
 		};
 	}
 
-	if ( !result.output.password )
+	if ( !result.output.password || process.env.NEXT_PUBLIC_ENV === "production" )
 	{
-		// Dans certains cas, le mot de passe fourni peut être vide, ce qui
-		//  signifie que l'utilisateur a tenté de se connecter via une
-		//  validation de son adresse électronique.
+		// Si le mot de passe est vide, l'utilisateur cherche probablement
+		//  à se connecter via une validation de son adresse électronique.
+		//  L'authentification avec mot de passe est désactivée en production.
 		const response = await signIn( "nodemailer", {
 			email: result.output.email,
 			redirect: false,

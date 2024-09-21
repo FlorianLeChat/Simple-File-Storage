@@ -245,7 +245,7 @@ export default function User( { session }: { session: Session } )
 				)}
 
 				{/* Mot de passe */}
-				{!session.user.oauth && (
+				{!session.user.oauth && process.env.NEXT_PUBLIC_ENV !== "production" && (
 					<FormField
 						name="password"
 						control={form.control}

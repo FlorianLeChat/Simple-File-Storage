@@ -137,12 +137,6 @@
 		}
 	},
 	"modals": {
-		"reset_password": {
-			"trigger": "Forgot Your Password?",
-			"title": "Forgot Password",
-			"description": "If you forgot your password, try logging into your account with a one-time authentication link sent to your email address. Once logged in, you can enter a new password for your account. <b>If you lose access to your email address, you will need to recreate a new account as technical support will not be legally allowed to assist you in regaining access to your account.</b>",
-			"close": "Understood"
-		},
 		"make_public": {
 			"trigger": "Make Public",
 			"title": "Are you sure you want to make {count, plural, =1 {this file} other {these # files}} public?",

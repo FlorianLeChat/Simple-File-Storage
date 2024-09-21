@@ -137,12 +137,6 @@
 		}
 	},
 	"modals": {
-		"reset_password": {
-			"trigger": "Vous avez oublié votre mot de passe ?",
-			"title": "Oubli du mot de passe",
-			"description": "Si vous avez oublié votre mot de passe, essayez de vous connecter à votre compte avec un lien d'authentification à usage unique envoyé à votre adresse électronique. Une fois connecté, vous pourrez saisir un nouveau mot de passe pour votre compte. <b>En cas de perte de l'accès à votre adresse électronique, vous devrez recréer un nouveau compte car le support technique ne sera pas légalement autorisé à vous aider à récupérer l'accès à votre compte.</b>",
-			"close": "J'ai bien compris"
-		},
 		"make_public": {
 			"trigger": "Rendre public",
 			"title": "Êtes-vous sûr de vouloir rendre public {count, plural, =1 {ce fichier} other {ces # fichiers}} ?",
