@@ -6,15 +6,12 @@
 "use server";
 
 import * as v from "valibot";
-import prisma from "@/utilities/prisma";
 import schema from "@/schemas/authentication";
-import { TOTP } from "otpauth";
 import { logger } from "@/utilities/pino";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 import { auth, signIn } from "@/utilities/next-auth";
 import { getTranslations } from "next-intl/server";
-import { generateMetadata } from "@/app/layout";
 
 export async function signInAccount(
 	_state: Record<string, unknown>,
@@ -51,7 +48,6 @@ export async function signInAccount(
 	//  d'authentification fournies par l'utilisateur.
 	const messages = await getTranslations();
 	const result = v.safeParse( schema, {
-		otp: formData.get( "otp" ),
 		email: formData.get( "email" ),
 		password: formData.get( "password" )
 	} );
@@ -95,69 +91,9 @@ export async function signInAccount(
 
 	try
 	{
-		// Dans le cas contraire, on vérifie si l'utilisateur a activé
-		//  l'authentification à double facteur et si un code a été fourni.
-		const user = await prisma.user.findFirst( {
-			where: {
-				email: result.output.email
-			},
-			include: {
-				otp: true
-			}
-		} );
-
-		if ( user?.otp )
-		{
-			// Vérification de la présence d'un code de double authentification.
-			if ( result.output.otp )
-			{
-				const meta = await generateMetadata();
-				const otp = new TOTP( {
-					label: result.output.email,
-					secret: result.output.otp,
-					issuer: meta.title as string,
-					digits: 6,
-					period: 30,
-					algorithm: "SHA256"
-				} );
-
-				if (
-					otp.validate( { token: result.output.otp, window: 1 } )
-						!== 0
-					&& user.otp.backup !== result.output.otp
-				)
-				{
-					// Échec de validation avec le code de l'application ouverts
-					//  ou le code de secours.
-					logger.error(
-						{ source: __filename, email: result.output.email },
-						"Invalid OTP code"
-					);
-
-					return {
-						success: false,
-						reason: messages( "form.errors.invalid_otp" )
-					};
-				}
-
-				logger.info(
-					{ source: __filename, email: result.output.email },
-					"Requesting OTP code"
-				);
-			}
-
-			// Aucun code de double authentification n'a été fourni.
-			logger.error( { source: __filename }, "OTP code required" );
-
-			return {
-				success: false,
-				reason: messages( "form.errors.otp_required" )
-			};
-		}
-
-		// On tente alors une authentification via les informations
-		//  d'authentification fournies avant de rediriger l'utilisateur
-		//  vers la page de son tableau de bord.
+		// Dans le cas contraire, on tente alors une authentification via
+		//  les informations d'authentification fournies avant de rediriger
+		//  l'utilisateur vers la page de son tableau de bord.
 		logger.info(
 			{ source: __filename, email: result.output.email },
 			"Sign in with credentials"

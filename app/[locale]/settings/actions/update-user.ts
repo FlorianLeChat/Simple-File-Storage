@@ -9,13 +9,11 @@ import bcrypt from "bcrypt";
 import prisma from "@/utilities/prisma";
 import schema from "@/schemas/user";
 import { join } from "path";
-import { TOTP } from "otpauth";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
 import { cookies } from "next/headers";
 import * as Sentry from "@sentry/nextjs";
 import { getTranslations } from "next-intl/server";
-import { generateMetadata } from "@/app/layout";
 import { fileTypeFromBuffer } from "file-type";
 import { mkdir, readdir, rm, writeFile } from "fs/promises";
 
@@ -43,7 +41,6 @@ export async function updateUser(
 		username: formData.get( "username" ),
 		email: formData.get( "email" ) ?? session.user.email,
 		password: formData.get( "password" ) ?? "",
-		otp: formData.get( "otp" ),
 		language: formData.get( "language" ),
 		avatar: formData.get( "avatar" )
 	} );
@@ -96,48 +93,6 @@ export async function updateUser(
 		} );
 
 		logger.debug( { source: __filename }, "Created password notification" );
-	}
-
-	// On vérifie si l'utilisateur tente de désactiver la double
-	//  authentification grâce à son code de secours ou au code
-	//  de validation généré par l'application d'authentification.
-	if ( result.output.otp && session.user.otp )
-	{
-		// Code de secours enregistré dans la base de données.
-		const data = await prisma.otp.findUnique( {
-			where: {
-				userId: session.user.id
-			},
-			select: {
-				backup: true
-			}
-		} );
-
-		// Code de validation généré par l'application.
-		const meta = await generateMetadata();
-		const otp = new TOTP( {
-			label: session.user.email as string,
-			secret: session.user.otp,
-			issuer: meta.title as string,
-			digits: 6,
-			period: 30,
-			algorithm: "SHA256"
-		} );
-
-		if (
-			otp.validate( { token: result.output.otp, window: 1 } ) === 0
-			|| data?.backup === result.output.otp
-		)
-		{
-			// Suppression de l'autorisation à deux facteurs.
-			logger.debug( { source: __filename }, "Deleted OTP" );
-
-			await prisma.otp.delete( {
-				where: {
-					userId: session.user.id
-				}
-			} );
-		}
 	}
 
 	// On modifie la langue sélectionnée par l'utilisateur dans les

@@ -28,9 +28,6 @@
 			"language_description": "Ceci est la langue qui sera utilisée sur l'ensemble des pages du site. Si votre langue comporte des traductions incomplètes, nous utiliserons la langue par défaut du site pour les compléter.",
 			"avatar_label": "Avatar",
 			"avatar_description": "Vous pouvez mettre à jour l'avatar utilisé pour votre compte utilisateur. <b>Les avatars ne doivent pas dépasser {size} et doivent être au format PNG, JPEG ou WEBP</b>.",
-			"otp_label": "Authentification à deux facteurs",
-			"otp_description_short": "L'authentification à deux facteurs peut être nécessaire en complément de votre mot de passe pour vous connecter à votre compte.",
-			"otp_description_long": "Vous pouvez désactiver l'authentification à deux facteurs en saisissant un code provenant de votre application. <b>Si vous avez perdu votre téléphone, veuillez utiliser le code de secours fourni lors de l'activation</b>.",
 			"public_label": "Publication des fichiers",
 			"public_description": "Par défaut, les fichiers téléversés sur le serveur sont privés et ne sont pas accessibles aux autres utilisateurs. Si vous activez cette option, <b>les nouveaux fichiers seront automatiquement publiés et accessibles à tous les utilisateurs disposant du lien d'accès</b>.",
 			"public_trigger": "Activer la publication automatique des fichiers téléversés sur le serveur",
@@ -107,7 +104,6 @@
 			"action_partial": "Action partiellement réussie",
 			"action_required": "Action requise",
 			"action_failed": "Action échouée",
-			"otp_enabled": "L'authentification à deux facteurs a été activée avec succès.",
 			"data_purged": "Toutes les données sélectionnées ont été purgées avec succès.",
 			"issue_created": "Votre signalement de bogue a été créé avec succès.",
 			"layout_updated": "Les paramètres d'apparence ont été mis à jour avec succès.",
@@ -137,23 +133,10 @@
 			"recaptcha_failed": "Échec de la vérification reCAPTCHA",
 			"recaptcha_error": "Les services de vérification de Google reCAPTCHA sont actuellement désactivés ou indisponibles. Si les cookies de sécurité ont été désactivés, certaines fonctionnalités du site peuvent ne pas fonctionner correctement.",
 			"server_error": "Une erreur s'est produite lors du traitement de votre demande par le serveur.",
-			"invalid_otp": "Le code de vérification que vous avez fourni est incorrect.",
-			"otp_required": "Un code de vérification est requis pour continuer.",
 			"internal_error": "Erreur interne du serveur"
 		}
 	},
 	"modals": {
-		"otp_backup": {
-			"title": "Code de secours",
-			"description": "Votre compte est désormais protégé par l'authentification à deux facteurs. Ci-dessous se trouve un code de secours que vous pouvez utiliser afin de désactiver l'authentification à deux facteurs si vous perdez votre téléphone. <b>Si vous perdez ce code, vous devrez contacter le support technique mais votre demande pourra être refusée en cas de négligence constatée.</b>",
-			"close": "Copier dans le presse-papiers"
-		},
-		"otp_validation": {
-			"trigger": "Activation de l'authentification à deux facteurs",
-			"title": "Authentification à deux facteurs",
-			"description": "Afin de sécuriser davantage votre compte, vous pouvez activer l'authentification à deux facteurs.<br></br><br></br>1. Tout d'abord, vous devez scanner le code QR ci-dessus avec une application compatible comme <a1>Google Authenticator</a1> ou <a2>Authy</a2>. <br></br>2. Une fois activée, veuillez saisir ci-dessous le code de sécurité généré par votre application pour valider la double authentification. <br></br>3. Lorsque la double authentification est validée, vous serez invité à sauvegarder un code de secours pour désactiver la double authentification si vous perdez votre téléphone.<br></br><br></br>Si vous rencontrez des difficultés pour scanner le code QR, vous pouvez saisir manuellement la clé secrète suivante dans votre application d'authentification : <code>{secret}</code>.",
-			"close": "Activer l'authentification à deux facteurs"
-		},
 		"reset_password": {
 			"trigger": "Vous avez oublié votre mot de passe ?",
 			"title": "Oubli du mot de passe",
