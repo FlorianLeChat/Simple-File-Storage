@@ -82,7 +82,7 @@ export async function updateUser(
 
 	// On ajoute une notification pour prévenir l'utilisateur que son
 	//  mot de passe a été modifié récemment.
-	if ( result.output.password && !session.user.oauth )
+	if ( result.output.password && !session.user.oauth && process.env.NODE_ENV !== "production" )
 	{
 		await prisma.notification.create( {
 			data: {

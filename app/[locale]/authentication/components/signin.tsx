@@ -163,7 +163,7 @@ export default function SignInForm()
 					name="password"
 					control={form.control}
 					render={( { field } ) => (
-						<FormItem>
+						<FormItem className={process.env.NEXT_PUBLIC_ENV === "production" ? "hidden" : ""}>
 							<FormLabel className="sr-only">
 								{messages( "fields.password_label" )}
 							</FormLabel>

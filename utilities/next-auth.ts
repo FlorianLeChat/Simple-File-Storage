@@ -27,7 +27,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 	},
 	adapter: PrismaAdapter( prisma ) as Adapter, // https://github.com/nextauthjs/next-auth/issues/9493#issuecomment-1871601543
 	session: {
-		strategy: "jwt"
+		strategy: process.env.NEXT_PUBLIC_ENV === "production" ? "database" : "jwt"
 	},
 	basePath: process.env.AUTH_URL
 		? undefined
@@ -130,8 +130,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 		Credentials( {
 			async authorize( credentials )
 			{
-				// On vérifie d'abord si des informations d'authentification
-				//  ont été fournies.
+				// On vérifie d'abord si le mécanisme d'authentification est
+				//  utilisé en environnement de développement.
+				if ( process.env.NEXT_PUBLIC_ENV === "production" )
+				{
+					logger.error(
+						{ source: __filename, credentials },
+						"Credentials used in production environment"
+					);
+
+					return null;
+				}
+
+				// On vérifie si des informations d'authentification ont été fournies.
 				if ( !credentials )
 				{
 					logger.error(
