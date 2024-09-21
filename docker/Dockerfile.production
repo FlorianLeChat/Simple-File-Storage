@@ -5,7 +5,7 @@
 FROM node:lts-alpine
 
 # Add OpenSSL for generating random secret and SuperCronic for cronjobs
-RUN apk update && apk add --no-cache openssl supercronic
+RUN apk add --no-cache openssl supercronic
 
 # Set the working directory to the website files
 WORKDIR /usr/src/app
