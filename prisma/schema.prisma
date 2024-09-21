@@ -27,6 +27,13 @@ model Account {
 	@@unique([provider, providerAccountId])
 }
 
+model Session {
+	sessionToken String   @unique
+	user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+	userId       String
+	expires      DateTime
+}
+
 model Issue {
 	id           Int        @id @default(autoincrement())
 	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -89,13 +96,6 @@ model Share {
 	@@id([fileId, userId])
 }
 
-model Otp {
-	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-	userId       String     @id
-	secret       String
-	backup       String
-}
-
 model User {
 	id            String    @id @default(uuid())
 	name          String?
@@ -107,8 +107,8 @@ model User {
 	updatedAt     DateTime  @updatedAt
 	image         String?
 	role          String    @default("user")
-	otp           Otp?
 	accounts      Account[]
+	sessions      Session[]
 	issues        Issue[]
 	files         File[]
 	preferences   Preference[]
