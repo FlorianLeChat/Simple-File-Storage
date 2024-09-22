@@ -504,7 +504,7 @@ export default function RowActions( {
 					<AlertDialogTrigger asChild>
 						<DropdownMenuItem
 							// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
-							disabled={!isFileOwner}
+							disabled={!isFileOwner || dataFiles[ 0 ].shares.length === 0}
 							onSelect={( event ) => event.preventDefault()}
 						>
 							<UserX className="mr-2 h-4 w-4" />
