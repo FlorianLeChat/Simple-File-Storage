@@ -94,8 +94,7 @@ export async function addSharedUser( formData: FormData )
 			}
 		},
 		include: {
-			shares: true,
-			preferences: true
+			shares: true
 		}
 	} );
 
@@ -118,10 +117,7 @@ export async function addSharedUser( formData: FormData )
 
 	// On ajoute une notification pour prévenir l'utilisateur que
 	//  quelqu'un a partagé un fichier avec lui.
-	if (
-		user.notification.includes( "necessary" )
-		|| user.notification.includes( "all" )
-	)
+	if ( user.notification.includes( "necessary" ) || user.notification.includes( "all" ) )
 	{
 		await prisma.notification.create( {
 			data: {
