@@ -12,6 +12,7 @@ import { logger } from "@/utilities/pino";
 import * as Sentry from "@sentry/nextjs";
 import { existsSync } from "fs";
 import { join, parse } from "path";
+import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
 
 export async function updateStorage(
@@ -164,6 +165,8 @@ export async function updateStorage(
 	}
 
 	// On retourne enfin un message de succès.
+	revalidatePath( "/" );
+
 	logger.debug( { source: __filename, result }, "Storage preferences updated" );
 
 	return {
