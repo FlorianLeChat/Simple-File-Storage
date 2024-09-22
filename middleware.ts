@@ -77,38 +77,13 @@ export default async function middleware( request: NextRequest )
 				try
 				{
 					// On récupère le tampon de données du fichier ainsi que
-					//  la clé de chiffrement.
+					//  la clé de chiffrement afin de vérifier l'intégrité
+					//  du contenu du fichier.
 					const key = request.nextUrl.searchParams.get( "key" );
 					const buffer = new Uint8Array( await content.arrayBuffer() );
-					const cipher = await crypto.subtle.importKey(
-						"raw",
-						Buffer.from(
-							key ?? process.env.AUTH_SECRET ?? "",
-							"base64"
-						),
-						{
-							name: "AES-GCM",
-							length: 256
-						},
-						true,
-						[ "encrypt", "decrypt" ]
-					);
-
-					// Une fois récupérés, on déchiffre le contenu du fichier
-					//  avec son vecteur d'initialisation et on vérifie le
-					//  hachage du contenu déchiffré pour détecter toute altération.
-					const decrypted = await crypto.subtle.decrypt(
-						{
-							iv: buffer.subarray( 0, 16 ),
-							name: "AES-GCM"
-						},
-						cipher,
-						buffer.subarray( 16 )
-					);
-
 					const digest = await crypto.subtle.digest(
 						"SHA-256",
-						decrypted
+						buffer
 					);
 
 					const hash = Array.from( new Uint8Array( digest ) )
@@ -124,6 +99,29 @@ export default async function middleware( request: NextRequest )
 
 					// Lorsque la vérification est terminée, on retourne le
 					//  contenu du fichier déchiffré comme une réponse classique.
+					const cipher = await crypto.subtle.importKey(
+						"raw",
+						Buffer.from(
+							key ?? process.env.AUTH_SECRET ?? "",
+							"base64"
+						),
+						{
+							name: "AES-GCM",
+							length: 256
+						},
+						true,
+						[ "encrypt", "decrypt" ]
+					);
+
+					const decrypted = await crypto.subtle.decrypt(
+						{
+							iv: buffer.subarray( 0, 16 ),
+							name: "AES-GCM"
+						},
+						cipher,
+						buffer.subarray( 16 )
+					);
+
 					const response = new NextResponse( decrypted );
 					response.headers.set(
 						"Content-Type",
