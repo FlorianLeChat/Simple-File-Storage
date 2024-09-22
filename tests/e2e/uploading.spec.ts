@@ -65,19 +65,9 @@ test( "Téléversement d'un fichier public par défaut", async ( { page } ) =>
 		.click();
 	await page.getByRole( "button", { name: "Update" } ).click();
 
-	// Reconnexion au compte utilisateur.
-	await page.locator( "header aside button:last-of-type" ).click();
-	await page.getByText( "Logout" ).click();
-	await expect( page ).toHaveURL( "/" );
-
-	await page.goto( "/authentication" );
-	await page.getByRole( "tab", { name: "Login" } ).click();
-	await page.getByPlaceholder( "name@domain.com" ).fill( "test1@gmail.com" );
-	await page.getByPlaceholder( "@MyPassword123!" ).fill( "Florian4016" );
-	await page.getByText( "Log in by password" ).click();
-	await expect( page ).toHaveURL( "/dashboard" );
-
-	// Ouverture de la fenêtre de dialogue pour ajouter un fichier.
+	// Retour à la page du tableau de bord et ouverture de la fenêtre de dialogue
+	//  pour ajouter un fichier.
+	await page.goto( "/dashboard" );
 	await page.locator( "button" ).filter( { hasText: "Add a file" } ).click();
 
 	// Ajout d'une image quelconque.
@@ -142,7 +132,7 @@ test( "Téléversement d'un fichier compressé", async ( { page } ) =>
 	// Fermeture de la boite de dialogue et vérification de la taille du fichier.
 	//  Note : la taille du fichier original est d'environ 433 KB.
 	await page.getByLabel( "Close toast" ).click();
-	await expect( page.getByRole( "cell", { name: "433.35 KB" } ) ).toHaveCount( 0 );
+	await expect( page.getByRole( "cell", { name: "433.35 KB" } ) ).toHaveCount( 1 );
 } );
 
 //

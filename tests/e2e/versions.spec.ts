@@ -118,20 +118,9 @@ test( "Suppression du versionnage des fichiers téléversés", async ( { page } 
 	await page.getByLabel( "Automatically save old versions of files" ).click();
 	await page.getByRole( "button", { name: "Update" } ).click();
 
-	// Reconnexion au compte utilisateur.
-	await page.locator( "header aside button:last-of-type" ).click();
-	await page.getByText( "Logout" ).click();
-	await expect( page ).toHaveURL( "/" );
-
-	await page.goto( "/authentication" );
-	await page.getByRole( "tab", { name: "Login" } ).click();
-	await page.getByPlaceholder( "name@domain.com" ).fill( "test1@gmail.com" );
-	await page.getByPlaceholder( "@MyPassword123!" ).fill( "Florian4016" );
-	await page.getByText( "Log in by password" ).click();
-	await expect( page ).toHaveURL( "/dashboard" );
-
-	// Vérification de la suppression de la possibilité de consulter
-	//  les révisions des fichiers.
+	// Retour à la page du tableau de bord et ouverture de la fenêtre de dialogue
+	//  pour ajouter un fichier.
+	await page.goto( "/dashboard" );
 	await page.getByRole( "button", { name: "Open action menu" } ).click();
 	await expect(
 		page.getByRole( "menuitem", { name: "View Revisions" } )
