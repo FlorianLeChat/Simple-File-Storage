@@ -34,25 +34,35 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 		: `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`,
 	trustHost: true,
 	callbacks: {
-		// Gestion des données du jeton JWT.
+		// Gestion des données du jeton JWT (environnement de test et de développement).
 		//  Source : https://authjs.dev/guides/basics/role-based-access-control#with-jwt
-		async jwt( { token, user } )
+		async jwt( { token } )
 		{
-			if ( token && user )
+			if ( token )
 			{
-				// Ajout de propriétés personnalisées à la session.
-				const avatars = join( process.cwd(), "public/avatars" );
-				const preferences = await prisma.preference.findUnique( {
+				// Récupération des données de l'utilisateur.
+				const user = await prisma.user.findUnique( {
 					where: {
-						userId: user.id
+						email: token.email ?? ""
+					},
+					include: {
+						preferences: true
 					}
 				} );
 
-				token.id = user.id as string;
+				if ( !user )
+				{
+					return token;
+				}
+
+				// Ajout de propriétés personnalisées à la session.
+				token.id = user.id;
+				token.name = user.name;
 				token.role = user.role;
+				token.email = user.email;
 				token.image = user.image ?? undefined;
 				token.oauth = !user.password && !user.emailVerified;
-				token.preferences = preferences ?? {
+				token.preferences = user.preferences[ 0 ] ?? {
 					font: "inter",
 					theme: "light",
 					color: "blue",
@@ -65,6 +75,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 
 				// Vérification de l'existence du dossier d'enregistrement
 				//  des avatars utilisateurs.
+				const avatars = join( process.cwd(), "public/avatars" );
+
 				if ( existsSync( avatars ) )
 				{
 					// Vérification de l'existence d'un avatar personnalisé.
@@ -80,7 +92,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 
 			return token;
 		},
-		// Gestion données de session en base de données.
+		// Gestion données de session en base de données (environnement de production).
 		//  Source : https://authjs.dev/guides/basics/role-based-access-control#with-database
 		async session( { session, token, user } )
 		{
