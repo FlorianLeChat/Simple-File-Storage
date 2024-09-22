@@ -16,7 +16,7 @@ import { compressFile } from "@/utilities/sharp";
 import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { fileTypeFromBuffer } from "file-type";
-import { rm, mkdir, readdir, link, writeFile } from "fs/promises";
+import { mkdir, readdir, writeFile } from "fs/promises";
 
 export async function uploadFiles(
 	_state: Record<string, unknown>,
@@ -193,18 +193,6 @@ export async function uploadFiles(
 				.map( ( byte ) => byte.toString( 16 ).padStart( 2, "0" ) )
 				.join( "" );
 
-			// On détermine si ce fichier semble être une duplication d'une
-			//  autre version d'un fichier déjà téléversé par un autre
-			//  utilisateur.
-			const duplication = await prisma.version.findFirst( {
-				where: {
-					hash
-				},
-				include: {
-					file: true
-				}
-			} );
-
 			// On vérifie si un fichier existe déjà avec le même nom
 			//  dans le dossier de l'utilisateur.
 			const { name } = parse( file.name );
@@ -223,19 +211,6 @@ export async function uploadFiles(
 					versions: true
 				}
 			} );
-
-			// On vérifie alors si le fichier dupliqué est bien le même
-			//  que le fichier existant pour éviter de créer une nouvelle
-			//  version d'un fichier déjà existant.
-			if ( exists && duplication && exists?.id === duplication?.fileId )
-			{
-				logger.error(
-					{ source: __filename, file },
-					"File already exists"
-				);
-
-				return [];
-			}
 
 			// On récupère l'identifiant unique du nouveau fichier ou du
 			//  fichier existant avant de créer une nouvelle version en
@@ -299,44 +274,15 @@ export async function uploadFiles(
 				);
 			}
 
-			// Après la création de la notification, on créé le dossier du fichier
-			//  dans le système de fichiers.
+			// Après la création de la notification, on créé le dossier de
+			//  sauvegarde avant d'y écrire le fichier téléversé.
 			const fileFolder = join( userFolder, fileId );
 
 			await mkdir( fileFolder, { recursive: true } );
-
-			if ( duplication )
-			{
-				// Si une duplication a été détectée précédemment, on supprime
-				//  le fichier existant et on créé un lien symbolique vers le
-				//  fichier dupliqué afin de réduire l'espace disque utilisé.
-				const filePath = join( fileFolder, `${ versionId + extension }` );
-
-				logger.debug(
-					{ source: __filename, filePath, file, duplication },
-					"File duplication detected"
-				);
-
-				await rm( filePath, { force: true } );
-				await link(
-					join(
-						process.cwd(),
-						"public/files",
-						duplication.file.userId,
-						duplication.fileId,
-						duplication.id + parse( duplication.file.name ).ext
-					),
-					filePath
-				);
-			}
-			else
-			{
-				// Dans le cas contraire, on l'écrit dans le système de fichiers.
-				await writeFile(
-					join( fileFolder, `${ versionId }${ extension }` ),
-					encrypted
-				);
-			}
+			await writeFile(
+				join( fileFolder, `${ versionId }${ extension }` ),
+				encrypted
+			);
 
 			revalidatePath( "/" );
 
