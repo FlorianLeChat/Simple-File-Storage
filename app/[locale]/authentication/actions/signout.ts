@@ -6,6 +6,7 @@
 
 import { logger } from "@/utilities/pino";
 import { signOut } from "@/utilities/next-auth";
+import { redirect } from "next/navigation";
 
 export async function signOutAccount()
 {
@@ -14,6 +15,8 @@ export async function signOutAccount()
 	logger.debug( { source: __filename }, "Sign out" );
 
 	await signOut( {
-		redirectTo: "/"
+		redirect: false
 	} );
+
+	redirect( "/" );
 }
