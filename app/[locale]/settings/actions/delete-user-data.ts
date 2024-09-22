@@ -11,6 +11,7 @@ import { logger } from "@/utilities/pino";
 import { existsSync } from "fs";
 import { readdir, rm } from "fs/promises";
 import { auth, signOut } from "@/utilities/next-auth";
+import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
 
 export async function deleteUserData(
@@ -92,6 +93,8 @@ export async function deleteUserData(
 				{ source: __filename, session },
 				"User account deleted"
 			);
+
+			revalidatePath( "/" );
 
 			await signOut( {
 				redirect: false

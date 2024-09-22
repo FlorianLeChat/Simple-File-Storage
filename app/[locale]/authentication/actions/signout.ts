@@ -7,6 +7,7 @@
 import { logger } from "@/utilities/pino";
 import { signOut } from "@/utilities/next-auth";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function signOutAccount()
 {
@@ -18,5 +19,6 @@ export async function signOutAccount()
 		redirect: false
 	} );
 
+	revalidatePath( "/" );
 	redirect( "/" );
 }
