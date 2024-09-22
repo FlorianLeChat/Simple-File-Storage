@@ -13,6 +13,7 @@ import * as Sentry from "@sentry/nextjs";
 import { statSync } from "fs";
 import { join, parse } from "path";
 import { compressFile } from "@/utilities/sharp";
+import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { fileTypeFromBuffer } from "file-type";
 import { rm, mkdir, readdir, link, writeFile } from "fs/promises";
@@ -336,6 +337,8 @@ export async function uploadFiles(
 						] )
 				);
 			}
+
+			revalidatePath( "/" );
 
 			logger.debug(
 				{ source: __filename, fileFolder, versionId },
