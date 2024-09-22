@@ -262,6 +262,7 @@ export default function FileUpload( {
 		if ( success )
 		{
 			setOpen( false );
+			setEncrypted( false );
 
 			form.reset();
 

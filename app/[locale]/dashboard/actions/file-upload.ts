@@ -123,7 +123,7 @@ export async function uploadFiles(
 					// Si le type du fichier ne correspond à aucun type de fichier
 					//  accepté, on retourne une liste vide.
 					logger.error(
-						{ source: __filename, result, info },
+						{ source: __filename, file, info },
 						"File type not accepted"
 					);
 
@@ -131,9 +131,64 @@ export async function uploadFiles(
 				}
 			}
 
+			// On effectue une éventuelle compression si le fichier n'a pas été
+			//  chiffré avant le téléversement au serveur.
+			const extension = info ? `.${ info.ext }` : parse( file.name ).ext;
+			const compressed = result.output.compression && !result.output.encryption
+				? await compressFile( buffer, extension.replace( ".", "" ) )
+				: buffer;
+
+			if ( result.output.compression )
+			{
+				logger.debug(
+					{
+						source: __filename,
+						file,
+						before: buffer.length,
+						after: compressed.length
+					},
+					"Compressed file"
+				);
+			}
+
+			// On chiffre le fichier avec l'algorithme AES-256-GCM si celui-ci
+			//  n'a pas été chiffré par le client avant le téléversement.
+			const iv = crypto.getRandomValues( new Uint8Array( 16 ) );
+			const cipher = await crypto.subtle.importKey(
+				"raw",
+				Buffer.from( process.env.AUTH_SECRET ?? "", "base64" ),
+				{
+					name: "AES-GCM",
+					length: 256
+				},
+				true,
+				[ "encrypt", "decrypt" ]
+			);
+
+			const encrypted = result.output.encryption
+				? compressed
+				: Buffer.concat( [
+					iv,
+					new Uint8Array(
+						await crypto.subtle.encrypt(
+							{
+								iv,
+								name: "AES-GCM"
+							},
+							cipher,
+							compressed
+						)
+					)
+				] );
+
+			logger.debug(
+				{ source: __filename, file },
+				`File encrypted ${ result.output.encryption ? "client" : "server" }-side`
+			);
+
 			// On génère une chaîne de hachage unique représentant les
 			//  données du fichier.
-			const digest = await crypto.subtle.digest( "SHA-256", buffer );
+			const digest = await crypto.subtle.digest( "SHA-256", encrypted );
 			const hash = Array.from( new Uint8Array( digest ) )
 				.map( ( byte ) => byte.toString( 16 ).padStart( 2, "0" ) )
 				.join( "" );
@@ -152,7 +207,6 @@ export async function uploadFiles(
 
 			// On vérifie si un fichier existe déjà avec le même nom
 			//  dans le dossier de l'utilisateur.
-			const extension = info ? `.${ info.ext }` : parse( file.name ).ext;
 			const { name } = parse( file.name );
 			const exists = await prisma.file.findFirst( {
 				where: {
@@ -176,7 +230,7 @@ export async function uploadFiles(
 			if ( exists && duplication && exists?.id === duplication?.fileId )
 			{
 				logger.error(
-					{ source: __filename, result },
+					{ source: __filename, file },
 					"File already exists"
 				);
 
@@ -240,7 +294,7 @@ export async function uploadFiles(
 				} );
 
 				logger.debug(
-					{ source: __filename },
+					{ source: __filename, file },
 					"Created version notification"
 				);
 			}
@@ -259,7 +313,7 @@ export async function uploadFiles(
 				const filePath = join( fileFolder, `${ versionId + extension }` );
 
 				logger.debug(
-					{ source: __filename, filePath, duplication },
+					{ source: __filename, filePath, file, duplication },
 					"File duplication detected"
 				);
 
@@ -277,72 +331,17 @@ export async function uploadFiles(
 			}
 			else
 			{
-				// Dans le cas contraire, on chiffre le fichier avec l'algorithme
-				//  AES-256-GCM avant d'effectuer une éventuelle compression
-				//  pour enfin l'écrire dans le système de fichiers.
-				//  Note : si l'utilisateur a demandé un chiffrement renforcé,
-				//   le fichier a déjà été chiffré par le client.
-				const iv = crypto.getRandomValues( new Uint8Array( 16 ) );
-				const cipher = await crypto.subtle.importKey(
-					"raw",
-					Buffer.from( process.env.AUTH_SECRET ?? "", "base64" ),
-					{
-						name: "AES-GCM",
-						length: 256
-					},
-					true,
-					[ "encrypt", "decrypt" ]
-				);
-				const compressed = result.output.compression && !result.output.encryption
-					? await compressFile( buffer, extension.replace( ".", "" ) )
-					: buffer;
-
-				if ( result.output.compression )
-				{
-					// Mise à jour de la taille de la version après compression.
-					logger.debug(
-						{
-							source: __filename,
-							versionId,
-							size: compressed.length
-						},
-						"Compressed file"
-					);
-
-					await prisma.version.update( {
-						where: {
-							id: versionId
-						},
-						data: {
-							size: `${ compressed.length }`
-						}
-					} );
-				}
-
+				// Dans le cas contraire, on l'écrit dans le système de fichiers.
 				await writeFile(
 					join( fileFolder, `${ versionId }${ extension }` ),
-					result.output.encryption
-						? compressed
-						: Buffer.concat( [
-							iv,
-							new Uint8Array(
-								await crypto.subtle.encrypt(
-									{
-										iv,
-										name: "AES-GCM"
-									},
-									cipher,
-									compressed
-								)
-							)
-						] )
+					encrypted
 				);
 			}
 
 			revalidatePath( "/" );
 
 			logger.debug(
-				{ source: __filename, fileFolder, versionId },
+				{ source: __filename, file, fileFolder, versionId },
 				"File uploaded"
 			);
 
@@ -372,10 +371,9 @@ export async function uploadFiles(
 				),
 				path,
 				owner: exists?.user ?? session.user,
-				status:
-					exists?.shares && exists?.shares.length > 0
-						? "shared"
-						: ( exists?.status ?? status ),
+				status: exists?.shares && exists?.shares.length > 0
+					? "shared"
+					: ( exists?.status ?? status ),
 				shares:
 					exists?.shares.map( ( share ) => ( {
 						user: {
