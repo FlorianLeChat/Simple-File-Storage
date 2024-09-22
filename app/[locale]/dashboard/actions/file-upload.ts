@@ -123,7 +123,7 @@ export async function uploadFiles(
 					// Si le type du fichier ne correspond à aucun type de fichier
 					//  accepté, on retourne une liste vide.
 					logger.error(
-						{ source: __filename, result },
+						{ source: __filename, result, info },
 						"File type not accepted"
 					);
 
@@ -152,9 +152,11 @@ export async function uploadFiles(
 
 			// On vérifie si un fichier existe déjà avec le même nom
 			//  dans le dossier de l'utilisateur.
+			const extension = info ? `.${ info.ext }` : parse( file.name ).ext;
+			const { name } = parse( file.name );
 			const exists = await prisma.file.findFirst( {
 				where: {
-					name: file.name,
+					name: name + extension,
 					userId: session.user.id
 				},
 				include: {
@@ -189,7 +191,7 @@ export async function uploadFiles(
 				? (
 					await prisma.file.create( {
 						data: {
-							name: file.name.slice( 0, 128 ),
+							name: ( name + extension ).slice( 0, 128 ),
 							userId: session.user.id,
 							status,
 							expiration: result.output.expiration !== ""
@@ -245,7 +247,6 @@ export async function uploadFiles(
 
 			// Après la création de la notification, on créé le dossier du fichier
 			//  dans le système de fichiers.
-			const extension = info ? `.${ info.ext }` : parse( file.name ).ext;
 			const fileFolder = join( userFolder, fileId );
 
 			await mkdir( fileFolder, { recursive: true } );
@@ -363,7 +364,7 @@ export async function uploadFiles(
 
 			return JSON.stringify( {
 				uuid: fileId,
-				name: parse( file.name ).name,
+				name,
 				type: file.type,
 				size: versions.reduce(
 					( previous, current ) => previous + Number( current.size ),
