@@ -36,7 +36,7 @@ const schema = v.object( {
 	encryption: v.boolean(),
 
 	// Date d'expiration du fichier.
-	expiration: v.union( [ v.pipe( v.string(), v.isoDateTime() ), v.literal( "" ) ] )
+	expiration: v.union( [ v.pipe( v.string(), v.isoTimestamp() ), v.literal( "" ) ] )
 } );
 
 export default schema;
