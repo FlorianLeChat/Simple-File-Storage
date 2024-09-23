@@ -722,7 +722,7 @@ export default function FileUpload( {
 													disabled={( date ) => date > oneYear
 														|| date < today}
 													onSelect={( value ) => field.onChange(
-														value?.toISOString()
+														value?.toISOString() ?? ""
 													)}
 													className="rounded-md border"
 													initialFocus
