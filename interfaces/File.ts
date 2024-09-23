@@ -29,4 +29,7 @@ export interface FileAttributes {
 
 	// Liste des versions du fichier.
 	versions: VersionAttributes[];
+
+	// Date d'expiration du fichier.
+	expiration?: Date;
 }
