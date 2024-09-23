@@ -7,6 +7,7 @@
 import { merge } from "@/utilities/tailwind";
 import { formatSize } from "@/utilities/react-table";
 import type { ColumnDef } from "@tanstack/react-table";
+import { ScissorsLineDashed } from "lucide-react";
 import type { FileAttributes } from "@/interfaces/File";
 
 import { Badge } from "@/components/ui/badge";
@@ -147,7 +148,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 		cell: ( { row } ) => formatSize( row.original.versions[ 0 ].size )
 	},
 	{
-		// Date de téléversement du fichier.
+		// Date de téléversement du fichier (et d'expiration si définie).
 		accessorKey: "date",
 		sortingFn: ( a, b ) =>
 		{
@@ -166,18 +167,47 @@ export const columns: ColumnDef<FileAttributes>[] = [
 		cell: ( { table, row } ) =>
 		{
 			const { date } = row.original.versions[ 0 ];
+			const { expiration } = row.original;
 
 			return (
-				<time dateTime={date.toISOString()} suppressHydrationWarning>
-					{new Intl.DateTimeFormat( table.options.meta?.locale, {
-						year: "numeric",
-						month: "short",
-						day: "numeric",
-						hour: "numeric",
-						minute: "numeric",
-						second: "numeric"
-					} ).format( date )}
-				</time>
+				<>
+					<time
+						dateTime={date.toISOString()}
+						suppressHydrationWarning
+					>
+						{/* Date de téléversement */}
+						{new Intl.DateTimeFormat( table.options.meta?.locale, {
+							year: "numeric",
+							month: "short",
+							day: "numeric",
+							hour: "numeric",
+							minute: "numeric",
+							second: "numeric"
+						} ).format( date )}
+					</time>
+
+					{expiration && (
+						<>
+							<br />
+							<ScissorsLineDashed className="inline-block h-5 w-5 text-destructive" />
+							<time
+								dateTime={date.toISOString()}
+								className="ml-1 align-middle text-muted-foreground"
+								suppressHydrationWarning
+							>
+								{/* Date d'expiration */}
+								{new Intl.DateTimeFormat(
+									table.options.meta?.locale,
+									{
+										year: "numeric",
+										month: "short",
+										day: "numeric"
+									}
+								).format( expiration )}
+							</time>
+						</>
+					)}
+				</>
 			);
 		}
 	},

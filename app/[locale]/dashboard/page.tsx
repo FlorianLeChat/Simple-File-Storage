@@ -116,7 +116,8 @@ async function getFiles(): Promise<FileAttributes[]>
 					date: version.createdAt,
 					path: `${ path }?v=${ version.id }`,
 					encrypted: version.encrypted
-				} ) )
+				} ) ),
+				expiration: file.expiration
 			} as FileAttributes;
 		} )
 	);
