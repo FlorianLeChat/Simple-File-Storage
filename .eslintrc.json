@@ -45,6 +45,8 @@
 		"import/prefer-default-export": "off",
 		"import/no-extraneous-dependencies": "off",
 
+		"jsx-a11y/html-has-lang": "off", // Layout avec Google Fonts
+
 		"@typescript-eslint/no-shadow": "error",
 
 		"react/no-danger": "off", // https://github.com/pacocoursey/next-themes/blob/cd67bfa20ef6ea78a814d65625c530baae4075ef/packages/next-themes/src/index.tsx#L267

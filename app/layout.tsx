@@ -36,5 +36,9 @@ export default function Layout( { children }: { children: ReactNode } )
 		"Fonts loaded"
 	);
 
-	return children;
+	return (
+		<html>
+			<body>{children}</body>
+		</html>
+	);
 }
