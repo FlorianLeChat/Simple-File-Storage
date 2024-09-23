@@ -71,7 +71,7 @@ sub vcl_recv {
 
 	# Suppression de la mise en cache pour toutes les pages
 	#  nécessitant une authentification utilisateur.
-	if (req.url ~ "^dashboard$" || req.url ~ "^api$" || req.url ~ "^settings$") {
+	if (req.url ~ "/dashboard" || req.url ~ "/d/" || req.url ~ "/api" || req.url ~ "/settings") {
 		return (pass);
 	}
 
