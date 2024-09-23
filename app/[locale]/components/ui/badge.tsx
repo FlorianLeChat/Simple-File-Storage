@@ -2,9 +2,12 @@
 // Composant générique des badges.
 //  Source : https://ui.shadcn.com/docs/components/badge
 //
+import "@valibot/i18n/fr";
+import * as v from "valibot";
 import { merge } from "@/utilities/tailwind";
 import { type HTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { useLocale, useTranslations } from "next-intl";
 
 const badgeVariants = cva(
 	"inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
@@ -39,11 +42,14 @@ export interface BadgeProps
 
 function Badge( { className, variant, ...props }: BadgeProps )
 {
+	v.setGlobalConfig( { lang: useLocale() } );
+
+	const messages = useTranslations( "dashboard" );
+
 	return (
-		<div
-			className={merge( badgeVariants( { variant } ), className )}
-			{...props}
-		/>
+		<div className={merge( badgeVariants( { variant } ), className )}>
+			{messages( props.children )}
+		</div>
 	);
 }
 
