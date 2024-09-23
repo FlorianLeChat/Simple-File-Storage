@@ -257,10 +257,8 @@ export async function uploadFiles(
 			{
 				await prisma.notification.createMany( {
 					data: exists.shares
-						.filter(
-							( share ) => share.user.notification.includes( "necessary" )
-								|| share.user.notification.includes( "all" )
-						)
+						.filter( ( share ) => share.user.notification.includes( "necessary" )
+							|| share.user.notification.includes( "all" ) )
 						.map( ( share ) => ( {
 							title: 3,
 							userId: share.userId,
@@ -366,7 +364,7 @@ export async function uploadFiles(
 		//  l'utilisateur a été dépassé en compagnie de la liste des
 		//  fichiers téléversés avec succès.
 		return {
-			success: currentQuota <= maxQuota,
+			success: isUser ? !quotaIsExceeded : true,
 			reason: isUser && quotaIsExceeded
 				? messages( "form.errors.quota_exceeded" )
 				: messages( "form.infos.upload_success" ),
