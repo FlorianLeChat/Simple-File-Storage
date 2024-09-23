@@ -22,10 +22,7 @@ export default async function middleware( request: NextRequest )
 {
 	// On vérifie d'abord si la requête courante est de type GET
 	//  et si elle cherche à accéder à un fichier utilisateur.
-	if (
-		request.method === "GET"
-		&& request.nextUrl.pathname.startsWith( "/d/" )
-	)
+	if ( request.method === "GET" && request.nextUrl.pathname.startsWith( "/d/" ) )
 	{
 		// Si c'est le cas, on récupère l'identifiant du fichier
 		//  à partir de l'URL de la requête.
