@@ -2,6 +2,7 @@
 // Schéma de validation pour le téléversement de fichiers.
 //
 import * as v from "valibot";
+import { addDays } from "date-fns";
 
 // Types de fichiers acceptés.
 const ACCEPTED_FILE_TYPES =
@@ -36,7 +37,21 @@ const schema = v.object( {
 	encryption: v.boolean(),
 
 	// Date d'expiration du fichier.
-	expiration: v.union( [ v.pipe( v.string(), v.isoTimestamp() ), v.literal( "" ) ] )
+	expiration: v.union( [
+		v.pipe(
+			v.string(),
+			v.isoTimestamp(),
+			// Date actuelle.
+			v.minValue( new Date( new Date().setHours( 0, 0, 0, 0 ) ).toISOString() ),
+			// Date actuelle + 1 an.
+			v.maxValue(
+				addDays( new Date().setHours( 0, 0, 0, 0 ), 365 ).toISOString()
+			),
+			// Normalisation de la date.
+			v.transform( ( value ) => new Date( new Date( value ).setHours( 0, 0, 0, 0 ) ).toISOString() )
+		),
+		v.literal( "" )
+	] )
 } );
 
 export default schema;
