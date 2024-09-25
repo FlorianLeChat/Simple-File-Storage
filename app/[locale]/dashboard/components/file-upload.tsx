@@ -240,7 +240,10 @@ export default function FileUpload( {
 					versions: json.versions.map( ( version ) => ( {
 						...version,
 						date: new Date( version.date )
-					} ) )
+					} ) ),
+					expiration: json.expiration
+						? new Date( json.expiration )
+						: undefined
 				} );
 			} );
 

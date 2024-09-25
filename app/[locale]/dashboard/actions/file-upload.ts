@@ -215,6 +215,9 @@ export async function uploadFiles(
 			// On récupère l'identifiant unique du nouveau fichier ou du
 			//  fichier existant avant de créer une nouvelle version en
 			//  fonction des préférences de l'utilisateur.
+			const expiration = result.output.expiration !== ""
+				? new Date( result.output.expiration )
+				: null;
 			const status = preferences.public ? "public" : "private";
 			const fileId = !exists
 				? (
@@ -223,9 +226,7 @@ export async function uploadFiles(
 							name: ( name + extension ).slice( 0, 128 ),
 							userId: session.user.id,
 							status,
-							expiration: result.output.expiration !== ""
-								? new Date( result.output.expiration )
-								: null
+							expiration
 						}
 					} )
 				).id
@@ -334,7 +335,8 @@ export async function uploadFiles(
 					date: version.createdAt,
 					path: `${ path }?v=${ version.id }`,
 					encrypted: version.encrypted
-				} ) )
+				} ) ),
+				expiration
 			} );
 		} );
 
