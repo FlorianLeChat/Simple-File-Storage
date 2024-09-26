@@ -48,7 +48,7 @@ export default function ColumnHeader<TData, TValue>( {
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<DropdownMenu>
+		<DropdownMenu modal={false}>
 			{/* Icon de tri */}
 			<DropdownMenuTrigger
 				className={merge(

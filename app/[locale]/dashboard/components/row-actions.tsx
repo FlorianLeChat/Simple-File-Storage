@@ -372,7 +372,7 @@ export default function RowActions( {
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<DropdownMenu open={isLoading ? false : undefined}>
+		<DropdownMenu open={isLoading ? false : undefined} modal={false}>
 			{/* Bouton d'ouverture du menu */}
 			<DropdownMenuTrigger
 				title={dashboardMessages( "title" )}
