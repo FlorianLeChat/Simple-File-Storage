@@ -66,6 +66,27 @@ export async function updateUser(
 	//  Note : si l'utilisateur s'est connecté avec un fournisseur
 	//   d'authentification tiers, on supprime certaines informations
 	//   pour éviter les modifications non autorisées.
+	const user = await prisma.user.findUnique( {
+		where: {
+			email: result.output.email
+		}
+	} );
+
+	if ( user )
+	{
+		// Si l'adresse électronique est déjà utilisée par un autre
+		//  utilisateur, on bloque la modification des informations.
+		logger.error(
+			{ source: __filename, email: result.output.email },
+			"Email already used"
+		);
+
+		return {
+			success: false,
+			reason: messages( "form.errors.email_used" )
+		};
+	}
+
 	await prisma.user.update( {
 		where: {
 			id: session.user.id
