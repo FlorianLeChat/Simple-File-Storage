@@ -59,10 +59,26 @@ function text( title: string )
 	return title;
 }
 
+// Configuration du transport SMTP pour l'envoi des courriels.
+export const transport = createTransport( {
+	secure: process.env.SMTP_PORT === "465",
+	host: process.env.SMTP_HOST,
+	port: process.env.SMTP_PORT ? Number( process.env.SMTP_PORT ) : 0,
+	auth: {
+		user: process.env.SMTP_USERNAME,
+		pass: process.env.SMTP_PASSWORD
+	},
+	dkim: {
+		domainName: process.env.DKIM_DOMAIN ?? "",
+		privateKey: process.env.DKIM_PRIVATE_KEY ?? "",
+		keySelector: process.env.DKIM_SELECTOR ?? ""
+	}
+} );
+
 // Fonction d'envoi des courriels via Nodemailer.
 export default async function sendVerificationRequest( {
 	url,
-	provider: { server, from },
+	provider: { from },
 	identifier
 }: {
 	url: string;
@@ -72,7 +88,6 @@ export default async function sendVerificationRequest( {
 {
 	const { host } = new URL( url );
 	const messages = await getTranslations();
-	const transport = createTransport( server );
 	const escapedHost = host.replace( /\./g, "&#8203;." );
 
 	const result = await transport.sendMail( {
@@ -91,15 +106,15 @@ export default async function sendVerificationRequest( {
 		subject: messages( "nodemailer.subject" )
 	} );
 
-	const failed = result.rejected.concat( result.pending ).filter( Boolean );
-
-	if ( failed.length )
+	if ( result.rejected.length )
 	{
 		logger.error(
-			{ source: __filename, failed },
+			{ source: __filename, result },
 			"Email(s) could not be sent"
 		);
 
-		throw new Error( `Email(s) (${ failed.join( ", " ) }) could not be sent` );
+		throw new Error(
+			`Email(s) (${ result.rejected.join( ", " ) }) could not be sent`
+		);
 	}
 }

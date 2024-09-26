@@ -309,7 +309,7 @@ export default function Account()
 					) : (
 						<>
 							<Send className="mr-2 h-4 w-4" />
-							{messages( "update" )}
+							{messages( "send" )}
 						</>
 					)}
 				</Button>

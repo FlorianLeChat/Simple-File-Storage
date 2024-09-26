@@ -9,6 +9,7 @@ import prisma from "@/utilities/prisma";
 import schema from "@/schemas/issue";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
+import { transport } from "@/utilities/node-mailer";
 import { getTranslations } from "next-intl/server";
 
 export async function createIssue(
@@ -84,8 +85,36 @@ export async function createIssue(
 		}
 	} );
 
+	// On récupère ensuite la liste des adresses électroniques des
+	//  administrateurs du site avant d'envoyer un courriel à chacun
+	//  d'entre eux pour les informer du nouveau signalement.
+	const admins = await prisma.user.findMany( {
+		where: {
+			role: "admin"
+		}
+	} );
+
+	const info = await transport.sendMail( {
+		to: admins.map( ( { email } ) => email ),
+		from: process.env.SMTP_USERNAME,
+		text: messages( "nodemailer.details", {
+			area: result.output.area,
+			subject: result.output.subject,
+			severity: result.output.severity,
+			description: result.output.description
+		} ),
+		subject: messages( "nodemailer.issue", { email: session.user.email } )
+	} );
+
+	if ( info.rejected.length )
+	{
+		// En cas d'échec, on enregistre un message d'avertissement
+		//  dans les journaux.
+		logger.warn( { source: __filename, info }, "Email(s) could not be sent" );
+	}
+
 	// On retourne enfin un message de succès.
-	logger.info( { source: __filename, result }, "Issue created" );
+	logger.info( { source: __filename, result, admins }, "Issue created" );
 
 	return {
 		success: true,
