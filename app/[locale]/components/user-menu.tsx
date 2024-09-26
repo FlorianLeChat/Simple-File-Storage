@@ -101,7 +101,7 @@ export default function UserMenu( { session }: { session: Session } )
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<DropdownMenu open={isOpen} onOpenChange={setOpen}>
+		<DropdownMenu open={isOpen} onOpenChange={setOpen} modal={false}>
 			{/* Bouton d'apparition */}
 			<DropdownMenuTrigger
 				className={merge(
