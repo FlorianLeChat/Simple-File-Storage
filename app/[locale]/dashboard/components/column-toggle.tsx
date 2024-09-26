@@ -32,7 +32,7 @@ export default function ColumnToggle( {
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<DropdownMenu>
+		<DropdownMenu modal={false}>
 			{/* Bouton d'ouverture du menu */}
 			<DropdownMenuTrigger
 				className={merge(
