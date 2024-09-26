@@ -4,6 +4,7 @@
 		"cancel": "Cancel",
 		"loading": "Please wait...",
 		"update": "Update",
+		"send": "Send",
 		"register": "Register by email",
 		"log_by_email": "Log in by email",
 		"log_by_password": "Log in by password",
@@ -366,6 +367,8 @@
 		}
 	},
 	"nodemailer": {
+		"issue": "New report from {email}!",
+		"details": "Domain : {area}\nSeverity : {severity}\nSubject : {subject}\nDescription : {description}",
 		"subject": "Login to Your Simple File Storage Account",
 		"button": "Direct Login",
 		"footer": "<strong>This link is valid for 30 minutes.</strong> If you did not initiate this request, you can ignore this email.",

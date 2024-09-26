@@ -4,6 +4,7 @@
 		"cancel": "Annuler",
 		"loading": "Veuillez patienter...",
 		"update": "Mettre à jour",
+		"send": "Envoyer",
 		"register": "Inscription par courriel",
 		"log_by_email": "Se connecter par courriel",
 		"log_by_password": "Se connecter par mot de passe",
@@ -366,6 +367,8 @@
 		}
 	},
 	"nodemailer": {
+		"issue": "Nouveau signalement de {email} !",
+		"details": "Domaine : {area}\nSévérité : {severity}\nSujet : {subject}\nDescription : {description}",
 		"subject": "Connexion à votre compte Simple File Storage",
 		"button": "Connexion directe",
 		"footer": "<strong>Ce lien est valable 30 minutes.</strong> Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer ce courriel.",
