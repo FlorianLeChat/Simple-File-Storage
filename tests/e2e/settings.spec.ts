@@ -133,7 +133,7 @@ test( "Création d'un nouveau signalement de bogue", async ( { page } ) =>
 	await page.getByLabel( "Critical" ).click();
 
 	// Clic sur le bouton de création du signalement.
-	await page.getByRole( "button", { name: "Update" } ).click();
+	await page.getByRole( "button", { name: "Send" } ).click();
 
 	// Attente de la réponse du serveur sous forme d'un message d'erreur.
 	//  Note : la réponse sera négative car les champs requis ne sont pas remplis.
@@ -157,7 +157,7 @@ test( "Création d'un nouveau signalement de bogue", async ( { page } ) =>
 		.fill( faker.word.words( 10 ) );
 
 	// Clic sur le bouton de création du signalement.
-	await page.getByRole( "button", { name: "Update" } ).click();
+	await page.getByRole( "button", { name: "Send" } ).click();
 
 	// Attente de la réponse du serveur sous forme de notification.
 	await expect(
