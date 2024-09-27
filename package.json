@@ -39,7 +39,7 @@
     "dotenv-cli": "~7.4",
     "pino-pretty": "~11.2",
     "@prisma/client": "~5.19",
-    "@sentry/nextjs": "~8.27",
+    "@sentry/nextjs": "~8.32",
     "@auth/prisma-adapter": "~2.4"
   },
   "devDependencies": {
