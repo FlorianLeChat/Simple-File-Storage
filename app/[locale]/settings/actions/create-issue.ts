@@ -94,23 +94,38 @@ export async function createIssue(
 		}
 	} );
 
-	const info = await transport.sendMail( {
-		to: admins.map( ( { email } ) => email ),
-		from: process.env.SMTP_USERNAME,
-		text: messages( "nodemailer.details", {
-			area: result.output.area,
-			subject: result.output.subject,
-			severity: result.output.severity,
-			description: result.output.description
-		} ),
-		subject: messages( "nodemailer.issue", { email: session.user.email } )
-	} );
-
-	if ( info.rejected.length )
+	try
 	{
-		// En cas d'échec, on enregistre un message d'avertissement
-		//  dans les journaux.
-		logger.warn( { source: __filename, info }, "Email(s) could not be sent" );
+		const info = await transport.sendMail( {
+			to: admins.map( ( { email } ) => email ),
+			from: process.env.SMTP_USERNAME,
+			text: messages( "nodemailer.details", {
+				area: result.output.area,
+				subject: result.output.subject,
+				severity: result.output.severity,
+				description: result.output.description
+			} ),
+			subject: messages( "nodemailer.issue", {
+				email: session.user.email
+			} )
+		} );
+
+		if ( info.rejected.length )
+		{
+			// Erreur lors de l'envoi de certains courriels.
+			logger.warn(
+				{ source: __filename, info },
+				"Email(s) could not be sent"
+			);
+		}
+	}
+	catch ( error )
+	{
+		// Erreur dans l'envoi des courriels.
+		logger.error(
+			{ source: __filename, error },
+			"Node Mailer transport error"
+		);
 	}
 
 	// On retourne enfin un message de succès.
