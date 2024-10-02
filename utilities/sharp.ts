@@ -21,7 +21,8 @@ export async function compressFile(
 	// On compresse l'image en fonction de son extension.
 	switch ( extension )
 	{
-		case "jpg" || "jpeg":
+		case "jpg":
+		case "jpeg":
 			// https://sharp.pixelplumbing.com/api-output#jpeg
 			instance.jpeg( { quality: COMPRESSION_QUALITY } );
 			break;
