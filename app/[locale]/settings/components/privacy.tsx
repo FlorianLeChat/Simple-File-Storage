@@ -113,14 +113,14 @@ export default function Privacy()
 
 					if ( !state )
 					{
-						return false;
+						return;
 					}
 
 					// Activation de l'état de chargement.
 					setLoading( true );
 
 					// Exécution de l'action côté serveur.
-					return serverAction( deleteAction, formData );
+					serverAction( deleteAction, formData );
 				}}
 				className="space-y-8"
 			>

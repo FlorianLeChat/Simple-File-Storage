@@ -108,7 +108,7 @@ export default function Notifications( { session }: { session: Session } )
 
 					if ( !state )
 					{
-						return false;
+						return;
 					}
 
 					// Activation de l'état de chargement.
@@ -118,7 +118,7 @@ export default function Notifications( { session }: { session: Session } )
 					formData.set( "level", form.getValues( "level" ) );
 
 					// Exécution de l'action côté serveur.
-					return serverAction( updateAction, formData );
+					serverAction( updateAction, formData );
 				}}
 				className="space-y-8"
 			>

@@ -104,14 +104,14 @@ export default function SignUpForm()
 
 					if ( !state )
 					{
-						return false;
+						return;
 					}
 
 					// Activation de l'état de chargement.
 					setLoading( true );
 
 					// Exécution de l'action côté serveur.
-					return serverAction( signUpAction, formData );
+					serverAction( signUpAction, formData );
 				}}
 				className="space-y-6"
 			>
