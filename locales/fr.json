@@ -318,10 +318,10 @@
 	"authentication": {
 		"register_button": "Inscription",
 		"register_title": "Création d'un compte",
-		"register_description": "Saisissez votre adresse électronique pour créer un nouveau compte utilisateur. Vous recevrez un lien d'activation pour valider votre compte et saisir un mot de passe.",
+		"register_description": "Pour créer un nouveau compte utilisateur, saisissez votre adresse électronique. Un lien d'authentification vous sera envoyé pour activer votre compte.",
 		"login_button": "Connexion",
 		"login_title": "Connexion à votre compte",
-		"login_description": "Saisissez votre adresse électronique pour vous connecter à l'aide d'un lien d'authentification. Si vous avez associé un mot de passe à votre compte, vous pouvez également le saisir pour vous connecter directement.",
+		"login_description": "Pour vous connecter à votre compte utilisateur, saisissez votre adresse électronique. Un lien d'authentification vous sera envoyé pour accéder à votre compte en toute sécurité.",
 		"continue_with": "Continuer avec",
 		"accept_terms": "En continuant, vous acceptez nos <a1>conditions d'utilisation</a1> et notre <a2>politique de confidentialité</a2>."
 	},

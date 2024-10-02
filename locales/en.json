@@ -318,10 +318,10 @@
 	"authentication": {
 		"register_button": "Register",
 		"register_title": "Create an Account",
-		"register_description": "Enter your email address to create a new user account. You will receive an activation link to validate your account and set a password.",
+		"register_description": "To create a new user account, enter your email address. An authentication link will be sent to you to activate your account.",
 		"login_button": "Login",
 		"login_title": "Login to Your Account",
-		"login_description": "Enter your email address to log in using an authentication link. If you have associated a password with your account, you can also enter it to log in directly.",
+		"login_description": "To log in to your user account, enter your email address. An authentication link will be sent to you to access your account securely.",
 		"continue_with": "Continue with",
 		"accept_terms": "By continuing, you agree to our <a1>terms of service</a1> and our <a2>privacy policy</a2>."
 	},
