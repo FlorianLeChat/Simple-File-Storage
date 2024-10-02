@@ -90,7 +90,10 @@ export default function OAuthForm()
 		<>
 			{/* Fournisseurs d'authentification externes */}
 			<form
-				action={( formData ) => serverAction( signInAction, formData )}
+				action={( formData ) =>
+				{
+					serverAction( signInAction, formData );
+				}}
 				onSubmit={() => setLoading( true )}
 			>
 				<Button
@@ -126,7 +129,10 @@ export default function OAuthForm()
 			</form>
 
 			<form
-				action={( formData ) => serverAction( signInAction, formData )}
+				action={( formData ) =>
+				{
+					serverAction( signInAction, formData );
+				}}
 				onSubmit={() => setLoading( true )}
 			>
 				<Button

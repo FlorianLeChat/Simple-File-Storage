@@ -366,7 +366,7 @@ export default function FileUpload( {
 
 							if ( !state )
 							{
-								return false;
+								return;
 							}
 
 							// Activation de l'état de chargement.
@@ -387,7 +387,7 @@ export default function FileUpload( {
 							);
 
 							// Exécution de l'action côté serveur.
-							return serverAction( uploadAction, formData );
+							serverAction( uploadAction, formData );
 						}}
 					>
 						{/* Fichier(s) à téléverser */}

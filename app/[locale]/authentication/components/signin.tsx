@@ -112,14 +112,14 @@ export default function SignInForm()
 
 					if ( !state )
 					{
-						return false;
+						return;
 					}
 
 					// Activation de l'état de chargement.
 					setLoading( true );
 
 					// Exécution de l'action côté serveur.
-					return serverAction( signInAction, formData );
+					serverAction( signInAction, formData );
 				}}
 				className="space-y-6"
 			>

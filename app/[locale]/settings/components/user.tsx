@@ -157,14 +157,14 @@ export default function User( { session }: { session: Session } )
 
 					if ( !state )
 					{
-						return false;
+						return;
 					}
 
 					// Activation de l'état de chargement.
 					setLoading( true );
 
 					// Exécution de l'action côté serveur.
-					return serverAction( updateAction, formData );
+					serverAction( updateAction, formData );
 				}}
 				className="space-y-8"
 			>
