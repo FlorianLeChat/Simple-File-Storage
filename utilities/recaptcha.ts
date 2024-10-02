@@ -6,7 +6,7 @@
 "use client";
 
 export default async function serverAction(
-	action: ( payload: FormData ) => unknown,
+	action: ( payload: FormData ) => void,
 	formData: FormData
 )
 {
