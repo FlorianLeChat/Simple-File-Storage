@@ -113,10 +113,10 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 						window.history.pushState( null, "", `?${ url }` );
 					}}
 					disabled={!table.getCanPreviousPage()}
-					className="hidden h-8 w-8 p-0 lg:flex"
+					className="hidden size-8 p-0 lg:flex"
 					aria-label={messages( "first_page" )}
 				>
-					<ChevronsLeft className="h-4 w-4" />
+					<ChevronsLeft className="size-4" />
 				</Button>
 
 				<Button
@@ -137,10 +137,10 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 						window.history.pushState( null, "", `?${ url }` );
 					}}
 					disabled={!table.getCanPreviousPage()}
-					className="h-8 w-8 p-0"
+					className="size-8 p-0"
 					aria-label={messages( "previous_page" )}
 				>
-					<ChevronLeft className="h-4 w-4" />
+					<ChevronLeft className="size-4" />
 				</Button>
 
 				<Button
@@ -161,10 +161,10 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 						window.history.pushState( null, "", `?${ url }` );
 					}}
 					disabled={!table.getCanNextPage()}
-					className="h-8 w-8 p-0"
+					className="size-8 p-0"
 					aria-label={messages( "next_page" )}
 				>
-					<ChevronRight className="h-4 w-4" />
+					<ChevronRight className="size-4" />
 				</Button>
 
 				<Button
@@ -182,10 +182,10 @@ export default function Pagination<TData>( { table }: PaginationProps<TData> )
 						window.history.pushState( null, "", `?${ url }` );
 					}}
 					disabled={!table.getCanNextPage()}
-					className="hidden h-8 w-8 p-0 lg:flex"
+					className="hidden size-8 p-0 lg:flex"
 					aria-label={messages( "last_page" )}
 				>
-					<ChevronsRight className="h-4 w-4" />
+					<ChevronsRight className="size-4" />
 				</Button>
 			</nav>
 		</div>

@@ -12,9 +12,9 @@ export default async function Loading()
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<div className="absolute m-2 flex h-[calc(100%-1rem)] w-[calc(100%-1rem)] flex-col items-center justify-center gap-4 bg-background text-center text-3xl font-bold uppercase leading-normal sm:text-4xl">
+		<div className="absolute m-2 flex size-[calc(100%-1rem)] flex-col items-center justify-center gap-4 bg-background text-center text-3xl font-bold uppercase leading-normal sm:text-4xl">
 			💾 {title}
-			<Loader2 className="h-14 w-14 animate-spin text-primary" />
+			<Loader2 className="size-14 animate-spin text-primary" />
 		</div>
 	);
 }

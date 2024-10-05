@@ -189,7 +189,7 @@ export const columns: ColumnDef<FileAttributes>[] = [
 					{expiration && (
 						<>
 							<br />
-							<ScissorsLineDashed className="inline-block h-5 w-5 text-destructive" />
+							<ScissorsLineDashed className="inline-block size-5 text-destructive" />
 							<time
 								dateTime={date.toISOString()}
 								className="ml-1 align-middle text-muted-foreground"

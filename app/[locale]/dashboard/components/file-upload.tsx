@@ -289,7 +289,7 @@ export default function FileUpload( {
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>
-							<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
+							<ShieldCheck className="mr-2 inline size-5 align-text-top" />
 							{modalMessages( "decryption_key.title" )}
 						</DialogTitle>
 
@@ -314,7 +314,7 @@ export default function FileUpload( {
 						}}
 						className={merge( buttonVariants(), "w-full" )}
 					>
-						<ClipboardCopy className="mr-2 h-4 w-4" />
+						<ClipboardCopy className="mr-2 size-4" />
 						{modalMessages( "decryption_key.copy" )}
 					</DialogClose>
 				</DialogContent>
@@ -339,7 +339,7 @@ export default function FileUpload( {
 				className={buttonVariants()}
 				aria-controls="file-upload"
 			>
-				<PlusCircleIcon className="inline h-4 w-4 md:mr-2" />
+				<PlusCircleIcon className="inline size-4 md:mr-2" />
 
 				<span id="file-upload" className="max-md:hidden">
 					{modalMessages( "file-upload.trigger" )}
@@ -397,7 +397,7 @@ export default function FileUpload( {
 							render={( { field } ) => (
 								<FormItem>
 									<FormLabel>
-										<UploadCloud className="mr-2 inline h-6 w-6" />
+										<UploadCloud className="mr-2 inline size-6" />
 
 										{formMessages( "fields.upload_label" )}
 									</FormLabel>
@@ -480,7 +480,7 @@ export default function FileUpload( {
 								render={( { field } ) => (
 									<FormItem className="mt-4">
 										<FormLabel htmlFor={field.name}>
-											<FileArchive className="mr-2 inline h-6 w-6" />
+											<FileArchive className="mr-2 inline size-6" />
 
 											{formMessages.rich(
 												"fields.compression_label",
@@ -542,7 +542,7 @@ export default function FileUpload( {
 								render={( { field } ) => (
 									<FormItem className="mt-4">
 										<FormLabel htmlFor={field.name}>
-											<ShieldCheck className="mr-2 inline h-6 w-6" />
+											<ShieldCheck className="mr-2 inline size-6" />
 
 											{formMessages.rich(
 												"fields.encryption_label",
@@ -616,7 +616,7 @@ export default function FileUpload( {
 								render={( { field } ) => (
 									<FormItem className="mt-4">
 										<FormLabel>
-											<CalendarDays className="mr-2 inline h-6 w-6" />
+											<CalendarDays className="mr-2 inline size-6" />
 
 											{formMessages.rich(
 												"fields.expiration_label",
@@ -654,7 +654,7 @@ export default function FileUpload( {
 															&& "text-muted-foreground"
 													)}
 												>
-													<CalendarDays className="mr-2 h-4 w-4" />
+													<CalendarDays className="mr-2 size-4" />
 
 													{field.value
 														? format(
@@ -743,12 +743,12 @@ export default function FileUpload( {
 						<Button disabled={isLoading} className="w-full">
 							{isLoading ? (
 								<>
-									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									<Loader2 className="mr-2 size-4 animate-spin" />
 									{formMessages( "loading" )}
 								</>
 							) : (
 								<>
-									<PlusCircleIcon className="mr-2 h-4 w-4" />
+									<PlusCircleIcon className="mr-2 size-4" />
 									{modalMessages( "file-upload.submit" )}
 								</>
 							)}

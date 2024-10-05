@@ -130,7 +130,7 @@ export default function Privacy()
 					render={() => (
 						<FormItem>
 							<Label>
-								<Scale className="mr-2 inline h-6 w-6" />
+								<Scale className="mr-2 inline size-6" />
 								{formMessages( "fields.legal_label" )}
 							</Label>
 
@@ -168,7 +168,7 @@ export default function Privacy()
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel htmlFor={field.name}>
-								<Files className="mr-2 inline h-6 w-6" />
+								<Files className="mr-2 inline size-6" />
 								{formMessages( "fields.user_files_label" )}
 							</FormLabel>
 
@@ -213,7 +213,7 @@ export default function Privacy()
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel htmlFor={field.name}>
-								<KeyRound className="mr-2 inline h-6 w-6" />
+								<KeyRound className="mr-2 inline size-6" />
 								{formMessages( "fields.user_account_label" )}
 							</FormLabel>
 
@@ -270,12 +270,12 @@ export default function Privacy()
 				>
 					{isLoading ? (
 						<>
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							<Loader2 className="mr-2 size-4 animate-spin" />
 							{formMessages( "loading" )}
 						</>
 					) : (
 						<>
-							<Trash className="mr-2 h-4 w-4" />
+							<Trash className="mr-2 size-4" />
 							{modalMessages( "delete" )}
 						</>
 					)}

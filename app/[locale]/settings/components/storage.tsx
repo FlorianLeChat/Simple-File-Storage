@@ -117,7 +117,7 @@ export default function Storage( { session }: { session: Session } )
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel htmlFor={field.name}>
-								<Globe className="mr-2 inline h-6 w-6" />
+								<Globe className="mr-2 inline size-6" />
 								{messages( "fields.public_label" )}
 							</FormLabel>
 
@@ -156,7 +156,7 @@ export default function Storage( { session }: { session: Session } )
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel htmlFor={field.name}>
-								<Link2 className="mr-2 inline h-6 w-6" />
+								<Link2 className="mr-2 inline size-6" />
 								{messages( "fields.extension_label" )}
 							</FormLabel>
 
@@ -195,7 +195,7 @@ export default function Storage( { session }: { session: Session } )
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel htmlFor={field.name}>
-								<History className="mr-2 inline h-6 w-6" />
+								<History className="mr-2 inline size-6" />
 								{messages( "fields.versions_label" )}
 							</FormLabel>
 
@@ -233,12 +233,12 @@ export default function Storage( { session }: { session: Session } )
 				<Button disabled={isLoading} className="max-sm:w-full">
 					{isLoading ? (
 						<>
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							<Loader2 className="mr-2 size-4 animate-spin" />
 							{messages( "loading" )}
 						</>
 					) : (
 						<>
-							<RefreshCw className="mr-2 h-4 w-4" />
+							<RefreshCw className="mr-2 size-4" />
 							{messages( "update" )}
 						</>
 					)}
