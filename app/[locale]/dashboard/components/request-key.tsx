@@ -42,7 +42,7 @@ export default function RequestKey( {
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>
-						<ShieldCheck className="mr-2 inline h-5 w-5 align-text-top" />
+						<ShieldCheck className="mr-2 inline size-5 align-text-top" />
 						{modalMessages( "title" )}
 					</AlertDialogTitle>
 
@@ -82,12 +82,12 @@ export default function RequestKey( {
 
 				<AlertDialogFooter>
 					<AlertDialogCancel type="reset" form="request-key-form">
-						<Ban className="mr-2 h-4 w-4" />
+						<Ban className="mr-2 size-4" />
 						{formMessages( "cancel" )}
 					</AlertDialogCancel>
 
 					<AlertDialogAction type="submit" form="request-key-form">
-						<ArrowUpRight className="mr-2 h-4 w-4" />
+						<ArrowUpRight className="mr-2 size-4" />
 						{formMessages( "confirm" )}
 					</AlertDialogAction>
 				</AlertDialogFooter>

@@ -45,7 +45,7 @@ export default function Routes()
 				type="button"
 				variant="ghost"
 				data-cc="show-preferencesModal"
-				className="h-auto min-h-[2.5rem] justify-start text-left"
+				className="h-auto min-h-10 justify-start text-left"
 			>
 				<Cookie className="mr-2" />
 

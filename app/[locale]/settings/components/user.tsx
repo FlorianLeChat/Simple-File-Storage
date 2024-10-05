@@ -175,7 +175,7 @@ export default function User( { session }: { session: Session } )
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel>
-								<Contact className="mr-2 inline h-6 w-6" />
+								<Contact className="mr-2 inline size-6" />
 								{messages( "fields.username_label" )}
 							</FormLabel>
 
@@ -213,7 +213,7 @@ export default function User( { session }: { session: Session } )
 						render={( { field } ) => (
 							<FormItem>
 								<FormLabel>
-									<AtSign className="mr-2 inline h-6 w-6" />
+									<AtSign className="mr-2 inline size-6" />
 									{messages( "fields.email_label" )}
 								</FormLabel>
 
@@ -252,7 +252,7 @@ export default function User( { session }: { session: Session } )
 						render={( { field } ) => (
 							<FormItem>
 								<FormLabel>
-									<Lock className="mr-2 inline h-6 w-6" />
+									<Lock className="mr-2 inline size-6" />
 									{messages( "fields.password_label" )}
 								</FormLabel>
 
@@ -303,7 +303,7 @@ export default function User( { session }: { session: Session } )
 												);
 											}}
 										>
-											<RefreshCw className="h-4 w-4" />
+											<RefreshCw className="size-4" />
 										</TooltipTrigger>
 
 										<TooltipContent>
@@ -340,7 +340,7 @@ export default function User( { session }: { session: Session } )
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel>
-								<Languages className="mr-2 inline h-6 w-6" />
+								<Languages className="mr-2 inline size-6" />
 								{messages( "fields.language_label" )}
 							</FormLabel>
 
@@ -386,7 +386,7 @@ export default function User( { session }: { session: Session } )
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel>
-								<FileImage className="mr-2 inline h-6 w-6" />
+								<FileImage className="mr-2 inline size-6" />
 								{messages( "fields.avatar_label" )}
 							</FormLabel>
 
@@ -423,12 +423,12 @@ export default function User( { session }: { session: Session } )
 				<Button disabled={isLoading} className="max-sm:w-full">
 					{isLoading ? (
 						<>
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							<Loader2 className="mr-2 size-4 animate-spin" />
 							{messages( "loading" )}
 						</>
 					) : (
 						<>
-							<RefreshCw className="mr-2 h-4 w-4" />
+							<RefreshCw className="mr-2 size-4" />
 							{messages( "update" )}
 						</>
 					)}
