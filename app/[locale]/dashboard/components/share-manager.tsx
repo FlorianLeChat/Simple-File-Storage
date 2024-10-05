@@ -251,7 +251,7 @@ export default function ShareManager( {
 					disabled={disabled}
 					onSelect={( event ) => event.preventDefault()}
 				>
-					<Share2 className="mr-2 h-4 w-4" />
+					<Share2 className="mr-2 size-4" />
 					{modalMessages( "trigger" )}
 				</DropdownMenuItem>
 			</DialogTrigger>
@@ -260,7 +260,7 @@ export default function ShareManager( {
 				{/* En-tête de la fenêtre modale */}
 				<DialogHeader>
 					<DialogTitle>
-						<Share2 className="mr-2 inline h-5 w-5 align-text-top" />
+						<Share2 className="mr-2 inline size-5 align-text-top" />
 						{modalMessages( "title" )}
 					</DialogTitle>
 
@@ -295,12 +295,12 @@ export default function ShareManager( {
 					>
 						{isCopied ? (
 							<>
-								<ClipboardCheck className="mr-2 h-4 w-4" />
+								<ClipboardCheck className="mr-2 size-4" />
 								{modalMessages( "copied" )}
 							</>
 						) : (
 							<>
-								<ClipboardCopy className="mr-2 h-4 w-4" />
+								<ClipboardCopy className="mr-2 size-4" />
 								{modalMessages( "copy" )}
 							</>
 						)}
@@ -313,7 +313,7 @@ export default function ShareManager( {
 				{/* Liste des utilisateurs partagés */}
 				<section>
 					<h4 className="text-sm font-medium">
-						<Users className="mr-2 inline h-4 w-4 align-text-top" />
+						<Users className="mr-2 inline size-4 align-text-top" />
 						{modalMessages( "shared_users" )}
 					</h4>
 
@@ -388,9 +388,9 @@ export default function ShareManager( {
 										aria-label={modalMessages( "delete" )}
 									>
 										{loading ? (
-											<Loader2 className="h-4 w-4 animate-spin" />
+											<Loader2 className="size-4 animate-spin" />
 										) : (
-											<Trash className="h-4 w-4" />
+											<Trash className="size-4" />
 										)}
 									</Button>
 								</div>
@@ -405,7 +405,7 @@ export default function ShareManager( {
 				{/* Ajout de nouveaux utilisateurs */}
 				<section>
 					<h4 className="text-sm font-medium">
-						<UserCog className="mr-2 inline h-4 w-4 align-text-top" />
+						<UserCog className="mr-2 inline size-4 align-text-top" />
 						{modalMessages( "user_list" )}
 					</h4>
 
@@ -437,7 +437,7 @@ export default function ShareManager( {
 					{/* État de chargement des résultats */}
 					{isLoading && (
 						<p className="mt-4 text-sm text-muted-foreground">
-							<Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
+							<Loader2 className="mr-2 inline size-4 animate-spin" />
 							{modalMessages( "fetch_loading" )}
 						</p>
 					)}
@@ -488,9 +488,9 @@ export default function ShareManager( {
 									className="max-sm:w-full sm:ml-auto"
 								>
 									{loading ? (
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+										<Loader2 className="mr-2 size-4 animate-spin" />
 									) : (
-										<UserPlus className="mr-2 h-4 w-4" />
+										<UserPlus className="mr-2 size-4" />
 									)}
 									{modalMessages( "add" )}
 								</Button>

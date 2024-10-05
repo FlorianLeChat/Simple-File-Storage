@@ -136,7 +136,7 @@ export default function FileHistory( {
 					disabled={disabled}
 					onSelect={( event ) => event.preventDefault()}
 				>
-					<History className="mr-2 h-4 w-4" />
+					<History className="mr-2 size-4" />
 					{historyMessages( "trigger" )}
 				</DropdownMenuItem>
 			</DialogTrigger>
@@ -145,7 +145,7 @@ export default function FileHistory( {
 				{/* En-tête de la fenêtre modale */}
 				<DialogHeader>
 					<DialogTitle>
-						<History className="mr-2 inline h-5 w-5 align-text-top" />
+						<History className="mr-2 inline size-5 align-text-top" />
 						{historyMessages( "title" )}
 					</DialogTitle>
 
@@ -222,7 +222,7 @@ export default function FileHistory( {
 												"mr-2 mt-2"
 											)}
 										>
-											<ArrowUpRight className="mr-2 h-4 w-4" />
+											<ArrowUpRight className="mr-2 size-4" />
 											{historyMessages( "reach" )}
 										</AlertDialogTrigger>
 									</RequestKey>
@@ -236,7 +236,7 @@ export default function FileHistory( {
 											"mr-2 mt-2"
 										)}
 									>
-										<ArrowUpRight className="mr-2 h-4 w-4" />
+										<ArrowUpRight className="mr-2 size-4" />
 										{historyMessages( "reach" )}
 									</a>
 								)}
@@ -253,14 +253,14 @@ export default function FileHistory( {
 											"mt-2"
 										)}
 									>
-										<History className="mr-2 h-4 w-4" />
+										<History className="mr-2 size-4" />
 										{restoreMessages( "trigger" )}
 									</AlertDialogTrigger>
 
 									<AlertDialogContent>
 										<AlertDialogHeader>
 											<AlertDialogTitle>
-												<History className="mr-2 inline h-5 w-5 align-text-top" />
+												<History className="mr-2 inline size-5 align-text-top" />
 												{restoreMessages( "title" )}
 											</AlertDialogTitle>
 
@@ -273,7 +273,7 @@ export default function FileHistory( {
 											<AlertDialogCancel
 												disabled={isLoading}
 											>
-												<Ban className="mr-2 h-4 w-4" />
+												<Ban className="mr-2 size-4" />
 												{formMessages( "cancel" )}
 											</AlertDialogCancel>
 
@@ -281,7 +281,7 @@ export default function FileHistory( {
 												onClick={submitRestoration}
 												disabled={isLoading}
 											>
-												<Check className="mr-2 h-4 w-4" />
+												<Check className="mr-2 size-4" />
 												{formMessages( "confirm" )}
 											</AlertDialogAction>
 										</AlertDialogFooter>

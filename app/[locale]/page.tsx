@@ -55,7 +55,7 @@ export default async function Page( {
 		<>
 			<header className="mb-auto flex items-center gap-4 p-4 max-sm:mt-4 max-sm:flex-col">
 				{/* Titre du site */}
-				<h1 className="text-2xl font-semibold max-sm:w-full max-sm:max-w-fit max-sm:overflow-hidden max-sm:text-ellipsis max-sm:whitespace-nowrap">
+				<h1 className="text-2xl font-semibold max-sm:w-full max-sm:max-w-fit max-sm:truncate">
 					<Link href="/">💾 {meta.title as string}</Link>
 				</h1>
 
@@ -66,7 +66,7 @@ export default async function Page( {
 							href="/dashboard"
 							className={buttonVariants( { variant: "outline" } )}
 						>
-							<LayoutDashboard className="h-5 w-5" />
+							<LayoutDashboard className="size-5" />
 
 							<span className="max-sm:sr-only sm:ml-2">
 								{messages( "header.dashboard" )}
@@ -77,7 +77,7 @@ export default async function Page( {
 							href="/authentication"
 							className={buttonVariants( { variant: "outline" } )}
 						>
-							<LogIn className="h-5 w-5" />
+							<LogIn className="size-5" />
 
 							<span className="max-sm:sr-only sm:ml-2">
 								{messages( "header.authenticate" )}
@@ -152,7 +152,7 @@ export default async function Page( {
 
 				<ul className="grid gap-4 max-xl:mt-8 md:grid-cols-3 md:gap-8 xl:mt-[5%]">
 					<li className="space-y-2 p-4">
-						<Lock className="mx-auto mb-2 h-6 w-6" />
+						<Lock className="mx-auto mb-2 size-6" />
 
 						<h2 className="text-xl font-bold">
 							{messages( "index.features.title_1" )}
@@ -164,7 +164,7 @@ export default async function Page( {
 					</li>
 
 					<li className="space-y-2 p-4">
-						<Smile className="mx-auto mb-2 h-6 w-6" />
+						<Smile className="mx-auto mb-2 size-6" />
 
 						<h2 className="text-xl font-bold">
 							{messages( "index.features.title_2" )}
@@ -176,7 +176,7 @@ export default async function Page( {
 					</li>
 
 					<li className="space-y-2 p-4">
-						<Eye className="mx-auto mb-2 h-6 w-6" />
+						<Eye className="mx-auto mb-2 size-6" />
 
 						<h2 className="text-xl font-bold">
 							{messages( "index.features.title_3" )}
@@ -188,7 +188,7 @@ export default async function Page( {
 					</li>
 
 					<li className="space-y-2 p-4">
-						<Zap className="mx-auto mb-2 h-6 w-6" />
+						<Zap className="mx-auto mb-2 size-6" />
 
 						<h2 className="text-xl font-bold">
 							{" "}
@@ -201,7 +201,7 @@ export default async function Page( {
 					</li>
 
 					<li className="space-y-2 p-4">
-						<PocketKnife className="mx-auto mb-2 h-6 w-6" />
+						<PocketKnife className="mx-auto mb-2 size-6" />
 
 						<h2 className="text-xl font-bold">
 							{messages( "index.features.title_5" )}
@@ -213,7 +213,7 @@ export default async function Page( {
 					</li>
 
 					<li className="space-y-2 p-4">
-						<Share2 className="mx-auto mb-2 h-6 w-6" />
+						<Share2 className="mx-auto mb-2 size-6" />
 
 						<h2 className="text-xl font-bold">
 							{messages( "index.features.title_6" )}

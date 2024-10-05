@@ -200,9 +200,9 @@ export default function Notifications()
 				} )}
 			>
 				{isLoading ? (
-					<Loader2 className="inline h-5 w-5 animate-spin" />
+					<Loader2 className="inline size-5 animate-spin" />
 				) : (
-					<BellRing className="inline h-5 w-5" />
+					<BellRing className="inline size-5" />
 				)}
 
 				{unreadCount > 0 && (
@@ -218,7 +218,7 @@ export default function Notifications()
 			<DialogContent className="h-fit max-h-[calc(100%-2rem)] overflow-auto max-sm:max-w-[calc(100%-2rem)] md:max-h-[50%]">
 				<DialogHeader>
 					<DialogTitle className="flex items-center">
-						<BellRing className="mr-2 inline h-5 w-5" />
+						<BellRing className="mr-2 inline size-5" />
 						{modalMessages( "title" )}
 					</DialogTitle>
 
@@ -239,7 +239,7 @@ export default function Notifications()
 									key={notification.title}
 									className="grid grid-cols-[25px_1fr]"
 								>
-									<span className="h-2 w-2 translate-y-1 rounded-full bg-primary" />
+									<span className="size-2 translate-y-1 rounded-full bg-primary" />
 
 									<section className="space-y-1">
 										<h3 className="text-sm font-medium leading-none">
@@ -280,12 +280,12 @@ export default function Notifications()
 						>
 							{isLoading ? (
 								<>
-									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									<Loader2 className="mr-2 size-4 animate-spin" />
 									{formMessages( "loading" )}
 								</>
 							) : (
 								<>
-									<Check className="mr-2 h-4 w-4" />
+									<Check className="mr-2 size-4" />
 									{modalMessages( "read_all" )}
 								</>
 							)}

@@ -300,7 +300,7 @@ export default async function Layout( {
 							loop
 							muted
 							autoPlay
-							className="fixed -z-10 hidden h-full w-full object-none opacity-10 dark:block"
+							className="fixed -z-10 hidden size-full object-none opacity-10 dark:block"
 						>
 							<source
 								src={`${ process.env.__NEXT_ROUTER_BASEPATH }/assets/videos/background.mp4`}

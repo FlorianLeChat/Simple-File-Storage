@@ -172,7 +172,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 						}}
 						className="px-3"
 					>
-						<X className="inline h-4 w-4 sm:mr-2" />
+						<X className="inline size-4 sm:mr-2" />
 
 						<p className="max-sm:hidden">
 							{messages.dashboard.reset}

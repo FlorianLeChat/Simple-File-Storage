@@ -62,7 +62,7 @@ export default async function Page( {
 			{/* En-tête de la page */}
 			<header className="mt-auto p-4 pt-8 text-center">
 				{/* Titre du site */}
-				<h1 className="text-2xl font-semibold max-sm:overflow-hidden max-sm:text-ellipsis max-sm:whitespace-nowrap">
+				<h1 className="text-2xl font-semibold max-sm:truncate">
 					<Link href="/">💾 {title as string}</Link>
 				</h1>
 			</header>
@@ -112,13 +112,13 @@ export default async function Page( {
 
 				{/* Barre verticale de séparation */}
 				<div className="flex items-center space-x-2">
-					<Separator className="w-auto flex-grow" />
+					<Separator className="w-auto grow" />
 
 					<p className="text-xs uppercase text-muted-foreground">
 						{messages( "authentication.continue_with" )}
 					</p>
 
-					<Separator className="w-auto flex-grow" />
+					<Separator className="w-auto grow" />
 				</div>
 
 				{/* Fournisseurs d'authentification externes */}

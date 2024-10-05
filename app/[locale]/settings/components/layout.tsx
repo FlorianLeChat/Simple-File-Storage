@@ -151,7 +151,7 @@ export default function Layout( { session }: { session: Session } )
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel>
-								<CaseUpper className="mr-2 inline h-6 w-6" />
+								<CaseUpper className="mr-2 inline size-6" />
 								{messages( "fields.font_label" )}
 							</FormLabel>
 
@@ -195,7 +195,7 @@ export default function Layout( { session }: { session: Session } )
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel className="!block">
-								<Paintbrush className="mr-2 inline h-6 w-6" />
+								<Paintbrush className="mr-2 inline size-6" />
 								{messages( "fields.color_label" )}
 							</FormLabel>
 
@@ -235,10 +235,10 @@ export default function Layout( { session }: { session: Session } )
 													+ value.name.slice( 1 )
 												}
 											>
-												<span className="flex h-6 w-6 items-center justify-center rounded-full bg-[--theme-primary]">
+												<span className="flex size-6 items-center justify-center rounded-full bg-[--theme-primary]">
 													{field.value
 														=== value.name && (
-														<Check className="h-4 w-4 text-white" />
+														<Check className="size-4 text-white" />
 													)}
 												</span>
 											</TooltipTrigger>
@@ -246,7 +246,7 @@ export default function Layout( { session }: { session: Session } )
 
 										<TooltipContent
 											align="center"
-											className="rounded-[0.5rem] bg-zinc-900 text-zinc-50"
+											className="rounded-lg bg-zinc-900 text-zinc-50"
 										>
 											{value.name
 												.charAt( 0 )
@@ -273,7 +273,7 @@ export default function Layout( { session }: { session: Session } )
 					render={( { field } ) => (
 						<FormItem className="space-y-1">
 							<FormLabel>
-								<SunMoon className="mr-2 inline h-6 w-6" />
+								<SunMoon className="mr-2 inline size-6" />
 								{messages( "fields.theme_label" )}
 							</FormLabel>
 
@@ -298,12 +298,12 @@ export default function Layout( { session }: { session: Session } )
 											</li>
 
 											<li className="flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm">
-												<div className="h-4 w-4 rounded-full bg-[#ecedef]" />
+												<div className="size-4 rounded-full bg-[#ecedef]" />
 												<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
 											</li>
 
 											<li className="flex items-center space-x-2 rounded-md bg-white p-2 shadow-sm">
-												<div className="h-4 w-4 rounded-full bg-[#ecedef]" />
+												<div className="size-4 rounded-full bg-[#ecedef]" />
 												<div className="h-2 w-[100px] rounded-lg bg-[#ecedef]" />
 											</li>
 										</ul>
@@ -330,7 +330,7 @@ export default function Layout( { session }: { session: Session } )
 
 									<FormLabel
 										htmlFor="light"
-										className="sr-only left-0 top-0 h-full w-full text-transparent [clip:unset]"
+										className="sr-only left-0 top-0 size-full text-transparent [clip:unset]"
 									>
 										{messages( "fields.theme_light_title" )}
 									</FormLabel>
@@ -351,12 +351,12 @@ export default function Layout( { session }: { session: Session } )
 											</li>
 
 											<li className="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm">
-												<div className="h-4 w-4 rounded-full bg-slate-400" />
+												<div className="size-4 rounded-full bg-slate-400" />
 												<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
 											</li>
 
 											<li className="flex items-center space-x-2 rounded-md bg-slate-800 p-2 shadow-sm">
-												<div className="h-4 w-4 rounded-full bg-slate-400" />
+												<div className="size-4 rounded-full bg-slate-400" />
 												<div className="h-2 w-[100px] rounded-lg bg-slate-400" />
 											</li>
 										</ul>
@@ -383,7 +383,7 @@ export default function Layout( { session }: { session: Session } )
 
 									<FormLabel
 										htmlFor="dark"
-										className="sr-only left-0 top-0 h-full w-full text-transparent [clip:unset]"
+										className="sr-only left-0 top-0 size-full text-transparent [clip:unset]"
 									>
 										{messages( "fields.theme_dark_title" )}
 									</FormLabel>
@@ -403,12 +403,12 @@ export default function Layout( { session }: { session: Session } )
 				<Button disabled={isLoading} className="max-sm:w-full">
 					{isLoading ? (
 						<>
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							<Loader2 className="mr-2 size-4 animate-spin" />
 							{messages( "loading" )}
 						</>
 					) : (
 						<>
-							<RefreshCw className="mr-2 h-4 w-4" />
+							<RefreshCw className="mr-2 size-4" />
 							{messages( "update" )}
 						</>
 					)}

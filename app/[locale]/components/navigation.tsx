@@ -58,7 +58,7 @@ export default function Navigation( {
 							href="/dashboard"
 							className={navigationMenuTriggerStyle()}
 						>
-							<LayoutDashboard className="h-5 w-5 md:hidden" />
+							<LayoutDashboard className="size-5 md:hidden" />
 
 							<span className="hidden md:inline">
 								{headerMessages( "dashboard" )}
@@ -73,7 +73,7 @@ export default function Navigation( {
 						id="settings"
 						aria-controls="settings"
 					>
-						<Settings className="h-5 w-5 md:hidden" />
+						<Settings className="size-5 md:hidden" />
 
 						<span className="hidden md:inline">
 							{headerMessages( "settings" )}
@@ -88,7 +88,7 @@ export default function Navigation( {
 									rel="noopener noreferrer"
 									href={`${ source }/issues`}
 									target="_blank"
-									className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-4 no-underline outline-none focus:shadow-md"
+									className="flex size-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-4 no-underline outline-none focus:shadow-md"
 								>
 									<Image
 										src={image}

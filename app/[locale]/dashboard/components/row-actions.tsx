@@ -383,9 +383,9 @@ export default function RowActions( {
 				aria-label={dashboardMessages( "title" )}
 			>
 				{isLoading ? (
-					<Loader2 className="h-4 w-4 animate-spin" />
+					<Loader2 className="size-4 animate-spin" />
 				) : (
-					<MoreHorizontal className="h-4 w-4" />
+					<MoreHorizontal className="size-4" />
 				)}
 			</DropdownMenuTrigger>
 
@@ -403,7 +403,7 @@ export default function RowActions( {
 							disabled={!isFileOwner}
 							onSelect={( event ) => event.preventDefault()}
 						>
-							<Globe className="mr-2 h-4 w-4" />
+							<Globe className="mr-2 size-4" />
 							{modalMessages( "make_public.trigger" )}
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
@@ -411,7 +411,7 @@ export default function RowActions( {
 					<AlertDialogContent className="max-sm:max-w-[calc(100%-2rem)]">
 						<AlertDialogHeader>
 							<AlertDialogTitle>
-								<Globe className="mr-2 inline h-5 w-5 align-text-top" />
+								<Globe className="mr-2 inline size-5 align-text-top" />
 
 								{modalMessages( "make_public.title", {
 									count: selectedCount
@@ -429,12 +429,12 @@ export default function RowActions( {
 
 						<AlertDialogFooter>
 							<AlertDialogCancel>
-								<Ban className="mr-2 h-4 w-4" />
+								<Ban className="mr-2 size-4" />
 								{formMessages( "cancel" )}
 							</AlertDialogCancel>
 
 							<AlertDialogAction onClick={submitMakePublic}>
-								<Check className="mr-2 h-4 w-4" />
+								<Check className="mr-2 size-4" />
 								{formMessages( "confirm" )}
 							</AlertDialogAction>
 						</AlertDialogFooter>
@@ -449,7 +449,7 @@ export default function RowActions( {
 							disabled={dataFiles[ 0 ].status === "shared"}
 							onSelect={( event ) => event.preventDefault()}
 						>
-							<FolderLock className="mr-2 h-4 w-4" />
+							<FolderLock className="mr-2 size-4" />
 							{modalMessages( "make_private.trigger" )}
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
@@ -457,7 +457,7 @@ export default function RowActions( {
 					<AlertDialogContent className="max-sm:max-w-[calc(100%-2rem)]">
 						<AlertDialogHeader>
 							<AlertDialogTitle>
-								<FolderLock className="mr-2 inline h-5 w-5 align-text-top" />
+								<FolderLock className="mr-2 inline size-5 align-text-top" />
 
 								{modalMessages( "make_private.title", {
 									count: selectedCount
@@ -478,12 +478,12 @@ export default function RowActions( {
 
 						<AlertDialogFooter>
 							<AlertDialogCancel>
-								<Ban className="mr-2 h-4 w-4" />
+								<Ban className="mr-2 size-4" />
 								{formMessages( "cancel" )}
 							</AlertDialogCancel>
 
 							<AlertDialogAction onClick={submitMakePrivate}>
-								<Check className="mr-2 h-4 w-4" />
+								<Check className="mr-2 size-4" />
 								{formMessages( "confirm" )}
 							</AlertDialogAction>
 						</AlertDialogFooter>
@@ -507,7 +507,7 @@ export default function RowActions( {
 							disabled={!isFileOwner || dataFiles[ 0 ].shares.length === 0}
 							onSelect={( event ) => event.preventDefault()}
 						>
-							<UserX className="mr-2 h-4 w-4" />
+							<UserX className="mr-2 size-4" />
 							{modalMessages( "reset_shares.trigger" )}
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
@@ -515,7 +515,7 @@ export default function RowActions( {
 					<AlertDialogContent className="max-sm:max-w-[calc(100%-2rem)]">
 						<AlertDialogHeader>
 							<AlertDialogTitle>
-								<UserX className="mr-2 inline h-5 w-5 align-text-top" />
+								<UserX className="mr-2 inline size-5 align-text-top" />
 
 								{modalMessages( "reset_shares.title", {
 									count: selectedCount
@@ -536,12 +536,12 @@ export default function RowActions( {
 
 						<AlertDialogFooter>
 							<AlertDialogCancel>
-								<Ban className="mr-2 h-4 w-4" />
+								<Ban className="mr-2 size-4" />
 								{formMessages( "cancel" )}
 							</AlertDialogCancel>
 
 							<AlertDialogAction onClick={submitRemoveAllShares}>
-								<Check className="mr-2 h-4 w-4" />
+								<Check className="mr-2 size-4" />
 								{formMessages( "confirm" )}
 							</AlertDialogAction>
 						</AlertDialogFooter>
@@ -558,7 +558,7 @@ export default function RowActions( {
 							disabled={!isFileOwner}
 							onSelect={( event ) => event.preventDefault()}
 						>
-							<TextCursorInput className="mr-2 h-4 w-4" />
+							<TextCursorInput className="mr-2 size-4" />
 							{modalMessages( "rename_file.trigger" )}
 						</DropdownMenuItem>
 					</AlertDialogTrigger>
@@ -566,7 +566,7 @@ export default function RowActions( {
 					<AlertDialogContent className="max-sm:max-w-[calc(100%-2rem)]">
 						<AlertDialogHeader>
 							<AlertDialogTitle>
-								<TextCursorInput className="mr-2 inline h-5 w-5 align-text-top" />
+								<TextCursorInput className="mr-2 inline size-5 align-text-top" />
 
 								{modalMessages( "rename_file.title", {
 									count: selectedCount
@@ -612,7 +612,7 @@ export default function RowActions( {
 								type="reset"
 								form="rename-file-form"
 							>
-								<Ban className="mr-2 h-4 w-4" />
+								<Ban className="mr-2 size-4" />
 								{formMessages( "cancel" )}
 							</AlertDialogCancel>
 
@@ -623,12 +623,12 @@ export default function RowActions( {
 							>
 								{isLoading ? (
 									<>
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+										<Loader2 className="mr-2 size-4 animate-spin" />
 										{formMessages( "loading" )}
 									</>
 								) : (
 									<>
-										<RefreshCw className="mr-2 h-4 w-4" />
+										<RefreshCw className="mr-2 size-4" />
 										{formMessages( "update" )}
 									</>
 								)}
@@ -645,7 +645,7 @@ export default function RowActions( {
 								// https://github.com/radix-ui/primitives/issues/1836#issuecomment-1674338372
 								onSelect={( event ) => event.preventDefault()}
 							>
-								<ArrowUpRight className="mr-2 h-4 w-4" />
+								<ArrowUpRight className="mr-2 size-4" />
 								{dashboardMessages( "reach_file" )}
 							</DropdownMenuItem>
 						</AlertDialogTrigger>
@@ -657,7 +657,7 @@ export default function RowActions( {
 						target="_blank"
 					>
 						<DropdownMenuItem>
-							<ArrowUpRight className="mr-2 h-4 w-4" />
+							<ArrowUpRight className="mr-2 size-4" />
 							{dashboardMessages( "reach_file" )}
 						</DropdownMenuItem>
 					</a>
@@ -681,7 +681,7 @@ export default function RowActions( {
 							.href
 					)}
 				>
-					<ClipboardCopy className="mr-2 h-4 w-4" />
+					<ClipboardCopy className="mr-2 size-4" />
 					{dashboardMessages( "copy_link" )}
 				</DropdownMenuItem>
 
@@ -694,7 +694,7 @@ export default function RowActions( {
 							onSelect={( event ) => event.preventDefault()}
 							className="text-destructive"
 						>
-							<Trash className="mr-2 h-4 w-4" />
+							<Trash className="mr-2 size-4" />
 
 							<strong>
 								{modalMessages( "delete_file.trigger" )}
@@ -705,7 +705,7 @@ export default function RowActions( {
 					<AlertDialogContent className="max-sm:max-w-[calc(100%-2rem)]">
 						<AlertDialogHeader>
 							<AlertDialogTitle>
-								<Trash className="mr-2 inline h-5 w-5 align-text-top" />
+								<Trash className="mr-2 inline size-5 align-text-top" />
 
 								{modalMessages( "delete_file.title", {
 									count: selectedCount
@@ -723,12 +723,12 @@ export default function RowActions( {
 
 						<AlertDialogFooter>
 							<AlertDialogCancel>
-								<Ban className="mr-2 h-4 w-4" />
+								<Ban className="mr-2 size-4" />
 								{formMessages( "cancel" )}
 							</AlertDialogCancel>
 
 							<AlertDialogAction onClick={submitRemoveShare}>
-								<Check className="mr-2 h-4 w-4" />
+								<Check className="mr-2 size-4" />
 								{formMessages( "confirm" )}
 							</AlertDialogAction>
 						</AlertDialogFooter>

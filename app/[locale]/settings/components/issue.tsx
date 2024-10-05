@@ -135,7 +135,7 @@ export default function Account()
 					render={( { field } ) => (
 						<FormItem className="sm:inline-block sm:w-[calc(100%-160px-1rem)]">
 							<FormLabel>
-								<Globe className="mr-2 inline h-6 w-6" />
+								<Globe className="mr-2 inline size-6" />
 								{messages( "fields.domain_label" )}
 							</FormLabel>
 
@@ -186,7 +186,7 @@ export default function Account()
 					render={( { field } ) => (
 						<FormItem className="sm:!mt-0 sm:ml-2 sm:inline-block">
 							<FormLabel>
-								<ShieldAlert className="mr-2 inline h-6 w-6" />
+								<ShieldAlert className="mr-2 inline size-6" />
 								{messages( "fields.severity_label" )}
 							</FormLabel>
 
@@ -237,7 +237,7 @@ export default function Account()
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel>
-								<List className="mr-2 inline h-6 w-6" />
+								<List className="mr-2 inline size-6" />
 								{messages( "fields.subject_label" )}
 							</FormLabel>
 
@@ -271,7 +271,7 @@ export default function Account()
 					render={( { field } ) => (
 						<FormItem>
 							<FormLabel>
-								<Subtitles className="mr-2 inline h-6 w-6" />
+								<Subtitles className="mr-2 inline size-6" />
 								{messages( "fields.description_label" )}
 							</FormLabel>
 
@@ -303,12 +303,12 @@ export default function Account()
 				<Button disabled={isLoading} className="max-sm:w-full">
 					{isLoading ? (
 						<>
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							<Loader2 className="mr-2 size-4 animate-spin" />
 							{messages( "loading" )}
 						</>
 					) : (
 						<>
-							<Send className="mr-2 h-4 w-4" />
+							<Send className="mr-2 size-4" />
 							{messages( "send" )}
 						</>
 					)}

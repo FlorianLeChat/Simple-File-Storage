@@ -219,9 +219,9 @@ export default function SignInForm()
 										}}
 									>
 										{inputType === "password" ? (
-											<Eye className="h-4 w-4" />
+											<Eye className="size-4" />
 										) : (
-											<EyeOff className="h-4 w-4" />
+											<EyeOff className="size-4" />
 										)}
 									</TooltipTrigger>
 
@@ -251,18 +251,18 @@ export default function SignInForm()
 				<Button disabled={isLoading}>
 					{isLoading ? (
 						<>
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							<Loader2 className="mr-2 size-4 animate-spin" />
 							{messages( "loading" )}
 						</>
 					) : (
 						( form.getValues( "password" ) === "" && (
 							<>
-								<Mail className="mr-2 h-4 w-4" />
+								<Mail className="mr-2 size-4" />
 								{messages( "log_by_email" )}
 							</>
 						) ) || (
 							<>
-								<KeyRound className="mr-2 h-4 w-4" />
+								<KeyRound className="mr-2 size-4" />
 								{messages( "log_by_password" )}
 							</>
 						)

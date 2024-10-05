@@ -282,12 +282,12 @@ export default function Notifications( { session }: { session: Session } )
 				<Button disabled={isLoading} className="max-sm:w-full">
 					{isLoading ? (
 						<>
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							<Loader2 className="mr-2 size-4 animate-spin" />
 							{messages( "loading" )}
 						</>
 					) : (
 						<>
-							<RefreshCw className="mr-2 h-4 w-4" />
+							<RefreshCw className="mr-2 size-4" />
 							{messages( "update" )}
 						</>
 					)}

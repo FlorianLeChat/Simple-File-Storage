@@ -40,7 +40,7 @@ export default function ColumnToggle( {
 					"h-10 md:mr-auto"
 				)}
 			>
-				<SlidersHorizontal className="inline h-4 w-4 md:mr-2" />
+				<SlidersHorizontal className="inline size-4 md:mr-2" />
 
 				<span className="max-md:hidden">{messages( "columns" )}</span>
 			</DropdownMenuTrigger>

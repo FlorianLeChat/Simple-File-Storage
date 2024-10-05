@@ -107,14 +107,14 @@ export default function OAuthForm()
 					className="w-full"
 				>
 					{isLoading ? (
-						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+						<Loader2 className="mr-2 size-4 animate-spin" />
 					) : (
 						<svg
 							role="img"
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 488 512"
 							focusable="false"
-							className="mr-2 inline-block h-4 w-4 overflow-visible"
+							className="mr-2 inline-block size-4 overflow-visible"
 						>
 							<path
 								d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0
@@ -146,14 +146,14 @@ export default function OAuthForm()
 					className="w-full"
 				>
 					{isLoading ? (
-						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+						<Loader2 className="mr-2 size-4 animate-spin" />
 					) : (
 						<svg
 							role="img"
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 496 512"
 							focusable="false"
-							className="mr-2 inline-block h-4 w-4 overflow-visible"
+							className="mr-2 inline-block size-4 overflow-visible"
 						>
 							<path
 								d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3
