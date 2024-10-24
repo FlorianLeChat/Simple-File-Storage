@@ -34,13 +34,13 @@
     "valibot": "~0.42",
     "next-intl": "~3.20",
     "file-type": "~19.5",
-    "next-auth": "5.0.0-beta.22",
+    "next-auth": "5.0.0-beta.25",
     "nodemailer": "~6.9",
     "dotenv-cli": "~7.4",
     "pino-pretty": "~11.2",
     "@prisma/client": "~5.20",
     "@sentry/nextjs": "~8.33",
-    "@auth/prisma-adapter": "~2.5"
+    "@auth/prisma-adapter": "~2.7"
   },
   "devDependencies": {
     "@types/node": "~22.7",
