@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useState, useEffect, useActionState, startTransition } from "react";
+import { useEffect, useActionState, startTransition } from "react";
 
 import { Button } from "../../components/ui/button";
 import { signInAccount } from "../actions/signin";
@@ -21,8 +21,7 @@ export default function OAuthForm()
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
-	const [ isLoading, setLoading ] = useState( false );
-	const [ signInState, signInAction ] = useActionState( signInAccount, {
+	const [ signInState, signInAction, isPending ] = useActionState( signInAccount, {
 		success: true,
 		reason: ""
 	} );
@@ -45,8 +44,6 @@ export default function OAuthForm()
 		{
 			// Si ce n'est pas le cas, quelque chose s'est mal passé au
 			//  niveau du serveur.
-			setLoading( false );
-
 			toast.error( messages( "errors.auth_failed" ), {
 				description: messages( "errors.server_error" )
 			} );
@@ -62,9 +59,6 @@ export default function OAuthForm()
 		{
 			return;
 		}
-
-		// On informe après qu'une réponse a été reçue.
-		setLoading( false );
 
 		// On affiche enfin une notification avec la raison fournie
 		//  avant de réinitialiser le formulaire en cas de succès.
@@ -96,19 +90,15 @@ export default function OAuthForm()
 						serverAction( signInAction, formData );
 					} );
 				}}
-				onSubmit={() => setLoading( true )}
 			>
 				<Button
 					name="provider"
 					value="google"
 					variant="outline"
-					disabled={
-						isLoading
-						|| process.env.NEXT_PUBLIC_AUTH_GOOGLE_ENABLED !== "true"
-					}
+					disabled={isPending || process.env.NEXT_PUBLIC_AUTH_GOOGLE_ENABLED !== "true"}
 					className="w-full"
 				>
-					{isLoading ? (
+					{isPending ? (
 						<Loader2 className="mr-2 size-4 animate-spin" />
 					) : (
 						<svg
@@ -138,19 +128,15 @@ export default function OAuthForm()
 						serverAction( signInAction, formData );
 					} );
 				}}
-				onSubmit={() => setLoading( true )}
 			>
 				<Button
 					name="provider"
 					value="github"
 					variant="outline"
-					disabled={
-						isLoading
-						|| process.env.NEXT_PUBLIC_AUTH_GITHUB_ENABLED !== "true"
-					}
+					disabled={isPending || process.env.NEXT_PUBLIC_AUTH_GITHUB_ENABLED !== "true"}
 					className="w-full"
 				>
-					{isLoading ? (
+					{isPending ? (
 						<Loader2 className="mr-2 size-4 animate-spin" />
 					) : (
 						<svg
