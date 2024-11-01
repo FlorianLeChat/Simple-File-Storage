@@ -67,7 +67,7 @@
     "react-hook-form": "~7.53",
     "@faker-js/faker": "~9.1",
     "@playwright/test": "~1.48",
-    "react-day-picker": "~9.2",
+    "react-day-picker": "~8.10",
     "@cspell/dict-fr-fr": "~2.2",
     "eslint-config-next": "~15.0",
     "tailwindcss-animate": "~1.0",
