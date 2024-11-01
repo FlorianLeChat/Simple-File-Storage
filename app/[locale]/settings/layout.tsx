@@ -7,7 +7,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { lazy, type ReactNode } from "react";
-import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
@@ -34,14 +34,16 @@ export async function generateMetadata(): Promise<Metadata>
 
 export default async function Layout( {
 	children,
-	params: { locale }
+	params
 }: {
 	children: ReactNode;
-	params: { locale: string };
+	params: Promise<{ locale: string }>;
 } )
 {
 	// Définition de la langue de la page.
-	unstable_setRequestLocale( locale );
+	const { locale } = await params;
+
+	setRequestLocale( locale );
 
 	// Déclaration des constantes.
 	const meta = await getMetadata();
