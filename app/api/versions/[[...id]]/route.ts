@@ -8,7 +8,7 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: { id?: string[] } }
+	data: { params: Promise<{ id?: string[] }> }
 )
 {
 	// On vérifie si l'utilisateur est connecté afin de récupérer
@@ -22,6 +22,8 @@ export async function GET(
 
 	// On vérifie si un identifiant de fichier est présent dans les
 	//  paramètres de l'URL.
+	const params = await data.params;
+
 	if ( !params.id )
 	{
 		// Si ce n'est pas le cas, on tente de récupérer la page demandée

@@ -10,7 +10,7 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: { path: string[] } }
+	data: { params: Promise<{ path: string[] }> }
 )
 {
 	// On vérifie d'abord si la requête courante est légitime et
@@ -28,6 +28,7 @@ export async function GET(
 	}
 
 	// On vérifie si le chemin demandé existe dans le système de fichiers.
+	const params = await data.params;
 	const filePath = path.join( process.cwd(), "public", params.path.join( sep ) );
 
 	if ( !existsSync( filePath ) )

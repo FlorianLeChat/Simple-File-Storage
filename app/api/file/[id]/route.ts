@@ -8,13 +8,14 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: { id: string } }
+	data: { params: Promise<{ id: string }> }
 )
 {
 	// On récupère d'abord les informations du fichier à partir
 	//  de son identifiant dans la base de données et de la version
 	//  demandée dans les paramètres de l'URL.
 	const version = request.nextUrl.searchParams.get( "v" );
+	const params = await data.params;
 	const file = await prisma.file.findUnique( {
 		where: {
 			id: params.id
