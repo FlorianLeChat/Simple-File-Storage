@@ -14,9 +14,8 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import type { Session } from "next-auth";
-import { useFormState } from "react-dom";
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState, startTransition } from "react";
 
 import { Switch } from "../../components/ui/switch";
 import { Button } from "../../components/ui/button";
@@ -38,7 +37,7 @@ export default function Notifications( { session }: { session: Session } )
 	const messages = useTranslations( "form" );
 	const [ isPush, setPush ] = useState( notifications[ 0 ] !== "off" );
 	const [ isLoading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( updateNotifications, {
+	const [ updateState, updateAction ] = useActionState( updateNotifications, {
 		success: true,
 		reason: ""
 	} );
@@ -118,7 +117,10 @@ export default function Notifications( { session }: { session: Session } )
 					formData.set( "level", form.getValues( "level" ) );
 
 					// Exécution de l'action côté serveur.
-					serverAction( updateAction, formData );
+					startTransition( () =>
+					{
+						serverAction( updateAction, formData );
+					} );
 				}}
 				className="space-y-8"
 			>

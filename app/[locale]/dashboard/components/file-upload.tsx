@@ -20,13 +20,12 @@ import { Loader2,
 	PlusCircleIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { formatSize } from "@/utilities/react-table";
-import { useFormState } from "react-dom";
 import type { TableMeta } from "@tanstack/react-table";
 import { addDays, format } from "date-fns";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useEffect, useState } from "react";
 import { type FileAttributes } from "@/interfaces/File";
 import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useState, useActionState, startTransition } from "react";
 
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
@@ -73,7 +72,7 @@ export default function FileUpload( {
 	const [ isOpen, setOpen ] = useState( false );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ isEncrypted, setEncrypted ] = useState( false );
-	const [ uploadState, uploadAction ] = useFormState( uploadFiles, {
+	const [ uploadState, uploadAction ] = useActionState( uploadFiles, {
 		success: true,
 		reason: "",
 		data: []
@@ -387,7 +386,10 @@ export default function FileUpload( {
 							);
 
 							// Exécution de l'action côté serveur.
-							serverAction( uploadAction, formData );
+							startTransition( () =>
+							{
+								serverAction( uploadAction, formData );
+							} );
 						}}
 					>
 						{/* Fichier(s) à téléverser */}

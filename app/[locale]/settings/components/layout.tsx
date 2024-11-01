@@ -18,11 +18,14 @@ import { merge } from "@/utilities/tailwind";
 import { colors } from "@/config/colors";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
+import { useState,
+	useEffect,
+	useActionState,
+	startTransition,
+	type CSSProperties } from "react";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useState, useEffect, type CSSProperties } from "react";
 
 import { Button } from "../../components/ui/button";
 import { Select,
@@ -49,7 +52,7 @@ export default function Layout( { session }: { session: Session } )
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( updateLayout, {
+	const [ updateState, updateAction ] = useActionState( updateLayout, {
 		success: true,
 		reason: ""
 	} );
@@ -140,7 +143,10 @@ export default function Layout( { session }: { session: Session } )
 					formData.append( "theme", form.getValues( "theme" ) );
 
 					// Exécution de l'action côté serveur.
-					serverAction( updateAction, formData );
+					startTransition( () =>
+					{
+						serverAction( updateAction, formData );
+					} );
 				}}
 				className="space-y-8"
 			>
