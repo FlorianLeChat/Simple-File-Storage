@@ -12,7 +12,7 @@ import serverAction from "@/utilities/recaptcha";
 import { Mail, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useState, useEffect, useActionState, startTransition } from "react";
+import { useEffect, useActionState, startTransition } from "react";
 
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -29,8 +29,7 @@ export default function SignUpForm()
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
-	const [ isLoading, setLoading ] = useState( false );
-	const [ signUpState, signUpAction ] = useActionState( signUpAccount, {
+	const [ signUpState, signUpAction, isPending ] = useActionState( signUpAccount, {
 		success: true,
 		reason: ""
 	} );
@@ -53,8 +52,6 @@ export default function SignUpForm()
 		{
 			// Si ce n'est pas le cas, quelque chose s'est mal passé au
 			//  niveau du serveur.
-			setLoading( false );
-
 			toast.error( messages( "errors.auth_failed" ), {
 				description: messages( "errors.server_error" )
 			} );
@@ -70,9 +67,6 @@ export default function SignUpForm()
 		{
 			return;
 		}
-
-		// On informe après qu'une réponse a été reçue.
-		setLoading( false );
 
 		// On affiche enfin une notification avec la raison fournie
 		//  avant de réinitialiser le formulaire en cas de succès.
@@ -106,9 +100,6 @@ export default function SignUpForm()
 						return;
 					}
 
-					// Activation de l'état de chargement.
-					setLoading( true );
-
 					// Exécution de l'action côté serveur.
 					startTransition( () =>
 					{
@@ -130,7 +121,7 @@ export default function SignUpForm()
 							<FormControl>
 								<Input
 									{...field}
-									disabled={isLoading}
+									disabled={isPending}
 									maxLength={
 										schema.entries.email.pipe[ 2 ].requirement
 									}
@@ -153,8 +144,8 @@ export default function SignUpForm()
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading}>
-					{isLoading ? (
+				<Button disabled={isPending}>
+					{isPending ? (
 						<>
 							<Loader2 className="mr-2 size-4 animate-spin" />
 							{messages( "loading" )}

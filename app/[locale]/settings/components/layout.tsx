@@ -19,8 +19,7 @@ import { colors } from "@/config/colors";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import type { Session } from "next-auth";
-import { useState,
-	useEffect,
+import { useEffect,
 	useActionState,
 	startTransition,
 	type CSSProperties } from "react";
@@ -51,8 +50,7 @@ export default function Layout( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
-	const [ isLoading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useActionState( updateLayout, {
+	const [ updateState, updateAction, isPending ] = useActionState( updateLayout, {
 		success: true,
 		reason: ""
 	} );
@@ -78,8 +76,6 @@ export default function Layout( { session }: { session: Session } )
 		{
 			// Si ce n'est pas le cas, quelque chose s'est mal passé au
 			//  niveau du serveur.
-			setLoading( false );
-
 			toast.error( messages( "infos.action_failed" ), {
 				description: messages( "errors.server_error" )
 			} );
@@ -95,9 +91,6 @@ export default function Layout( { session }: { session: Session } )
 		{
 			return;
 		}
-
-		// On informe après qu'une réponse a été reçue.
-		setLoading( false );
 
 		// On affiche enfin une notification avec la raison fournie
 		//  avant de mettre à jour les attributs HTML en cas de succès.
@@ -135,9 +128,6 @@ export default function Layout( { session }: { session: Session } )
 						return;
 					}
 
-					// Activation de l'état de chargement.
-					setLoading( true );
-
 					// Récupération des données du formulaire.
 					formData.append( "color", form.getValues( "color" ) );
 					formData.append( "theme", form.getValues( "theme" ) );
@@ -163,7 +153,7 @@ export default function Layout( { session }: { session: Session } )
 
 							<Select
 								{...field}
-								disabled={isLoading}
+								disabled={isPending}
 								defaultValue={field.value}
 								onValueChange={field.onChange}
 							>
@@ -227,7 +217,7 @@ export default function Layout( { session }: { session: Session } )
 												{
 													field.onChange( value.name );
 												}}
-												disabled={isLoading}
+												disabled={isPending}
 												className={merge(
 													"relative inline-flex h-9 w-9 flex-col items-center justify-center rounded-full border-2 text-xs",
 													field.value === value.name
@@ -291,7 +281,7 @@ export default function Layout( { session }: { session: Session } )
 
 							<RadioGroup
 								value={field.value}
-								disabled={isLoading}
+								disabled={isPending}
 								className="grid grid-cols-1 gap-8 pt-2 sm:max-w-md sm:grid-cols-2"
 								onValueChange={field.onChange}
 							>
@@ -406,8 +396,8 @@ export default function Layout( { session }: { session: Session } )
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading} className="max-sm:w-full">
-					{isLoading ? (
+				<Button disabled={isPending} className="max-sm:w-full">
+					{isPending ? (
 						<>
 							<Loader2 className="mr-2 size-4 animate-spin" />
 							{messages( "loading" )}

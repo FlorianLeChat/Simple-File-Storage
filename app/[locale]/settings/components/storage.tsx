@@ -10,7 +10,7 @@ import serverAction from "@/utilities/recaptcha";
 import type { Session } from "next-auth";
 import { useTranslations } from "next-intl";
 import { Globe, Link2, RefreshCw, Loader2, History } from "lucide-react";
-import { useState, useEffect, useActionState, startTransition } from "react";
+import { useEffect, useActionState, startTransition } from "react";
 
 import { Label } from "../../components/ui/label";
 import { Switch } from "../../components/ui/switch";
@@ -27,8 +27,7 @@ export default function Storage( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
-	const [ isLoading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useActionState( updateStorage, {
+	const [ updateState, updateAction, isPending ] = useActionState( updateStorage, {
 		success: true,
 		reason: ""
 	} );
@@ -51,8 +50,6 @@ export default function Storage( { session }: { session: Session } )
 		{
 			// Si ce n'est pas le cas, quelque chose s'est mal passé au
 			//  niveau du serveur.
-			setLoading( false );
-
 			toast.error( messages( "infos.action_failed" ), {
 				description: messages( "errors.server_error" )
 			} );
@@ -70,8 +67,6 @@ export default function Storage( { session }: { session: Session } )
 		}
 
 		// On informe après qu'une réponse a été reçue.
-		setLoading( false );
-
 		// On affiche enfin une notification avec la raison fournie.
 		if ( success )
 		{
@@ -100,9 +95,6 @@ export default function Storage( { session }: { session: Session } )
 					{
 						return;
 					}
-
-					// Activation de l'état de chargement.
-					setLoading( true );
 
 					// Exécution de l'action côté serveur.
 					startTransition( () =>
@@ -135,7 +127,7 @@ export default function Storage( { session }: { session: Session } )
 										id={field.name}
 										name={field.name}
 										checked={field.value}
-										disabled={isLoading}
+										disabled={isPending}
 										onCheckedChange={field.onChange}
 									/>
 								</FormControl>
@@ -174,7 +166,7 @@ export default function Storage( { session }: { session: Session } )
 										id={field.name}
 										name={field.name}
 										checked={field.value}
-										disabled={isLoading}
+										disabled={isPending}
 										onCheckedChange={field.onChange}
 									/>
 								</FormControl>
@@ -215,7 +207,7 @@ export default function Storage( { session }: { session: Session } )
 										id={field.name}
 										name={field.name}
 										checked={field.value}
-										disabled={isLoading}
+										disabled={isPending}
 										onCheckedChange={field.onChange}
 									/>
 								</FormControl>
@@ -232,8 +224,8 @@ export default function Storage( { session }: { session: Session } )
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading} className="max-sm:w-full">
-					{isLoading ? (
+				<Button disabled={isPending} className="max-sm:w-full">
+					{isPending ? (
 						<>
 							<Loader2 className="mr-2 size-4 animate-spin" />
 							{messages( "loading" )}
