@@ -18,11 +18,10 @@ import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { formatSize } from "@/utilities/react-table";
-import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { useState, useEffect, useActionState, startTransition } from "react";
 
 import { Input } from "../../components/ui/input";
 import { Select,
@@ -50,7 +49,7 @@ export default function User( { session }: { session: Session } )
 	const messages = useTranslations( "form" );
 	const [ isLocked, setLocked ] = useState( false );
 	const [ isLoading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( updateUser, {
+	const [ updateState, updateAction ] = useActionState( updateUser, {
 		success: true,
 		reason: ""
 	} );
@@ -164,7 +163,10 @@ export default function User( { session }: { session: Session } )
 					setLoading( true );
 
 					// Exécution de l'action côté serveur.
-					serverAction( updateAction, formData );
+					startTransition( () =>
+					{
+						serverAction( updateAction, formData );
+					} );
 				}}
 				className="space-y-8"
 			>

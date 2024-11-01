@@ -10,11 +10,10 @@ import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { useFormState } from "react-dom";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useState, useEffect } from "react";
 import { Eye, Mail, EyeOff, Loader2, KeyRound } from "lucide-react";
+import { useState, useEffect, useActionState, startTransition } from "react";
 
 import { Input } from "../../components/ui/input";
 import { Form,
@@ -39,7 +38,7 @@ export default function SignInForm()
 	const [ isFocused, setFocused ] = useState( false );
 	const [ isLoading, setLoading ] = useState( false );
 	const [ inputType, setInputType ] = useState( "password" );
-	const [ signInState, signInAction ] = useFormState( signInAccount, {
+	const [ signInState, signInAction ] = useActionState( signInAccount, {
 		success: true,
 		reason: ""
 	} );
@@ -119,7 +118,10 @@ export default function SignInForm()
 					setLoading( true );
 
 					// Exécution de l'action côté serveur.
-					serverAction( signInAction, formData );
+					startTransition( () =>
+					{
+						serverAction( signInAction, formData );
+					} );
 				}}
 				className="space-y-6"
 			>

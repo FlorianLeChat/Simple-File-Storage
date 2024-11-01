@@ -9,11 +9,10 @@ import schema from "@/schemas/authentication";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { useFormState } from "react-dom";
 import { Mail, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState, startTransition } from "react";
 
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -31,7 +30,7 @@ export default function SignUpForm()
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
-	const [ signUpState, signUpAction ] = useFormState( signUpAccount, {
+	const [ signUpState, signUpAction ] = useActionState( signUpAccount, {
 		success: true,
 		reason: ""
 	} );
@@ -111,7 +110,10 @@ export default function SignUpForm()
 					setLoading( true );
 
 					// Exécution de l'action côté serveur.
-					serverAction( signUpAction, formData );
+					startTransition( () =>
+					{
+						serverAction( signUpAction, formData );
+					} );
 				}}
 				className="space-y-6"
 			>

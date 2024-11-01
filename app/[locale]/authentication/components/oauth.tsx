@@ -10,10 +10,9 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { useFormState } from "react-dom";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState, startTransition } from "react";
 
 import { Button } from "../../components/ui/button";
 import { signInAccount } from "../actions/signin";
@@ -23,7 +22,7 @@ export default function OAuthForm()
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
-	const [ signInState, signInAction ] = useFormState( signInAccount, {
+	const [ signInState, signInAction ] = useActionState( signInAccount, {
 		success: true,
 		reason: ""
 	} );
@@ -92,7 +91,10 @@ export default function OAuthForm()
 			<form
 				action={( formData ) =>
 				{
-					serverAction( signInAction, formData );
+					startTransition( () =>
+					{
+						serverAction( signInAction, formData );
+					} );
 				}}
 				onSubmit={() => setLoading( true )}
 			>
@@ -131,7 +133,10 @@ export default function OAuthForm()
 			<form
 				action={( formData ) =>
 				{
-					serverAction( signInAction, formData );
+					startTransition( () =>
+					{
+						serverAction( signInAction, formData );
+					} );
 				}}
 				onSubmit={() => setLoading( true )}
 			>

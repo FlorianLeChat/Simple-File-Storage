@@ -15,10 +15,9 @@ import { List,
 	ShieldAlert } from "lucide-react";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { useFormState } from "react-dom";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState, startTransition } from "react";
 
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -42,7 +41,7 @@ export default function Account()
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( createIssue, {
+	const [ updateState, updateAction ] = useActionState( createIssue, {
 		success: true,
 		reason: ""
 	} );
@@ -124,7 +123,10 @@ export default function Account()
 					setLoading( true );
 
 					// Exécution de l'action côté serveur.
-					serverAction( updateAction, formData );
+					startTransition( () =>
+					{
+						serverAction( updateAction, formData );
+					} );
 				}}
 				className="space-y-8"
 			>
