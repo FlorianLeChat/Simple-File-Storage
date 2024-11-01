@@ -5,6 +5,8 @@
 //
 
 import "./layout.css";
+import "vanilla-cookieconsent/dist/cookieconsent.css";
+
 import { logger } from "@/utilities/pino";
 import type { ReactNode } from "react";
 import { Inter, Poppins, Roboto } from "next/font/google";
