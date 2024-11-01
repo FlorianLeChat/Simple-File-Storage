@@ -1,6 +1,3 @@
-/* Importation des dépendances externes. */
-@import "vanilla-cookieconsent/dist/cookieconsent";
-
 /* Déclaration des règles Tailwind CSS */
 @tailwind base;
 @tailwind components;
