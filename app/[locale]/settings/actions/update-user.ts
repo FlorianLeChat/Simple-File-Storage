@@ -118,7 +118,8 @@ export async function updateUser(
 
 	// On modifie la langue sélectionnée par l'utilisateur dans les
 	//  cookies de son navigateur.
-	cookies().set( "NEXT_LOCALE", result.output.language );
+	const store = await cookies();
+	store.set( "NEXT_LOCALE", result.output.language );
 
 	// On vérifie également si un avatar a été fourni.
 	const { avatar } = result.output;
