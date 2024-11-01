@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
 	_request: Request,
-	{ params }: { params: { id: string } }
+	data: { params: Promise<{ id: string }> }
 )
 {
 	// On vérifie si l'utilisateur est connecté afin de récupérer
@@ -21,6 +21,7 @@ export async function GET(
 	}
 
 	// On récupère ensuite la version du fichier demandée.
+	const params = await data.params;
 	const version = await prisma.version.findUnique( {
 		where: {
 			id: params.id,

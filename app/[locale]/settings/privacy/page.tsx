@@ -4,7 +4,7 @@
 
 // Importation des dépendances.
 import { lazy } from "react";
-import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
@@ -13,13 +13,15 @@ const Privacy = lazy( () => import( "../components/privacy" ) );
 
 // Affichage de la page.
 export default async function Page( {
-	params: { locale }
+	params
 }: {
-	params: { locale: string };
+	params: Promise<{ locale: string }>;
 } )
 {
 	// Définition de la langue de la page.
-	unstable_setRequestLocale( locale );
+	const { locale } = await params;
+
+	setRequestLocale( locale );
 
 	// Déclaration des constantes.
 	const messages = await getTranslations();

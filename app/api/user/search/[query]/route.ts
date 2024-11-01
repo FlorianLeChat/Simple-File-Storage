@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
 	_request: Request,
-	{ params }: { params: { query: string } }
+	data: { params: Promise<{ query: string }> }
 )
 {
 	// On vérifie si l'utilisateur est connecté afin de récupérer
@@ -22,6 +22,7 @@ export async function GET(
 
 	// On récupère ensuite tous les utilisateurs dont le nom ou l'adresse
 	//  électronique contient la chaîne de caractères demandée.
+	const params = await data.params;
 	const users = await prisma.user.findMany( {
 		where: {
 			OR: [
