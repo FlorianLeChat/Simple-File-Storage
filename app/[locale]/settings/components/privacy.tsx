@@ -11,7 +11,7 @@ import { redirect } from "next/navigation";
 import serverAction from "@/utilities/recaptcha";
 import { useTranslations } from "next-intl";
 import { Files, KeyRound, Scale, Trash, Loader2 } from "lucide-react";
-import { useState, useEffect, useActionState, startTransition } from "react";
+import { useEffect, useActionState, startTransition } from "react";
 
 import { Label } from "../../components/ui/label";
 import { Switch } from "../../components/ui/switch";
@@ -29,8 +29,7 @@ export default function Privacy()
 	// Déclaration des variables d'état.
 	const formMessages = useTranslations( "form" );
 	const modalMessages = useTranslations( "modals.share-manager" );
-	const [ isLoading, setLoading ] = useState( false );
-	const [ deleteState, deleteAction ] = useActionState( deleteUserData, {
+	const [ deleteState, deleteAction, isPending ] = useActionState( deleteUserData, {
 		success: true,
 		reason: ""
 	} );
@@ -52,8 +51,6 @@ export default function Privacy()
 		{
 			// Si ce n'est pas le cas, quelque chose s'est mal passé au
 			//  niveau du serveur.
-			setLoading( false );
-
 			toast.error( formMessages( "infos.action_failed" ), {
 				description: formMessages( "errors.server_error" )
 			} );
@@ -71,8 +68,6 @@ export default function Privacy()
 		}
 
 		// On informe après qu'une réponse a été reçue.
-		setLoading( false );
-
 		// On affiche enfin une notification avec la raison fournie
 		//  avant de réinitialiser le formulaire en cas de succès.
 		if ( success )
@@ -114,9 +109,6 @@ export default function Privacy()
 					{
 						return;
 					}
-
-					// Activation de l'état de chargement.
-					setLoading( true );
 
 					// Exécution de l'action côté serveur.
 					startTransition( () =>
@@ -192,7 +184,7 @@ export default function Privacy()
 										id={field.name}
 										name={field.name}
 										checked={field.value}
-										disabled={isLoading}
+										disabled={isPending}
 										onCheckedChange={field.onChange}
 									/>
 								</FormControl>
@@ -237,7 +229,7 @@ export default function Privacy()
 										id={field.name}
 										name={field.name}
 										checked={field.value}
-										disabled={isLoading}
+										disabled={isPending}
 										onCheckedChange={( value ) =>
 										{
 											if ( value )
@@ -264,13 +256,10 @@ export default function Privacy()
 
 				{/* Bouton de validation du formulaire */}
 				<Button
-					disabled={
-						isLoading
-						|| ( !form.getValues().files && !form.getValues().account )
-					}
+					disabled={isPending || ( !form.getValues().files && !form.getValues().account )}
 					className="max-sm:w-full"
 				>
-					{isLoading ? (
+					{isPending ? (
 						<>
 							<Loader2 className="mr-2 size-4 animate-spin" />
 							{formMessages( "loading" )}
