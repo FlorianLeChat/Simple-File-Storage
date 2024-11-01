@@ -9,10 +9,9 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { redirect } from "next/navigation";
 import serverAction from "@/utilities/recaptcha";
-import { useFormState } from "react-dom";
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
 import { Files, KeyRound, Scale, Trash, Loader2 } from "lucide-react";
+import { useState, useEffect, useActionState, startTransition } from "react";
 
 import { Label } from "../../components/ui/label";
 import { Switch } from "../../components/ui/switch";
@@ -31,7 +30,7 @@ export default function Privacy()
 	const formMessages = useTranslations( "form" );
 	const modalMessages = useTranslations( "modals.share-manager" );
 	const [ isLoading, setLoading ] = useState( false );
-	const [ deleteState, deleteAction ] = useFormState( deleteUserData, {
+	const [ deleteState, deleteAction ] = useActionState( deleteUserData, {
 		success: true,
 		reason: ""
 	} );
@@ -120,7 +119,10 @@ export default function Privacy()
 					setLoading( true );
 
 					// Exécution de l'action côté serveur.
-					serverAction( deleteAction, formData );
+					startTransition( () =>
+					{
+						serverAction( deleteAction, formData );
+					} );
 				}}
 				className="space-y-8"
 			>

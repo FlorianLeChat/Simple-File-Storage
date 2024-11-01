@@ -7,11 +7,10 @@
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { useFormState } from "react-dom";
 import type { Session } from "next-auth";
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
 import { Globe, Link2, RefreshCw, Loader2, History } from "lucide-react";
+import { useState, useEffect, useActionState, startTransition } from "react";
 
 import { Label } from "../../components/ui/label";
 import { Switch } from "../../components/ui/switch";
@@ -29,7 +28,7 @@ export default function Storage( { session }: { session: Session } )
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
 	const [ isLoading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( updateStorage, {
+	const [ updateState, updateAction ] = useActionState( updateStorage, {
 		success: true,
 		reason: ""
 	} );
@@ -106,7 +105,10 @@ export default function Storage( { session }: { session: Session } )
 					setLoading( true );
 
 					// Exécution de l'action côté serveur.
-					serverAction( updateAction, formData );
+					startTransition( () =>
+					{
+						serverAction( updateAction, formData );
+					} );
 				}}
 				className="space-y-8"
 			>
