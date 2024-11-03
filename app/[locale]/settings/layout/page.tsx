@@ -13,7 +13,7 @@ import { auth } from "@/utilities/next-auth";
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
 
-const Layout = lazy( () => import( "../components/layout" ) );
+const Appearance = lazy( () => import( "../components/appearance" ) );
 
 // Affichage de la page.
 export default async function Page( {
@@ -55,7 +55,7 @@ export default async function Page( {
 			<Separator />
 
 			{/* Formulaire de modification de l'apparence */}
-			<Layout session={session} />
+			<Appearance session={session} />
 		</>
 	);
 }
