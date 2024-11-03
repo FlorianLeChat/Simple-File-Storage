@@ -46,7 +46,7 @@ import { Form,
 import { updateLayout } from "../actions/update-layout";
 import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 
-export default function Layout( { session }: { session: Session } )
+export default function Appearance( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
