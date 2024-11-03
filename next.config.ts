@@ -1,19 +1,18 @@
-// @ts-check
+import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
+import createNextIntlPlugin from "next-intl/plugin";
 
-/**
- * @type {import("next").NextConfig}
- */
-const { withSentryConfig } = require( "@sentry/nextjs" );
-const withNextIntl = require( "next-intl/plugin" )( "./utilities/i18n.ts" );
-
-const nextConfig = withNextIntl( {
+const withNextIntl = createNextIntlPlugin( "./utilities/i18n.ts" );
+const nextConfig: NextConfig = withNextIntl( {
+	serverExternalPackages: [ "pino", "pino-pretty" ], // https://github.com/vercel/next.js/discussions/46987#discussioncomment-8464812
 	poweredByHeader: false,
 	experimental: {
-		// https://docs.sentry.io/platforms/javascript/guides/nextjs/migration/v7-to-v8/#updated-sdk-initialization
-		instrumentationHook: true,
-
-		// https://github.com/vercel/next.js/discussions/46987#discussioncomment-8464812
-		serverComponentsExternalPackages: ["pino", "pino-pretty"]
+		serverActions: {
+			bodySizeLimit: Math.max(
+				Number( process.env.NEXT_PUBLIC_MAX_QUOTA ),
+				Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE )
+			)
+		}
 	},
 	basePath: "",
 	async redirects()
@@ -41,6 +40,6 @@ const sentryConfig = {
 	widenClientFileUpload: true
 };
 
-module.exports = process.env.SENTRY_ENABLED === "true"
+export default process.env.SENTRY_ENABLED === "true"
 	? withSentryConfig( nextConfig, sentryConfig )
 	: nextConfig;

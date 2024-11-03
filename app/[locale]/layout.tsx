@@ -19,7 +19,7 @@ import { lazy,
 import { NextIntlClientProvider } from "next-intl";
 import { Inter, Poppins, Roboto } from "next/font/google";
 import { mkdir, readFile, writeFile } from "fs/promises";
-import { unstable_setRequestLocale, getMessages } from "next-intl/server";
+import { setRequestLocale, getMessages } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
@@ -173,7 +173,7 @@ export async function generateMetadata(): Promise<
 	// On enregistre enfin les métadonnées dans un fichier JSON
 	//  avant de les retourner.
 	logger.warn(
-		{ source: __filename, metadata },
+		{ source: __dirname, metadata },
 		"Loading metadata from GitHub API"
 	);
 
@@ -213,19 +213,21 @@ type ToasterProps = ComponentProps<typeof Toaster>;
 
 export default async function Layout( {
 	children,
-	params: { locale }
+	params
 }: {
 	children: ReactNode;
-	params: { locale: string };
+	params: Promise<{ locale: string }>;
 } )
 {
 	// Définition de la langue de la page.
-	unstable_setRequestLocale( locale );
+	const { locale } = await params;
+
+	setRequestLocale( locale );
 
 	// Vérification du support de la langue.
 	if ( !languages.includes( locale ) )
 	{
-		logger.error( { source: __filename, locale }, "Unsupported language" );
+		logger.error( { source: __dirname, locale }, "Unsupported language" );
 		return null;
 	}
 

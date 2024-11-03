@@ -10,7 +10,7 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: { path: string[] } }
+	data: { params: Promise<{ path: string[] }> }
 )
 {
 	// On vérifie d'abord si la requête courante est légitime et
@@ -20,7 +20,7 @@ export async function GET(
 	if ( secret !== process.env.AUTH_SECRET )
 	{
 		logger.error(
-			{ source: __filename, secret },
+			{ source: __dirname, secret },
 			"Unauthorized access to public files"
 		);
 
@@ -28,11 +28,12 @@ export async function GET(
 	}
 
 	// On vérifie si le chemin demandé existe dans le système de fichiers.
+	const params = await data.params;
 	const filePath = path.join( process.cwd(), "public", params.path.join( sep ) );
 
 	if ( !existsSync( filePath ) )
 	{
-		logger.debug( { source: __filename, path: filePath }, "File not found" );
+		logger.debug( { source: __dirname, path: filePath }, "File not found" );
 
 		return new NextResponse( null, { status: 400 } );
 	}
@@ -45,7 +46,7 @@ export async function GET(
 	catch ( error )
 	{
 		// Dans le cas contraire, on renvoie enfin une erreur HTTP 500.
-		logger.error( { source: __filename, error }, "Error reading public file" );
+		logger.error( { source: __dirname, error }, "Error reading public file" );
 
 		Sentry.captureException( error );
 

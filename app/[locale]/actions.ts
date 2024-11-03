@@ -32,7 +32,7 @@ export async function updateReadState()
 
 	// On retourne enfin un message de succès si l'opération a réussi.
 	logger.debug(
-		{ source: __filename, count: notifications.count },
+		{ source: __dirname, count: notifications.count },
 		"Deleted all notifications"
 	);
 

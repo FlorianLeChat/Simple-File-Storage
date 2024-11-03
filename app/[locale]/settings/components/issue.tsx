@@ -15,10 +15,9 @@ import { List,
 	ShieldAlert } from "lucide-react";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { useFormState } from "react-dom";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useState, useEffect } from "react";
+import { useEffect, useActionState, startTransition } from "react";
 
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -41,8 +40,7 @@ export default function Account()
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
-	const [ isLoading, setLoading ] = useState( false );
-	const [ updateState, updateAction ] = useFormState( createIssue, {
+	const [ updateState, updateAction, isPending ] = useActionState( createIssue, {
 		success: true,
 		reason: ""
 	} );
@@ -67,8 +65,6 @@ export default function Account()
 		{
 			// Si ce n'est pas le cas, quelque chose s'est mal passé au
 			//  niveau du serveur.
-			setLoading( false );
-
 			toast.error( messages( "infos.action_failed" ), {
 				description: messages( "errors.server_error" )
 			} );
@@ -84,9 +80,6 @@ export default function Account()
 		{
 			return;
 		}
-
-		// On informe après qu'une réponse a été reçue.
-		setLoading( false );
 
 		// On affiche enfin une notification avec la raison fournie
 		//  avant de réinitialiser le formulaire en cas de succès.
@@ -120,11 +113,11 @@ export default function Account()
 						return;
 					}
 
-					// Activation de l'état de chargement.
-					setLoading( true );
-
 					// Exécution de l'action côté serveur.
-					serverAction( updateAction, formData );
+					startTransition( () =>
+					{
+						serverAction( updateAction, formData );
+					} );
 				}}
 				className="space-y-8"
 			>
@@ -141,7 +134,7 @@ export default function Account()
 
 							<Select
 								{...field}
-								disabled={isLoading}
+								disabled={isPending}
 								defaultValue={field.value}
 								onValueChange={field.onChange}
 							>
@@ -192,7 +185,7 @@ export default function Account()
 
 							<Select
 								{...field}
-								disabled={isLoading}
+								disabled={isPending}
 								defaultValue={field.value}
 								onValueChange={field.onChange}
 							>
@@ -244,7 +237,7 @@ export default function Account()
 							<FormControl>
 								<Input
 									{...field}
-									disabled={isLoading}
+									disabled={isPending}
 									maxLength={
 										schema.entries.subject.pipe[ 2 ]
 											.requirement
@@ -278,7 +271,7 @@ export default function Account()
 							<FormControl>
 								<Textarea
 									{...field}
-									disabled={isLoading}
+									disabled={isPending}
 									maxLength={
 										schema.entries.description.pipe[ 2 ]
 											.requirement
@@ -300,8 +293,8 @@ export default function Account()
 				/>
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading} className="max-sm:w-full">
-					{isLoading ? (
+				<Button disabled={isPending} className="max-sm:w-full">
+					{isPending ? (
 						<>
 							<Loader2 className="mr-2 size-4 animate-spin" />
 							{messages( "loading" )}

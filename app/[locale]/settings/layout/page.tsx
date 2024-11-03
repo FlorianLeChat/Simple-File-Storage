@@ -5,7 +5,7 @@
 // Importation des dépendances.
 import { lazy } from "react";
 import { redirect } from "next/navigation";
-import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
@@ -13,17 +13,19 @@ import { auth } from "@/utilities/next-auth";
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
 
-const Layout = lazy( () => import( "../components/layout" ) );
+const Appearance = lazy( () => import( "../components/appearance" ) );
 
 // Affichage de la page.
 export default async function Page( {
-	params: { locale }
+	params
 }: {
-	params: { locale: string };
+	params: Promise<{ locale: string }>;
 } )
 {
 	// Définition de la langue de la page.
-	unstable_setRequestLocale( locale );
+	const { locale } = await params;
+
+	setRequestLocale( locale );
 
 	// Déclaration des constantes.
 	const session = await auth();
@@ -53,7 +55,7 @@ export default async function Page( {
 			<Separator />
 
 			{/* Formulaire de modification de l'apparence */}
-			<Layout session={session} />
+			<Appearance session={session} />
 		</>
 	);
 }

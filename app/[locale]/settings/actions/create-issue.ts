@@ -43,7 +43,7 @@ export async function createIssue(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return {
 			success: false,
@@ -66,7 +66,7 @@ export async function createIssue(
 	{
 		// Dans ce cas là, on affiche un message d'erreur dans le
 		//  formulaire.
-		logger.error( { source: __filename, issue }, "Too many issues" );
+		logger.error( { source: __dirname, issue }, "Too many issues" );
 
 		return {
 			success: false,
@@ -114,7 +114,7 @@ export async function createIssue(
 		{
 			// Erreur lors de l'envoi de certains courriels.
 			logger.warn(
-				{ source: __filename, info },
+				{ source: __dirname, info },
 				"Email(s) could not be sent"
 			);
 		}
@@ -123,13 +123,13 @@ export async function createIssue(
 	{
 		// Erreur dans l'envoi des courriels.
 		logger.error(
-			{ source: __filename, error },
+			{ source: __dirname, error },
 			"Node Mailer transport error"
 		);
 	}
 
 	// On retourne enfin un message de succès.
-	logger.info( { source: __filename, result, admins }, "Issue created" );
+	logger.info( { source: __dirname, result, admins }, "Issue created" );
 
 	return {
 		success: true,

@@ -20,13 +20,12 @@ import { Loader2,
 	PlusCircleIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { formatSize } from "@/utilities/react-table";
-import { useFormState } from "react-dom";
 import type { TableMeta } from "@tanstack/react-table";
 import { addDays, format } from "date-fns";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useEffect, useState } from "react";
 import { type FileAttributes } from "@/interfaces/File";
 import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useState, useActionState, startTransition } from "react";
 
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
@@ -71,9 +70,8 @@ export default function FileUpload( {
 	const [ key, setKey ] = useState( "" );
 	const [ quota, setQuota ] = useState( 0 );
 	const [ isOpen, setOpen ] = useState( false );
-	const [ isLoading, setLoading ] = useState( false );
 	const [ isEncrypted, setEncrypted ] = useState( false );
-	const [ uploadState, uploadAction ] = useFormState( uploadFiles, {
+	const [ uploadState, uploadAction, isPending ] = useActionState( uploadFiles, {
 		success: true,
 		reason: "",
 		data: []
@@ -197,8 +195,6 @@ export default function FileUpload( {
 		{
 			// Si ce n'est pas le cas, quelque chose s'est mal passé au
 			//  niveau du serveur.
-			setLoading( false );
-
 			toast.error( formMessages( "infos.action_failed" ), {
 				description: formMessages( "errors.server_error" )
 			} );
@@ -256,9 +252,6 @@ export default function FileUpload( {
 				...uploaded
 			] );
 		}
-
-		// On informe après qu'une réponse a été reçue.
-		setLoading( false );
 
 		// On affiche enfin une notification avec la raison fournie
 		//  avant de réinitialiser le formulaire en cas de succès.
@@ -328,7 +321,7 @@ export default function FileUpload( {
 			open={isOpen}
 			onOpenChange={( state ) =>
 			{
-				if ( !isLoading )
+				if ( !isPending )
 				{
 					form.reset();
 					setOpen( state );
@@ -369,9 +362,6 @@ export default function FileUpload( {
 								return;
 							}
 
-							// Activation de l'état de chargement.
-							setLoading( true );
-
 							// Vérification de l'activation du chiffrement
 							//  renforcé (côté client).
 							if ( formData.get( "encryption" ) === "on" )
@@ -387,7 +377,10 @@ export default function FileUpload( {
 							);
 
 							// Exécution de l'action côté serveur.
-							serverAction( uploadAction, formData );
+							startTransition( () =>
+							{
+								serverAction( uploadAction, formData );
+							} );
 						}}
 					>
 						{/* Fichier(s) à téléverser */}
@@ -430,7 +423,7 @@ export default function FileUpload( {
 													.NEXT_PUBLIC_ACCEPTED_FILE_TYPES
 											}
 											multiple
-											disabled={isLoading}
+											disabled={isPending}
 											className="file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
 										/>
 									</FormControl>
@@ -512,7 +505,7 @@ export default function FileUpload( {
 													name={field.name}
 													checked={field.value}
 													disabled={
-														isLoading || isEncrypted
+														isPending || isEncrypted
 													}
 													onCheckedChange={
 														field.onChange
@@ -573,7 +566,7 @@ export default function FileUpload( {
 													id={field.name}
 													name={field.name}
 													checked={field.value}
-													disabled={isLoading}
+													disabled={isPending}
 													onCheckedChange={( value ) =>
 													{
 														if ( value )
@@ -644,7 +637,7 @@ export default function FileUpload( {
 										<Popover>
 											<FormControl>
 												<PopoverTrigger
-													disabled={isLoading}
+													disabled={isPending}
 													className={merge(
 														buttonVariants( {
 															variant: "outline"
@@ -740,8 +733,8 @@ export default function FileUpload( {
 						</details>
 
 						{/* Bouton de validation du formulaire */}
-						<Button disabled={isLoading} className="w-full">
-							{isLoading ? (
+						<Button disabled={isPending} className="w-full">
+							{isPending ? (
 								<>
 									<Loader2 className="mr-2 size-4 animate-spin" />
 									{formMessages( "loading" )}

@@ -37,7 +37,7 @@ export async function renameFile( formData: FormData )
 
 	if ( !result.success )
 	{
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return [];
 	}
@@ -67,7 +67,7 @@ export async function renameFile( formData: FormData )
 
 	if ( !first )
 	{
-		logger.error( { source: __filename, result }, "Invalid file data" );
+		logger.error( { source: __dirname, result }, "Invalid file data" );
 
 		return [];
 	}
@@ -111,7 +111,7 @@ export async function renameFile( formData: FormData )
 
 	// On retourne enfin la liste des identifiants des fichiers renommés
 	//  à la fin du traitement.
-	logger.debug( { source: __filename, files }, "Files renamed" );
+	logger.debug( { source: __dirname, files }, "Files renamed" );
 
 	return files.map( ( file ) => file.id );
 }

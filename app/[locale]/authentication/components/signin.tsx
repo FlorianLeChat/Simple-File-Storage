@@ -10,11 +10,10 @@ import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
-import { useFormState } from "react-dom";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useState, useEffect } from "react";
 import { Eye, Mail, EyeOff, Loader2, KeyRound } from "lucide-react";
+import { useState, useEffect, useActionState, startTransition } from "react";
 
 import { Input } from "../../components/ui/input";
 import { Form,
@@ -37,9 +36,8 @@ export default function SignInForm()
 	const messages = useTranslations( "form" );
 	const [ isLocked, setLocked ] = useState( false );
 	const [ isFocused, setFocused ] = useState( false );
-	const [ isLoading, setLoading ] = useState( false );
 	const [ inputType, setInputType ] = useState( "password" );
-	const [ signInState, signInAction ] = useFormState( signInAccount, {
+	const [ signInState, signInAction, isPending ] = useActionState( signInAccount, {
 		success: true,
 		reason: ""
 	} );
@@ -62,8 +60,6 @@ export default function SignInForm()
 		{
 			// Si ce n'est pas le cas, quelque chose s'est mal passé au
 			//  niveau du serveur.
-			setLoading( false );
-
 			toast.error( messages( "errors.auth_failed" ), {
 				description: messages( "errors.server_error" )
 			} );
@@ -79,9 +75,6 @@ export default function SignInForm()
 		{
 			return;
 		}
-
-		// On informe après qu'une réponse a été reçue.
-		setLoading( false );
 
 		// On affiche enfin une notification avec la raison fournie
 		//  avant de réinitialiser le formulaire en cas de succès.
@@ -115,11 +108,11 @@ export default function SignInForm()
 						return;
 					}
 
-					// Activation de l'état de chargement.
-					setLoading( true );
-
 					// Exécution de l'action côté serveur.
-					serverAction( signInAction, formData );
+					startTransition( () =>
+					{
+						serverAction( signInAction, formData );
+					} );
 				}}
 				className="space-y-6"
 			>
@@ -136,7 +129,7 @@ export default function SignInForm()
 							<FormControl>
 								<Input
 									{...field}
-									disabled={isLoading}
+									disabled={isPending}
 									maxLength={
 										schema.entries.email.pipe[ 2 ].requirement
 									}
@@ -180,7 +173,7 @@ export default function SignInForm()
 											)
 										)}
 										onFocus={() => setFocused( true )}
-										disabled={isLoading}
+										disabled={isPending}
 										className={`!mt-0 mr-2 inline-block w-[calc(100%-40px-0.5rem)] transition-opacity ${
 											!isFocused ? "opacity-50" : ""
 										}`}
@@ -248,8 +241,8 @@ export default function SignInForm()
 				)}
 
 				{/* Bouton de validation du formulaire */}
-				<Button disabled={isLoading}>
-					{isLoading ? (
+				<Button disabled={isPending}>
+					{isPending ? (
 						<>
 							<Loader2 className="mr-2 size-4 animate-spin" />
 							{messages( "loading" )}

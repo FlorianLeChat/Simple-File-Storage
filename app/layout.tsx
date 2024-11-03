@@ -5,6 +5,8 @@
 //
 
 import "./layout.css";
+import "vanilla-cookieconsent/dist/cookieconsent.css";
+
 import { logger } from "@/utilities/pino";
 import type { ReactNode } from "react";
 import { Inter, Poppins, Roboto } from "next/font/google";
@@ -32,7 +34,7 @@ export default function Layout( { children }: { children: ReactNode } )
 	//  dans ce fichier, elles sont ainsi utilisées dans les routes dynamiques
 	//  en appelant de nouveau ces mêmes fonctions car elles sont désormais en cache.
 	logger.debug(
-		{ source: __filename, fonts: [ inter, poppins, roboto ] },
+		{ source: __dirname, fonts: [ inter, poppins, roboto ] },
 		"Fonts loaded"
 	);
 

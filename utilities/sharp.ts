@@ -52,7 +52,7 @@ export async function compressFile(
 	const compressed = await instance.toBuffer();
 
 	logger.info(
-		{ source: __filename, before: buffer.length, after: compressed.length },
+		{ source: __dirname, before: buffer.length, after: compressed.length },
 		"Compressing file"
 	);
 

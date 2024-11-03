@@ -42,7 +42,7 @@ export async function restoreVersion( formData: FormData )
 
 	if ( !result.success )
 	{
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return "";
 	}
@@ -83,7 +83,7 @@ export async function restoreVersion( formData: FormData )
 
 	if ( !file || file.versions[ 0 ].id === result.output.versionId )
 	{
-		logger.error( { source: __filename, result }, "Invalid file data" );
+		logger.error( { source: __dirname, result }, "Invalid file data" );
 
 		return "";
 	}
@@ -95,7 +95,7 @@ export async function restoreVersion( formData: FormData )
 
 	if ( !existsSync( userFolder ) || !existsSync( fileFolder ) )
 	{
-		logger.error( { source: __filename, result }, "Invalid file data" );
+		logger.error( { source: __dirname, result }, "Invalid file data" );
 
 		return "";
 	}
@@ -107,7 +107,7 @@ export async function restoreVersion( formData: FormData )
 
 	if ( !targetVersion )
 	{
-		logger.error( { source: __filename, result }, "Invalid version data" );
+		logger.error( { source: __dirname, result }, "Invalid version data" );
 
 		return "";
 	}
@@ -130,7 +130,7 @@ export async function restoreVersion( formData: FormData )
 			if ( nextQuota > maxQuota )
 			{
 				logger.error(
-					{ source: __filename, nextQuota, maxQuota },
+					{ source: __dirname, nextQuota, maxQuota },
 					"Quota exceeded"
 				);
 
@@ -142,7 +142,7 @@ export async function restoreVersion( formData: FormData )
 			// Si une erreur s'est produite lors de l'opération avec le
 			//  système de fichiers, on l'envoie à Sentry avant de retourner
 			//  enfin une valeur vide.
-			logger.error( { source: __filename, error }, "Error checking quota" );
+			logger.error( { source: __dirname, error }, "Error checking quota" );
 
 			Sentry.captureException( error );
 
@@ -189,7 +189,7 @@ export async function restoreVersion( formData: FormData )
 
 		// On retourne l'identifiant de la nouvelle version à restaurer
 		//  à la fin du traitement.
-		logger.debug( { source: __filename, newVersion }, "Version restored" );
+		logger.debug( { source: __dirname, newVersion }, "Version restored" );
 
 		return newVersion.id;
 	}
@@ -198,7 +198,7 @@ export async function restoreVersion( formData: FormData )
 		// Si une erreur s'est produite lors de l'opération avec le
 		//  système de fichiers, on l'envoie à Sentry avant de retourner
 		//  enfin une valeur vide.
-		logger.error( { source: __filename, error }, "Error restoring version" );
+		logger.error( { source: __dirname, error }, "Error restoring version" );
 
 		Sentry.captureException( error );
 

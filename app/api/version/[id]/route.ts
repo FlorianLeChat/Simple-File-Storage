@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
 	_request: Request,
-	{ params }: { params: { id: string } }
+	data: { params: Promise<{ id: string }> }
 )
 {
 	// On vérifie si l'utilisateur est connecté afin de récupérer
@@ -21,6 +21,7 @@ export async function GET(
 	}
 
 	// On récupère ensuite la version du fichier demandée.
+	const params = await data.params;
 	const version = await prisma.version.findUnique( {
 		where: {
 			id: params.id,
@@ -33,14 +34,14 @@ export async function GET(
 	if ( !version )
 	{
 		// Si la version n'existe pas, on retourne une erreur.
-		logger.debug( { source: __filename, id: params.id }, "Version not found" );
+		logger.debug( { source: __dirname, id: params.id }, "Version not found" );
 
 		return new NextResponse( null, { status: 400 } );
 	}
 
 	// Dans cas contraire, on retourne enfin les données de la version
 	//  comme une réponse JSON.
-	logger.debug( { source: __filename, version }, "Version retrieved" );
+	logger.debug( { source: __dirname, version }, "Version retrieved" );
 
 	return NextResponse.json( version );
 }

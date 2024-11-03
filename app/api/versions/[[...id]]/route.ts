@@ -8,7 +8,7 @@ import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: { id?: string[] } }
+	data: { params: Promise<{ id?: string[] }> }
 )
 {
 	// On vérifie si l'utilisateur est connecté afin de récupérer
@@ -22,6 +22,8 @@ export async function GET(
 
 	// On vérifie si un identifiant de fichier est présent dans les
 	//  paramètres de l'URL.
+	const params = await data.params;
+
 	if ( !params.id )
 	{
 		// Si ce n'est pas le cas, on tente de récupérer la page demandée
@@ -56,12 +58,12 @@ export async function GET(
 
 		if ( !versions )
 		{
-			logger.debug( { source: __filename }, "No versions found" );
+			logger.debug( { source: __dirname }, "No versions found" );
 
 			return new NextResponse( null, { status: 400 } );
 		}
 
-		logger.debug( { source: __filename, versions }, "Versions retrieved" );
+		logger.debug( { source: __dirname, versions }, "Versions retrieved" );
 
 		// On les renvoie ensuite sous forme de réponse JSON.
 		return NextResponse.json( versions );
@@ -81,14 +83,14 @@ export async function GET(
 	if ( !versions )
 	{
 		logger.debug(
-			{ source: __filename, id: params.id[ 0 ] },
+			{ source: __dirname, id: params.id[ 0 ] },
 			"No versions found"
 		);
 
 		return new NextResponse( null, { status: 400 } );
 	}
 
-	logger.debug( { source: __filename, versions }, "Versions retrieved" );
+	logger.debug( { source: __dirname, versions }, "Versions retrieved" );
 
 	// On retourne enfin les données de la version comme une réponse JSON.
 	return NextResponse.json( versions );

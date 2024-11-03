@@ -4,8 +4,8 @@
 
 // Importation des dépendances.
 import Link from "next/link";
+import { setRequestLocale } from "next-intl/server";
 import { lazy, type ReactNode } from "react";
-import { unstable_setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
@@ -20,14 +20,16 @@ const Notification = lazy( () => import( "../components/notification" ) );
 
 export default async function Layout( {
 	children,
-	params: { locale }
+	params
 }: {
 	children: ReactNode;
-	params: { locale: string };
+	params: Promise<{ locale: string }>;
 } )
 {
 	// Définition de la langue de la page.
-	unstable_setRequestLocale( locale );
+	const { locale } = await params;
+
+	setRequestLocale( locale );
 
 	// Déclaration des constantes.
 	const meta = await generateMetadata();

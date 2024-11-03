@@ -51,7 +51,7 @@ export async function updateUser(
 		//  premier code d'erreur rencontré.
 		const { message } = result.issues[ 0 ];
 
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return {
 			success: false,
@@ -72,12 +72,12 @@ export async function updateUser(
 		}
 	} );
 
-	if ( user )
+	if ( user && user.id !== session.user.id )
 	{
 		// Si l'adresse électronique est déjà utilisée par un autre
 		//  utilisateur, on bloque la modification des informations.
 		logger.error(
-			{ source: __filename, email: result.output.email },
+			{ source: __dirname, email: result.output.email },
 			"Email already used"
 		);
 
@@ -113,12 +113,13 @@ export async function updateUser(
 			}
 		} );
 
-		logger.debug( { source: __filename }, "Created password notification" );
+		logger.debug( { source: __dirname }, "Created password notification" );
 	}
 
 	// On modifie la langue sélectionnée par l'utilisateur dans les
 	//  cookies de son navigateur.
-	cookies().set( "NEXT_LOCALE", result.output.language );
+	const store = await cookies();
+	store.set( "NEXT_LOCALE", result.output.language );
 
 	// On vérifie également si un avatar a été fourni.
 	const { avatar } = result.output;
@@ -141,7 +142,7 @@ export async function updateUser(
 			//  on indique que le type de fichier est incorrect ou qu'il
 			//  contient des données textuelles.
 			logger.error(
-				{ source: __filename, result },
+				{ source: __dirname, result },
 				"Avatar file type not found"
 			);
 
@@ -165,7 +166,7 @@ export async function updateUser(
 			// Si le type du fichier ne correspond à aucun type d'avatar
 			//  accepté, on indique que le type de fichier est incorrect.
 			logger.error(
-				{ source: __filename, result },
+				{ source: __dirname, result },
 				"Avatar file type not accepted"
 			);
 
@@ -203,7 +204,7 @@ export async function updateUser(
 			// Si une erreur survient lors de la mise à jour de l'avatar,
 			//  on l'envoie à Sentry et on affiche un message d'erreur.
 			logger.error(
-				{ source: __filename, error },
+				{ source: __dirname, error },
 				"Error updating avatar"
 			);
 
@@ -217,7 +218,7 @@ export async function updateUser(
 	}
 
 	// On retourne enfin un message de succès.
-	logger.debug( { source: __filename, result }, "User preferences updated" );
+	logger.debug( { source: __dirname, result }, "User preferences updated" );
 
 	return {
 		success: true,

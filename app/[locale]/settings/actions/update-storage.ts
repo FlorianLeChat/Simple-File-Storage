@@ -51,7 +51,7 @@ export async function updateStorage(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return {
 			success: false,
@@ -154,7 +154,7 @@ export async function updateStorage(
 					// Si une erreur survient dans les opérations du système
 					//  de fichiers, on l'envoie tout simplement à Sentry.
 					logger.error(
-						{ source: __filename, error },
+						{ source: __dirname, error },
 						"Error deleting file versions"
 					);
 
@@ -167,7 +167,7 @@ export async function updateStorage(
 	// On retourne enfin un message de succès.
 	revalidatePath( "/" );
 
-	logger.debug( { source: __filename, result }, "Storage preferences updated" );
+	logger.debug( { source: __dirname, result }, "Storage preferences updated" );
 
 	return {
 		success: true,

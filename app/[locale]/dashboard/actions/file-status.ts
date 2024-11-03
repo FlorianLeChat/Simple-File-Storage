@@ -34,7 +34,7 @@ export async function changeFileStatus( formData: FormData )
 
 	if ( !result.success )
 	{
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return [];
 	}
@@ -94,7 +94,7 @@ export async function changeFileStatus( formData: FormData )
 
 	// On retourne enfin la liste des identifiants des fichiers modifiés
 	//  à la fin du traitement.
-	logger.debug( { source: __filename, identifiers }, "File status changed" );
+	logger.debug( { source: __dirname, identifiers }, "File status changed" );
 
 	return identifiers;
 }
