@@ -72,7 +72,7 @@ export async function updateUser(
 		}
 	} );
 
-	if ( user )
+	if ( user && user.id !== session.user.id )
 	{
 		// Si l'adresse électronique est déjà utilisée par un autre
 		//  utilisateur, on bloque la modification des informations.
