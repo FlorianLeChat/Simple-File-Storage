@@ -34,7 +34,7 @@ export async function deleteSharedUser( formData: FormData )
 
 	if ( !result.success )
 	{
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return false;
 	}
@@ -98,7 +98,7 @@ export async function deleteSharedUser( formData: FormData )
 	} );
 
 	// On retourne enfin une valeur de succès à la fin du traitement.
-	logger.debug( { source: __filename, shares }, "Shared user deleted" );
+	logger.debug( { source: __dirname, shares }, "Shared user deleted" );
 
 	return shares.length > 0;
 }

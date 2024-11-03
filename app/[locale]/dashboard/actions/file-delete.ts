@@ -36,7 +36,7 @@ export async function deleteFile( formData: FormData )
 
 	if ( !result.success )
 	{
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return [];
 	}
@@ -78,7 +78,7 @@ export async function deleteFile( formData: FormData )
 	{
 		// Si aucun fichier n'a été trouvé dans la base de données,
 		//  on retourne une valeur d'échec.
-		logger.error( { source: __filename, query }, "No files found" );
+		logger.error( { source: __dirname, query }, "No files found" );
 
 		return [];
 	}
@@ -122,14 +122,14 @@ export async function deleteFile( formData: FormData )
 	{
 		// Si une erreur s'est produite lors des opérations avec le
 		//  système de fichiers, on l'envoie tout simplement à Sentry.
-		logger.error( { source: __filename, error }, "File deletion error" );
+		logger.error( { source: __dirname, error }, "File deletion error" );
 
 		Sentry.captureException( error );
 	}
 
 	// On retourne enfin la liste des identifiants des fichiers supprimés
 	//  à la fin du traitement.
-	logger.debug( { source: __filename, files }, "Files deleted" );
+	logger.debug( { source: __dirname, files }, "Files deleted" );
 
 	return files.map( ( file ) => file.id );
 }

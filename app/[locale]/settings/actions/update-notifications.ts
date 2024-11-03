@@ -40,7 +40,7 @@ export async function updateNotifications(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return {
 			success: false,
@@ -66,7 +66,7 @@ export async function updateNotifications(
 
 	// On retourne enfin un message de succès.
 	logger.debug(
-		{ source: __filename, result },
+		{ source: __dirname, result },
 		"Notifications preferences updated"
 	);
 

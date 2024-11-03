@@ -37,7 +37,7 @@ export async function signInAccount(
 		// Si c'est le cas, on tente une authentification via le fournisseur
 		//  d'authentification externe avant de rediriger l'utilisateur vers
 		//  la page de son tableau de bord.
-		logger.info( { source: __filename, provider }, "Sign in with provider" );
+		logger.info( { source: __dirname, provider }, "Sign in with provider" );
 
 		await signIn( provider as string, {
 			redirectTo: "/dashboard"
@@ -56,7 +56,7 @@ export async function signInAccount(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return {
 			success: false,
@@ -77,7 +77,7 @@ export async function signInAccount(
 		} );
 
 		logger.info(
-			{ source: __filename, email: result.output.email },
+			{ source: __dirname, email: result.output.email },
 			"Sign in with email"
 		);
 
@@ -95,7 +95,7 @@ export async function signInAccount(
 		//  les informations d'authentification fournies avant de rediriger
 		//  l'utilisateur vers la page de son tableau de bord.
 		logger.info(
-			{ source: __filename, email: result.output.email },
+			{ source: __dirname, email: result.output.email },
 			"Sign in with credentials"
 		);
 
@@ -111,7 +111,7 @@ export async function signInAccount(
 		//  d'authentification avant de relancer l'erreur.
 		if ( error instanceof AuthError )
 		{
-			logger.error( { source: __filename, error }, "Authentication error" );
+			logger.error( { source: __dirname, error }, "Authentication error" );
 
 			return {
 				success: false,
@@ -119,7 +119,7 @@ export async function signInAccount(
 			};
 		}
 
-		logger.error( { source: __filename, error }, "Sign in error" );
+		logger.error( { source: __dirname, error }, "Sign in error" );
 
 		throw error;
 	}
@@ -127,7 +127,7 @@ export async function signInAccount(
 	// On retourne enfin un message d'erreur par défaut au l'utilisateur
 	//  ne correspondant à aucun des cas précédents.
 	logger.error(
-		{ source: __filename, email: result.output.email },
+		{ source: __dirname, email: result.output.email },
 		"Sign in error"
 	);
 

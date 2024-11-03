@@ -52,7 +52,7 @@ export async function uploadFiles(
 		//  premier code d'erreur rencontré.
 		const { message } = result.issues[ 0 ];
 
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return {
 			success: false,
@@ -92,7 +92,7 @@ export async function uploadFiles(
 		}
 
 		logger.debug(
-			{ source: __filename, currentQuota, maxQuota },
+			{ source: __dirname, currentQuota, maxQuota },
 			"Current and maximum quota"
 		);
 
@@ -123,7 +123,7 @@ export async function uploadFiles(
 					// Si le type du fichier ne correspond à aucun type de fichier
 					//  accepté, on retourne une liste vide.
 					logger.error(
-						{ source: __filename, file, info },
+						{ source: __dirname, file, info },
 						"File type not accepted"
 					);
 
@@ -142,7 +142,7 @@ export async function uploadFiles(
 			{
 				logger.debug(
 					{
-						source: __filename,
+						source: __dirname,
 						file,
 						before: buffer.length,
 						after: compressed.length
@@ -182,7 +182,7 @@ export async function uploadFiles(
 				] );
 
 			logger.debug(
-				{ source: __filename, file },
+				{ source: __dirname, file },
 				`File encrypted ${ result.output.encryption ? "client" : "server" }-side`
 			);
 
@@ -268,7 +268,7 @@ export async function uploadFiles(
 				} );
 
 				logger.debug(
-					{ source: __filename, file },
+					{ source: __dirname, file },
 					"Created version notification"
 				);
 			}
@@ -286,7 +286,7 @@ export async function uploadFiles(
 			revalidatePath( "/" );
 
 			logger.debug(
-				{ source: __filename, file, fileFolder, versionId },
+				{ source: __dirname, file, fileFolder, versionId },
 				"File uploaded"
 			);
 
@@ -349,7 +349,7 @@ export async function uploadFiles(
 		if ( isUser && ( quotaIsNear || quotaIsExceeded ) )
 		{
 			logger.warn(
-				{ source: __filename, currentQuota, maxQuota },
+				{ source: __dirname, currentQuota, maxQuota },
 				"User quota exceeded"
 			);
 
@@ -377,7 +377,7 @@ export async function uploadFiles(
 	{
 		// Si une erreur survient lors du téléversement des fichiers,
 		//  on l'envoie à Sentry et on retourne un message d'erreur.
-		logger.error( { source: __filename, error }, "File upload failed" );
+		logger.error( { source: __dirname, error }, "File upload failed" );
 
 		Sentry.captureException( error );
 
