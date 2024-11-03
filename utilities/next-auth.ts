@@ -172,7 +172,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 				if ( process.env.NEXT_PUBLIC_ENV === "production" )
 				{
 					logger.error(
-						{ source: __filename, credentials },
+						{ source: __dirname, credentials },
 						"Credentials used in production environment"
 					);
 
@@ -183,7 +183,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 				if ( !credentials )
 				{
 					logger.error(
-						{ source: __filename },
+						{ source: __dirname },
 						"Credentials not provided"
 					);
 
@@ -209,7 +209,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 					);
 
 					logger.debug(
-						{ source: __filename, user, exists },
+						{ source: __dirname, user, exists },
 						"Credentials verified"
 					);
 
@@ -219,7 +219,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 				}
 
 				logger.error(
-					{ source: __filename, exists },
+					{ source: __dirname, exists },
 					"Credentials not verified"
 				);
 

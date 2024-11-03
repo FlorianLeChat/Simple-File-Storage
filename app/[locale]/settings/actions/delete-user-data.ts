@@ -48,7 +48,7 @@ export async function deleteUserData(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return {
 			success: false,
@@ -90,7 +90,7 @@ export async function deleteUserData(
 			// On demande la déconnexion de l'utilisateur de toutes les
 			//  sessions enregistrées.
 			logger.info(
-				{ source: __filename, session },
+				{ source: __dirname, session },
 				"User account deleted"
 			);
 
@@ -127,7 +127,7 @@ export async function deleteUserData(
 			//  base de données.
 			//  Note : la suppression de ces données entraîne la suppression
 			//   en cascade de toutes les données annexes liées aux fichiers.
-			logger.info( { source: __filename, session }, "User files deleted" );
+			logger.info( { source: __dirname, session }, "User files deleted" );
 
 			await prisma.file.deleteMany( {
 				where: {

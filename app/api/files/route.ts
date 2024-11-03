@@ -51,13 +51,13 @@ export async function GET( request: NextRequest )
 
 	if ( !files )
 	{
-		logger.error( { source: __filename }, "Files not found" );
+		logger.error( { source: __dirname }, "Files not found" );
 
 		return new NextResponse( null, { status: 400 } );
 	}
 
 	// On renvoie enfin les fichiers sous forme de réponse JSON.
-	logger.debug( { source: __filename, files }, "Files retrieved" );
+	logger.debug( { source: __dirname, files }, "Files retrieved" );
 
 	return NextResponse.json( files );
 }

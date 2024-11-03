@@ -109,7 +109,7 @@ export default async function sendVerificationRequest( {
 	if ( result.rejected.length )
 	{
 		logger.error(
-			{ source: __filename, result },
+			{ source: __dirname, result },
 			"Email(s) could not be sent"
 		);
 
