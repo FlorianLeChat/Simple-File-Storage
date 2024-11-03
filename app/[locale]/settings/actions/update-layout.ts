@@ -41,7 +41,7 @@ export async function updateLayout(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return {
 			success: false,
@@ -69,7 +69,7 @@ export async function updateLayout(
 	} );
 
 	// On retourne enfin un message de succès.
-	logger.debug( { source: __filename, result }, "Layout preferences updated" );
+	logger.debug( { source: __dirname, result }, "Layout preferences updated" );
 
 	return {
 		success: true,

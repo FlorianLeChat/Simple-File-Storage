@@ -34,7 +34,7 @@ export async function addSharedUser( formData: FormData )
 
 	if ( !result.success )
 	{
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return false;
 	}
@@ -62,7 +62,7 @@ export async function addSharedUser( formData: FormData )
 
 	if ( !file )
 	{
-		logger.error( { source: __filename, result }, "File not found" );
+		logger.error( { source: __dirname, result }, "File not found" );
 
 		return false;
 	}
@@ -100,7 +100,7 @@ export async function addSharedUser( formData: FormData )
 
 	if ( !user )
 	{
-		logger.error( { source: __filename, result }, "User not found" );
+		logger.error( { source: __dirname, result }, "User not found" );
 
 		return false;
 	}
@@ -130,7 +130,7 @@ export async function addSharedUser( formData: FormData )
 
 	// On retourne enfin une valeur de succès à la fin du traitement.
 	logger.debug(
-		{ source: __filename, file, user },
+		{ source: __dirname, file, user },
 		"User added to file shares"
 	);
 

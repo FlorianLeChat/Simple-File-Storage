@@ -84,7 +84,7 @@ async function getFiles(): Promise<FileAttributes[]>
 	//  des fichiers de l'utilisateur.
 	const { extension } = session.user.preferences;
 
-	logger.debug( { source: __filename, files }, "Files found" );
+	logger.debug( { source: __dirname, files }, "Files found" );
 
 	return Promise.all(
 		files.map( async ( file ) =>

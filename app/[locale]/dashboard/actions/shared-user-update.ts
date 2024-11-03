@@ -36,7 +36,7 @@ export async function updateSharedUser( formData: FormData )
 
 	if ( !result.success )
 	{
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return false;
 	}
@@ -69,7 +69,7 @@ export async function updateSharedUser( formData: FormData )
 	} );
 
 	// On retourne enfin une valeur de succès à la fin du traitement.
-	logger.debug( { source: __filename, share }, "Shared user updated" );
+	logger.debug( { source: __dirname, share }, "Shared user updated" );
 
 	return share.count > 0;
 }

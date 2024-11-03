@@ -39,7 +39,7 @@ export async function signUpAccount(
 	{
 		// Si les données du formulaire sont invalides, on affiche le
 		//  premier code d'erreur rencontré.
-		logger.error( { source: __filename, result }, "Invalid form data" );
+		logger.error( { source: __dirname, result }, "Invalid form data" );
 
 		return {
 			success: false,
@@ -60,7 +60,7 @@ export async function signUpAccount(
 		// Si c'est le cas, on indique à l'utilisateur que l'adresse
 		//  électronique fournie est déjà utilisée.
 		logger.error(
-			{ source: __filename, email: result.output.email },
+			{ source: __dirname, email: result.output.email },
 			"Email already used"
 		);
 
@@ -90,7 +90,7 @@ export async function signUpAccount(
 		} );
 
 		logger.info(
-			{ source: __filename, email: result.output.email },
+			{ source: __dirname, email: result.output.email },
 			"Sign up with email"
 		);
 
@@ -100,7 +100,7 @@ export async function signUpAccount(
 			//  semble ne pas renvoyer de réponse, on affiche un message
 			//  d'erreur sur la page d'authentification.
 			logger.error(
-				{ source: __filename, email: result.output.email },
+				{ source: __dirname, email: result.output.email },
 				"Email validation request failed"
 			);
 
@@ -114,7 +114,7 @@ export async function signUpAccount(
 	// On retourne enfin un message de succès à l'utilisateur afin
 	//  qu'il puisse valider son adresse électronique.
 	logger.info(
-		{ source: __filename, email: result.output.email },
+		{ source: __dirname, email: result.output.email },
 		"Email validation request sent"
 	);
 

@@ -31,7 +31,7 @@ export async function GET()
 
 	// On retourne enfin les notifications sous forme de réponse JSON.
 	logger.debug(
-		{ source: __filename, notifications },
+		{ source: __dirname, notifications },
 		"Notifications retrieved"
 	);
 

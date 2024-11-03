@@ -34,7 +34,7 @@ export default function Layout( { children }: { children: ReactNode } )
 	//  dans ce fichier, elles sont ainsi utilisées dans les routes dynamiques
 	//  en appelant de nouveau ces mêmes fonctions car elles sont désormais en cache.
 	logger.debug(
-		{ source: __filename, fonts: [ inter, poppins, roboto ] },
+		{ source: __dirname, fonts: [ inter, poppins, roboto ] },
 		"Fonts loaded"
 	);
 
