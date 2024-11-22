@@ -31,8 +31,7 @@ RUN echo "*/5 * * * * node /usr/src/app/scripts/expired-files.js > /dev/null 2>&
 RUN echo "*/5 * * * * node /usr/src/app/scripts/outdated-notifications > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
 
 # Add wait script to wait for other services to be ready
-ADD https://github.com/ufoscout/docker-compose-wait/releases/latest/download/wait /wait
-RUN chmod +x /wait
+ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest/download/wait /wait
 
 # Use non-root user
 USER node
