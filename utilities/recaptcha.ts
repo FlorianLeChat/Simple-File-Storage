@@ -5,9 +5,12 @@
 
 "use client";
 
+import { toast } from "sonner";
+
 export default async function serverAction(
 	action: ( payload: FormData ) => void,
-	formData: FormData
+	formData: FormData,
+	messages: ( key: string ) => string
 )
 {
 	// On vérifie d'abord si le service reCAPTCHA est présent ou non.
@@ -16,9 +19,33 @@ export default async function serverAction(
 	//   ne sont pas encore chargés dans le navigateur de l'utilisateur.
 	if ( typeof window.grecaptcha === "undefined" )
 	{
-		// Dans ce cas, on traite la requête comme si le service reCAPTCHA n'était
-		//  pas activé et on laisse le serveur répondre à l'utilisateur.
-		return action( formData );
+		// Premier cas de figure : le serveur utilise reCAPTCHA mais le client
+		//  n'a pas encore chargé les services de Google reCAPTCHA ou ils ont été
+		//  explicitement désactivés par l'utilisateur.
+		if ( process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true" )
+		{
+			toast.error( messages( "errors.recaptcha_failed" ), {
+				duration: 10000,
+				description: messages( "errors.recaptcha_error" )
+			} );
+
+			return false;
+		}
+
+		// Deuxième cas de figure : le serveur n'utilise pas reCAPTCHA.
+		//  On exécute alors l'action côté serveur sans vérification.
+		try
+		{
+			return action( formData );
+		}
+		catch
+		{
+			toast.error( messages( "errors.internal_error" ), {
+				description: messages( "errors.server_error" )
+			} );
+
+			return false;
+		}
 	}
 
 	// On créé après une promesse afin de gérer le chargement des services de

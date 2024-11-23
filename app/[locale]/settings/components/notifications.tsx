@@ -110,7 +110,7 @@ export default function Notifications( { session }: { session: Session } )
 					// Exécution de l'action côté serveur.
 					startTransition( () =>
 					{
-						serverAction( updateAction, formData );
+						serverAction( updateAction, formData, messages );
 					} );
 				}}
 				className="space-y-8"

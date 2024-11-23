@@ -4,7 +4,6 @@
 
 "use client";
 
-import { toast } from "sonner";
 import { useMessages } from "next-intl";
 import { usePathname } from "next/navigation";
 import { GoogleTagManager } from "@next/third-parties/google";
@@ -137,18 +136,6 @@ export default function CookieConsent()
 					setAnalytics(
 						process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true"
 					);
-				}
-
-				// Google reCAPTCHA.
-				if (
-					!cookie.categories.includes( "security" )
-					&& process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true"
-				)
-				{
-					toast.warning( messages.form.errors.recaptcha_failed, {
-						duration: 10000,
-						description: messages.form.errors.recaptcha_error
-					} );
 				}
 			}
 		} );

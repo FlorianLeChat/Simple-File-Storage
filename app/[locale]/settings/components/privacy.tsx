@@ -113,7 +113,7 @@ export default function Privacy()
 					// Exécution de l'action côté serveur.
 					startTransition( () =>
 					{
-						serverAction( deleteAction, formData );
+						serverAction( deleteAction, formData, formMessages );
 					} );
 				}}
 				className="space-y-8"
