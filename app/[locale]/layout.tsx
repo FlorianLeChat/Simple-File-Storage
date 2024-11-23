@@ -254,6 +254,7 @@ export default async function Layout( {
 				} as CSSProperties
 			}
 			className={`${ font } ${ color } ${ factory ? theme : "light" } antialiased`}
+			suppressHydrationWarning
 		>
 			{/* En-tête de la page */}
 			<head>
