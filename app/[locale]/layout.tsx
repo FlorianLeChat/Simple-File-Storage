@@ -240,6 +240,7 @@ export default async function Layout( {
 	const theme = session?.user.preferences?.theme ?? "light";
 	const color = session?.user.preferences?.color ?? "blue";
 	const factory = session?.user.preferences?.default ?? true;
+	const isDarkMode = theme === "dark";
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -253,7 +254,7 @@ export default async function Layout( {
 					"--roboto-font": roboto.style.fontFamily
 				} as CSSProperties
 			}
-			className={`${ font } ${ color } ${ factory ? theme : "light" } antialiased`}
+			className={`${ font } ${ color } ${ factory ? theme : "light" } antialiased ${ isDarkMode ? "cc--darkmode" : "" }`}
 			suppressHydrationWarning
 		>
 			{/* En-tête de la page */}
@@ -270,6 +271,10 @@ export default async function Layout( {
 								element.classList.remove("light", "dark");
 								element.classList.add(target);
 								element.style.colorScheme = target;
+
+								if (target === "dark") {
+									element.classList.add("cc--darkmode");
+								}
 							`
 						}}
 					/>
