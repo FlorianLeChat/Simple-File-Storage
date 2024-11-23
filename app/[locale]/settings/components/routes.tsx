@@ -46,6 +46,7 @@ export default function Routes()
 				variant="ghost"
 				data-cc="show-preferencesModal"
 				className="h-auto min-h-10 justify-start text-left"
+				suppressHydrationWarning
 			>
 				<Cookie className="mr-2" />
 

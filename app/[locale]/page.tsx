@@ -93,6 +93,7 @@ export default async function Page( {
 						variant="outline"
 						data-cc="show-preferencesModal"
 						className="justify-start text-left sm:mr-16"
+						suppressHydrationWarning
 					>
 						<Cookie />
 
