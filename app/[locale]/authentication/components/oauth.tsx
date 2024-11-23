@@ -87,7 +87,7 @@ export default function OAuthForm()
 				{
 					startTransition( () =>
 					{
-						serverAction( signInAction, formData );
+						serverAction( signInAction, formData, messages );
 					} );
 				}}
 			>
@@ -125,7 +125,7 @@ export default function OAuthForm()
 				{
 					startTransition( () =>
 					{
-						serverAction( signInAction, formData );
+						serverAction( signInAction, formData, messages );
 					} );
 				}}
 			>

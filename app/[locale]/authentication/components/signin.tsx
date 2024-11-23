@@ -111,7 +111,7 @@ export default function SignInForm()
 					// Exécution de l'action côté serveur.
 					startTransition( () =>
 					{
-						serverAction( signInAction, formData );
+						serverAction( signInAction, formData, messages );
 					} );
 				}}
 				className="space-y-6"

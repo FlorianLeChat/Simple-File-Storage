@@ -97,7 +97,11 @@ export default function RowActions( {
 
 		// Envoi de la requête au serveur et
 		//  traitement de la réponse.
-		const files = ( await serverAction( changeFileStatus, form ) ) as string[];
+		const files = ( await serverAction(
+			changeFileStatus,
+			form,
+			formMessages
+		) ) as string[];
 
 		// Fin de l'état de chargement.
 		setLoading( false );
@@ -163,7 +167,11 @@ export default function RowActions( {
 
 		// Envoi de la requête au serveur et
 		//  traitement de la réponse.
-		const files = ( await serverAction( changeFileStatus, form ) ) as string[];
+		const files = ( await serverAction(
+			changeFileStatus,
+			form,
+			formMessages
+		) ) as string[];
 
 		// Fin de l'état de chargement.
 		setLoading( false );
@@ -221,7 +229,11 @@ export default function RowActions( {
 
 		// Envoi de la requête au serveur et
 		//  traitement de la réponse.
-		const files = ( await serverAction( renameFile, form ) ) as string[];
+		const files = ( await serverAction(
+			renameFile,
+			form,
+			formMessages
+		) ) as string[];
 
 		// Fin de l'état de chargement.
 		setLoading( false );
@@ -277,7 +289,11 @@ export default function RowActions( {
 
 		// Envoi de la requête au serveur et
 		//  traitement de la réponse.
-		const files = ( await serverAction( deleteFile, form ) ) as string[];
+		const files = ( await serverAction(
+			deleteFile,
+			form,
+			formMessages
+		) ) as string[];
 
 		// Fin de l'état de chargement.
 		setLoading( false );
@@ -331,7 +347,7 @@ export default function RowActions( {
 
 		// Envoi de la requête au serveur et
 		//  traitement de la réponse.
-		const state = await serverAction( deleteSharedUser, form );
+		const state = await serverAction( deleteSharedUser, form, formMessages );
 
 		// Fin de l'état de chargement.
 		setLoading( false );

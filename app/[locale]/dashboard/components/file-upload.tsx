@@ -379,7 +379,7 @@ export default function FileUpload( {
 							// Exécution de l'action côté serveur.
 							startTransition( () =>
 							{
-								serverAction( uploadAction, formData );
+								serverAction( uploadAction, formData, formMessages );
 							} );
 						}}
 					>
@@ -567,7 +567,9 @@ export default function FileUpload( {
 													name={field.name}
 													checked={field.value}
 													disabled={isPending}
-													onCheckedChange={( value ) =>
+													onCheckedChange={(
+														value
+													) =>
 													{
 														if ( value )
 														{
@@ -718,7 +720,8 @@ export default function FileUpload( {
 													disabled={( date ) => date > oneYear
 														|| date < today}
 													onSelect={( value ) => field.onChange(
-														value?.toISOString() ?? ""
+														value?.toISOString()
+																?? ""
 													)}
 													className="rounded-md border"
 													initialFocus
