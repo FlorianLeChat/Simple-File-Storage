@@ -47,7 +47,7 @@
 
 		"jsx-a11y/html-has-lang": "off", // Layout avec Google Fonts
 
-		"tailwindcss/no-custom-classname": ["warn", { "whitelist": ["toaster"] }], // https://sonner.emilkowal.ski/ + https://ui.shadcn.com/docs/components/sonner
+		"tailwindcss/no-custom-classname": ["warn", { "whitelist": ["toaster", "cc--darkmode"] }], // https://sonner.emilkowal.ski/ + https://ui.shadcn.com/docs/components/sonner
 
 		"@typescript-eslint/no-shadow": "error",
 
