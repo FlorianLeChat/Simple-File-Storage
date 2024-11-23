@@ -103,7 +103,7 @@ export default function SignUpForm()
 					// Exécution de l'action côté serveur.
 					startTransition( () =>
 					{
-						serverAction( signUpAction, formData );
+						serverAction( signUpAction, formData, messages );
 					} );
 				}}
 				className="space-y-6"

@@ -28,7 +28,8 @@ export default function UserMenu( { session }: { session: Session } )
 {
 	// Déclaration des variables d'état.
 	const router = useRouter();
-	const messages = useTranslations( "header" );
+	const formMessages = useTranslations( "form" );
+	const headerMessages = useTranslations( "header" );
 	const [ isOpen, setOpen ] = useState( false );
 
 	// Déclaration des constantes.
@@ -141,9 +142,7 @@ export default function UserMenu( { session }: { session: Session } )
 							isAdmin ? "text-destructive" : "text-primary"
 						}`}
 					>
-						{isAdmin
-							? messages( "admin_account" )
-							: messages( "user_account" )}
+						{isAdmin ? headerMessages( "admin_account" ) : headerMessages( "user_account" )}
 					</p>
 				</DropdownMenuLabel>
 
@@ -154,7 +153,7 @@ export default function UserMenu( { session }: { session: Session } )
 				<DropdownMenuGroup>
 					<Link href="/dashboard">
 						<DropdownMenuItem>
-							{messages( "dashboard" )}
+							{headerMessages( "dashboard" )}
 
 							<DropdownMenuShortcut>
 								ALT/⌥ + D
@@ -164,7 +163,7 @@ export default function UserMenu( { session }: { session: Session } )
 
 					<Link href="/settings">
 						<DropdownMenuItem>
-							{messages( "settings" )}
+							{headerMessages( "settings" )}
 
 							<DropdownMenuShortcut>
 								ALT/⌥ + S
@@ -179,10 +178,10 @@ export default function UserMenu( { session }: { session: Session } )
 				<DropdownMenuItem
 					onClick={() =>
 					{
-						serverAction( signOutAccount, new FormData() );
+						serverAction( signOutAccount, new FormData(), formMessages );
 					}}
 				>
-					{messages( "logout" )}
+					{headerMessages( "logout" )}
 					<DropdownMenuShortcut>ALT/⌥ + L</DropdownMenuShortcut>
 				</DropdownMenuItem>
 			</DropdownMenuContent>
