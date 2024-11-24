@@ -10,6 +10,7 @@ import { Cookie } from "lucide-react";
 import { routes } from "@/config/routes";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { showPreferences } from "vanilla-cookieconsent";
 import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function Routes()
@@ -44,7 +45,7 @@ export default function Routes()
 			<Button
 				type="button"
 				variant="ghost"
-				data-cc="show-preferencesModal"
+				onClick={() => showPreferences()}
 				className="h-auto min-h-10 justify-start text-left"
 				suppressHydrationWarning
 			>
