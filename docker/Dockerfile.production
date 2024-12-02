@@ -26,9 +26,9 @@ RUN --mount=type=cache,target=.npm \
 	npm ci && chown -R node:node ./node_modules
 
 # Add some cronjobs for automated tasks
-RUN npx tsc --skipLibCheck scripts/create-fake-accounts.ts scripts/expired-files.ts scripts/outdated-notifications.ts
-RUN echo "*/5 * * * * node /usr/src/app/scripts/expired-files.js > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
-RUN echo "*/5 * * * * node /usr/src/app/scripts/outdated-notifications > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
+RUN npx tsc --skipLibCheck scripts/create-fake-accounts.ts scripts/expired-files.ts scripts/outdated-notifications.ts && \
+	echo "*/5 * * * * node /usr/src/app/scripts/expired-files.js > /dev/null 2>&1" >> /var/spool/cron/crontabs/node && \
+	echo "*/5 * * * * node /usr/src/app/scripts/outdated-notifications > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
 
 # Add wait script to wait for other services to be ready
 ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest/download/wait /wait
@@ -36,13 +36,10 @@ ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest
 # Use non-root user
 USER node
 
-# Build the entire project
-RUN npm run build
-
-# Remove all development dependencies
-RUN npm prune --production
-
-# Create a custom entrypoint script
-RUN echo "/wait && npm run migrate && supercronic /etc/crontabs/node & npm run start" > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
+# Build the entire project and remove all development dependencies
+#  before creating the custom entrypoint script
+RUN npm run build && npm prune --production && \
+	echo "/wait && npm run migrate && supercronic /etc/crontabs/node & npm run start" > docker/entrypoint.sh && \
+	chmod +x docker/entrypoint.sh
 
 CMD ["docker/entrypoint.sh"]
