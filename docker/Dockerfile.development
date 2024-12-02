@@ -26,9 +26,9 @@ RUN --mount=type=cache,target=.npm \
 	npm ci && chown -R node:node ./node_modules
 
 # Add some cronjobs for automated tasks
-RUN npx tsc --skipLibCheck scripts/create-fake-accounts.ts scripts/expired-files.ts scripts/outdated-notifications.ts
-RUN echo "*/5 * * * * node /usr/src/app/scripts/expired-files.js > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
-RUN echo "*/5 * * * * node /usr/src/app/scripts/outdated-notifications > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
+RUN npx tsc --skipLibCheck scripts/create-fake-accounts.ts scripts/expired-files.ts scripts/outdated-notifications.ts && \
+	echo "*/5 * * * * node /usr/src/app/scripts/expired-files.js > /dev/null 2>&1" >> /var/spool/cron/crontabs/node && \
+	echo "*/5 * * * * node /usr/src/app/scripts/outdated-notifications > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
 
 # Add wait script to wait for other services to be ready
 ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest/download/wait /wait
@@ -37,9 +37,9 @@ ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest
 USER node
 
 # Find and replace some default environment variables
-RUN sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env
-
-# Create a custom entrypoint script
-RUN echo "/wait && npm run migrate && node scripts/create-fake-accounts.js && supercronic /etc/crontabs/node & npm run dev" > docker/entrypoint.sh && chmod +x docker/entrypoint.sh
+#  before creating the custom entrypoint script
+RUN sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env && \
+	echo "/wait && npm run migrate && node scripts/create-fake-accounts.js && supercronic /etc/crontabs/node & npm run dev" > docker/entrypoint.sh && \
+	chmod +x docker/entrypoint.sh
 
 CMD ["docker/entrypoint.sh"]
