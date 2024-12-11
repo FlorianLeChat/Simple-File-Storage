@@ -59,9 +59,9 @@ import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function FileUpload( {
 	states
-}: {
+}: Readonly<{
 	states: TableMeta<FileAttributes>;
-} )
+}> )
 {
 	// Déclaration des variables d'état.
 	const session = useSession();
@@ -69,8 +69,8 @@ export default function FileUpload( {
 	const modalMessages = useTranslations( "modals" );
 	const [ key, setKey ] = useState( "" );
 	const [ quota, setQuota ] = useState( 0 );
-	const [ isOpen, setOpen ] = useState( false );
-	const [ isEncrypted, setEncrypted ] = useState( false );
+	const [ isOpen, setIsOpen ] = useState( false );
+	const [ isEncrypted, setIsEncrypted ] = useState( false );
 	const [ uploadState, uploadAction, isPending ] = useActionState( uploadFiles, {
 		success: true,
 		reason: "",
@@ -257,8 +257,8 @@ export default function FileUpload( {
 		//  avant de réinitialiser le formulaire en cas de succès.
 		if ( success )
 		{
-			setOpen( false );
-			setEncrypted( false );
+			setIsOpen( false );
+			setIsEncrypted( false );
 
 			form.reset();
 
@@ -324,7 +324,7 @@ export default function FileUpload( {
 				if ( !isPending )
 				{
 					form.reset();
-					setOpen( state );
+					setIsOpen( state );
 				}
 			}}
 		>
@@ -418,10 +418,8 @@ export default function FileUpload( {
 										<Input
 											{...field}
 											type="file"
-											accept={
-												process.env
-													.NEXT_PUBLIC_ACCEPTED_FILE_TYPES
-											}
+											value={undefined}
+											accept={process.env.NEXT_PUBLIC_ACCEPTED_FILE_TYPES}
 											multiple
 											disabled={isPending}
 											className="file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
@@ -442,13 +440,9 @@ export default function FileUpload( {
 												{modalMessages(
 													"file-upload.quota",
 													{
-														percent:
-															percent.toLocaleString(),
-														current:
-															formatSize( quota ),
-														max: formatSize(
-															maxQuota
-														)
+														percent: percent.toLocaleString(),
+														current: formatSize( quota ),
+														max: formatSize( maxQuota )
 													}
 												)}
 											</p>
@@ -567,9 +561,7 @@ export default function FileUpload( {
 													name={field.name}
 													checked={field.value}
 													disabled={isPending}
-													onCheckedChange={(
-														value
-													) =>
+													onCheckedChange={( value ) =>
 													{
 														if ( value )
 														{
@@ -584,7 +576,7 @@ export default function FileUpload( {
 														// Mise à jour de l'état de chiffrement.
 														field.onChange( value );
 
-														setEncrypted( value );
+														setIsEncrypted( value );
 													}}
 												/>
 											</FormControl>
@@ -645,17 +637,14 @@ export default function FileUpload( {
 															variant: "outline"
 														} ),
 														"w-full justify-start text-left font-normal",
-														!field.value
-															&& "text-muted-foreground"
+														!field.value && "text-muted-foreground"
 													)}
 												>
 													<CalendarDays className="mr-2 size-4" />
 
 													{field.value
 														? format(
-															new Date(
-																field.value
-															),
+															new Date( field.value ),
 															"PPP",
 															{
 																locale: dateFormat
@@ -670,10 +659,7 @@ export default function FileUpload( {
 											<PopoverContent className="flex w-auto flex-col space-y-2 p-2">
 												<Select
 													onValueChange={( value ) => field.onChange(
-														addDays(
-															new Date(),
-															Number( value )
-														).toISOString()
+														addDays( new Date(), Number( value ) ).toISOString()
 													)}
 												>
 													<SelectTrigger>
@@ -717,11 +703,9 @@ export default function FileUpload( {
 													selected={
 														new Date( field.value )
 													}
-													disabled={( date ) => date > oneYear
-														|| date < today}
+													disabled={( date ) => date > oneYear || date < today}
 													onSelect={( value ) => field.onChange(
-														value?.toISOString()
-																?? ""
+														value?.toISOString() ?? ""
 													)}
 													className="rounded-md border"
 													initialFocus
