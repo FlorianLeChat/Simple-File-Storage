@@ -46,15 +46,10 @@ export default {
 					"0%, 100%": { transform: "rotate(0)" },
 					"20%, 60%": { transform: "rotate(-25deg)" },
 					"40%, 80%": { transform: "rotate(10deg)" }
-				},
-				"caret-blink": {
-					"0%, 70%, 100%": { opacity: "1" },
-					"20%, 50%": { opacity: "0" }
 				}
 			},
 			animation: {
-				github: "github 560ms ease-in-out",
-				"caret-blink": "caret-blink 1.25s ease-out infinite"
+				github: "github 560ms ease-in-out"
 			}
 		}
 	},
