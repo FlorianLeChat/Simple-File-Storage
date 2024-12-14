@@ -19,12 +19,9 @@ import { colors } from "@/config/colors";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import type { Session } from "next-auth";
-import { useEffect,
-	useActionState,
-	startTransition,
-	type CSSProperties } from "react";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { useEffect, useActionState, type CSSProperties } from "react";
 
 import { Button } from "../../components/ui/button";
 import { Select,
@@ -46,7 +43,7 @@ import { Form,
 import { updateLayout } from "../actions/update-layout";
 import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 
-export default function Appearance( { session }: { session: Session } )
+export default function Appearance( { session }: Readonly<{ session: Session }> )
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
@@ -133,10 +130,7 @@ export default function Appearance( { session }: { session: Session } )
 					formData.append( "theme", form.getValues( "theme" ) );
 
 					// Exécution de l'action côté serveur.
-					startTransition( () =>
-					{
-						serverAction( updateAction, formData, messages );
-					} );
+					serverAction( updateAction, formData, messages );
 				}}
 				className="space-y-8"
 			>

@@ -12,7 +12,7 @@ import serverAction from "@/utilities/recaptcha";
 import { Mail, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useEffect, useActionState, startTransition } from "react";
+import { useEffect, useActionState } from "react";
 
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -101,10 +101,7 @@ export default function SignUpForm()
 					}
 
 					// Exécution de l'action côté serveur.
-					startTransition( () =>
-					{
-						serverAction( signUpAction, formData, messages );
-					} );
+					serverAction( signUpAction, formData, messages );
 				}}
 				className="space-y-6"
 			>
