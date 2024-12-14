@@ -11,6 +11,9 @@ import { routes } from "@/config/routes";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { showPreferences } from "vanilla-cookieconsent";
+
+import BlurIn from "../../components/ui/thirdparty/blur-in";
+import FadeText from "../../components/ui/thirdparty/fade-text";
 import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function Routes()
@@ -35,9 +38,17 @@ export default function Routes()
 						"h-auto min-h-[2.5rem] justify-start"
 					)}
 				>
-					{route.icon}
+					<BlurIn
+						as="div"
+						duration={0.4}
+						className="text-black dark:text-white"
+					>
+						{route.icon}
+					</BlurIn>
 
-					{messages( `${ route.id }_title` )}
+					<FadeText as="span" direction="left">
+						{messages( `${ route.id }_title` )}
+					</FadeText>
 				</Link>
 			) )}
 
@@ -49,9 +60,15 @@ export default function Routes()
 				className="h-auto min-h-10 justify-start text-left"
 				suppressHydrationWarning
 			>
-				<Cookie className="mr-2" />
+				<BlurIn
+					as="div"
+					duration={0.4}
+					className="text-black dark:text-white"
+				>
+					<Cookie className="mr-2" />
+				</BlurIn>
 
-				<span>
+				<FadeText as="span" direction="left">
 					{messages( "cookies_title" )}
 
 					<small className="hidden lg:block">
@@ -59,7 +76,7 @@ export default function Routes()
 							u: ( chunks ) => <u>{chunks}</u>
 						} )}
 					</small>
-				</span>
+				</FadeText>
 			</Button>
 		</nav>
 	);

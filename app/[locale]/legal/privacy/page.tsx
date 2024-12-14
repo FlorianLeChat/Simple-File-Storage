@@ -3,6 +3,7 @@
 //
 
 // Importation des dépendances.
+import { lazy } from "react";
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 
@@ -11,6 +12,8 @@ import { generateMetadata as getMetadata } from "../../layout";
 
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
+
+const FadeText = lazy( () => import( "../../components/ui/thirdparty/fade-text" ) );
 
 // Déclaration des propriétés de la page.
 export async function generateMetadata(): Promise<Metadata>
@@ -26,9 +29,9 @@ export async function generateMetadata(): Promise<Metadata>
 // Affichage de la page.
 export default async function Page( {
 	params
-}: {
+}: Readonly<{
 	params: Promise<{ locale: string }>;
-} )
+}> )
 {
 	// Définition de la langue de la page.
 	const { locale } = await params;
@@ -44,13 +47,22 @@ export default async function Page( {
 		<main className="container mx-auto max-w-[1440px] p-8 max-md:p-4 max-md:pb-8">
 			{/* En-tête de la page */}
 			<header>
-				<h2 className="text-2xl font-bold tracking-tight">
+				<FadeText
+					as="h2"
+					className="text-2xl font-bold tracking-tight"
+					direction="left"
+				>
 					{messages( "legal.privacy_title" )}
-				</h2>
+				</FadeText>
 
-				<p className="text-muted-foreground">
+				<FadeText
+					as="p"
+					delay={0.2}
+					className="text-muted-foreground"
+					direction="left"
+				>
 					{messages( "legal.privacy_description" )}
-				</p>
+				</FadeText>
 			</header>
 
 			{/* Barre verticale de séparation */}

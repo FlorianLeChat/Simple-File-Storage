@@ -13,6 +13,8 @@ import { Settings, LayoutDashboard } from "lucide-react";
 
 import GitHubDark from "@/public/assets/images/github-dark.png";
 import GitHubLight from "@/public/assets/images/github-light.png";
+
+import BlurIn from "./ui/thirdparty/blur-in";
 import { NavigationMenu,
 	NavigationMenuItem,
 	NavigationMenuLink,
@@ -24,10 +26,10 @@ import { NavigationMenu,
 export default function Navigation( {
 	theme,
 	source
-}: {
+}: Readonly<{
 	theme: string;
 	source: string;
-} )
+}> )
 {
 	// Déclaration des variables d'état.
 	const headerMessages = useTranslations( "header" );
@@ -58,11 +60,21 @@ export default function Navigation( {
 							href="/dashboard"
 							className={navigationMenuTriggerStyle()}
 						>
-							<LayoutDashboard className="size-5 md:hidden" />
+							<BlurIn
+								as="div"
+								duration={0.4}
+								className="text-black dark:text-white"
+							>
+								<LayoutDashboard className="size-5 md:hidden" />
+							</BlurIn>
 
-							<span className="hidden md:inline">
+							<BlurIn
+								as="span"
+								duration={0.4}
+								className="hidden text-black dark:text-white md:inline"
+							>
 								{headerMessages( "dashboard" )}
-							</span>
+							</BlurIn>
 						</Link>
 					</NavigationMenuLink>
 				</NavigationMenuItem>
@@ -73,11 +85,21 @@ export default function Navigation( {
 						id="settings"
 						aria-controls="settings"
 					>
-						<Settings className="size-5 md:hidden" />
+						<BlurIn
+							as="div"
+							duration={0.4}
+							className="text-black dark:text-white"
+						>
+							<Settings className="size-5 md:hidden" />
+						</BlurIn>
 
-						<span className="hidden md:inline">
+						<BlurIn
+							as="span"
+							duration={0.4}
+							className="hidden text-black dark:text-white md:inline"
+						>
 							{headerMessages( "settings" )}
-						</span>
+						</BlurIn>
 					</NavigationMenuTrigger>
 
 					<NavigationMenuContent>
