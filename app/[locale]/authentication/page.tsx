@@ -20,9 +20,14 @@ import { Tabs,
 	TabsTrigger } from "../components/ui/tabs";
 import { Separator } from "../components/ui/separator";
 
+const BlurIn = lazy( () => import( "../components/ui/thirdparty/blur-in" ) );
+const FadeText = lazy( () => import( "../components/ui/thirdparty/fade-text" ) );
 const OAuthForm = lazy( () => import( "./components/oauth" ) );
 const SignUpForm = lazy( () => import( "./components/signup" ) );
 const SignInForm = lazy( () => import( "./components/signin" ) );
+const WordPullUp = lazy(
+	() => import( "../components/ui/thirdparty/word-pull-up" )
+);
 
 // Déclaration des propriétés de la page.
 export async function generateMetadata(): Promise<Metadata>
@@ -38,9 +43,9 @@ export async function generateMetadata(): Promise<Metadata>
 // Affichage de la page.
 export default async function Page( {
 	params
-}: {
+}: Readonly<{
 	params: Promise<{ locale: string }>;
-} )
+}> )
 {
 	// Définition de la langue de la page.
 	const { locale } = await params;
@@ -87,13 +92,19 @@ export default async function Page( {
 				{/* Formulaire d'inscription */}
 				<TabsContent value="signUp" className="space-y-6">
 					{/* Titre et description du formulaire */}
-					<h2 className="text-xl font-semibold tracking-tight">
-						{messages( "authentication.register_title" )}
-					</h2>
+					<WordPullUp
+						as="h2"
+						words={messages( "authentication.register_title" )}
+						className="text-xl font-semibold tracking-tight"
+					/>
 
-					<p className="text-sm text-muted-foreground">
+					<FadeText
+						as="p"
+						className="text-sm text-muted-foreground"
+						direction="up"
+					>
 						{messages( "authentication.register_description" )}
-					</p>
+					</FadeText>
 
 					<SignUpForm />
 				</TabsContent>
@@ -101,13 +112,19 @@ export default async function Page( {
 				{/* Formulaire de connexion */}
 				<TabsContent value="signIn" className="space-y-6">
 					{/* Titre et description du formulaire */}
-					<h2 className="text-xl font-semibold tracking-tight">
-						{messages( "authentication.login_title" )}
-					</h2>
+					<WordPullUp
+						as="h2"
+						words={messages( "authentication.login_title" )}
+						className="text-xl font-semibold tracking-tight"
+					/>
 
-					<p className="text-sm text-muted-foreground">
+					<FadeText
+						as="p"
+						className="text-sm text-muted-foreground"
+						direction="up"
+					>
 						{messages( "authentication.login_description" )}
-					</p>
+					</FadeText>
 
 					<SignInForm />
 				</TabsContent>
@@ -127,7 +144,7 @@ export default async function Page( {
 				<OAuthForm />
 
 				{/* Conditions d'utilisation et politique de confidentialité */}
-				<p className="px-8 text-center text-sm text-muted-foreground">
+				<BlurIn as="p" className="px-8 text-center text-sm text-muted-foreground">
 					{messages.rich( "authentication.accept_terms", {
 						a1: ( chunks ) => (
 							<Link
@@ -148,7 +165,7 @@ export default async function Page( {
 							</Link>
 						)
 					} )}
-				</p>
+				</BlurIn>
 			</Tabs>
 		</>
 	);

@@ -15,6 +15,11 @@ import { generateMetadata as getMetadata } from "./layout";
 
 // Importation des composants.
 const Header = lazy( () => import( "./components/header" ) );
+const BlurIn = lazy( () => import( "./components/ui/thirdparty/blur-in" ) );
+const FadeText = lazy( () => import( "./components/ui/thirdparty/fade-text" ) );
+const WordPullUp = lazy(
+	() => import( "./components/ui/thirdparty/word-pull-up" )
+);
 
 // Déclaration des propriétés de la page.
 export async function generateMetadata(): Promise<Metadata>
@@ -30,9 +35,9 @@ export async function generateMetadata(): Promise<Metadata>
 // Affichage de la page.
 export default async function Page( {
 	params
-}: {
+}: Readonly<{
 	params: Promise<{ locale: string }>;
-} )
+}> )
 {
 	// Définition de la langue de la page.
 	const { locale } = await params;
@@ -52,85 +57,194 @@ export default async function Page( {
 
 			{/* Contenu de la page */}
 			<section className="container mx-auto mb-4 p-4 text-center">
-				<h2 className="hyphens-auto bg-gradient-to-r bg-clip-text text-4xl font-bold tracking-tighter dark:from-white dark:to-gray-500 dark:text-transparent sm:text-5xl xl:text-6xl">
-					{messages( "index.title" )}
-				</h2>
+				<WordPullUp
+					as="h2"
+					words={messages( "index.title" )}
+					className="hyphens-auto bg-clip-text text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl"
+				/>
 
-				<p className="mx-auto mt-2 max-w-[600px] md:text-xl">
+				<FadeText
+					as="p"
+					delay={0.8}
+					className="mx-auto mt-2 max-w-[600px] md:text-xl"
+					direction="up"
+				>
 					{messages( "index.subtitle" )}
-				</p>
+				</FadeText>
 
 				<ul className="grid gap-4 max-xl:mt-8 md:grid-cols-3 md:gap-8 xl:mt-[5%]">
 					<li className="space-y-2 p-4">
-						<Lock className="mx-auto mb-2 size-6" />
+						<BlurIn
+							as="div"
+							delay={0.9}
+							duration={0.4}
+							className="text-black dark:text-white"
+						>
+							<Lock className="mx-auto mb-2 size-6" />
+						</BlurIn>
 
-						<h2 className="text-xl font-bold">
+						<FadeText
+							as="h2"
+							delay={0.9}
+							className="text-xl font-bold"
+							direction="down"
+						>
 							{messages( "index.features.title_1" )}
-						</h2>
+						</FadeText>
 
-						<p className="text-muted-foreground">
+						<FadeText
+							as="p"
+							delay={1.1}
+							className="text-muted-foreground"
+							direction="down"
+						>
 							{messages( "index.features.description_1" )}
-						</p>
+						</FadeText>
 					</li>
 
 					<li className="space-y-2 p-4">
-						<Smile className="mx-auto mb-2 size-6" />
+						<BlurIn
+							as="div"
+							delay={1.2}
+							duration={0.4}
+							className="text-black dark:text-white"
+						>
+							<Smile className="mx-auto mb-2 size-6" />
+						</BlurIn>
 
-						<h2 className="text-xl font-bold">
+						<FadeText
+							as="h2"
+							delay={1.2}
+							className="text-xl font-bold"
+							direction="down"
+						>
 							{messages( "index.features.title_2" )}
-						</h2>
+						</FadeText>
 
-						<p className="text-muted-foreground">
+						<FadeText
+							as="p"
+							delay={1.4}
+							className="text-muted-foreground"
+							direction="down"
+						>
 							{messages( "index.features.description_2" )}
-						</p>
+						</FadeText>
 					</li>
 
 					<li className="space-y-2 p-4">
-						<Eye className="mx-auto mb-2 size-6" />
+						<BlurIn
+							as="div"
+							delay={1.5}
+							duration={0.4}
+							className="text-black dark:text-white"
+						>
+							<Eye className="mx-auto mb-2 size-6" />
+						</BlurIn>
 
-						<h2 className="text-xl font-bold">
+						<FadeText
+							as="h2"
+							delay={1.5}
+							className="text-xl font-bold"
+							direction="down"
+						>
 							{messages( "index.features.title_3" )}
-						</h2>
+						</FadeText>
 
-						<p className="text-muted-foreground">
+						<FadeText
+							as="p"
+							delay={1.7}
+							className="text-muted-foreground"
+							direction="down"
+						>
 							{messages( "index.features.description_3" )}
-						</p>
+						</FadeText>
 					</li>
 
 					<li className="space-y-2 p-4">
-						<Zap className="mx-auto mb-2 size-6" />
+						<BlurIn
+							as="div"
+							delay={1.8}
+							duration={0.4}
+							className="text-black dark:text-white"
+						>
+							<Zap className="mx-auto mb-2 size-6" />
+						</BlurIn>
 
-						<h2 className="text-xl font-bold">
-							{messages( "index.features.title_4" )}
-						</h2>
+						<FadeText
+							as="h2"
+							delay={1.8}
+							className="text-xl font-bold"
+							direction="down"
+						>
+							{messages( "index.features.title_3" )}
+						</FadeText>
 
-						<p className="text-muted-foreground">
-							{messages( "index.features.description_4" )}
-						</p>
+						<FadeText
+							as="p"
+							delay={2}
+							className="text-muted-foreground"
+							direction="down"
+						>
+							{messages( "index.features.description_3" )}
+						</FadeText>
 					</li>
 
 					<li className="space-y-2 p-4">
-						<PocketKnife className="mx-auto mb-2 size-6" />
+						<BlurIn
+							as="div"
+							delay={2.1}
+							duration={0.4}
+							className="text-black dark:text-white"
+						>
+							<PocketKnife className="mx-auto mb-2 size-6" />
+						</BlurIn>
 
-						<h2 className="text-xl font-bold">
+						<FadeText
+							as="h2"
+							delay={2.1}
+							className="text-xl font-bold"
+							direction="down"
+						>
 							{messages( "index.features.title_5" )}
-						</h2>
+						</FadeText>
 
-						<p className="text-muted-foreground">
+						<FadeText
+							as="p"
+							delay={2.3}
+							className="text-muted-foreground"
+							direction="down"
+						>
 							{messages( "index.features.description_5" )}
-						</p>
+						</FadeText>
 					</li>
 
 					<li className="space-y-2 p-4">
-						<Share2 className="mx-auto mb-2 size-6" />
+						<BlurIn
+							as="div"
+							delay={2.4}
+							duration={0.4}
+							className="text-black dark:text-white"
+						>
+							<Share2 className="mx-auto mb-2 size-6" />
+						</BlurIn>
 
-						<h2 className="text-xl font-bold">
+						<FadeText
+							as="h2"
+							delay={2.4}
+							className="text-xl font-bold"
+							direction="down"
+						>
 							{messages( "index.features.title_6" )}
-						</h2>
+						</FadeText>
 
-						<p className="text-muted-foreground">
+						<FadeText
+							as="p"
+							delay={2.6}
+							className="text-muted-foreground"
+							direction="down"
+						>
 							{messages( "index.features.description_6" )}
-						</p>
+						</FadeText>
 					</li>
 				</ul>
 			</section>
