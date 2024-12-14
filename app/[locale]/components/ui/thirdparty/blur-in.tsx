@@ -6,7 +6,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 interface BlurInProps {
 	as: string;
@@ -41,12 +41,20 @@ function BlurIn( {
 		}
 	};
 	const combinedVariants = variant || defaultVariants;
+	const [ reducedMotion, setReducedMotion ] = useState( false );
+
+	useEffect( () =>
+	{
+		setReducedMotion(
+			window.matchMedia( "(prefers-reduced-motion: reduce)" ).matches
+		);
+	}, [] );
 
 	return (
 		<MotionComponent
-			initial="hidden"
+			initial={reducedMotion ? "visible" : "hidden"}
 			animate="visible"
-			variants={combinedVariants}
+			variants={reducedMotion ? undefined : combinedVariants}
 			className={className}
 		>
 			{children}
