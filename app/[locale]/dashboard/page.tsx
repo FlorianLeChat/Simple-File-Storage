@@ -22,6 +22,7 @@ import { generateMetadata as getMetadata } from "../layout";
 import { Separator } from "../components/ui/separator";
 
 const UserMenu = lazy( () => import( "../components/user-menu" ) );
+const FadeText = lazy( () => import( "../components/ui/thirdparty/fade-text" ) );
 const DataTable = lazy( () => import( "./components/data-table" ) );
 const Navigation = lazy( () => import( "../components/navigation" ) );
 const Notification = lazy( () => import( "../components/notification" ) );
@@ -126,9 +127,9 @@ async function getFiles(): Promise<FileAttributes[]>
 // Affichage de la page.
 export default async function Page( {
 	params
-}: {
+}: Readonly<{
 	params: Promise<{ locale: string }>;
-} )
+}> )
 {
 	// Définition de la langue de la page.
 	const { locale } = await params;
@@ -176,13 +177,22 @@ export default async function Page( {
 
 			<main className="container mx-auto max-w-[1440px] p-4 md:p-8">
 				{/* Titre et description de la page */}
-				<h2 className="text-2xl font-bold tracking-tight">
+				<FadeText
+					as="h2"
+					className="text-2xl font-bold tracking-tight"
+					direction="left"
+				>
 					{messages( "header.dashboard" )}
-				</h2>
+				</FadeText>
 
-				<p className="text-muted-foreground">
+				<FadeText
+					as="p"
+					delay={0.2}
+					className="text-muted-foreground"
+					direction="left"
+				>
 					{messages( "dashboard.description" )}
-				</p>
+				</FadeText>
 
 				{/* Barre verticale de séparation */}
 				<Separator className="mb-6 mt-4 md:mb-8 md:mt-6" />

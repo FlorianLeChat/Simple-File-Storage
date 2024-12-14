@@ -11,6 +11,7 @@ import pick from "lodash/pick";
 import { join } from "path";
 import { existsSync } from "fs";
 import type { Toaster } from "sonner";
+import { MotionConfig } from "framer-motion";
 import { lazy,
 	Suspense,
 	type ReactNode,
@@ -214,10 +215,10 @@ type ToasterProps = ComponentProps<typeof Toaster>;
 export default async function Layout( {
 	children,
 	params
-}: {
+}: Readonly<{
 	children: ReactNode;
 	params: Promise<{ locale: string }>;
-} )
+}> )
 {
 	// Définition de la langue de la page.
 	const { locale } = await params;
@@ -317,7 +318,9 @@ export default async function Layout( {
 						</video>
 
 						{/* Composant enfant */}
-						{children}
+						<MotionConfig reducedMotion="user">
+							{children}
+						</MotionConfig>
 
 						{/* Consentement des cookies */}
 						<CookieConsent />

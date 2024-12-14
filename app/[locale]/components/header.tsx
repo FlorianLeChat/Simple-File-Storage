@@ -12,13 +12,13 @@ import { showPreferences } from "vanilla-cookieconsent";
 import { LogIn, Cookie, LayoutDashboard } from "lucide-react";
 import { Button, buttonVariants } from "./ui/button";
 
-export default function Footer( {
+export default function Header( {
 	meta,
 	session
-}: {
+}: Readonly<{
 	meta: Metadata & { source: string };
 	session: Session | null;
-} )
+}> )
 {
 	// Déclaration des variables d'état.
 	const headerMessages = useTranslations( "header" );

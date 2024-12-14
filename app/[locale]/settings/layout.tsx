@@ -17,6 +17,7 @@ import { generateMetadata as getMetadata } from "../layout";
 import { Separator } from "../components/ui/separator";
 
 const Routes = lazy( () => import( "./components/routes" ) );
+const FadeText = lazy( () => import( "../components/ui/thirdparty/fade-text" ) );
 const UserMenu = lazy( () => import( "../components/user-menu" ) );
 const Navigation = lazy( () => import( "../components/navigation" ) );
 const Notification = lazy( () => import( "../components/notification" ) );
@@ -35,10 +36,10 @@ export async function generateMetadata(): Promise<Metadata>
 export default async function Layout( {
 	children,
 	params
-}: {
+}: Readonly<{
 	children: ReactNode;
 	params: Promise<{ locale: string }>;
-} )
+}> )
 {
 	// Définition de la langue de la page.
 	const { locale } = await params;
@@ -87,13 +88,22 @@ export default async function Layout( {
 			<main className="container mx-auto max-w-[1440px] p-8 max-md:p-4 max-md:pb-8">
 				{/* En-tête de la page */}
 				<header>
-					<h2 className="text-2xl font-bold tracking-tight">
+					<FadeText
+						as="h2"
+						className="text-2xl font-bold tracking-tight"
+						direction="left"
+					>
 						{messages( "settings.header" )}
-					</h2>
+					</FadeText>
 
-					<p className="text-muted-foreground">
+					<FadeText
+						as="p"
+						delay={0.2}
+						className="text-muted-foreground"
+						direction="left"
+					>
 						{messages( "settings.description" )}
-					</p>
+					</FadeText>
 				</header>
 
 				{/* Barre verticale de séparation */}
