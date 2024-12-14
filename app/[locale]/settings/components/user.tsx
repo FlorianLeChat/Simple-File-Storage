@@ -21,7 +21,7 @@ import { formatSize } from "@/utilities/react-table";
 import type { Session } from "next-auth";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useLocale, useTranslations } from "next-intl";
-import { useState, useEffect, useActionState, startTransition } from "react";
+import { useState, useEffect, useActionState } from "react";
 
 import { Input } from "../../components/ui/input";
 import { Select,
@@ -43,11 +43,11 @@ import { Form,
 import { updateUser } from "../actions/update-user";
 import { Button, buttonVariants } from "../../components/ui/button";
 
-export default function User( { session }: { session: Session } )
+export default function User( { session }: Readonly<{ session: Session }> )
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
-	const [ isLocked, setLocked ] = useState( false );
+	const [ isLocked, setIsLocked ] = useState( false );
 	const [ updateState, updateAction, isPending ] = useActionState( updateUser, {
 		success: true,
 		reason: ""
@@ -154,10 +154,7 @@ export default function User( { session }: { session: Session } )
 					}
 
 					// Exécution de l'action côté serveur.
-					startTransition( () =>
-					{
-						serverAction( updateAction, formData, messages );
-					} );
+					serverAction( updateAction, formData, messages );
 				}}
 				className="space-y-8"
 			>
@@ -254,7 +251,7 @@ export default function User( { session }: { session: Session } )
 										<Input
 											{...field}
 											type={passwordType}
-											onKeyUp={( event ) => setLocked(
+											onKeyUp={( event ) => setIsLocked(
 												event.getModifierState(
 													"CapsLock"
 												)

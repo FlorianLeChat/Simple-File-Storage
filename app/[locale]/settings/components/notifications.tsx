@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import type { Session } from "next-auth";
 import { useTranslations } from "next-intl";
-import { useState, useEffect, useActionState, startTransition } from "react";
+import { useState, useEffect, useActionState } from "react";
 
 import { Switch } from "../../components/ui/switch";
 import { Button } from "../../components/ui/button";
@@ -28,14 +28,14 @@ import { Form,
 	FormDescription } from "../../components/ui/form";
 import { updateNotifications } from "../actions/update-notifications";
 
-export default function Notifications( { session }: { session: Session } )
+export default function Notifications( { session }: Readonly<{ session: Session }> )
 {
 	// Déclaration des constantes.
 	const notifications = session.user.notification.split( "+" );
 
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
-	const [ isPush, setPush ] = useState( notifications[ 0 ] !== "off" );
+	const [ isPush, setIsPush ] = useState( notifications[ 0 ] !== "off" );
 	const [ updateState, updateAction, isPending ] = useActionState( updateNotifications, {
 		success: true,
 		reason: ""
@@ -108,10 +108,7 @@ export default function Notifications( { session }: { session: Session } )
 					formData.set( "level", form.getValues( "level" ) );
 
 					// Exécution de l'action côté serveur.
-					startTransition( () =>
-					{
-						serverAction( updateAction, formData, messages );
-					} );
+					serverAction( updateAction, formData, messages );
 				}}
 				className="space-y-8"
 			>
@@ -192,7 +189,7 @@ export default function Notifications( { session }: { session: Session } )
 											checked ? "all" : level
 										);
 
-										setPush( true );
+										setIsPush( true );
 									}}
 								/>
 							</div>
@@ -226,7 +223,7 @@ export default function Notifications( { session }: { session: Session } )
 											checked ? "necessary" : level
 										);
 
-										setPush( true );
+										setIsPush( true );
 									}}
 								/>
 							</div>
@@ -261,7 +258,7 @@ export default function Notifications( { session }: { session: Session } )
 										);
 										form.setValue( "push", false );
 
-										setPush( !checked );
+										setIsPush( !checked );
 									}}
 								/>
 							</div>

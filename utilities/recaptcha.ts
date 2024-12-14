@@ -6,6 +6,7 @@
 "use client";
 
 import { toast } from "sonner";
+import { startTransition } from "react";
 
 export default async function serverAction(
 	action: ( payload: FormData ) => void,
@@ -68,7 +69,10 @@ export default async function serverAction(
 
 			// On résout enfin l'action côté serveur avec les données du formulaire
 			//  récupérées précédemment.
-			resolve( await action( formData ) );
+			startTransition( () =>
+			{
+				resolve( action( formData ) );
+			} );
 		} );
 	} );
 }

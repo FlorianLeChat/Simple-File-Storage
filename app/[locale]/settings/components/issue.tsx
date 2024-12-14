@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useEffect, useActionState, startTransition } from "react";
+import { useEffect, useActionState } from "react";
 
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -114,10 +114,7 @@ export default function Account()
 					}
 
 					// Exécution de l'action côté serveur.
-					startTransition( () =>
-					{
-						serverAction( updateAction, formData, messages );
-					} );
+					serverAction( updateAction, formData, messages );
 				}}
 				className="space-y-8"
 			>

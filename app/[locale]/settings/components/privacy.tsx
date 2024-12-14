@@ -10,8 +10,8 @@ import { useForm } from "react-hook-form";
 import { redirect } from "next/navigation";
 import serverAction from "@/utilities/recaptcha";
 import { useTranslations } from "next-intl";
+import { useEffect, useActionState } from "react";
 import { Files, KeyRound, Scale, Trash, Loader2 } from "lucide-react";
-import { useEffect, useActionState, startTransition } from "react";
 
 import { Label } from "../../components/ui/label";
 import { Switch } from "../../components/ui/switch";
@@ -111,10 +111,7 @@ export default function Privacy()
 					}
 
 					// Exécution de l'action côté serveur.
-					startTransition( () =>
-					{
-						serverAction( deleteAction, formData, formMessages );
-					} );
+					serverAction( deleteAction, formData, formMessages );
 				}}
 				className="space-y-8"
 			>
