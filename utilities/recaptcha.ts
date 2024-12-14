@@ -37,7 +37,14 @@ export default async function serverAction(
 		//  On exécute alors l'action côté serveur sans vérification.
 		try
 		{
-			return action( formData );
+			let response;
+
+			startTransition( () =>
+			{
+				response = action( formData );
+			} );
+
+			return response;
 		}
 		catch
 		{
