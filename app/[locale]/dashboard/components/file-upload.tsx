@@ -25,7 +25,7 @@ import { addDays, format } from "date-fns";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { type FileAttributes } from "@/interfaces/File";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState, useActionState, startTransition } from "react";
+import { useEffect, useState, useActionState } from "react";
 
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
@@ -377,10 +377,7 @@ export default function FileUpload( {
 							);
 
 							// Exécution de l'action côté serveur.
-							startTransition( () =>
-							{
-								serverAction( uploadAction, formData, formMessages );
-							} );
+							serverAction( uploadAction, formData, formMessages );
 						}}
 					>
 						{/* Fichier(s) à téléverser */}

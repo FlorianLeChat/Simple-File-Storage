@@ -9,8 +9,8 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import type { Session } from "next-auth";
 import { useTranslations } from "next-intl";
+import { useEffect, useActionState } from "react";
 import { Globe, Link2, RefreshCw, Loader2, History } from "lucide-react";
-import { useEffect, useActionState, startTransition } from "react";
 
 import { Label } from "../../components/ui/label";
 import { Switch } from "../../components/ui/switch";
@@ -23,7 +23,7 @@ import { Form,
 	FormDescription } from "../../components/ui/form";
 import { updateStorage } from "../actions/update-storage";
 
-export default function Storage( { session }: { session: Session } )
+export default function Storage( { session }: Readonly<{ session: Session }> )
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
@@ -97,10 +97,7 @@ export default function Storage( { session }: { session: Session } )
 					}
 
 					// Exécution de l'action côté serveur.
-					startTransition( () =>
-					{
-						serverAction( updateAction, formData, messages );
-					} );
+					serverAction( updateAction, formData, messages );
 				}}
 				className="space-y-8"
 			>

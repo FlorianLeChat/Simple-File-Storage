@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useEffect, useActionState, startTransition } from "react";
+import { useEffect, useActionState } from "react";
 
 import { Button } from "../../components/ui/button";
 import { signInAccount } from "../actions/signin";
@@ -85,10 +85,7 @@ export default function OAuthForm()
 			<form
 				action={( formData ) =>
 				{
-					startTransition( () =>
-					{
-						serverAction( signInAction, formData, messages );
-					} );
+					serverAction( signInAction, formData, messages );
 				}}
 			>
 				<Button
@@ -123,10 +120,7 @@ export default function OAuthForm()
 			<form
 				action={( formData ) =>
 				{
-					startTransition( () =>
-					{
-						serverAction( signInAction, formData, messages );
-					} );
+					serverAction( signInAction, formData, messages );
 				}}
 			>
 				<Button

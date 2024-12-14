@@ -12,8 +12,8 @@ import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/recaptcha";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { useState, useEffect, useActionState } from "react";
 import { Eye, Mail, EyeOff, Loader2, KeyRound } from "lucide-react";
-import { useState, useEffect, useActionState, startTransition } from "react";
 
 import { Input } from "../../components/ui/input";
 import { Form,
@@ -34,8 +34,8 @@ export default function SignInForm()
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
-	const [ isLocked, setLocked ] = useState( false );
-	const [ isFocused, setFocused ] = useState( false );
+	const [ isLocked, setIsLocked ] = useState( false );
+	const [ isFocused, setIsFocused ] = useState( false );
 	const [ inputType, setInputType ] = useState( "password" );
 	const [ signInState, signInAction, isPending ] = useActionState( signInAccount, {
 		success: true,
@@ -109,10 +109,7 @@ export default function SignInForm()
 					}
 
 					// Exécution de l'action côté serveur.
-					startTransition( () =>
-					{
-						serverAction( signInAction, formData, messages );
-					} );
+					serverAction( signInAction, formData, messages );
 				}}
 				className="space-y-6"
 			>
@@ -134,9 +131,7 @@ export default function SignInForm()
 										schema.entries.email.pipe[ 2 ].requirement
 									}
 									spellCheck="false"
-									placeholder={messages(
-										"fields.email_placeholder"
-									)}
+									placeholder={messages( "fields.email_placeholder" )}
 									autoComplete="email"
 									autoCapitalize="off"
 								/>
@@ -166,21 +161,18 @@ export default function SignInForm()
 									<Input
 										{...field}
 										type={inputType}
-										onBlur={() => setFocused( field.value?.length > 0 )}
-										onKeyUp={( event ) => setLocked(
+										onBlur={() => setIsFocused( field.value?.length > 0 )}
+										onKeyUp={( event ) => setIsLocked(
 											event.getModifierState(
 												"CapsLock"
 											)
 										)}
-										onFocus={() => setFocused( true )}
+										onFocus={() => setIsFocused( true )}
 										disabled={isPending}
 										className={`!mt-0 mr-2 inline-block w-[calc(100%-40px-0.5rem)] transition-opacity ${
 											!isFocused ? "opacity-50" : ""
 										}`}
-										maxLength={
-											schema.entries.password.options[ 0 ]
-												.pipe[ 2 ].requirement
-										}
+										maxLength={schema.entries.password.options[ 0 ].pipe[ 2 ].requirement}
 										spellCheck="false"
 										placeholder={messages(
 											"fields.password_placeholder"
