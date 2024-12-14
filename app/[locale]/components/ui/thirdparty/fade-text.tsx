@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { motion, type Variants } from "framer-motion";
 
 type FadeTextProps = {
@@ -60,14 +60,22 @@ export default function FadeText( {
 			}
 		};
 	}, [ directionOffset, axis, framerProps ] );
+	const [ reducedMotion, setReducedMotion ] = useState( false );
+
+	useEffect( () =>
+	{
+		setReducedMotion(
+			window.matchMedia( "(prefers-reduced-motion: reduce)" ).matches
+		);
+	}, [] );
 
 	return (
 		<MotionComponent
 			className={className}
-			initial="hidden"
+			initial={reducedMotion ? "visible" : "hidden"}
 			animate="show"
 			viewport={{ once: true }}
-			variants={FADE_ANIMATION_VARIANTS}
+			variants={reducedMotion ? undefined : FADE_ANIMATION_VARIANTS}
 		>
 			{children}
 		</MotionComponent>
