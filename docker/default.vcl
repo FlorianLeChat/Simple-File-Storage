@@ -69,14 +69,13 @@ sub vcl_recv {
 		return (pass);
 	}
 
-	# Suppression de la mise en cache pour toutes les pages
-	#  nécessitant une authentification utilisateur.
-	if (req.url ~ "/dashboard" || req.url ~ "/d/" || req.url ~ "/api" || req.url ~ "/settings") {
-		return (pass);
+	# Mise en cache des ressources statiques générées par NextJS.
+	if (req.url ~ "/assets" || req.url ~ "/_next") {
+		return (hash);
 	}
 
-	# Tentative de récupération de la page en cache.
-	return (hash);
+	# Passage de la requête au back-end sans mise en cache.
+	return (pass);
 }
 
 sub vcl_deliver {
