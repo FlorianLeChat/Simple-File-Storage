@@ -36,7 +36,7 @@ export default async function middleware( request: NextRequest )
 			//  du fichier à partir de son identifiant.
 			const data = await fetch(
 				new URL(
-					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/file/${ identifier }/${ request.nextUrl.search }`,
+					`/api/file/${ identifier }/${ request.nextUrl.search }`,
 					request.url
 				),
 				{ headers: request.headers }
@@ -60,7 +60,7 @@ export default async function middleware( request: NextRequest )
 
 				const content = await fetch(
 					new URL(
-						`${ process.env.__NEXT_ROUTER_BASEPATH }/api/public/files/${ file.userId }/${ file.id }/${ file.versions[ 0 ].id }.${ extension }`,
+						`/api/public/files/${ file.userId }/${ file.id }/${ file.versions[ 0 ].id }.${ extension }`,
 						data.url
 					),
 					{ headers }
@@ -152,13 +152,9 @@ export default async function middleware( request: NextRequest )
 	//  des robots d'indexation.
 	if ( request.nextUrl.pathname.startsWith( "/avatars/" ) )
 	{
-		const data = await fetch(
-			new URL(
-				`${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/session`,
-				request.url
-			),
-			{ headers: request.headers }
-		);
+		const data = await fetch( new URL( "/api/user/session", request.url ), {
+			headers: request.headers
+		} );
 
 		if ( data.ok )
 		{
@@ -169,10 +165,7 @@ export default async function middleware( request: NextRequest )
 			headers.set( "X-Auth-Secret", process.env.AUTH_SECRET ?? "" );
 
 			const content = await fetch(
-				new URL(
-					`${ process.env.__NEXT_ROUTER_BASEPATH }/api/public/${ session.image }`,
-					data.url
-				),
+				new URL( `/api/public/${ session.image }`, data.url ),
 				{ headers }
 			);
 
@@ -267,11 +260,3 @@ export const config = {
 		"/((?!api/admin|api/user|api/version|api/versions|api/file|api/public|api/files|monitoring|assets|locales|_next|_vercel|sitemap.xml|manifest.webmanifest).*)"
 	]
 };
-
-if ( process.env.__NEXT_ROUTER_BASEPATH )
-{
-	// Ajout du support du chemin de base de NextJS pour le routage
-	//  effectué par le mécanisme de gestion des langues et traductions.
-	//  Source : https://next-intl-docs.vercel.app/docs/routing/middleware#base-path
-	config.matcher.push( process.env.__NEXT_ROUTER_BASEPATH );
-}

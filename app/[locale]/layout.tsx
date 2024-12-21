@@ -91,10 +91,7 @@ export async function generateMetadata(): Promise<
 	// On détermine après certaines métadonnées récurrentes.
 	const banner = `https://opengraph.githubassets.com/${ commits.sha }/${ repository.full_name }`;
 	const title = repository.name.replaceAll( "-", " " );
-	const url =
-		process.env.NEXT_PUBLIC_ENV === "production"
-			? repository.homepage
-			: `http://localhost:3000${ process.env.__NEXT_ROUTER_BASEPATH }`;
+	const url = process.env.NEXT_PUBLIC_ENV === "production" ? repository.homepage : "http://localhost:3000";
 
 	// On retourne également les métadonnées récupérées récemment
 	//  avant de les enregistrer dans un fichier JSON.
@@ -312,7 +309,7 @@ export default async function Layout( {
 							className="fixed -z-10 hidden size-full object-none opacity-10 dark:block"
 						>
 							<source
-								src={`${ process.env.__NEXT_ROUTER_BASEPATH }/assets/videos/background.mp4`}
+								src="/assets/videos/background.mp4"
 								type="video/mp4"
 							/>
 						</video>
