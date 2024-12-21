@@ -14,7 +14,6 @@ const nextConfig: NextConfig = withNextIntl( {
 			)
 		}
 	},
-	basePath: "",
 	async redirects()
 	{
 		return [

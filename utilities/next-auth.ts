@@ -29,9 +29,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 	session: {
 		strategy: process.env.NEXT_PUBLIC_ENV === "production" ? "database" : "jwt"
 	},
-	basePath: process.env.AUTH_URL
-		? undefined
-		: `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`,
+	basePath: process.env.AUTH_URL ? undefined : "/api/user/auth",
 	trustHost: true,
 	callbacks: {
 		// Gestion des données du jeton JWT (environnement de test et de développement).
@@ -85,7 +83,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 					if ( avatar.find( ( file ) => file.includes( token.id ) ) )
 					{
 						// Définition de l'avatar personnalisé de l'utilisateur.
-						token.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }`;
+						token.image = `/avatars/${ avatar }`;
 					}
 				}
 			}
@@ -139,7 +137,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 
 						if ( avatar.find( ( file ) => file.includes( user.id ) ) )
 						{
-							session.user.image = `${ process.env.__NEXT_ROUTER_BASEPATH }/avatars/${ avatar }`;
+							session.user.image = `/avatars/${ avatar }`;
 						}
 					}
 				}

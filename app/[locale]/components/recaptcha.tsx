@@ -65,7 +65,7 @@ export default function Recaptcha()
 			const body = new FormData();
 			body.append( "1_recaptcha", token );
 
-			fetch( `${ process.env.__NEXT_ROUTER_BASEPATH }/api/recaptcha`, {
+			fetch( "/api/recaptcha", {
 				body,
 				method: "POST"
 			} );

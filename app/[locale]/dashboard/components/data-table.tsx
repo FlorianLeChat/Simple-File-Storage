@@ -35,7 +35,7 @@ import Pagination from "./pagination";
 import FileUpload from "./file-upload";
 import ColumnToggle from "./column-toggle";
 
-export default function DataTable( { data }: { data: FileAttributes[] } )
+export default function DataTable( { data }: Readonly<{ data: FileAttributes[] }> )
 {
 	// Déclaration des variables d'état.
 	const messages = useMessages() as {
@@ -117,9 +117,7 @@ export default function DataTable( { data }: { data: FileAttributes[] } )
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<SessionProvider
-			basePath={`${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/auth`}
-		>
+		<SessionProvider basePath="/api/user/auth">
 			{/* Filtrage et tri des données */}
 			<div className="mb-4 flex items-center gap-2">
 				{/* Filtrage par nom */}

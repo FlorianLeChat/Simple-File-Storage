@@ -35,7 +35,7 @@
 		"space-in-parens": ["error", "always"],
 		"no-param-reassign": ["error", { "props": false }],
 		"operator-linebreak": ["error", "before", { "overrides": { "=": "after" } }],
-		"no-underscore-dangle": ["error", { "allow": ["_def", "_count", "__NEXT_ROUTER_BASEPATH"] }], // https://github.com/vercel/next.js/issues/52201#issuecomment-1620629437
+		"no-underscore-dangle": ["error", { "allow": ["_def", "_count"] }], // https://github.com/vercel/next.js/issues/52201#issuecomment-1620629437
 		"object-curly-newline": ["error", { "ImportDeclaration": { "minProperties": 0 }}],
 		"array-bracket-spacing": ["error", "always"],
 		"template-curly-spacing": ["error", "always"],

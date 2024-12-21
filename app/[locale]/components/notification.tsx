@@ -40,8 +40,8 @@ export default function Notifications()
 	const locale = useLocale();
 	const formMessages = useTranslations( "form" );
 	const modalMessages = useTranslations( "modals.notifications" );
-	const [ isOpen, setOpen ] = useState( false );
-	const [ isLoading, setLoading ] = useState( false );
+	const [ isOpen, setIsOpen ] = useState( false );
+	const [ isLoading, setIsLoading ] = useState( false );
 	const [ unreadCount, setUnreadCount ] = useState( 0 );
 	const [ notifications, setNotifications ] = useState<Notification[]>( [] );
 
@@ -49,12 +49,10 @@ export default function Notifications()
 	const fetchNotifications = useCallback( async () =>
 	{
 		// Activation de l'état de chargement.
-		setLoading( true );
+		setIsLoading( true );
 
 		// Lancement de la requête HTTP et vérification de la réponse.
-		const response = await fetch(
-			`${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/notifications`
-		);
+		const response = await fetch( "/api/user/notifications" );
 
 		if ( !response.ok )
 		{
@@ -77,7 +75,7 @@ export default function Notifications()
 			setUnreadCount( ( count ) => Math.min( data.length, count + filter.length ) );
 
 			// Désactivation de l'état de chargement.
-			setLoading( false );
+			setIsLoading( false );
 
 			// Vérification de l'existence de l'API de notifications.
 			if ( typeof Notification !== "undefined" && filter.length > 0 )
@@ -131,19 +129,19 @@ export default function Notifications()
 	const submitClearing = async () =>
 	{
 		// Activation de l'état de chargement.
-		setLoading( true );
+		setIsLoading( true );
 
 		// Envoi de la requête au serveur et
 		//  traitement de la réponse.
 		const state = await serverAction( updateReadState, new FormData(), formMessages );
 
 		// Fin de l'état de chargement.
-		setLoading( false );
+		setIsLoading( false );
 
 		if ( state )
 		{
 			// Fermeture de la boîte de dialogue.
-			setOpen( false );
+			setIsOpen( false );
 
 			// Marquage de toutes les notifications
 			//  comme lues.
@@ -190,7 +188,7 @@ export default function Notifications()
 			{
 				if ( !isLoading )
 				{
-					setOpen( state );
+					setIsOpen( state );
 				}
 			}}
 		>

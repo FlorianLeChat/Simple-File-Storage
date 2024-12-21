@@ -294,7 +294,7 @@ export async function uploadFiles(
 			//  fichiers sous format JSON pour pouvoir les envoyer
 			//  à travers le réseau vers les composants clients.
 			//  Source : https://github.com/vercel/next.js/issues/47447
-			const path = `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ fileId }${
+			const path = `/d/${ fileId }${
 				preferences.extension ? extension : ""
 			}`;
 			const versions = await prisma.version.findMany( {

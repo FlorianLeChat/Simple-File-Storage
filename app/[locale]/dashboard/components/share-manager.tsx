@@ -50,11 +50,11 @@ export default function ShareManager( {
 	file,
 	states,
 	disabled
-}: {
+}: Readonly<{
 	file: FileAttributes;
 	states: TableMeta<FileAttributes>;
 	disabled: boolean;
-} )
+}> )
 {
 	// Déclaration des constantes.
 	const fetcher = ( url: string ) => fetch( url ).then( ( res ) => res.json() ) as Promise<User[]>;
@@ -63,14 +63,12 @@ export default function ShareManager( {
 	const session = useSession();
 	const formMessages = useTranslations( "form" );
 	const modalMessages = useTranslations( "modals.share-manager" );
-	const [ isOpen, setOpen ] = useState( false );
+	const [ isOpen, setIsOpen ] = useState( false );
 	const [ search, setSearch ] = useState( "" );
 	const [ loading, setLoading ] = useState( false );
-	const [ isCopied, setCopied ] = useState( false );
+	const [ isCopied, setIsCopied ] = useState( false );
 	const { data, error, isLoading } = useSWR<User[]>(
-		search !== ""
-			? `${ process.env.__NEXT_ROUTER_BASEPATH }/api/user/search/${ search }`
-			: null,
+		search !== "" ? `/api/user/search/${ search }` : null,
 		fetcher
 	);
 
@@ -240,7 +238,7 @@ export default function ShareManager( {
 			{
 				if ( !loading )
 				{
-					setOpen( state );
+					setIsOpen( state );
 				}
 			}}
 		>
@@ -282,10 +280,10 @@ export default function ShareManager( {
 						onClick={() =>
 						{
 							// Déclaration de la copie du lien.
-							setCopied( true );
+							setIsCopied( true );
 
 							// Réinitialisation de l'état de copie.
-							setTimeout( () => setCopied( false ), 1500 );
+							setTimeout( () => setIsCopied( false ), 1500 );
 
 							// Copie du lien dans le presse-papiers.
 							navigator.clipboard.writeText(
