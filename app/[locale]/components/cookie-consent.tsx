@@ -70,10 +70,7 @@ export default function CookieConsent()
 			// Paramètres internes des cookies.
 			cookie: {
 				name: "NEXT_COOKIE",
-				path:
-					process.env.__NEXT_ROUTER_BASEPATH === ""
-						? "/"
-						: process.env.__NEXT_ROUTER_BASEPATH
+				path: "/"
 			},
 
 			// Paramètres de l'interface utilisateur.

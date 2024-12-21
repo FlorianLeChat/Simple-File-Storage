@@ -91,9 +91,7 @@ async function getFiles(): Promise<FileAttributes[]>
 		files.map( async ( file ) =>
 		{
 			const info = parse( file.name );
-			const path = `${ process.env.__NEXT_ROUTER_BASEPATH }/d/${ file.id }${
-				extension ? info.ext : ""
-			}`;
+			const path = `/d/${ file.id }${ extension ? info.ext : "" }`;
 
 			return {
 				uuid: file.id,
