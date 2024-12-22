@@ -16,7 +16,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
-import { generateMetadata as getMetadata } from "../layout";
+import { fetchMetadata } from "@/utilities/metadata";
 
 // Importation des composants.
 import { Separator } from "../components/ui/separator";
@@ -30,7 +30,7 @@ const Notification = lazy( () => import( "../components/notification" ) );
 // Déclaration des propriétés de la page.
 export async function generateMetadata(): Promise<Metadata>
 {
-	const metadata = await getMetadata();
+	const metadata = await fetchMetadata();
 	const messages = await getTranslations();
 
 	return {
@@ -135,7 +135,7 @@ export default async function Page( {
 	setRequestLocale( locale );
 
 	// Déclaration des constantes.
-	const meta = await getMetadata();
+	const meta = await fetchMetadata();
 	const session = await auth();
 	const messages = await getTranslations();
 

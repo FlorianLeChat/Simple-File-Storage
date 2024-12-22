@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
-import { generateMetadata as getMetadata } from "../../layout";
+import { fetchMetadata } from "@/utilities/metadata";
 
 // Importation des composants.
 import { Separator } from "../../components/ui/separator";
@@ -18,7 +18,7 @@ const FadeText = lazy( () => import( "../../components/ui/thirdparty/fade-text" 
 // Déclaration des propriétés de la page.
 export async function generateMetadata(): Promise<Metadata>
 {
-	const metadata = await getMetadata();
+	const metadata = await fetchMetadata();
 	const messages = await getTranslations();
 
 	return {
@@ -39,7 +39,7 @@ export default async function Page( {
 	setRequestLocale( locale );
 
 	// Déclaration des constantes.
-	const title = ( await getMetadata() ).title as string;
+	const { title } = ( await fetchMetadata() ) as { title: string };
 	const messages = await getTranslations();
 
 	// Affichage du rendu HTML de la page.

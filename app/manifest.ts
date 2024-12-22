@@ -2,13 +2,13 @@
 // Route vers le manifeste de l'application.
 //  Source : https://nextjs.org/docs/app/api-reference/file-conventions/metadata/manifest
 //
+import { fetchMetadata } from "@/utilities/metadata";
 import { type MetadataRoute } from "next";
-import { generateMetadata } from "./[locale]/layout";
 
 export default async function manifest(): Promise<MetadataRoute.Manifest>
 {
 	// Déclaration des constantes.
-	const metadata = await generateMetadata();
+	const metadata = await fetchMetadata();
 
 	// Génération du manifeste.
 	return {
