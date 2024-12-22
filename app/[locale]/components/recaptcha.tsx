@@ -1,5 +1,5 @@
 //
-// Composant des services de vérification Google reCAPTCHA.
+// Composant des services de vérification via Google reCAPTCHA.
 //
 
 "use client";
@@ -22,24 +22,17 @@ export default function Recaptcha()
 
 	// Déclaration des constantes.
 	const recaptchaUrl = new URL( "https://www.google.com/recaptcha/api.js" );
-	recaptchaUrl.searchParams.append(
-		"render",
-		process.env.NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY ?? ""
-	);
+	recaptchaUrl.searchParams.append( "render", process.env.NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY ?? "" );
 	recaptchaUrl.searchParams.append( "onload", "setupRecaptcha" );
 
 	// Activation des services Google reCAPTCHA au consentement des cookies.
-	const onConsent = useCallback(
-		( event: CustomEventInit<{ cookie: CookieValue }> ) =>
-		{
-			setRecaptcha(
-				event.detail?.cookie.categories.some(
-					( category: string ) => category === "security"
-				) ?? false
-			);
-		},
-		[]
-	);
+	const onConsent = useCallback( ( event: CustomEventInit<{ cookie: CookieValue }> ) =>
+	{
+		const categories = event.detail?.cookie.categories;
+		const isSecurity = categories?.some( ( category: string ) => category === "security" );
+
+		setRecaptcha( isSecurity ?? false );
+	}, [] );
 
 	// Vérification de la validité de l'utilisateur via Google reCAPTCHA.
 	const setupRecaptcha = useCallback( () =>
