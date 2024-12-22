@@ -24,6 +24,16 @@ export default async function Sitemap()
 			// Page d'authentification.
 			url: new URL( `${ pathname }authentication`, baseUrl ),
 			lastModified: date
+		},
+		{
+			// Conditions d'utilisation.
+			url: new URL( `${ pathname }legal/terms`, baseUrl ),
+			lastModified: date
+		},
+		{
+			// Politique de confidentialité.
+			url: new URL( `${ pathname }legal/privacy`, baseUrl ),
+			lastModified: date
 		}
 	];
 }
