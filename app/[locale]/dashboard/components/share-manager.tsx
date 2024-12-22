@@ -8,7 +8,7 @@
 import useSWR from "swr";
 import { toast } from "sonner";
 import { useState } from "react";
-import serverAction from "@/utilities/recaptcha";
+import serverAction from "@/utilities/server-action";
 import { Trash,
 	Users,
 	Share2,

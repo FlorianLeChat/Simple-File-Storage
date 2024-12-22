@@ -9,7 +9,7 @@ import schema from "@/schemas/file-upload";
 import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
-import serverAction from "@/utilities/recaptcha";
+import serverAction from "@/utilities/server-action";
 import { enGB, fr } from "date-fns/locale";
 import { Loader2,
 	FileArchive,

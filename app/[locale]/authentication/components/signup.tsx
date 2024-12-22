@@ -8,7 +8,7 @@ import * as v from "valibot";
 import schema from "@/schemas/authentication";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
-import serverAction from "@/utilities/recaptcha";
+import serverAction from "@/utilities/server-action";
 import { Mail, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
