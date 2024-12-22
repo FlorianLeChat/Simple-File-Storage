@@ -11,7 +11,7 @@ import { Eye, Zap, Lock, Smile, Share2, PocketKnife } from "lucide-react";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
-import { generateMetadata as getMetadata } from "./layout";
+import { fetchMetadata } from "@/utilities/metadata";
 
 // Importation des composants.
 const Header = lazy( () => import( "./components/header" ) );
@@ -24,7 +24,7 @@ const WordPullUp = lazy(
 // Déclaration des propriétés de la page.
 export async function generateMetadata(): Promise<Metadata>
 {
-	const metadata = await getMetadata();
+	const metadata = await fetchMetadata();
 	const messages = await getTranslations();
 
 	return {
@@ -45,7 +45,7 @@ export default async function Page( {
 	setRequestLocale( locale );
 
 	// Déclaration des constantes.
-	const meta = await getMetadata();
+	const meta = await fetchMetadata();
 	const session = await auth();
 	const messages = await getTranslations();
 
