@@ -16,7 +16,7 @@ import { Lock,
 	Languages } from "lucide-react";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
-import serverAction from "@/utilities/recaptcha";
+import serverAction from "@/utilities/server-action";
 import { formatSize } from "@/utilities/react-table";
 import type { Session } from "next-auth";
 import { valibotResolver } from "@hookform/resolvers/valibot";

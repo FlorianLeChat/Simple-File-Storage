@@ -8,7 +8,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { redirect } from "next/navigation";
-import serverAction from "@/utilities/recaptcha";
+import serverAction from "@/utilities/server-action";
 import { useTranslations } from "next-intl";
 import { useEffect, useActionState } from "react";
 import { Files, KeyRound, Scale, Trash, Loader2 } from "lucide-react";

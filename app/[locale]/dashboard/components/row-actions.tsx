@@ -8,7 +8,7 @@
 import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import { useState } from "react";
-import serverAction from "@/utilities/recaptcha";
+import serverAction from "@/utilities/server-action";
 import { Ban,
 	Check,
 	Trash,

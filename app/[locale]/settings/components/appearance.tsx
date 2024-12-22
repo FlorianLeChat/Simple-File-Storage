@@ -17,7 +17,7 @@ import { fonts } from "@/config/fonts";
 import { merge } from "@/utilities/tailwind";
 import { colors } from "@/config/colors";
 import { useForm } from "react-hook-form";
-import serverAction from "@/utilities/recaptcha";
+import serverAction from "@/utilities/server-action";
 import type { Session } from "next-auth";
 import { useTranslations } from "next-intl";
 import { valibotResolver } from "@hookform/resolvers/valibot";
