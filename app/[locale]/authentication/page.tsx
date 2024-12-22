@@ -11,7 +11,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
-import { generateMetadata as getMetadata } from "../layout";
+import { fetchMetadata } from "@/utilities/metadata";
 
 // Importation des composants.
 import { Tabs,
@@ -32,7 +32,7 @@ const WordPullUp = lazy(
 // Déclaration des propriétés de la page.
 export async function generateMetadata(): Promise<Metadata>
 {
-	const metadata = await getMetadata();
+	const metadata = await fetchMetadata();
 	const messages = await getTranslations();
 
 	return {
@@ -55,7 +55,7 @@ export default async function Page( {
 	// Déclaration des constantes.
 	const session = await auth();
 	const messages = await getTranslations();
-	const { title } = await getMetadata();
+	const { title } = await fetchMetadata();
 
 	// Vérification de la session utilisateur.
 	if ( session )
@@ -144,7 +144,10 @@ export default async function Page( {
 				<OAuthForm />
 
 				{/* Conditions d'utilisation et politique de confidentialité */}
-				<BlurIn as="p" className="px-8 text-center text-sm text-muted-foreground">
+				<BlurIn
+					as="p"
+					className="px-8 text-center text-sm text-muted-foreground"
+				>
 					{messages.rich( "authentication.accept_terms", {
 						a1: ( chunks ) => (
 							<Link

@@ -9,7 +9,7 @@ import { lazy, type ReactNode } from "react";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
-import { generateMetadata } from "../layout";
+import { fetchMetadata } from "@/utilities/metadata";
 
 // Importation des composants.
 import { Separator } from "../components/ui/separator";
@@ -21,10 +21,10 @@ const Notification = lazy( () => import( "../components/notification" ) );
 export default async function Layout( {
 	children,
 	params
-}: {
+}: Readonly<{
 	children: ReactNode;
 	params: Promise<{ locale: string }>;
-} )
+}> )
 {
 	// Définition de la langue de la page.
 	const { locale } = await params;
@@ -32,7 +32,7 @@ export default async function Layout( {
 	setRequestLocale( locale );
 
 	// Déclaration des constantes.
-	const meta = await generateMetadata();
+	const meta = await fetchMetadata();
 	const session = await auth();
 
 	// Affichage du rendu HTML de la page.
