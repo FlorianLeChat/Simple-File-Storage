@@ -37,8 +37,11 @@ const CookieConsent = lazy( () => import( "./components/cookie-consent" ) );
 
 // Déclaration des paramètres d'affichage.
 export const viewport: Viewport = {
-	themeColor: "#3b82f6",
-	viewportFit: "cover"
+	viewportFit: "cover",
+	themeColor: [
+		{ media: "(prefers-color-scheme: light)", color: "#ffffff" },
+		{ media: "(prefers-color-scheme: dark)", color: "#3b82f6" }
+	]
 };
 
 // Déclaration des propriétés de la page.
