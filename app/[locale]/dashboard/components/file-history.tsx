@@ -7,7 +7,7 @@
 import { toast } from "sonner";
 import { merge } from "@/utilities/tailwind";
 import { useState } from "react";
-import serverAction from "@/utilities/recaptcha";
+import serverAction from "@/utilities/server-action";
 import { formatSize } from "@/utilities/react-table";
 import type { TableMeta } from "@tanstack/react-table";
 import type { FileAttributes } from "@/interfaces/File";

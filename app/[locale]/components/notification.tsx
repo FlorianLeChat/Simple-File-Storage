@@ -5,7 +5,7 @@
 "use client";
 
 import { toast } from "sonner";
-import serverAction from "@/utilities/recaptcha";
+import serverAction from "@/utilities/server-action";
 import { useRouter } from "next/navigation";
 import { BellRing, Check, Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";

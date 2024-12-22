@@ -11,7 +11,7 @@ import type { Session } from "next-auth";
 import { useTranslations } from "next-intl";
 import { useEffect, useCallback, useState } from "react";
 
-import serverAction from "@/utilities/recaptcha";
+import serverAction from "@/utilities/server-action";
 import { buttonVariants } from "./ui/button";
 import { signOutAccount } from "../authentication/actions/signout";
 import { DropdownMenu,
