@@ -57,10 +57,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	}
 );
 
-Button.defaultProps = {
-	asChild: false
-};
-
 Button.displayName = "Button";
 
 export { Button, buttonVariants };

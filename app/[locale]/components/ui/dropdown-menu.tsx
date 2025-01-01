@@ -37,10 +37,6 @@ const DropdownMenuSubTrigger = forwardRef<
 	</DropdownMenuPrimitive.SubTrigger>
 ) );
 
-DropdownMenuSubTrigger.defaultProps = {
-	inset: false
-};
-
 DropdownMenuSubTrigger.displayName =
 	DropdownMenuPrimitive.SubTrigger.displayName;
 
@@ -96,10 +92,6 @@ const DropdownMenuItem = forwardRef<
 		{...props}
 	/>
 ) );
-
-DropdownMenuItem.defaultProps = {
-	inset: false
-};
 
 DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
 
@@ -168,10 +160,6 @@ const DropdownMenuLabel = forwardRef<
 	/>
 ) );
 
-DropdownMenuLabel.defaultProps = {
-	inset: false
-};
-
 DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName;
 
 const DropdownMenuSeparator = forwardRef<
@@ -190,7 +178,7 @@ DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
 function DropdownMenuShortcut( {
 	className,
 	...props
-}: HTMLAttributes<HTMLSpanElement> )
+}: Readonly<HTMLAttributes<HTMLSpanElement>> )
 {
 	return (
 		<span
