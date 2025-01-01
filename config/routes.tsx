@@ -1,11 +1,12 @@
 //
 // Déclaration des routes vers les différentes pages des paramètres.
 //
+import type { ReactNode } from "react";
 import { Bug, Bell, User, Cctv, Files, Palette } from "lucide-react";
 
 export const routes: {
 	id: string;
-	icon: JSX.Element;
+	icon: ReactNode;
 	href: string;
 }[] = [
 	{
