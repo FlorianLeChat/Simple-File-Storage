@@ -12,8 +12,8 @@ export async function checkRecaptcha( request: NextRequest ): Promise<NextRespon
 
 	try
 	{
-		const json = await request.json();
-		token = ( json as { token: string } ).token;
+		const formData = await request.formData();
+		token = formData.get( "1_recaptcha" );
 	}
 	catch
 	{
