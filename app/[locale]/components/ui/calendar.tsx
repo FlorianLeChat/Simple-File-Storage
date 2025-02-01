@@ -3,24 +3,41 @@
 //  Source : https://ui.shadcn.com/docs/components/calendar
 //
 import { merge } from "@/utilities/tailwind";
-import { DayPicker } from "react-day-picker";
+import { ChevronUp,
+	ChevronLeft,
+	ChevronRight,
+	ChevronDown } from "lucide-react";
+import { UI,
+	DayFlag,
+	DayPicker,
+	SelectionState,
+	type ChevronProps } from "react-day-picker";
+import { buttonVariants } from "@/components/ui/button";
 import type { ComponentProps } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { buttonVariants } from "./button";
 
 export type CalendarProps = ComponentProps<typeof DayPicker>;
 
-function IconLeft()
+function Chevron( { orientation }: ChevronProps )
 {
+	if ( orientation === "up" )
+	{
+		return <ChevronUp className="size-4" />;
+	}
+
+	if ( orientation === "down" )
+	{
+		return <ChevronDown className="size-4" />;
+	}
+
+	if ( orientation === "right" )
+	{
+		return <ChevronRight className="size-4" />;
+	}
+
 	return <ChevronLeft className="size-4" />;
 }
 
-function IconRight()
-{
-	return <ChevronRight className="size-4" />;
-}
-
-function Calendar( {
+export function Calendar( {
 	className,
 	classNames,
 	showOutsideDays = true,
@@ -32,48 +49,45 @@ function Calendar( {
 			showOutsideDays={showOutsideDays}
 			className={merge( "p-3", className )}
 			classNames={{
-				months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
-				month: "space-y-4",
-				caption: "flex justify-center pt-1 relative items-center",
-				caption_label: "text-sm font-medium",
-				nav: "space-x-1 flex items-center",
-				nav_button: merge(
+				[ UI.Months ]: "relative",
+				[ UI.Month ]: "space-y-4 ml-0",
+				[ UI.MonthCaption ]: "flex justify-center items-center h-7",
+				[ UI.CaptionLabel ]: "text-sm font-medium",
+				[ UI.PreviousMonthButton ]: merge(
 					buttonVariants( { variant: "outline" } ),
-					"h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+					"absolute left-1 top-0 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
 				),
-				nav_button_previous: "absolute left-1",
-				nav_button_next: "absolute right-1",
-				table: "w-full border-collapse space-y-1",
-				head_row: "flex",
-				head_cell:
+				[ UI.NextMonthButton ]: merge(
+					buttonVariants( { variant: "outline" } ),
+					"absolute right-1 top-0 h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+				),
+				[ UI.MonthGrid ]: "w-full border-collapse space-y-1",
+				[ UI.Weekdays ]: "flex",
+				[ UI.Weekday ]:
 					"text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
-				row: "flex w-full mt-2",
-				cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-				day: merge(
+				[ UI.Week ]: "flex w-full mt-2",
+				[ UI.Day ]:
+					"h-9 w-9 text-center rounded-md text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+				[ UI.DayButton ]: merge(
 					buttonVariants( { variant: "ghost" } ),
-					"h-9 w-9 p-0 font-normal aria-selected:opacity-100"
+					"h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-primary hover:text-primary-foreground"
 				),
-				day_range_end: "day-range-end",
-				day_selected:
+				[ SelectionState.range_end ]: "day-range-end",
+				[ SelectionState.selected ]:
 					"bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-				day_today: "bg-accent text-accent-foreground",
-				day_outside:
-					"day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground",
-				day_disabled: "text-muted-foreground opacity-50",
-				day_range_middle:
+				[ SelectionState.range_middle ]:
 					"aria-selected:bg-accent aria-selected:text-accent-foreground",
-				day_hidden: "invisible",
+				[ DayFlag.today ]: "bg-accent text-accent-foreground",
+				[ DayFlag.outside ]:
+					"day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
+				[ DayFlag.disabled ]: "text-muted-foreground opacity-50",
+				[ DayFlag.hidden ]: "invisible",
 				...classNames
 			}}
 			components={{
-				IconLeft,
-				IconRight
+				Chevron: ( { ...options } ) => <Chevron {...options} />
 			}}
 			{...props}
 		/>
 	);
 }
-
-Calendar.displayName = "Calendar";
-
-export { Calendar };

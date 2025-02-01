@@ -24,6 +24,3 @@ updates:
       dependencies:
         patterns:
           - "*"
-    ignore:
-      # https://github.com/shadcn-ui/ui/issues/4366
-      - dependency-name: "react-day-picker"

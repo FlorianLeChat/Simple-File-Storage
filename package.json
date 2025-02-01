@@ -70,7 +70,7 @@
     "@faker-js/faker": "~9.4",
     "canvas-confetti": "~1.9",
     "@playwright/test": "~1.50",
-    "react-day-picker": "~8.10",
+    "react-day-picker": "~9.5",
     "@cspell/dict-fr-fr": "~2.2",
     "eslint-config-next": "~15.1",
     "tailwindcss-animate": "~1.0",
