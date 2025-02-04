@@ -125,29 +125,12 @@ export default function Privacy()
 								{formMessages( "fields.legal_label" )}
 							</Label>
 
-							<ul className="list-inside list-disc text-sm text-muted-foreground underline decoration-dotted underline-offset-4">
-								<li>
-									<Link
-										href="/legal/terms"
-										className="dark:hover:text-foreground"
-									>
-										{formMessages(
-											"fields.legal_description_1"
-										)}
-									</Link>
-								</li>
-
-								<li>
-									<Link
-										href="/legal/privacy"
-										className="dark:hover:text-foreground"
-									>
-										{formMessages(
-											"fields.legal_description_2"
-										)}
-									</Link>
-								</li>
-							</ul>
+							<Link
+								href="/legal"
+								className="block text-sm text-muted-foreground underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
+							>
+								{formMessages( "fields.legal_description" )}
+							</Link>
 						</FormItem>
 					)}
 				/>
