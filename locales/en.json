@@ -91,8 +91,7 @@
 			"notifications_off_label": "No Notifications",
 			"notifications_off_description": "Do not receive any notifications except important security alerts regarding your user account and the website.",
 			"legal_label": "Legal Documents",
-			"legal_description_1": "View the terms of use.",
-			"legal_description_2": "View the privacy policy.",
+			"legal_description": "View the legal notices of the website",
 			"user_files_label": "User Files",
 			"user_files_description": "When you upload a file to the server, its data is saved in the file system (or in a cloud storage system depending on the site's configuration), and some information is added to the database to find it more easily.<br></br>If you enable this option, <b>only your files will be permanently deleted from the server without the possibility of recovery via technical support.</b> The deletion will be immediate and will include previous versions as well as sharing data with other users.",
 			"user_files_switch": "I want to delete my files as well as all associated data permanently without the possibility of recovery via technical support.",
@@ -239,8 +238,7 @@
 		"dashboard": "Dashboard",
 		"settings": "Settings",
 		"logout": "Logout",
-		"terms_of_service": "Terms of Service",
-		"privacy_policy": "Privacy Policy",
+		"legal_notices": "Legal Notices",
 		"user_account": "User Account",
 		"admin_account": "Admin Account",
 		"something_else": "Something else?",
@@ -251,10 +249,7 @@
 		"recaptcha_protected": "This site is protected by reCAPTCHA and the Google <a1>Privacy Policy</a1> and <a2>Terms of Service</a2> apply."
 	},
 	"legal": {
-		"terms_title": "Terms of Service",
-		"terms_description": "Curious about the terms of service of the site? It's right here!",
-		"privacy_title": "Privacy Policy",
-		"privacy_description": "Want to know more about how we handle your personal data? It's right over here!"
+		"description": "Curious about the terms of use of the site and how we process your personal data? It's over here!"
 	},
 	"dashboard": {
 		"hide": "Hide",

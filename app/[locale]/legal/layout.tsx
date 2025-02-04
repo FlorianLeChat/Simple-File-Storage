@@ -1,5 +1,5 @@
 //
-// Structure HTML générale des documents légaux.
+// Structure HTML générale des mentions légales.
 //
 
 // Importation des dépendances.

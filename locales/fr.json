@@ -91,8 +91,7 @@
 			"notifications_off_label": "Aucune notification",
 			"notifications_off_description": "Ne recevez aucune notification sauf les alertes de sécurité importantes concernant votre compte utilisateur et le site Internet.",
 			"legal_label": "Documents légaux",
-			"legal_description_1": "Consulter les conditions d'utilisation (français seulement).",
-			"legal_description_2": "Consulter la politique de confidentialité (français seulement).",
+			"legal_description": "Consulter les mentions légales du site Internet",
 			"user_files_label": "Fichiers utilisateur",
 			"user_files_description": "Lorsque vous téléversez un fichier sur le serveur, ses données sont enregistrées dans le système de fichiers (ou dans un système de stockage en nuage selon la configuration du site) et certaines informations sont ajoutées à la base de données afin de le retrouver plus facilement.<br></br>Si vous activez cette option, <b>seuls vos fichiers seront supprimés définitivement du serveur sans possibilité de récupération via l'assistance technique.</b> La suppression sera immédiate et inclura les versions antérieures ainsi que les données de partage à d'autres utilisateurs.",
 			"user_files_switch": "Je veux supprimer mes fichiers ainsi que toutes les données associées définitivement sans possibilité de récupération via l'assistance technique.",
@@ -239,8 +238,7 @@
 		"dashboard": "Tableau de bord",
 		"settings": "Paramètres",
 		"logout": "Déconnexion",
-		"terms_of_service": "Conditions d'utilisation",
-		"privacy_policy": "Politique de confidentialité",
+		"legal_notices": "Mentions légales",
 		"user_account": "Compte utilisateur",
 		"admin_account": "Compte administrateur",
 		"something_else": "Autre chose ?",
@@ -251,10 +249,7 @@
 		"recaptcha_protected": "Ce site est protégé par reCAPTCHA sur lequel s'appliquent les <a1>politiques de confidentialité</a1> et les <a2>conditions d'utilisation</a2> de Google."
 	},
 	"legal": {
-		"terms_title": "Conditions d'utilisation",
-		"terms_description": "Curieux de connaître les conditions d'utilisation du site ? C'est par ici !",
-		"privacy_title": "Politique de confidentialité",
-		"privacy_description": "Vous voulez en savoir plus sur la manière dont nous traitons vos données personnelles ? C'est bien par là !"
+		"description": "Curieux de connaître les conditions d'utilisation du site et comment nous traitons vos données personnelles ? C'est par ici !"
 	},
 	"dashboard": {
 		"hide": "Cacher",
