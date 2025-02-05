@@ -48,12 +48,6 @@ test( "Mise à jour des informations du compte utilisateur", async ( { page } ) 
 	await page.getByLabel( "Preferred Language" ).click();
 	await page.getByLabel( "French" ).click();
 
-	// Téléversement d'un nouvel avatar.
-	await page
-		.getByLabel( "Avatar" )
-		.setInputFiles( join( __dirname, "static/duck.jpg" ) );
-	await page.getByRole( "button", { name: "Update" } ).click();
-
 	// Attente de la réponse du serveur sous forme de notification.
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )

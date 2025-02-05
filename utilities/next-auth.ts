@@ -6,11 +6,8 @@ import Email from "next-auth/providers/nodemailer";
 import bcrypt from "bcrypt";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
-import { join } from "path";
 import NextAuth from "next-auth";
-import { readdir } from "fs/promises";
 import Credentials from "next-auth/providers/credentials";
-import { existsSync } from "fs";
 import type { Adapter } from "next-auth/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
@@ -70,22 +67,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 					default: true // Utilisation des préférences par défaut.
 				};
 				token.notification = user.notification;
-
-				// Vérification de l'existence du dossier d'enregistrement
-				//  des avatars utilisateurs.
-				const avatars = join( process.cwd(), "public/avatars" );
-
-				if ( existsSync( avatars ) )
-				{
-					// Vérification de l'existence d'un avatar personnalisé.
-					const avatar = await readdir( avatars );
-
-					if ( avatar.find( ( file ) => file.includes( token.id ) ) )
-					{
-						// Définition de l'avatar personnalisé de l'utilisateur.
-						token.image = `/avatars/${ avatar }`;
-					}
-				}
 			}
 
 			return token;
@@ -109,7 +90,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 				else if ( user )
 				{
 					// Données de session via base de données.
-					const avatars = join( process.cwd(), "public/avatars" );
 					const preferences = await prisma.preference.findUnique( {
 						where: {
 							userId: user.id
@@ -130,16 +110,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 						default: true
 					};
 					session.user.notification = user.notification;
-
-					if ( existsSync( avatars ) )
-					{
-						const avatar = await readdir( avatars );
-
-						if ( avatar.find( ( file ) => file.includes( user.id ) ) )
-						{
-							session.user.image = `/avatars/${ avatar }`;
-						}
-					}
 				}
 			}
 

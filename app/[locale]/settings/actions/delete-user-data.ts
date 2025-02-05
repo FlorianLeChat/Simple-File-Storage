@@ -6,10 +6,9 @@
 
 import * as v from "valibot";
 import prisma from "@/utilities/prisma";
+import { rm } from "fs/promises";
 import { join } from "path";
 import { logger } from "@/utilities/pino";
-import { existsSync } from "fs";
-import { readdir, rm } from "fs/promises";
 import { auth, signOut } from "@/utilities/next-auth";
 import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
@@ -70,29 +69,12 @@ export async function deleteUserData(
 				recursive: true,
 				force: true
 			} );
-
-			// On supprime par la même occasion son avatar (s'il existe).
-			const folderPath = join( process.cwd(), "public/avatars" );
-
-			if ( existsSync( folderPath ) )
-			{
-				const avatars = await readdir( folderPath );
-				const avatar = avatars.find( ( file ) => file.includes( session.user.id ) );
-
-				if ( avatar )
-				{
-					await rm( join( folderPath, avatar ), { force: true } );
-				}
-			}
 		}
 		finally
 		{
 			// On demande la déconnexion de l'utilisateur de toutes les
 			//  sessions enregistrées.
-			logger.info(
-				{ source: __dirname, session },
-				"User account deleted"
-			);
+			logger.info( { source: __dirname, session }, "User account deleted" );
 
 			revalidatePath( "/" );
 
