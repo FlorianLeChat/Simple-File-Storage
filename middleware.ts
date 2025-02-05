@@ -3,7 +3,6 @@
 //
 import mime from "mime";
 import { Prisma } from "@prisma/client";
-import type { JWT } from "next-auth/jwt";
 import createIntlMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -145,44 +144,6 @@ export default async function middleware( request: NextRequest )
 	if ( request.nextUrl.pathname.startsWith( "/files/" ) )
 	{
 		return new NextResponse( null, { status: 404 } );
-	}
-
-	// On restreint après l'accès aux avatars personnalisés aux
-	//  utilisateurs connectés pour éviter d'être récupérés par
-	//  des robots d'indexation.
-	if ( request.nextUrl.pathname.startsWith( "/avatars/" ) )
-	{
-		const data = await fetch( new URL( "/api/user/session", request.url ), {
-			headers: request.headers
-		} );
-
-		if ( data.ok )
-		{
-			// La session existe, on retourne le fichier demandé
-			//  comme une requête classique.
-			const session = ( await data.json() ) as JWT;
-			const headers = new Headers();
-			headers.set( "X-Auth-Secret", process.env.AUTH_SECRET ?? "" );
-
-			const content = await fetch(
-				new URL( `/api/public/${ session.image }`, data.url ),
-				{ headers }
-			);
-
-			if ( !content.ok )
-			{
-				// Si l'avatar personnalisé n'existe pas, on retourne
-				//  une erreur 404.
-				return new NextResponse( null, { status: 404 } );
-			}
-
-			// Dans le cas contraire, on retourne le contenu du fichier
-			//  comme une réponse classique.
-			return new NextResponse( await content.arrayBuffer() );
-		}
-
-		// La session n'existe pas, on retourne une erreur 403.
-		return new NextResponse( null, { status: 403 } );
 	}
 
 	// On vérifie également si le service reCAPTCHA est activé ou non

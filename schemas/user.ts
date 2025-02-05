@@ -3,13 +3,6 @@
 //
 import * as v from "valibot";
 
-// Taille maximale d'un avatar.
-const MAX_FILE_SIZE = Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE ?? "0" );
-
-// Types d'images acceptés pour l'avatar.
-const ACCEPTED_FILE_TYPES =
-	process.env.NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES?.split( "," ) ?? [];
-
 const schema = v.object( {
 	// Nom d'utilisateur.
 	username: v.pipe( v.string(), v.minLength( 10 ), v.maxLength( 50 ) ),
@@ -24,26 +17,7 @@ const schema = v.object( {
 	] ),
 
 	// Langue préférée.
-	language: v.picklist( [ "en", "fr" ] ),
-
-	// Image de l'avatar.
-	//  Source : https://github.com/colinhacks/zod/issues/387
-	avatar: v.union( [
-		v.pipe(
-			v.file(),
-			v.minSize( 1 ),
-			v.maxSize( MAX_FILE_SIZE ),
-			v.mimeType(
-				ACCEPTED_FILE_TYPES.map( ( type ) => type.trim() ) as `${ string }/${ string }`[]
-			)
-		),
-		v.pipe(
-			v.file(),
-			v.size( 0 ),
-			v.check( ( file ) => file.name === "undefined" ),
-			v.mimeType( [ "application/octet-stream" ] )
-		)
-	] )
+	language: v.picklist( [ "en", "fr" ] )
 } );
 
 export default schema;
