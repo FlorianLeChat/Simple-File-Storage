@@ -47,6 +47,7 @@ test( "Mise à jour des informations du compte utilisateur", async ( { page } ) 
 	// Sélection de la langue préférée.
 	await page.getByLabel( "Preferred Language" ).click();
 	await page.getByLabel( "French" ).click();
+	await page.getByRole( "button", { name: "Update" } ).click();
 
 	// Attente de la réponse du serveur sous forme de notification.
 	await expect(
