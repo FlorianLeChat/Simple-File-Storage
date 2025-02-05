@@ -8,10 +8,7 @@ const nextConfig: NextConfig = withNextIntl( {
 	poweredByHeader: false,
 	experimental: {
 		serverActions: {
-			bodySizeLimit: Math.max(
-				Number( process.env.NEXT_PUBLIC_MAX_QUOTA ),
-				Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE )
-			)
+			bodySizeLimit: Number( process.env.NEXT_PUBLIC_MAX_QUOTA )
 		}
 	},
 	async redirects()

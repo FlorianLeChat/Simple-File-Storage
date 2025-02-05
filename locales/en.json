@@ -27,8 +27,6 @@
 			"language_label_fr": "French",
 			"language_label": "Preferred Language",
 			"language_description": "This is the language that will be used across all pages of the site. If your language has incomplete translations, we will use the site's default language to complete them.",
-			"avatar_label": "Avatar",
-			"avatar_description": "You can update the avatar used for your user account. <b>Avatars must not exceed {size} and must be in PNG, JPEG, or WEBP format</b>.",
 			"public_label": "File Publishing",
 			"public_description": "By default, files uploaded to the server are private and not accessible to other users. If you enable this option, <b>new files will be automatically published and accessible to all users with the access link</b>.",
 			"public_trigger": "Enable automatic publication of uploaded files to the server",
@@ -96,7 +94,7 @@
 			"user_files_description": "When you upload a file to the server, its data is saved in the file system (or in a cloud storage system depending on the site's configuration), and some information is added to the database to find it more easily.<br></br>If you enable this option, <b>only your files will be permanently deleted from the server without the possibility of recovery via technical support.</b> The deletion will be immediate and will include previous versions as well as sharing data with other users.",
 			"user_files_switch": "I want to delete my files as well as all associated data permanently without the possibility of recovery via technical support.",
 			"user_account_label": "User Account",
-			"user_account_description": "By accessing your user space, you must have created an account by providing an email address and a password. This information is saved in the database and allows you to identify yourself on the site. If you used an external authentication provider (such as Google or GitHub), some data is also saved to identify you automatically (but they do not allow access to your personal information).<br></br>If you enable this option, <b>your entire account will be permanently deleted from the server without the possibility of recovery via technical support.</b> The deletion will be immediate and will include data associated with your account (such as files, previous versions, sharing data with other users, notifications, bug reports, session data, avatar, etc.).",
+			"user_account_description": "By accessing your user space, you must have created an account by providing an email address and a password. This information is saved in the database and allows you to identify yourself on the site. If you used an external authentication provider (such as Google or GitHub), some data is also saved to identify you automatically (but they do not allow access to your personal information).<br></br>If you enable this option, <b>your entire account will be permanently deleted from the server without the possibility of recovery via technical support.</b> The deletion will be immediate and will include data associated with your account (such as files, previous versions, sharing data with other users, notifications, bug reports, session data, etc.).",
 			"user_account_switch": "I want to delete my user account as well as all associated data permanently without the possibility of recovery via technical support."
 		},
 		"infos": {

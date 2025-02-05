@@ -12,12 +12,10 @@ import { Lock,
 	Contact,
 	Loader2,
 	RefreshCw,
-	FileImage,
 	Languages } from "lucide-react";
 import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/server-action";
-import { formatSize } from "@/utilities/react-table";
 import type { Session } from "next-auth";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useLocale, useTranslations } from "next-intl";
@@ -48,33 +46,23 @@ export default function User( { session }: Readonly<{ session: Session }> )
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "form" );
 	const [ isLocked, setIsLocked ] = useState( false );
+	const [ passwordType, setPasswordType ] = useState( "text" );
 	const [ updateState, updateAction, isPending ] = useActionState( updateUser, {
 		success: true,
 		reason: ""
 	} );
-	const [ passwordType, setPasswordType ] = useState( "text" );
 
 	// Déclaration des constantes.
-	const maxAvatarSize = Number( process.env.NEXT_PUBLIC_MAX_AVATAR_SIZE ?? 0 );
-	const characters =
-		"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
-	const userSchema = v.object( {
-		// Modification de la vérification de l'avatar pour prendre en compte
-		//  la différence entre les données côté client et celles envoyées
-		//  côté serveur.
-		...v.omit( schema, [ "avatar" ] ).entries,
-		...v.object( { avatar: v.optional( v.string() ) } ).entries
-	} );
+	const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
 
 	// Déclaration du formulaire.
-	const form = useForm<v.InferOutput<typeof userSchema>>( {
-		resolver: valibotResolver( userSchema ),
+	const form = useForm<v.InferOutput<typeof schema>>( {
+		resolver: valibotResolver( schema ),
 		defaultValues: {
 			username: session.user.name ?? "",
 			email: session.user.email ?? "",
 			password: "",
-			language: useLocale() as "en" | "fr",
-			avatar: ""
+			language: useLocale() as "en" | "fr"
 		}
 	} );
 
@@ -125,8 +113,6 @@ export default function User( { session }: Readonly<{ session: Session }> )
 		//  avant de réinitialiser le formulaire en cas de succès.
 		if ( success )
 		{
-			form.resetField( "avatar" );
-
 			toast.success( messages( "infos.action_success" ), {
 				description: reason
 			} );
@@ -362,46 +348,6 @@ export default function User( { session }: Readonly<{ session: Session }> )
 
 							<FormDescription>
 								{messages( "fields.language_description" )}
-							</FormDescription>
-
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-
-				{/* Avatar */}
-				<FormField
-					name="avatar"
-					control={form.control}
-					render={( { field } ) => (
-						<FormItem>
-							<FormLabel>
-								<FileImage className="mr-2 inline size-6" />
-								{messages( "fields.avatar_label" )}
-							</FormLabel>
-
-							<FormControl>
-								<Input
-									{...field}
-									type="file"
-									accept={
-										process.env
-											.NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES
-									}
-									disabled={isPending}
-									className="file:mr-2 file:cursor-pointer file:rounded-md file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
-								/>
-							</FormControl>
-
-							<FormDescription>
-								{messages.rich( "fields.avatar_description", {
-									b: ( chunks ) => (
-										<strong suppressHydrationWarning>
-											{chunks}
-										</strong>
-									),
-									size: formatSize( maxAvatarSize )
-								} )}
 							</FormDescription>
 
 							<FormMessage />

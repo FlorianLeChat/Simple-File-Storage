@@ -9,9 +9,7 @@ const schema = v.object( {
 	NEXT_LOGGING: v.picklist( [ "true", "false" ] ),
 	NEXT_PUBLIC_ENV: v.picklist( [ "development", "production" ] ),
 	NEXT_PUBLIC_MAX_QUOTA: v.pipe( v.string(), v.minLength( 1 ) ),
-	NEXT_PUBLIC_MAX_AVATAR_SIZE: v.pipe( v.string(), v.minLength( 1 ) ),
 	NEXT_PUBLIC_ACCEPTED_FILE_TYPES: v.pipe( v.string(), v.minLength( 1 ) ),
-	NEXT_PUBLIC_ACCEPTED_AVATAR_TYPES: v.pipe( v.string(), v.minLength( 1 ) ),
 
 	SENTRY_ENABLED: v.picklist( [ "true", "false" ] ),
 	SENTRY_DSN: v.pipe( v.string(), v.url() ),
