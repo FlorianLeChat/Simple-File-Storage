@@ -13,6 +13,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 
 import prisma from "./prisma";
 import { logger } from "./pino";
+import { getGravatarUrl } from "./gravatar";
 import sendVerificationRequest from "./node-mailer";
 
 export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
@@ -55,7 +56,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 				token.name = user.name;
 				token.role = user.role;
 				token.email = user.email;
-				token.image = user.image ?? undefined;
+				token.image = user.image ?? ( await getGravatarUrl( user.email ) );
 				token.oauth = !user.password && !user.emailVerified;
 				token.preferences = user.preferences[ 0 ] ?? {
 					font: "inter",
@@ -90,6 +91,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 				else if ( user )
 				{
 					// Données de session via base de données.
+					const avatar = await getGravatarUrl( user.email );
 					const preferences = await prisma.preference.findUnique( {
 						where: {
 							userId: user.id
@@ -98,7 +100,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 
 					session.user.id = user.id;
 					session.user.role = user.role;
-					session.user.image = user.image ?? undefined;
+					session.user.image = user.image ?? avatar;
 					session.user.oauth = !user.password && !user.emailVerified;
 					session.user.preferences = preferences ?? {
 						font: "inter",
