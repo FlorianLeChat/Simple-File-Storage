@@ -67,6 +67,7 @@ services:
                   path: .
                   target: /usr/src/app
         volumes:
+            - ./logs:/usr/src/app/logs
             - ./public/files:/usr/src/app/public/files
         depends_on:
             - mariadb
