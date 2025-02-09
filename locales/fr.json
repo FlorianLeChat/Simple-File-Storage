@@ -370,7 +370,7 @@
 	},
 	"consentModal": {
 		"title": "Voulez-vous un cookie ? 🍪",
-		"footer": "<a href=\"legal/privacy\" target=\"_blank\">Politique de confidentialité</a><a href=\"legal/terms\" target=\"_blank\">Conditions d'utilisation</a>",
+		"footer": "<a href=\"/legal\" target=\"blank\">Mentions légales</a>",
 		"description": "Notre site Internet utilise des cookies de suivi pour comprendre comment vous interagissez avec lui. Le suivi ne sera activé que si vous l'acceptez explicitement.",
 		"acceptAllBtn": "Tout accepter",
 		"acceptNecessaryBtn": "Tout refuser",
