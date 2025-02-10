@@ -316,7 +316,7 @@
 		"login_title": "Login to Your Account",
 		"login_description": "To log in to your user account, enter your email address. An authentication link will be sent to you to access your account securely.",
 		"continue_with": "Continue with",
-		"accept_terms": "By continuing, you agree to our <a1>terms of service</a1> and our <a2>privacy policy</a2>."
+		"accept_terms": "By continuing, you accept our <a>legal notices</a>."
 	},
 	"index": {
 		"title": "Discover Our Features",

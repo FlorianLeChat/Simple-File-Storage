@@ -143,24 +143,15 @@ export default async function Page( {
 				{/* Fournisseurs d'authentification externes */}
 				<OAuthForm />
 
-				{/* Conditions d'utilisation et politique de confidentialité */}
+				{/* Mentions légales */}
 				<BlurIn
 					as="p"
 					className="px-8 text-center text-sm text-muted-foreground"
 				>
 					{messages.rich( "authentication.accept_terms", {
-						a1: ( chunks ) => (
+						a: ( chunks ) => (
 							<Link
-								href="/legal/terms"
-								target="_blank"
-								className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
-							>
-								{chunks}
-							</Link>
-						),
-						a2: ( chunks ) => (
-							<Link
-								href="/legal/privacy"
+								href="/legal"
 								target="_blank"
 								className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
 							>
