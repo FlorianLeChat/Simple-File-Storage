@@ -4,8 +4,9 @@
 
 // Importation des dépendances.
 import Link from "next/link";
-import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
 import { lazy, type ReactNode } from "react";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 // Importation des fonctions utilitaires.
 import { auth } from "@/utilities/next-auth";
@@ -15,8 +16,20 @@ import { fetchMetadata } from "@/utilities/metadata";
 import { Separator } from "../components/ui/separator";
 
 const UserMenu = lazy( () => import( "../components/user-menu" ) );
+const FadeText = lazy( () => import( "../components/ui/thirdparty/fade-text" ) );
 const Navigation = lazy( () => import( "../components/navigation" ) );
 const Notification = lazy( () => import( "../components/notification" ) );
+
+// Déclaration des propriétés de la page.
+export async function generateMetadata(): Promise<Metadata>
+{
+	const metadata = await fetchMetadata();
+	const messages = await getTranslations();
+
+	return {
+		title: `${ messages( "header.legal_notices" ) } – ${ metadata.title }`
+	};
+}
 
 export default async function Layout( {
 	children,
@@ -34,6 +47,7 @@ export default async function Layout( {
 	// Déclaration des constantes.
 	const meta = await fetchMetadata();
 	const session = await auth();
+	const messages = await getTranslations();
 
 	// Affichage du rendu HTML de la page.
 	return (
@@ -68,7 +82,35 @@ export default async function Layout( {
 			<Separator />
 
 			{/* Contenu de la page */}
-			{children}
+			<main className="container mx-auto max-w-[1440px] p-8 max-md:p-4 max-md:pb-8">
+				{/* En-tête de la page */}
+				<header>
+					<FadeText
+						as="h2"
+						className="text-2xl font-bold tracking-tight"
+						direction="left"
+					>
+						{messages( "header.legal_notices" )}
+					</FadeText>
+
+					<FadeText
+						as="p"
+						delay={0.2}
+						className="text-muted-foreground"
+						direction="left"
+					>
+						{messages( "legal.description" )}
+					</FadeText>
+				</header>
+
+				{/* Barre verticale de séparation */}
+				<Separator className="mb-6 mt-4 md:mb-8 md:mt-6" />
+
+				{/* Contenu principal */}
+				<section className="flex flex-col space-y-6 text-justify text-sm">
+					{children}
+				</section>
+			</main>
 		</>
 	);
 }
