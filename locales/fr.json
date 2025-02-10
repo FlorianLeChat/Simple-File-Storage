@@ -316,7 +316,7 @@
 		"login_title": "Connexion à votre compte",
 		"login_description": "Pour vous connecter à votre compte utilisateur, saisissez votre adresse électronique. Un lien d'authentification vous sera envoyé pour accéder à votre compte en toute sécurité.",
 		"continue_with": "Continuer avec",
-		"accept_terms": "En continuant, vous acceptez nos <a1>conditions d'utilisation</a1> et notre <a2>politique de confidentialité</a2>."
+		"accept_terms": "En continuant, vous acceptez nos <a>mentions légales</a>."
 	},
 	"index": {
 		"title": "Découvrez nos fonctionnalités",
