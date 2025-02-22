@@ -116,7 +116,7 @@ export default async function Layout( {
 			lang={locale}
 			style={
 				{
-					colorScheme: theme,
+					"colorScheme": theme,
 					"--inter-font": inter.style.fontFamily,
 					"--poppins-font": poppins.style.fontFamily,
 					"--roboto-font": roboto.style.fontFamily

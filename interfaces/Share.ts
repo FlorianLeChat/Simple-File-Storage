@@ -3,7 +3,8 @@
 //
 import type { User } from "next-auth";
 
-export interface ShareAttributes {
+export interface ShareAttributes
+{
 	// Utilisateur en partage.
 	user: {
 		// Identifiant unique.

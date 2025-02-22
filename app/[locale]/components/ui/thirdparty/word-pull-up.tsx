@@ -9,7 +9,8 @@ import { merge } from "@/utilities/tailwind";
 import { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 
-interface WordPullUpProps {
+interface WordPullUpProps
+{
 	as: string;
 	words: string;
 	delayMultiple?: number;

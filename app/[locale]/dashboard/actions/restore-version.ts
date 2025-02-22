@@ -22,7 +22,7 @@ export async function restoreVersion( formData: FormData )
 	//  que ses préférences.
 	const session = await auth();
 
-	if ( !session || !session.user.preferences.versions )
+	if ( !session?.user.preferences.versions )
 	{
 		return "";
 	}
@@ -165,10 +165,7 @@ export async function restoreVersion( formData: FormData )
 	//  une version précédente.
 	await prisma.notification.createMany( {
 		data: file.shares
-			.filter(
-				( share ) => share.user.notification.includes( "necessary" )
-					|| share.user.notification.includes( "all" )
-			)
+			.filter( ( share ) => share.user.notification.includes( "necessary" ) || share.user.notification.includes( "all" ) )
 			.map( ( share ) => ( {
 				title: 3,
 				userId: share.userId,

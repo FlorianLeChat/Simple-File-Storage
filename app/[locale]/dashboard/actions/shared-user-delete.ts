@@ -86,10 +86,7 @@ export async function deleteSharedUser( formData: FormData )
 	//  avec eux.
 	await prisma.notification.createMany( {
 		data: shares
-			.filter(
-				( share ) => share.user.notification.includes( "necessary" )
-					|| share.user.notification.includes( "all" )
-			)
+			.filter( ( share ) => share.user.notification.includes( "necessary" ) || share.user.notification.includes( "all" ) )
 			.map( ( share ) => ( {
 				title: 4,
 				userId: share.userId,

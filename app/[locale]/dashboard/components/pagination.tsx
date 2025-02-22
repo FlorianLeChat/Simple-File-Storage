@@ -20,11 +20,12 @@ import { Select,
 	SelectTrigger,
 	SelectContent } from "../../components/ui/select";
 
-interface PaginationProps<TData> {
+interface PaginationProps<TData>
+{
 	table: Table<TData>;
 }
 
-export default function Pagination<TData>( { table }: PaginationProps<TData> )
+export default function Pagination<TData>( { table }: Readonly<PaginationProps<TData>> )
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "dashboard" );

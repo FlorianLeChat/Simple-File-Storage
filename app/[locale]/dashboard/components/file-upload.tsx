@@ -194,12 +194,7 @@ export default function FileUpload( {
 	{
 		setQuota(
 			states.files.reduce(
-				( total, file ) => total
-					+ file.versions.reduce(
-						( size, version ) => size + version.size,
-						0
-					),
-				0
+				( total, file ) => total + file.versions.reduce( ( size, version ) => size + version.size, 0 ), 0
 			)
 		);
 	}, [ states ] );

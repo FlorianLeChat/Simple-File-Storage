@@ -1,7 +1,8 @@
 //
 // Interface des attributs des versions de fichiers.
 //
-export interface VersionAttributes {
+export interface VersionAttributes
+{
 	// Identifiant unique de la version.
 	uuid: string;
 

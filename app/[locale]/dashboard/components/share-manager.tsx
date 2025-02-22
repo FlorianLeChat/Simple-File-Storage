@@ -73,10 +73,7 @@ export default function ShareManager( {
 	);
 
 	// Filtrage des résultats de la recherche.
-	const result =
-		data?.filter(
-			( user ) => !file.shares.some( ( share ) => share.user.uuid === user.id )
-		) ?? [];
+	const result = data?.filter( ( user ) => !file.shares.some( ( share ) => share.user.uuid === user.id ) ) ?? [];
 
 	// Soumission de la requête d'ajout d'un partage.
 	const submitAddition = async ( user: User ) =>

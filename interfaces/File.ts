@@ -5,7 +5,8 @@ import type { User } from "next-auth";
 import type { ShareAttributes } from "./Share";
 import type { VersionAttributes } from "./Version";
 
-export interface FileAttributes {
+export interface FileAttributes
+{
 	// Identifiant unique du fichier.
 	uuid: string;
 
