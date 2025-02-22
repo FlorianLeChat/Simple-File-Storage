@@ -25,30 +25,29 @@ export default function CookieConsent()
 
 	// Filtrage des catégories de cookies en fonction des
 	//  paramètres du site Internet.
-	messages.preferencesModal.sections =
-		messages.preferencesModal.sections.filter( ( section ) =>
+	messages.preferencesModal.sections = messages.preferencesModal.sections.filter( ( section ) =>
+	{
+		if (
+			section.linkedCategory === "analytics"
+			&& process.env.NEXT_PUBLIC_ANALYTICS_ENABLED !== "true"
+		)
 		{
-			if (
-				section.linkedCategory === "analytics"
-				&& process.env.NEXT_PUBLIC_ANALYTICS_ENABLED !== "true"
-			)
-			{
-				// Google Analytics est désactivé.
-				return false;
-			}
+			// Google Analytics est désactivé.
+			return false;
+		}
 
-			if (
-				section.linkedCategory === "security"
-				&& process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED !== "true"
-			)
-			{
-				// Google reCAPTCHA est désactivé.
-				return false;
-			}
+		if (
+			section.linkedCategory === "security"
+			&& process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED !== "true"
+		)
+		{
+			// Google reCAPTCHA est désactivé.
+			return false;
+		}
 
-			// Autres catégories de cookies.
-			return true;
-		} );
+		// Autres catégories de cookies.
+		return true;
+	} );
 
 	// Affichage du consentement des cookies.
 	//  Source : https://cookieconsent.orestbida.com/reference/api-reference.html
@@ -63,9 +62,7 @@ export default function CookieConsent()
 			hideFromBots: process.env.NEXT_PUBLIC_ENV === "production",
 
 			// Activation automatique de la fenêtre de consentement.
-			autoShow:
-				process.env.NEXT_PUBLIC_ENV === "production"
-				&& !pathname.startsWith( "/legal" ),
+			autoShow: process.env.NEXT_PUBLIC_ENV === "production" && !pathname.startsWith( "/legal" ),
 
 			// Paramètres internes des cookies.
 			cookie: {

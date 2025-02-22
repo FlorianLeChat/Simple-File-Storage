@@ -50,10 +50,9 @@ export async function updateNotifications(
 
 	// On met à jour après le niveau de notifications de l'utilisateur dans la
 	//  base de données.
-	const notification =
-		result.output.push && result.output.level !== "off"
-			? `${ result.output.level }+mail`
-			: result.output.level;
+	const notification = result.output.push && result.output.level !== "off"
+		? `${ result.output.level }+mail`
+		: result.output.level;
 
 	await prisma.user.update( {
 		where: {

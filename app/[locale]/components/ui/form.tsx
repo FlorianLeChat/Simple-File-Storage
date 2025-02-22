@@ -29,7 +29,7 @@ const Form = FormProvider;
 
 type FormFieldContextValue<
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 > = {
 	name: TName;
 };
@@ -40,7 +40,7 @@ const FormFieldContext = createContext<FormFieldContextValue>(
 
 function FormField<
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 >( { ...props }: ControllerProps<TFieldValues, TName> )
 {
 	const name = useMemo( () => ( { name: props.name } ), [ props.name ] );
@@ -133,8 +133,7 @@ const FormControl = forwardRef<
 	ComponentPropsWithoutRef<typeof Slot>
 >( ( { ...props }, ref ) =>
 {
-	const { error, formItemId, formDescriptionId, formMessageId } =
-		useFormField();
+	const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
 
 	return (
 		<Slot

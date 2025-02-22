@@ -71,10 +71,9 @@ export default function RowActions( {
 	const dataFiles = states.files.filter( ( file ) => file.uuid === row.id );
 	const selectedRows = table.getFilteredSelectedRowModel().rows;
 	const selectedCount = Math.max( selectedRows.length, 1 );
-	const selectedFiles =
-		selectedRows.length > 1
-			? states.files.filter( ( file ) => selectedRows.find( ( value ) => file.uuid === value.id ) )
-			: dataFiles;
+	const selectedFiles = selectedRows.length > 1
+		? states.files.filter( ( file ) => selectedRows.find( ( value ) => file.uuid === value.id ) )
+		: dataFiles;
 	const fileShares = selectedFiles[ 0 ].shares.find(
 		( share ) => share.user.uuid === session.data?.user.id
 	);

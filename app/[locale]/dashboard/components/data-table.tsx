@@ -238,8 +238,7 @@ export default function DataTable( { data }: Readonly<{ data: FileAttributes[] }
 										.getHeaderGroups()[ 0 ]
 										.headers.filter(
 											// Filtrage des colonnes à afficher.
-											( header ) => header.id === cell.column.id
-												&& header.id !== "select"
+											( header ) => header.id === cell.column.id && header.id !== "select"
 										)
 										.map( ( header ) => (
 											<span
@@ -258,8 +257,7 @@ export default function DataTable( { data }: Readonly<{ data: FileAttributes[] }
 										) )}
 
 									{/* Séparateur */}
-									{cell.column.id !== "select"
-										&& cell.column.id !== "actions" && (
+									{cell.column.id !== "select" && cell.column.id !== "actions" && (
 										<br className="sm:hidden" />
 									)}
 

@@ -37,8 +37,7 @@ const DropdownMenuSubTrigger = forwardRef<
 	</DropdownMenuPrimitive.SubTrigger>
 ) );
 
-DropdownMenuSubTrigger.displayName =
-	DropdownMenuPrimitive.SubTrigger.displayName;
+DropdownMenuSubTrigger.displayName = DropdownMenuPrimitive.SubTrigger.displayName;
 
 const DropdownMenuSubContent = forwardRef<
 	ElementRef<typeof DropdownMenuPrimitive.SubContent>,
@@ -54,8 +53,7 @@ const DropdownMenuSubContent = forwardRef<
 	/>
 ) );
 
-DropdownMenuSubContent.displayName =
-	DropdownMenuPrimitive.SubContent.displayName;
+DropdownMenuSubContent.displayName = DropdownMenuPrimitive.SubContent.displayName;
 
 const DropdownMenuContent = forwardRef<
 	ElementRef<typeof DropdownMenuPrimitive.Content>,
@@ -117,8 +115,7 @@ const DropdownMenuCheckboxItem = forwardRef<
 	</DropdownMenuPrimitive.CheckboxItem>
 ) );
 
-DropdownMenuCheckboxItem.displayName =
-	DropdownMenuPrimitive.CheckboxItem.displayName;
+DropdownMenuCheckboxItem.displayName = DropdownMenuPrimitive.CheckboxItem.displayName;
 
 const DropdownMenuRadioItem = forwardRef<
 	ElementRef<typeof DropdownMenuPrimitive.RadioItem>,
