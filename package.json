@@ -76,7 +76,6 @@
     "tailwindcss-animate": "~1.0",
     "@hookform/resolvers": "~3.10",
     "@next/third-parties": "~15.1",
-    "eslint-config-airbnb": "~19.0",
     "@radix-ui/react-slot": "~1.1",
     "@radix-ui/react-tabs": "~1.1",
     "vanilla-cookieconsent": "~3.0",
