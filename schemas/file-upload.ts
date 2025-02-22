@@ -5,8 +5,7 @@ import * as v from "valibot";
 import { addDays } from "date-fns";
 
 // Types de fichiers acceptés.
-const ACCEPTED_FILE_TYPES =
-	process.env.NEXT_PUBLIC_ACCEPTED_FILE_TYPES?.split( "," ) ?? [];
+const ACCEPTED_FILE_TYPES = process.env.NEXT_PUBLIC_ACCEPTED_FILE_TYPES?.split( "," ) ?? [];
 
 const schema = v.object( {
 	// Fichier(s) à téléverser.

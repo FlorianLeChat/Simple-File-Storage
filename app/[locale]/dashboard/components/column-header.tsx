@@ -19,8 +19,8 @@ import { DropdownMenu,
 	DropdownMenuTrigger,
 	DropdownMenuSeparator } from "../../components/ui/dropdown-menu";
 
-interface ColumnHeaderProps<TData, TValue>
-	extends HTMLAttributes<HTMLDivElement> {
+interface ColumnHeaderProps<TData, TValue> extends HTMLAttributes<HTMLDivElement>
+{
 	column: Column<TData, TValue>;
 	title: string;
 }
@@ -28,7 +28,7 @@ interface ColumnHeaderProps<TData, TValue>
 export default function ColumnHeader<TData, TValue>( {
 	column,
 	title
-}: ColumnHeaderProps<TData, TValue> )
+}: Readonly<ColumnHeaderProps<TData, TValue>> )
 {
 	// Déclaration des variables d'état.
 	const messages = useTranslations( "dashboard" );
@@ -37,8 +37,7 @@ export default function ColumnHeader<TData, TValue>( {
 	// Déclaration des constantes.
 	const sorting = column.getIsSorted();
 	const ascending = sorting === "asc" || parameters.get( "asc" ) === column.id;
-	const descending =
-		sorting === "desc" || parameters.get( "desc" ) === column.id;
+	const descending = sorting === "desc" || parameters.get( "desc" ) === column.id;
 
 	// Vérification de la possibilité de trier la colonne.
 	if ( !column.getCanSort() )
@@ -58,10 +57,11 @@ export default function ColumnHeader<TData, TValue>( {
 			>
 				{title}
 
-				{( descending && <ArrowDown className="ml-2 size-4" /> )
-					|| ( ascending ? (
+				{( descending && <ArrowDown className="ml-2 size-4" /> ) || ( ascending
+					? (
 						<ArrowUp className="ml-2 size-4" />
-					) : (
+					)
+					: (
 						<ArrowDownUp className="ml-2 size-4" />
 					) )}
 			</DropdownMenuTrigger>

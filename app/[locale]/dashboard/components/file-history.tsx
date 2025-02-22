@@ -39,19 +39,19 @@ export default function FileHistory( {
 	file,
 	states,
 	disabled
-}: {
+}: Readonly<{
 	file: FileAttributes;
 	states: TableMeta<FileAttributes>;
 	disabled: boolean;
-} )
+}> )
 {
 	// Déclaration des variables d'état.
 	const locale = useLocale();
 	const formMessages = useTranslations( "form" );
 	const historyMessages = useTranslations( "modals.file_history" );
 	const restoreMessages = useTranslations( "modals.restore_version" );
-	const [ isOpen, setOpen ] = useState( false );
-	const [ isLoading, setLoading ] = useState( false );
+	const [ isOpen, setIsOpen ] = useState( false );
+	const [ isLoading, setIsLoading ] = useState( false );
 	const [ identifier, setIdentifier ] = useState( "" );
 
 	// Déclaration des constantes.
@@ -61,7 +61,7 @@ export default function FileHistory( {
 	const submitRestoration = async () =>
 	{
 		// Activation de l'état de chargement.
-		setLoading( true );
+		setIsLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -73,7 +73,7 @@ export default function FileHistory( {
 		const data = await serverAction( restoreVersion, form, formMessages );
 
 		// Fin de l'état de chargement.
-		setLoading( false );
+		setIsLoading( false );
 
 		if ( data )
 		{
@@ -125,7 +125,7 @@ export default function FileHistory( {
 			{
 				if ( !isLoading )
 				{
-					setOpen( state );
+					setIsOpen( state );
 				}
 			}}
 		>
@@ -160,23 +160,14 @@ export default function FileHistory( {
 					{
 						// Calcul de la différence de taille entre la version
 						//  actuelle et la version précédente.
-						const size =
-							version.size
-							- file.versions[ Math.min( index + 1, count - 1 ) ].size;
+						const size = version.size - file.versions[ Math.min( index + 1, count - 1 ) ].size;
 
 						// Définition de la couleur en fonction de la différence de
 						//  taille (vert si négatif, rouge si positif, gris si nul).
-						const color =
-							size === 0
-								? "text-gray-600"
-								: ( size < 0 && "text-green-600" )
-									|| "text-destructive";
+						const color = size === 0 ? "text-gray-600" : ( size < 0 && "text-green-600" ) || "text-destructive";
 
 						// Mise en forme de la différence de taille.
-						const offset =
-							size < 0
-								? `-${ formatSize( size ) }`
-								: `+${ formatSize( size ) }`;
+						const offset = size < 0 ? `-${ formatSize( size ) }` : `+${ formatSize( size ) }`;
 
 						return (
 							<li key={version.uuid} className="text-sm">

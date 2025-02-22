@@ -106,8 +106,7 @@ const AlertDialogDescription = forwardRef<
 	/>
 ) );
 
-AlertDialogDescription.displayName =
-	AlertDialogPrimitive.Description.displayName;
+AlertDialogDescription.displayName = AlertDialogPrimitive.Description.displayName;
 
 const AlertDialogAction = forwardRef<
 	ElementRef<typeof AlertDialogPrimitive.Action>,

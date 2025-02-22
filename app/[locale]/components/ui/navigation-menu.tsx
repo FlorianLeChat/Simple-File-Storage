@@ -28,8 +28,7 @@ const NavigationMenuViewport = forwardRef<
 	</div>
 ) );
 
-NavigationMenuViewport.displayName =
-	NavigationMenuPrimitive.Viewport.displayName;
+NavigationMenuViewport.displayName = NavigationMenuPrimitive.Viewport.displayName;
 
 const NavigationMenu = forwardRef<
 	ElementRef<typeof NavigationMenuPrimitive.Root>,
@@ -122,8 +121,7 @@ const NavigationMenuIndicator = forwardRef<
 	</NavigationMenuPrimitive.Indicator>
 ) );
 
-NavigationMenuIndicator.displayName =
-	NavigationMenuPrimitive.Indicator.displayName;
+NavigationMenuIndicator.displayName = NavigationMenuPrimitive.Indicator.displayName;
 
 export {
 	navigationMenuTriggerStyle,

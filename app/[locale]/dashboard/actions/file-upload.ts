@@ -258,8 +258,7 @@ export async function uploadFiles(
 			{
 				await prisma.notification.createMany( {
 					data: exists.shares
-						.filter( ( share ) => share.user.notification.includes( "necessary" )
-							|| share.user.notification.includes( "all" ) )
+						.filter( ( share ) => share.user.notification.includes( "necessary" ) || share.user.notification.includes( "all" ) )
 						.map( ( share ) => ( {
 							title: 3,
 							userId: share.userId,

@@ -8,7 +8,8 @@
 import { motion } from "framer-motion";
 import { useEffect, useState, type ReactNode } from "react";
 
-interface BlurInProps {
+interface BlurInProps
+{
 	as: string;
 	children: ReactNode;
 	className?: string;

@@ -196,12 +196,7 @@ export default function Appearance( { session }: Readonly<{ session: Session }> 
 											<TooltipTrigger
 												{...field}
 												type="button"
-												title={
-													value.name
-														.charAt( 0 )
-														.toUpperCase()
-													+ value.name.slice( 1 )
-												}
+												title={value.name.charAt( 0 ).toUpperCase() + value.name.slice( 1 )}
 												style={
 													{
 														"--theme-primary": `hsl(${ value.dark })`
@@ -219,15 +214,11 @@ export default function Appearance( { session }: Readonly<{ session: Session }> 
 														: "border-transparent"
 												)}
 												aria-label={
-													value.name
-														.charAt( 0 )
-														.toUpperCase()
-													+ value.name.slice( 1 )
+													value.name.charAt( 0 ).toUpperCase() + value.name.slice( 1 )
 												}
 											>
 												<span className="flex size-6 items-center justify-center rounded-full bg-[--theme-primary]">
-													{field.value
-														=== value.name && (
+													{field.value === value.name && (
 														<Check className="size-4 text-white" />
 													)}
 												</span>
