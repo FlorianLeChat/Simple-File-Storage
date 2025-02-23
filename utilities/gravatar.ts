@@ -2,7 +2,7 @@
 // Récupère l'URL Gravatar d'une adresse électronique quelconque.
 //  Source : https://docs.gravatar.com/api/avatars/node/
 //
-export const getGravatarUrl = async ( email: string, size: number = 64 ) =>
+export const getGravatarUrl = async ( email: string, size = 64 ) =>
 {
 	const messageBuffer = new TextEncoder().encode( email.trim().toLowerCase() );
 	const hashBuffer = await crypto.subtle.digest( "SHA-256", messageBuffer );

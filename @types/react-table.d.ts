@@ -3,8 +3,10 @@
 import type { FileAttributes } from "@/interfaces/File";
 import type { Dispatch, SetStateAction } from "react";
 
-declare module "@tanstack/table-core" {
-	interface TableMeta {
+declare module "@tanstack/table-core"
+{
+	interface TableMeta
+	{
 		// Fichiers affichés dans le tableau.
 		files: FileAttributes[];
 
