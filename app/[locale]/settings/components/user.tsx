@@ -67,7 +67,7 @@ export default function User( { session }: Readonly<{ session: Session }> )
 	} );
 
 	// Génère un mot de passe aléatoire.
-	const generateRandomPassword = ( length: number = 15 ) =>
+	const generateRandomPassword = ( length = 15 ) =>
 	{
 		// On génère d'abord aléatoirement des octets sécurisés.
 		const values = new Uint8Array( length );

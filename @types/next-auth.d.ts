@@ -2,9 +2,11 @@
 // Source : https://next-auth.js.org/getting-started/typescript#module-augmentation
 import type { JWT } from "next-auth/jwt";
 
-declare module "next-auth" {
+declare module "next-auth"
+{
 	// Types relatifs aux utilisateurs.
-	interface User {
+	interface User
+	{
 		id: string;
 		role: string;
 		image?: string;
@@ -14,15 +16,18 @@ declare module "next-auth" {
 	}
 
 	// Types relatifs aux sessions.
-	interface Session {
+	interface Session
+	{
 		user: {} & JWT;
 		expires: ISODateString;
 	}
 }
 
-declare module "next-auth/jwt" {
+declare module "next-auth/jwt"
+{
 	// Types relatifs aux jetons JWT.
-	export interface JWT {
+	export interface JWT
+	{
 		id: string;
 		role: string;
 		oauth: boolean;
