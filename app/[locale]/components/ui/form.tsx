@@ -27,10 +27,11 @@ import { Label } from "./label";
 
 const Form = FormProvider;
 
-type FormFieldContextValue<
+interface FormFieldContextValue<
 	TFieldValues extends FieldValues = FieldValues,
 	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-> = {
+>
+{
 	name: TName;
 };
 
@@ -52,7 +53,8 @@ function FormField<
 	);
 }
 
-type FormItemContextValue = {
+interface FormItemContextValue
+{
 	id: string;
 };
 

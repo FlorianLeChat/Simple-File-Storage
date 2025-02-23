@@ -41,7 +41,7 @@ function BlurIn( {
 			transition: { delay, duration }
 		}
 	};
-	const combinedVariants = variant || defaultVariants;
+	const combinedVariants = variant ?? defaultVariants;
 	const [ reducedMotion, setReducedMotion ] = useState( false );
 
 	useEffect( () =>

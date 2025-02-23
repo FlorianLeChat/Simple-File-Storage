@@ -8,14 +8,15 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { motion, type Variants } from "framer-motion";
 
-type FadeTextProps = {
+interface FadeTextProps
+{
 	as: string;
 	delay?: number;
 	className?: string;
 	direction?: "up" | "down" | "left" | "right";
 	framerProps?: Variants;
 	children: ReactNode;
-};
+}
 
 export default function FadeText( {
 	as,
@@ -42,9 +43,7 @@ export default function FadeText( {
 
 	const FADE_ANIMATION_VARIANTS = useMemo( () =>
 	{
-		const { hidden, show, ...rest } = framerProps as {
-			[name: string]: { [name: string]: number; opacity: number };
-		};
+		const { hidden, show, ...rest } = framerProps as Record<string, { [name: string]: number; opacity: number }>;
 
 		return {
 			...rest,

@@ -21,7 +21,8 @@ import { updateReadState } from "../actions";
 import { Button, buttonVariants } from "./ui/button";
 
 // Typage des notifications provenant de la base de données.
-type Notification = {
+interface Notification
+{
 	title: string;
 	message: string;
 	createdAt: Date;
