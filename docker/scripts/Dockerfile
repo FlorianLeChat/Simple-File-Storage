@@ -37,4 +37,5 @@ ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest
 USER node
 
 # Build the entire project and remove all development dependencies
-RUN npm run build && npm prune --production
+#  before making the entrypoint script executable
+RUN npm run build && npm prune --production && chmod +x ./docker/scripts/entrypoint.sh
