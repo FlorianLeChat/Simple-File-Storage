@@ -32,16 +32,16 @@
 - Compiler les fichiers statiques du site Internet avec la commande `npm run build` ;
 - Supprimer les dépendances de développement avec la commande `npm prune --production` ;
 - Démarrer le serveur local NodeJS avec la commande `npm run start` ;
-- *(Facultatif)* Utiliser [Varnish](https://varnish-cache.org/) comme serveur de cache HTTP pour atténuer les effets des fortes charges ([configuration intégrée](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/docker/default.vcl)) ;
+- *(Facultatif)* Utiliser [Varnish](https://varnish-cache.org/) comme serveur de cache HTTP pour atténuer les effets des fortes charges ([configuration intégrée](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/docker/configuration/default.vcl)) ;
 - Compiler les scripts destinés aux tâches planifiées avec la commande `npx tsc --skipLibCheck scripts/expired-files.ts scripts/outdated-notifications.ts` ;
 - Configurer une tâche planifiée pour exécuter la commande `node scripts/expired-files.js` pour la [suppression périodique des fichiers expirés](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/expired-files.ts) ;
 - Configurer une tâche planifiée pour exécuter la commande `node scripts/outdated-notifications` pour la [suppression périodique des anciennes notifications](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/outdated-notifications.ts).
 
 > [!TIP]
-> Pour tester le projet, vous *pouvez* également utiliser [Docker](https://www.docker.com/). Une fois installé, il suffit de lancer l'image Docker de développement à l'aide de la commande `docker compose up --detach --build`. Le site devrait être accessible à l'adresse suivante : http://localhost:3000/. Si vous souhaitez travailler sur le projet avec Docker, vous devez utiliser la commande `docker compose watch --no-up` pour que vos changements locaux soient automatiquement synchronisés avec le conteneur. 🐳
+> Pour tester le projet, vous pouvez utiliser [Docker](https://www.docker.com/). Une fois installé, il suffit de lancer l'image Docker à l'aide de la commande `docker compose up --detach --build`. Le site devrait être accessible à l'adresse suivante : http://localhost/. 🐳
 
 > [!CAUTION]
-> L'image Docker *peut* également être déployée en production, mais cela **nécessite des connaissances approfondies pour déployer, optimiser et sécuriser correctement votre installation**, afin d'éviter toute conséquence indésirable. ⚠️
+> L'image Docker peut être déployée en production, mais cela **nécessite des connaissances approfondies pour déployer, optimiser et sécuriser correctement votre installation**, afin d'éviter toute conséquence indésirable. ⚠️
 
 # In English
 
@@ -77,13 +77,13 @@
 - Build static website files using `npm run build` ;
 - Remove development dependencies using `npm prune --production` ;
 - Start NodeJS local server using `npm run start` ;
-- *(Optional)* Use [Varnish](https://varnish-cache.org/) as an HTTP cache server to mitigate effects of heavy loads ([built-in configuration](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/docker/default.vcl)) ;
+- *(Optional)* Use [Varnish](https://varnish-cache.org/) as an HTTP cache server to mitigate effects of heavy loads ([built-in configuration](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/docker/configuration/default.vcl)) ;
 - Compile scripts for scheduled tasks using `npx tsc --skipLibCheck scripts/expired-files.ts scripts/outdated-notifications.ts` ;
 - Set up a scheduled task to run `node scripts/expired-files.js` command for [periodic deletion of expired files](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/expired-files.ts) ;
 - Set up a scheduled task to run `node scripts/outdated-notifications` command for [periodic deletion of outdated notifications](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/outdated-notifications.ts).
 
 > [!TIP]
-> To try the project, you *can* also use [Docker](https://www.docker.com/) installed. Once installed, simply start the development Docker image with `docker compose up --detach --build` command. The website should be available at http://localhost:3000/. If you want to work on the project with Docker, you need to use `docker compose watch --no-up` to automatically synchronize your local changes with the container. 🐳
+> To try the project, you can use [Docker](https://www.docker.com/) installed. Once installed, simply start the Docker image with `docker compose up --detach --build` command. The website should be available at http://localhost/. 🐳
 
 > [!CAUTION]
-> The Docker image *can* also be deployed in production, but **this requires advanced knowledge to properly deploy, optimize, and secure your installation**, in order to avoid any unwanted consequences. ⚠️
+> The Docker image can be deployed in production, but **this requires advanced knowledge to properly deploy, optimize, and secure your installation**, in order to avoid any unwanted consequences. ⚠️

@@ -18,8 +18,8 @@
 *.pem
 /logs
 /scripts/*.js
-/docker/database/
-/docker-compose.override.yml
+/docker/services/
+/compose.override.yml
 
 # debug
 npm-debug.log*
