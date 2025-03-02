@@ -6,7 +6,7 @@ services:
         image: mariadb:latest
         restart: always
         volumes:
-            - ./docker/database:/var/lib/mysql
+            - ./docker/services/database:/var/lib/mysql
         command: [ "--collation-server=utf8mb4_unicode_ci" ]
         environment:
             TZ: ${TZ}
@@ -20,8 +20,8 @@ services:
             test: healthcheck.sh --su-mysql --connect --innodb_initialized
             retries: 3
             timeout: 5s
-        ports:
-            - "3306:${DATABASE_PORT}"
+        expose:
+            - "${DATABASE_PORT}"
 
     # https://hub.docker.com/_/phpmyadmin
     phpmyadmin:
@@ -47,7 +47,7 @@ services:
         depends_on:
             - node
         volumes:
-            - ./docker/default.vcl:/etc/varnish/default.vcl:ro
+            - ./docker/configuration/default.vcl:/etc/varnish/default.vcl:ro
         environment:
             VARNISH_SIZE: 128m
         healthcheck:
@@ -55,30 +55,27 @@ services:
             retries: 3
             timeout: 5s
         ports:
-            - "8080:80"
+            - "80:80"
 
     # https://github.com/FlorianLeChat/Simple-File-Storage
     node:
         image: simple-file-storage
         restart: always
-        develop:
-            watch:
-                - action: sync
-                  path: .
-                  target: /usr/src/app
+        command: ./docker/scripts/entrypoint.sh
         volumes:
             - ./logs:/usr/src/app/logs
             - ./public/files:/usr/src/app/public/files
         depends_on:
             - mariadb
         environment:
-            - WAIT_HOSTS=mariadb:${DATABASE_PORT}
+            TZ: ${TZ}
+            WAIT_HOSTS: mariadb:${DATABASE_PORT}
         healthcheck:
             test: wget -O - http://localhost:3000
             retries: 3
             timeout: 5s
         build:
             context: .
-            dockerfile: ./docker/Dockerfile.${NEXT_PUBLIC_ENV}
-        ports:
-            - "3000:3000"
+            dockerfile: ./docker/scripts/Dockerfile
+        expose:
+            - "3000"

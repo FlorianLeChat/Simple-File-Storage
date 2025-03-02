@@ -36,10 +36,5 @@ ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest
 # Use non-root user
 USER node
 
-# Find and replace some default environment variables
-#  before creating the custom entrypoint script
-RUN sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env && \
-	echo "/wait && npm run migrate && node scripts/create-fake-accounts.js && supercronic /etc/crontabs/node & npm run dev" > docker/entrypoint.sh && \
-	chmod +x docker/entrypoint.sh
-
-CMD ["docker/entrypoint.sh"]
+# Build the entire project and remove all development dependencies
+RUN npm run build && npm prune --production
