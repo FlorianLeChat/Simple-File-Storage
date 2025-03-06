@@ -176,6 +176,6 @@ export default async function middleware( request: NextRequest )
 export const config = {
 	matcher: [
 		"/",
-		"/((?!api/admin|api/user|api/version|api/versions|api/file|api/public|api/files|monitoring|assets|locales|_next|_vercel|sitemap.xml|manifest.webmanifest).*)"
+		"/((?!api/admin|api/user|api/version|api/versions|api/file|api/public|api/files|monitoring|_next|_vercel|.*\\..*).*)"
 	]
 };
