@@ -20,6 +20,8 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Install dependencies
         run: npm ci
+      - name: Switch to development mode
+        run: sed -i "s/production/development/g" .env
       - name: Prepare test environment
         run: |
           sed -i 's/provider = "mysql"/provider = "sqlite"/g' prisma/schema.prisma
