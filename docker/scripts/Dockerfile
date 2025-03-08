@@ -37,6 +37,7 @@ ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest
 # Use non-root user
 USER node
 
-# Build the entire project and remove all development dependencies
-#  before making the entrypoint script executable
-RUN npm run build && npm prune --production && chmod +x ./docker/scripts/entrypoint.sh
+# Prepare project files and configuration to be built
+RUN npm run build && npm prune --production && \
+	chmod +x ./docker/scripts/entrypoint.sh && \
+	chmod 644 /usr/src/app/docker/configuration/logrotate.conf
