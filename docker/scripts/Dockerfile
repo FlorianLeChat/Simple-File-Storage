@@ -4,8 +4,8 @@
 # https://hub.docker.com/_/node
 FROM node:lts-alpine
 
-# Add OpenSSL for generating random secret and SuperCronic for cronjobs
-RUN apk add --no-cache openssl supercronic
+# Install system dependencies
+RUN apk add --no-cache logrotate openssl supercronic
 
 # Set the working directory to the website files
 WORKDIR /usr/src/app
@@ -28,7 +28,8 @@ RUN --mount=type=cache,target=.npm \
 # Add some cronjobs for automated tasks
 RUN npx tsc --skipLibCheck scripts/create-fake-accounts.ts scripts/expired-files.ts scripts/outdated-notifications.ts && \
 	echo "*/5 * * * * node /usr/src/app/scripts/expired-files.js > /dev/null 2>&1" >> /var/spool/cron/crontabs/node && \
-	echo "*/5 * * * * node /usr/src/app/scripts/outdated-notifications > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
+	echo "*/5 * * * * node /usr/src/app/scripts/outdated-notifications > /dev/null 2>&1" >> /var/spool/cron/crontabs/node && \
+	echo "0 0 * * * logrotate -f /usr/src/app/docker/configuration/logrotate.conf -s /usr/src/app/docker/configuration/logrotate.status > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
 
 # Add wait script to wait for other services to be ready
 ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest/download/wait /wait
