@@ -46,7 +46,7 @@ function Badge( { className, variant, ...props }: BadgeProps )
 
 	return (
 		<div className={merge( badgeVariants( { variant } ), className )}>
-			{messages( props.children )}
+			{messages( props.children as string )}
 		</div>
 	);
 }
