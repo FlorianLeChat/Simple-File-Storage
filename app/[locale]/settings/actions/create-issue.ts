@@ -106,7 +106,7 @@ export async function createIssue(
 				description: result.output.description
 			} ),
 			subject: messages( "nodemailer.issue", {
-				email: session.user.email
+				email: session.user.email as string
 			} )
 		} );
 
