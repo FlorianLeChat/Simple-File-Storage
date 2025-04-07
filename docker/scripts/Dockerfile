@@ -5,7 +5,7 @@
 FROM node:lts-alpine
 
 # Install system dependencies
-RUN apk add --no-cache logrotate openssl supercronic tzdata
+RUN apk add --no-cache openssl supercronic tzdata
 
 # Set the working directory to the website files
 WORKDIR /usr/src/app
@@ -29,7 +29,7 @@ RUN --mount=type=cache,target=.npm \
 RUN npx tsc --skipLibCheck scripts/create-fake-accounts.ts scripts/expired-files.ts scripts/outdated-notifications.ts && \
 	echo "*/5 * * * * node /usr/src/app/scripts/expired-files.js > /dev/null 2>&1" >> /var/spool/cron/crontabs/node && \
 	echo "*/5 * * * * node /usr/src/app/scripts/outdated-notifications > /dev/null 2>&1" >> /var/spool/cron/crontabs/node && \
-	echo "0 0 * * * logrotate -f /usr/src/app/docker/configuration/logrotate.conf -s /usr/src/app/docker/configuration/logrotate.status > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
+	echo "0 0 * * * /usr/src/app/docker/scripts/logrotate.sh > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
 
 # Add wait script to wait for other services to be ready
 ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest/download/wait /wait
@@ -39,5 +39,4 @@ USER node
 
 # Prepare project files and configuration to be built
 RUN npm run build && npm prune --production && \
-	chmod +x ./docker/scripts/entrypoint.sh && \
-	chmod 644 /usr/src/app/docker/configuration/logrotate.conf
+	chmod +x ./docker/scripts/entrypoint.sh ./docker/scripts/logrotate.sh
