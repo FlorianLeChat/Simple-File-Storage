@@ -24,12 +24,12 @@ test( "Vérification du contrôle des notifications", async ( { page } ) =>
 	// Téléversement de deux fichiers quelconques.
 	await page.locator( "button" ).filter( { hasText: "Add a file" } ).click();
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( [
 			join( __dirname, "static/cat.jpg" ),
 			join( __dirname, "static/duck.jpg" )
 		] );
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
 	).toHaveCount( 1 );

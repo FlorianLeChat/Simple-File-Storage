@@ -32,9 +32,9 @@ test.beforeEach( async ( { page } ) =>
 
 	// Téléversement d'un fichier quelconque.
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( join( __dirname, "static/raccoon.jpg" ) );
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
 	).toHaveCount( 1 );
@@ -59,9 +59,9 @@ test( "Vérification de la création d'une nouvelle version", async ( { page } )
 	// Ajout d'une nouvelle version du fichier.
 	await page.locator( "button" ).filter( { hasText: "Add a file" } ).click();
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( join( __dirname, "static/duplication/raccoon.jpg" ) );
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
 	).toHaveCount( 1 );
@@ -83,9 +83,9 @@ test( "Restauration d'une ancienne version", async ( { page } ) =>
 	// Ajout d'une nouvelle version du fichier.
 	await page.locator( "button" ).filter( { hasText: "Add a file" } ).click();
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( join( __dirname, "static/duplication/raccoon.jpg" ) );
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
 	).toHaveCount( 1 );
