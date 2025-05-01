@@ -169,9 +169,9 @@ test( "Suppression RGPD des fichiers utilisateur", async ( { page } ) =>
 	await page.goto( "/dashboard" );
 	await page.locator( "button" ).filter( { hasText: "Add a file" } ).click();
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( join( __dirname, "static/raccoon.jpg" ) );
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 
 	// Attente de la réponse du serveur sous forme de notification de succès
 	//  et vérification de la présence du fichier téléversé.
