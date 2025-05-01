@@ -24,3 +24,6 @@ updates:
       dependencies:
         patterns:
           - "*"
+    ignore:
+       # https://github.com/francoismassart/eslint-plugin-tailwindcss/issues/325
+       - dependency-name: "tailwindcss"

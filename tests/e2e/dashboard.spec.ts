@@ -32,13 +32,13 @@ test.beforeEach( async ( { page } ) =>
 
 	// Téléversement d'un fichier quelconque.
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( [
 			join( __dirname, "static/raccoon.jpg" ),
 			join( __dirname, "static/duck.jpg" ),
 			join( __dirname, "static/seagull.png" )
 		] );
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
 	).toHaveCount( 1 );

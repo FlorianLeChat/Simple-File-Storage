@@ -9,7 +9,6 @@ import "@total-typescript/ts-reset";
 // Importation des dépendances.
 import pick from "lodash/pick";
 import type { Toaster } from "sonner";
-import { MotionConfig } from "framer-motion";
 import { lazy,
 	Suspense,
 	type ReactNode,
@@ -185,9 +184,7 @@ export default async function Layout( {
 						</video>
 
 						{/* Composant enfant */}
-						<MotionConfig reducedMotion="user">
-							{children}
-						</MotionConfig>
+						{children}
 
 						{/* Consentement des cookies */}
 						<CookieConsent />

@@ -32,7 +32,7 @@ test.beforeEach( async ( { page } ) =>
 
 	// Téléversement d'un fichier quelconque.
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( [
 			join( __dirname, "static/cat.jpg" ),
 			join( __dirname, "static/duck.jpg" ),
@@ -40,7 +40,7 @@ test.beforeEach( async ( { page } ) =>
 			join( __dirname, "static/raccoon.jpg" ),
 			join( __dirname, "static/seagull.png" )
 		] );
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
 	).toHaveCount( 1 );
@@ -521,9 +521,9 @@ test( "Partage d'un fichier en écriture pour versionnage", async ( { page } ) =
 	// Ouverture de la fenêtre de dialogue pour ajouter une nouvelle version du fichier.
 	await page.locator( "button" ).filter( { hasText: "Add a file" } ).click();
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( [ join( __dirname, "static/duplication/raccoon.jpg" ) ] );
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
 	).toHaveCount( 1 );
@@ -575,9 +575,9 @@ test( "Partage d'un fichier en écriture pour versionnage", async ( { page } ) =
 	// Ouverture de la fenêtre de dialogue pour ajouter un nouveau fichier.
 	await page.locator( "button" ).filter( { hasText: "Add a file" } ).click();
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( [ join( __dirname, "static/duplication/raccoon.jpg" ) ] );
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 	await expect(
 		page.locator( "[data-sonner-toast][data-type = success]" )
 	).toHaveCount( 1 );
