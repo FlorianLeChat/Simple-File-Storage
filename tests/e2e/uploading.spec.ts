@@ -37,11 +37,11 @@ test( "Téléversement d'un fichier valide", async ( { page } ) =>
 
 	// Ajout d'une image quelconque.
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( join( __dirname, "static/raccoon.jpg" ) );
 
 	// Clic sur le bouton de téléversement.
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 
 	// Attente de la réponse du serveur et de la notification de succès.
 	await expect(
@@ -72,11 +72,11 @@ test( "Téléversement d'un fichier public par défaut", async ( { page } ) =>
 
 	// Ajout d'une image quelconque.
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( join( __dirname, "static/cat.jpg" ) );
 
 	// Clic sur le bouton de téléversement.
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 
 	// Attente de la réponse du serveur et de la notification de succès.
 	await expect(
@@ -95,9 +95,9 @@ test( "Téléversement d'un fichier vide", async ( { page } ) =>
 	// Téléversement d'un fichier vide.
 	await page.locator( "button" ).filter( { hasText: "Add a file" } ).click();
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( join( __dirname, "static/empty.txt" ) );
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 
 	// Attente de la réponse du serveur et de la notification d'erreur.
 	//  Note : la réponse sera négative car le fichier est vide.
@@ -114,7 +114,7 @@ test( "Téléversement d'un fichier compressé", async ( { page } ) =>
 	// Téléversement d'un fichier quelconque.
 	await page.locator( "button" ).filter( { hasText: "Add a file" } ).click();
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( join( __dirname, "static/seagull.png" ) );
 
 	// Affichage des paramètres de téléversement avancés.
@@ -122,7 +122,7 @@ test( "Téléversement d'un fichier compressé", async ( { page } ) =>
 
 	// Activation de la compression des images et téléversement du fichier.
 	await page.getByLabel( "Enable image compression" ).click();
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 
 	// Attente de la réponse du serveur et de la notification de succès.
 	await expect(
@@ -143,14 +143,14 @@ test( "Téléversement d'un fichier chiffré", async ( { page } ) =>
 	// Téléversement d'un fichier quelconque et ouverture des paramètres avancés.
 	await page.locator( "button" ).filter( { hasText: "Add a file" } ).click();
 	await page
-		.getByRole( "textbox", { name: "File Upload" } )
+		.locator( "input[type = file]" )
 		.setInputFiles( join( __dirname, "static/fox.jpg" ) );
 	await page.getByText( "Click here to display advanced settings." ).click();
 
 	// Activation du chiffrement des fichiers dans le navigateur avant
 	//  un quelconque téléversement au serveur.
 	await page.getByLabel( "Enable enhanced encryption" ).click();
-	await page.getByRole( "button", { name: "Upload" } ).click();
+	await page.locator( "button" ).filter( { hasText: "Upload" } ).click();
 
 	// Attente de la réponse du serveur et de la notification de succès.
 	await expect(
