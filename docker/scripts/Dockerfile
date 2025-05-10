@@ -31,9 +31,6 @@ RUN npx tsc --skipLibCheck scripts/create-fake-accounts.ts scripts/expired-files
 	echo "*/5 * * * * node /usr/src/app/scripts/outdated-notifications > /dev/null 2>&1" >> /var/spool/cron/crontabs/node && \
 	echo "0 0 * * * /usr/src/app/docker/scripts/logrotate.sh > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
 
-# Add wait script to wait for other services to be ready
-ADD --chmod=0755 https://github.com/ufoscout/docker-compose-wait/releases/latest/download/wait /wait
-
 # Use non-root user
 USER node
 
