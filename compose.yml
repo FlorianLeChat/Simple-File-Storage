@@ -28,7 +28,8 @@ services:
         image: phpmyadmin:latest
         restart: always
         depends_on:
-            - mariadb
+            mariadb:
+                condition: service_healthy
         environment:
             PMA_HOST: ${DATABASE_HOST}
             PMA_PORT: ${DATABASE_PORT}
@@ -44,10 +45,11 @@ services:
     # https://hub.docker.com/_/varnish
     varnish:
         image: varnish:alpine
-        depends_on:
-            - node
         volumes:
             - ./docker/configuration/default.vcl:/etc/varnish/default.vcl:ro
+        depends_on:
+            node:
+                condition: service_healthy
         environment:
             VARNISH_SIZE: 128m
         healthcheck:
@@ -66,10 +68,10 @@ services:
             - ./logs:/usr/src/app/logs
             - ./public/files:/usr/src/app/public/files
         depends_on:
-            - mariadb
+            mariadb:
+                condition: service_healthy
         environment:
             TZ: ${TZ}
-            WAIT_HOSTS: mariadb:${DATABASE_PORT}
         healthcheck:
             test: wget -O - http://localhost:3000
             retries: 3
