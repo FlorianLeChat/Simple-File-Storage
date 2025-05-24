@@ -9,6 +9,7 @@
 
 - Installer [NodeJS LTS](https://nodejs.org/) (>20 ou plus) ;
 - Installer les dépendances du projet avec la commande `npm install` ;
+- Modifier la [variable d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) `NEXT_PUBLIC_ENV` sur `development` ;
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) pour la connexion à la base de données (`DATABASE_...`) ;
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) pour configurer le serveur de messagerie (`SMTP_...`) ;
 - *(Facultatif)* Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) pour activer l'authentification DKIM (`DKIM_...`) ;
@@ -23,7 +24,6 @@
 
 - Installer [NodeJS LTS](https://nodejs.org/) (>20 ou plus) ;
 - Installer les dépendances du projet avec la commande `npm install` ;
-- Modifier la [variable d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) `NEXT_PUBLIC_ENV` sur `production` ;
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) pour la connexion à la base de données (`DATABASE_...`) ;
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) pour configurer le serveur de messagerie (`SMTP_...`) ;
 - *(Facultatif)* Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) pour activer l'authentification DKIM (`DKIM_...`) ;
@@ -54,6 +54,7 @@
 
 - Install [NodeJS LTS](https://nodejs.org/) (>20 or higher) ;
 - Install project dependencies using `npm install` ;
+- Set `NEXT_PUBLIC_ENV` [environment variable](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) to `development` ;
 - Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) for database connection (`DATABASE_...`) ;
 - Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) to configure the mail server (`SMTP_...`) ;
 - *(Optional)* Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) to enable DKIM authentication (`DKIM_...`) ;
@@ -68,7 +69,6 @@
 
 - Install [NodeJS LTS](https://nodejs.org/) (>20 or higher) ;
 - Install project dependencies using `npm install` ;
-- Set `NEXT_PUBLIC_ENV` [environment variable](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) to `production` ;
 - Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) for database connection (`DATABASE_...`) ;
 - Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) to configure the mail server (`SMTP_...`) ;
 - *(Optional)* Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) to enable DKIM authentication (`DKIM_...`) ;
