@@ -17,14 +17,6 @@ const schema = v.object( {
 	SENTRY_PROJECT: v.pipe( v.string(), v.minLength( 1 ) ),
 	SENTRY_AUTH_TOKEN: v.pipe( v.string(), v.minLength( 1 ) ),
 
-	NEXT_PUBLIC_RECAPTCHA_ENABLED: v.picklist( [ "true", "false" ] ),
-	NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY: v.pipe(
-		v.string(),
-		v.length( 40 ),
-		v.startsWith( "6L" )
-	),
-	RECAPTCHA_SECRET_KEY: v.pipe( v.string(), v.length( 40 ), v.startsWith( "6L" ) ),
-
 	NEXT_PUBLIC_ANALYTICS_ENABLED: v.picklist( [ "true", "false" ] ),
 	NEXT_PUBLIC_ANALYTICS_TAG: v.pipe(
 		v.string(),

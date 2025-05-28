@@ -604,13 +604,6 @@
 	@apply bg-primary text-primary-foreground;
 }
 
-/* Badge de Google reCAPTCHA
-	Source : https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-badge.-what-is-allowed */
-.grecaptcha-badge
-{
-	@apply hidden;
-}
-
 /* Barre de défilement du navigateur */
 ::-webkit-scrollbar, #cc-main ::-webkit-scrollbar
 {

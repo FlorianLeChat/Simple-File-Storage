@@ -454,57 +454,6 @@
 				}
 			},
 			{
-				"title": "Cookies de sécurité",
-				"description": "Ces cookies permettent d'authentifier les utilisateurs, d'empêcher l'utilisation frauduleuse des informations de connexion et de protéger les internautes qui interagissent avec le site Internet.",
-				"linkedCategory": "security",
-				"cookieTable": {
-					"headers": {
-						"name": "Nom",
-						"domain": "Service",
-						"description": "Description",
-						"expiration": "Expiration"
-					},
-					"body": [
-						{
-							"name": "OTZ",
-							"domain": "Google reCAPTCHA",
-							"description": "Cookie mis en place par <a href=\"https://www.google.com/recaptcha/about/\" target=\"_blank\">Google reCAPTCHA</a>.",
-							"expiration": "Expire après 1 mois."
-						},
-						{
-							"name": "__Secure-ENID",
-							"domain": "Google reCAPTCHA",
-							"description": "Cookie mis en place par <a href=\"https://www.google.com/recaptcha/about/\" target=\"_blank\">Google reCAPTCHA</a>.",
-							"expiration": "Expire après 1 an."
-						},
-						{
-							"name": "SOCS",
-							"domain": "Google reCAPTCHA",
-							"description": "Cookie mis en place par <a href=\"https://www.google.com/recaptcha/about/\" target=\"_blank\">Google reCAPTCHA</a>.",
-							"expiration": "Expire après 13 mois."
-						},
-						{
-							"name": "CONSENT",
-							"domain": "Google reCAPTCHA",
-							"description": "Cookie mis en place par <a href=\"https://www.google.com/recaptcha/about/\" target=\"_blank\">Google reCAPTCHA</a>.",
-							"expiration": "Expire après 2 ans."
-						},
-						{
-							"name": "DV",
-							"domain": "Google reCAPTCHA",
-							"description": "Cookie mis en place par <a href=\"https://www.google.com/recaptcha/about/\" target=\"_blank\">Google reCAPTCHA</a>.",
-							"expiration": "Expire après 1 jour."
-						},
-						{
-							"name": "AEC",
-							"domain": "Google reCAPTCHA",
-							"description": "Cookie mis en place par <a href=\"https://www.google.com/recaptcha/about/\" target=\"_blank\">Google reCAPTCHA</a>.",
-							"expiration": "Expire après 6 mois."
-						}
-					]
-				}
-			},
-			{
 				"title": "Plus d'informations",
 				"description": "Pour toute question relative à notre politique en matière de cookies et à vos choix, veuillez nous contacter via le support du site."
 			}

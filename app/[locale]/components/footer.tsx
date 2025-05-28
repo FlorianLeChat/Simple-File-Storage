@@ -20,33 +20,6 @@ export default async function Footer()
 				© {new Date().getFullYear()} 💾 Simple File Storage.{" "}
 				{messages( "footer.rights_reserved" )}.
 
-				{/* Avertissement de Google reCAPTCHA */}
-				{process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true" && (
-					<small className="block text-xs leading-5 max-sm:mt-1">
-						{messages.rich( "footer.recaptcha_protected", {
-							a1: ( chunks ) => (
-								<a
-									rel="noopener noreferrer"
-									href="https://policies.google.com/privacy"
-									target="_blank"
-									className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
-								>
-									{chunks}
-								</a>
-							),
-							a2: ( chunks ) => (
-								<a
-									rel="noopener noreferrer"
-									href="https://policies.google.com/terms"
-									target="_blank"
-									className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
-								>
-									{chunks}
-								</a>
-							)
-						} )}
-					</small>
-				)}
 			</p>
 		</footer>
 	);

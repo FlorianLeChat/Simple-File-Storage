@@ -68,20 +68,16 @@ export default async function Page( {
 
 				<p>
 					<strong>Premièrement</strong>, l&lsquo;utilisation de Google
-					Analytics et de Google reCAPTCHA est restreinte au strict
-					nécessaire et requiert explicitement votre consentement.
-					Vous pouvez désactiver Google Analytics sans affecter le
-					fonctionnement du site, celui-ci est utilisé pour obtenir
-					des statistiques de fréquentation. En revanche,
-					l&lsquo;activation de Google reCAPTCHA est indispensable
-					pour accéder à la majorité des fonctionnalités. En effet,
-					Google reCAPTCHA assure une sécurité concernant les actions
-					que vous pourrez effectuer sur le site Internet. Notez que
-					les scripts de Google ne sont pas chargés si vous refusez
-					leur utilisation. Si vous les acceptez, ces scripts sont
-					alors chargés depuis les serveurs de Google et soumis à leur
-					politique de confidentialité ainsi qu&lsquo;à leurs
-					conditions générales d&lsquo;utilisation.
+					Analytics est restreinte au strict nécessaire et requiert
+					explicitement votre consentement. Vous pouvez désactiver
+					Google Analytics sans affecter le fonctionnement du site,
+					celui-ci est utilisé pour obtenir des statistiques de
+					fréquentation. Notez que les scripts de Google ne sont pas
+					chargés si vous refusez leur utilisation. Si vous les
+					acceptez, ces scripts sont alors chargés depuis les serveurs
+					de Google et soumis à leur politique de confidentialité
+					ainsi qu&lsquo;à leurs conditions générales
+					d&lsquo;utilisation.
 				</p>
 
 				<p>
@@ -219,17 +215,14 @@ export default async function Page( {
 			</p>
 
 			<p>
-				<strong>Firstly</strong>, the use of Google Analytics and Google
-				reCAPTCHA is restricted to what is strictly necessary and
-				explicitly requires your consent. You can disable Google
-				Analytics without affecting the functionality of the site, as it
-				is used to obtain traffic statistics. However, enabling Google
-				reCAPTCHA is essential to access most of the features. Indeed,
-				Google reCAPTCHA ensures security for the actions you can
-				perform on the website. Please note that Google’s scripts are
-				not loaded if you refuse their use. If you accept them, these
-				scripts are then loaded from Google’s servers and are subject to
-				their privacy policy as well as their terms of use.
+				<strong>Firstly</strong>, the use of Google Analytics is
+				restricted to what is strictly necessary and explicitly requires
+				your consent. You can disable Google Analytics without affecting
+				the functionality of the site, as it is used to obtain traffic
+				statistics. Please note that Google’s scripts are not loaded if
+				you refuse their use. If you accept them, these scripts are then
+				loaded from Google’s servers and are subject to their privacy
+				policy as well as their terms of use.
 			</p>
 
 			<p>
