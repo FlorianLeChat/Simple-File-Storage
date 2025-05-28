@@ -36,15 +36,6 @@ export default function CookieConsent()
 			return false;
 		}
 
-		if (
-			section.linkedCategory === "security"
-			&& process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED !== "true"
-		)
-		{
-			// Google reCAPTCHA est désactivé.
-			return false;
-		}
-
 		// Autres catégories de cookies.
 		return true;
 	} );
@@ -89,15 +80,6 @@ export default function CookieConsent()
 						cookies: [
 							{
 								name: /^(_ga|_gid)/
-							}
-						]
-					}
-				},
-				security: {
-					autoClear: {
-						cookies: [
-							{
-								name: /^(OTZ|__Secure-ENID|SOCS|CONSENT|AEC)/
 							}
 						]
 					}
