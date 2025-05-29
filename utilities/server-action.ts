@@ -1,85 +1,56 @@
 //
-// Ajout du support de Google reCAPTCHA sur les actions côté serveur de NextJS.
+// Ajout du support des vérifications CAPTCHA sur les actions côté serveur de NextJS.
 //  Source : https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations#non-form-elements
 //
 
 "use client";
 
-import { toast } from "sonner";
-import { startTransition } from "react";
+import { solveChallenge } from "altcha-lib";
+import type { Challenge } from "altcha-lib/types";
 
 export default async function serverAction(
-	action: ( payload: FormData ) => void,
-	formData: FormData,
-	messages: ( key: string ) => string
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	action: ( _state: Record<string, unknown>, formData: FormData ) => Promise<any>,
+	lastState: Record<string, unknown>,
+	formData: FormData
 )
 {
-	// On vérifie d'abord si le service reCAPTCHA est présent ou non.
-	//  Note : si les services sont indisponibles, cela signifie qu'il a été
-	//   explicitement désactivé dans les paramètres du site ou que les services
-	//   ne sont pas encore chargés dans le navigateur de l'utilisateur.
-	if ( typeof window.grecaptcha === "undefined" )
+	// Vérification de l'activation de la vérification CAPTCHA.
+	if ( process.env.NEXT_PUBLIC_CAPTCHA_ENABLED !== "true" )
 	{
-		// Premier cas de figure : le serveur utilise reCAPTCHA mais le client
-		//  n'a pas encore chargé les services de Google reCAPTCHA ou ils ont été
-		//  explicitement désactivés par l'utilisateur.
-		if ( process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true" )
-		{
-			toast.error( messages( "errors.recaptcha_failed" ), {
-				duration: 10000,
-				description: messages( "errors.recaptcha_error" )
-			} );
-
-			return false;
-		}
-
-		// Deuxième cas de figure : le serveur n'utilise pas reCAPTCHA.
-		//  On exécute alors l'action côté serveur sans vérification.
-		try
-		{
-			let response;
-
-			startTransition( () =>
-			{
-				response = action( formData );
-			} );
-
-			return response;
-		}
-		catch
-		{
-			toast.error( messages( "errors.internal_error" ), {
-				description: messages( "errors.server_error" )
-			} );
-
-			return false;
-		}
+		return action( lastState, formData );
 	}
 
-	// On créé après une promesse afin de gérer le chargement des services de
-	//  Google reCAPTCHA et pouvoir retourner une réponse à l'utilisateur.
-	return new Promise( ( resolve ) =>
+	// Récupération d'un défi CAPTCHA depuis l'API.
+	const response = await fetch( "/api/captcha" );
+	const json = ( await response.json() ) as Challenge;
+
+	// Résolution du défi et obtention d'une solution.
+	const solver = solveChallenge(
+		json.challenge,
+		json.salt,
+		json.algorithm,
+		json.maxnumber
+	);
+
+	// Attente de la résolution du défi.
+	const answer = await solver.promise;
+
+	if ( !answer?.number )
 	{
-		// On attend ensuite que le service soit chargé dans le navigateur de
-		//  l'utilisateur.
-		window.grecaptcha.ready( async () =>
-		{
-			// Une fois prêt, on génère alors un jeton d'authentification auprès
-			//  des services de Google reCAPTCHA avant de l'inclure dans la requête
-			//  courante.
-			const token = await window.grecaptcha.execute(
-				process.env.NEXT_PUBLIC_RECAPTCHA_PUBLIC_KEY,
-				{ action: "submit" }
-			);
+		throw new Error( "CAPTCHA resolution failed" );
+	}
 
-			formData.append( "recaptcha", token );
+	// Transmission de la charge utile contenant la solution CAPTCHA.
+	const payload = {
+		salt: json.salt,
+		number: answer.number,
+		algorithm: json.algorithm,
+		challenge: json.challenge,
+		signature: json.signature
+	};
 
-			// On résout enfin l'action côté serveur avec les données du formulaire
-			//  récupérées précédemment.
-			startTransition( () =>
-			{
-				resolve( action( formData ) );
-			} );
-		} );
-	} );
+	formData.append( "captcha", btoa( JSON.stringify( payload ) ) );
+
+	return action( lastState, formData );
 }
