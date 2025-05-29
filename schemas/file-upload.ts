@@ -35,6 +35,9 @@ const schema = v.object( {
 	// Chiffrement renforcé.
 	encryption: v.boolean(),
 
+	// Raccourcir le lien d'accès.
+	shorten: v.boolean(),
+
 	// Date d'expiration du fichier.
 	expiration: v.union( [
 		v.pipe(

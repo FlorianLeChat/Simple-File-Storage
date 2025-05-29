@@ -91,13 +91,16 @@ async function getFiles(): Promise<FileAttributes[]>
 		files.map( async ( file ) =>
 		{
 			const info = parse( file.name );
-			const path = `/d/${ file.id }${ extension ? info.ext : "" }`;
+			const path = file.slug
+				? `https://url.florian-dev.fr/${ file.slug }`
+				: `/d/${ file.id }${ extension ? info.ext : "" }`;
 
 			return {
 				uuid: file.id,
 				name: info.name,
 				type: mime.getType( file.name ) ?? "application/octet-stream",
 				path,
+				slug: file.slug,
 				owner: file.user,
 				status: file.shares.length > 0 ? "shared" : file.status,
 				shares: file.shares.map( ( share ) => ( {

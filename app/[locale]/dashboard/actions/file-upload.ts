@@ -9,6 +9,7 @@ import prisma from "@/utilities/prisma";
 import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
+import { headers } from "next/headers";
 import * as Sentry from "@sentry/nextjs";
 import { statSync } from "fs";
 import { join, parse } from "path";
@@ -41,6 +42,7 @@ export async function uploadFiles(
 	const isUser = session.user.role !== "admin";
 	const result = v.safeParse( schema, {
 		upload: formData.getAll( "upload" ),
+		shorten: formData.get( "shorten" ) === "on",
 		encryption: formData.get( "encryption" ) === "on",
 		expiration: formData.get( "expiration" ),
 		compression: formData.get( "compression" ) === "on"
@@ -251,6 +253,57 @@ export async function uploadFiles(
 				} )
 			).id;
 
+			// On raccourcit le lien d'accès au fichier si l'utilisateur
+			//  a choisi de le faire. On utilise pour cela l'API de
+			//  raccourcissement de liens via Raven Url Shortener.
+			let slug;
+
+			if ( result.output.shorten )
+			{
+				const headerStore = await headers();
+				const protocol = headerStore.get( "x-forwarded-proto" ) ?? "https://";
+				const host = headerStore.get( "x-forwarded-host" ) ?? headerStore.get( "origin" );
+				const shortenRequest = await fetch( "https://url.florian-dev.fr/api/v1/link", {
+					method: "POST",
+					body: JSON.stringify( {
+						url: `${ protocol }${ host }/d/${ fileId }`
+					} )
+				} );
+
+				const shortenResponse = ( await shortenRequest.json() ) as {
+					slug?: string;
+				};
+
+				if ( !shortenRequest.ok )
+				{
+					// Gestion des erreurs du raccourcisseur.
+					logger.error(
+						{ source: __dirname, fileId, shortenResponse },
+						"Failed to shorten file link"
+					);
+				}
+				else
+				{
+					// Réponse du raccourcisseur et mise à jour du slug
+					//  du fichier dans la base de données.
+					logger.info(
+						{ source: __dirname, fileId, shortenResponse },
+						"File link shortened"
+					);
+
+					slug = shortenResponse.slug;
+
+					await prisma.file.update( {
+						where: {
+							id: fileId
+						},
+						data: {
+							slug: shortenResponse.slug
+						}
+					} );
+				}
+			}
+
 			// Une fois la version créée, on ajoute une notification à
 			//  tous les utilisateurs partagés avec le fichier pour les
 			//  prévenir que quelqu'un a téléversé une nouvelle version.
@@ -284,7 +337,7 @@ export async function uploadFiles(
 
 			revalidatePath( "/" );
 
-			logger.debug(
+			logger.info(
 				{ source: __dirname, file, fileFolder, versionId },
 				"File uploaded"
 			);
@@ -314,6 +367,7 @@ export async function uploadFiles(
 					0
 				),
 				path,
+				slug,
 				owner: exists?.user ?? session.user,
 				status: exists?.shares && exists?.shares.length > 0
 					? "shared"

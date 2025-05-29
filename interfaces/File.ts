@@ -19,6 +19,9 @@ export interface FileAttributes
 	// Chemin d'accès au fichier.
 	path: string;
 
+	// Slug personnalisé du fichier.
+	slug: string;
+
 	// Propriétaire du fichier.
 	owner: User;
 
