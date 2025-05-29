@@ -52,6 +52,8 @@ export default function Notifications( { session }: Readonly<{ session: Session 
 			return;
 		}
 
+		formData.set( "level", form.getValues( "level" ) );
+
 		return serverAction( updateNotifications, lastState, formData );
 	};
 
