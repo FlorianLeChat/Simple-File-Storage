@@ -128,8 +128,8 @@
 			"quota_exceeded": "Le quota de stockage maximal a été dépassé. Certains fichiers n'ont pas pu être téléversés.",
 			"email_used": "Cette adresse électronique est déjà utilisée.",
 			"auth_failed": "Échec de l'authentification",
-			"recaptcha_failed": "Échec de la vérification reCAPTCHA",
-			"recaptcha_error": "Les services de vérification de Google reCAPTCHA sont actuellement désactivés ou indisponibles. Si les cookies de sécurité ont été désactivés, certaines fonctionnalités du site peuvent ne pas fonctionner correctement.",
+			"captcha_failed": "Échec de la vérification CAPTCHA",
+			"captcha_error": "La vérification CAPTCHA a échouée pour cette action. Veuillez réessayer.",
 			"server_error": "Une erreur s'est produite lors du traitement de votre demande par le serveur.",
 			"internal_error": "Erreur interne du serveur"
 		}
@@ -244,7 +244,7 @@
 	},
 	"footer": {
 		"rights_reserved": "Tous droits réservés",
-		"recaptcha_protected": "Ce site est protégé par reCAPTCHA sur lequel s'appliquent les <a1>politiques de confidentialité</a1> et les <a2>conditions d'utilisation</a2> de Google."
+		"captcha_protected": "Ce site est protégé par <a>ALTCHA</a>, une alternative en source libre, gratuite et respectueuse de la vie privée à reCAPTCHA."
 	},
 	"legal": {
 		"description": "Curieux de connaître les conditions d'utilisation du site et comment nous traitons vos données personnelles ? C'est par ici !"

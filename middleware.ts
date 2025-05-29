@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import "./utilities/env";
 import { getLanguages } from "./utilities/i18n";
-import { checkRecaptcha } from "./utilities/recaptcha";
+import { checkCaptcha } from "./utilities/captcha";
 
 // Typage des fichiers provenant de la base de données.
 type FileWithVersions = Prisma.FileGetPayload<{
@@ -146,15 +146,15 @@ export default async function middleware( request: NextRequest )
 		return new NextResponse( null, { status: 404 } );
 	}
 
-	// On vérifie également si le service reCAPTCHA est activé ou non
+	// On vérifie également si la vérification CAPTCHA est activé ou non
 	//  et s'il s'agit d'une requête de type POST.
 	const isPostRequest = request.method === "POST";
-	const isRecaptchaEnabled = process.env.NEXT_PUBLIC_RECAPTCHA_ENABLED === "true";
-	const isValidRecaptchaRequest = isRecaptchaEnabled && isPostRequest;
+	const isCaptchaEnabled = process.env.NEXT_PUBLIC_CAPTCHA_ENABLED === "true";
+	const isValidCaptchaRequest = isCaptchaEnabled && isPostRequest;
 
-	if ( isValidRecaptchaRequest )
+	if ( isValidCaptchaRequest )
 	{
-		const response = await checkRecaptcha( request );
+		const response = await checkCaptcha( request );
 
 		if ( response )
 		{
@@ -176,6 +176,6 @@ export default async function middleware( request: NextRequest )
 export const config = {
 	matcher: [
 		"/",
-		"/((?!api/admin|api/user|api/version|api/versions|api/file|api/public|api/files|monitoring|_next|_vercel|.*\\..*).*)"
+		"/((?!api/captcha|api/admin|api/user|api/version|api/versions|api/file|api/public|api/files|monitoring|_next|_vercel|.*\\..*).*)"
 	]
 };
