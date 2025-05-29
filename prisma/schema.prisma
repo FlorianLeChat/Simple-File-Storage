@@ -50,6 +50,7 @@ model File {
 	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 	userId       String
 	name         String
+	slug         String?
 	status	     String
 	expiration   DateTime?
 	versions     Version[]
