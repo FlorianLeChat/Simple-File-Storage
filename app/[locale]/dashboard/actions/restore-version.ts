@@ -16,7 +16,10 @@ import { existsSync, statSync } from "fs";
 //
 // Restauration d'une version précédente d'un fichier.
 //
-export async function restoreVersion( formData: FormData )
+export async function restoreVersion(
+	_state: Record<string, unknown>,
+	formData: FormData
+)
 {
 	// On récupère d'abord la session de l'utilisateur ainsi
 	//  que ses préférences.

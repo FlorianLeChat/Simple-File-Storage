@@ -134,7 +134,7 @@ export default function Notifications()
 
 		// Envoi de la requête au serveur et
 		//  traitement de la réponse.
-		const state = await serverAction( updateReadState, new FormData(), formMessages );
+		const state = await serverAction( updateReadState, {}, new FormData() );
 
 		// Fin de l'état de chargement.
 		setIsLoading( false );

@@ -19,13 +19,6 @@ import { signInAccount } from "../actions/signin";
 
 export default function OAuthForm()
 {
-	// Déclaration des variables d'état.
-	const messages = useTranslations( "form" );
-	const [ signInState, signInAction, isPending ] = useActionState( signInAccount, {
-		success: true,
-		reason: ""
-	} );
-
 	// Déclaration du formulaire.
 	const form = useForm<v.InferOutput<typeof schema>>( {
 		resolver: valibotResolver( schema ),
@@ -33,6 +26,26 @@ export default function OAuthForm()
 			email: "",
 			password: ""
 		}
+	} );
+
+	// Méthode passerelle pour l'authentification des utilisateurs.
+	const proxySignInUser = async ( lastState: Record<string, unknown>, formData: FormData ) =>
+	{
+		const state = await form.trigger();
+
+		if ( !state )
+		{
+			return;
+		}
+
+		return serverAction( signInAccount, lastState, formData );
+	};
+
+	// Déclaration des variables d'état.
+	const messages = useTranslations( "form" );
+	const [ signInState, signInAction, isPending ] = useActionState( proxySignInUser, {
+		success: true,
+		reason: ""
 	} );
 
 	// Détection de la response du serveur après l'envoi du formulaire.
@@ -82,12 +95,7 @@ export default function OAuthForm()
 	return (
 		<>
 			{/* Fournisseurs d'authentification externes */}
-			<form
-				action={( formData ) =>
-				{
-					serverAction( signInAction, formData, messages );
-				}}
-			>
+			<form action={signInAction}>
 				<Button
 					name="provider"
 					value="google"
@@ -117,12 +125,7 @@ export default function OAuthForm()
 				</Button>
 			</form>
 
-			<form
-				action={( formData ) =>
-				{
-					serverAction( signInAction, formData, messages );
-				}}
-			>
+			<form action={signInAction}>
 				<Button
 					name="provider"
 					value="github"

@@ -10,7 +10,10 @@ import { auth } from "@/utilities/next-auth";
 import { parse } from "path";
 import { logger } from "@/utilities/pino";
 
-export async function renameFile( formData: FormData )
+export async function renameFile(
+	_state: Record<string, unknown>,
+	formData: FormData
+)
 {
 	// On récupère d'abord la session de l'utilisateur.
 	const session = await auth();

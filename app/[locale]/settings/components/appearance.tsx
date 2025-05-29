@@ -45,13 +45,6 @@ import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group";
 
 export default function Appearance( { session }: Readonly<{ session: Session }> )
 {
-	// Déclaration des variables d'état.
-	const messages = useTranslations( "form" );
-	const [ updateState, updateAction, isPending ] = useActionState( updateLayout, {
-		success: true,
-		reason: ""
-	} );
-
 	// Déclaration du formulaire.
 	const form = useForm<v.InferOutput<typeof schema>>( {
 		resolver: valibotResolver( schema ),
@@ -62,6 +55,29 @@ export default function Appearance( { session }: Readonly<{ session: Session }> 
 				.color as ( typeof colors )[number]["name"],
 			theme: session.user.preferences.theme as "light" | "dark"
 		}
+	} );
+
+	// Méthode passerelle pour la mise à jour de l'apparence.
+	const proxyUpdateAppearance = async ( lastState: Record<string, unknown>, formData: FormData ) =>
+	{
+		const state = await form.trigger();
+
+		if ( !state )
+		{
+			return;
+		}
+
+		formData.append( "color", form.getValues( "color" ) );
+		formData.append( "theme", form.getValues( "theme" ) );
+
+		return serverAction( updateLayout, lastState, formData );
+	};
+
+	// Déclaration des variables d'état.
+	const messages = useTranslations( "form" );
+	const [ updateState, updateAction, isPending ] = useActionState( proxyUpdateAppearance, {
+		success: true,
+		reason: ""
 	} );
 
 	// Détection de la response du serveur après l'envoi du formulaire.
@@ -114,26 +130,7 @@ export default function Appearance( { session }: Readonly<{ session: Session }> 
 	// Affichage du rendu HTML du composant.
 	return (
 		<Form {...form}>
-			<form
-				action={async ( formData ) =>
-				{
-					// Vérifications côté client.
-					const state = await form.trigger();
-
-					if ( !state )
-					{
-						return;
-					}
-
-					// Récupération des données du formulaire.
-					formData.append( "color", form.getValues( "color" ) );
-					formData.append( "theme", form.getValues( "theme" ) );
-
-					// Exécution de l'action côté serveur.
-					serverAction( updateAction, formData, messages );
-				}}
-				className="space-y-8"
-			>
+			<form action={updateAction} className="space-y-8">
 				{/* Police de caractère */}
 				<FormField
 					name="font"

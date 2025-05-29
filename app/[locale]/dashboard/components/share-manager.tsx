@@ -88,7 +88,7 @@ export default function ShareManager( {
 
 		// Envoi de la requête au serveur et
 		//  attente de la réponse.
-		const state = await serverAction( addSharedUser, form, formMessages );
+		const state = await serverAction( addSharedUser, {}, form );
 
 		// Fin de l'état de chargement.
 		setLoading( false );
@@ -140,7 +140,7 @@ export default function ShareManager( {
 
 		// Envoi de la requête au serveur et
 		//  attente de la réponse.
-		const state = await serverAction( updateSharedUser, form, formMessages );
+		const state = await serverAction( updateSharedUser, {}, form );
 
 		// Fin de l'état de chargement.
 		setLoading( false );
@@ -179,7 +179,7 @@ export default function ShareManager( {
 
 		// Envoi de la requête au serveur et
 		//  attente de la réponse.
-		const state = await serverAction( deleteSharedUser, form, formMessages );
+		const state = await serverAction( deleteSharedUser, {}, form );
 
 		// Fin de l'état de chargement.
 		setLoading( false );

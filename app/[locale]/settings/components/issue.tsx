@@ -36,15 +36,8 @@ import { Form,
 	FormDescription } from "../../components/ui/form";
 import { createIssue } from "../actions/create-issue";
 
-export default function Account()
+export default function Issue()
 {
-	// Déclaration des variables d'état.
-	const messages = useTranslations( "form" );
-	const [ updateState, updateAction, isPending ] = useActionState( createIssue, {
-		success: true,
-		reason: ""
-	} );
-
 	// Déclaration du formulaire.
 	const form = useForm<v.InferOutput<typeof schema>>( {
 		resolver: valibotResolver( schema ),
@@ -54,6 +47,26 @@ export default function Account()
 			severity: "low",
 			description: ""
 		}
+	} );
+
+	// Méthode passerelle pour la création d'un signalement.
+	const proxyCreateIssue = async ( lastState: Record<string, unknown>, formData: FormData ) =>
+	{
+		const state = await form.trigger();
+
+		if ( !state )
+		{
+			return;
+		}
+
+		return serverAction( createIssue, lastState, formData );
+	};
+
+	// Déclaration des variables d'état.
+	const messages = useTranslations( "form" );
+	const [ updateState, updateAction, isPending ] = useActionState( proxyCreateIssue, {
+		success: true,
+		reason: ""
 	} );
 
 	// Détection de la response du serveur après l'envoi du formulaire.
@@ -102,22 +115,7 @@ export default function Account()
 	// Affichage du rendu HTML du composant.
 	return (
 		<Form {...form}>
-			<form
-				action={async ( formData: FormData ) =>
-				{
-					// Vérifications côté client.
-					const state = await form.trigger();
-
-					if ( !state )
-					{
-						return;
-					}
-
-					// Exécution de l'action côté serveur.
-					serverAction( updateAction, formData, messages );
-				}}
-				className="space-y-8"
-			>
+			<form action={updateAction} className="space-y-8">
 				{/* Domaine touché */}
 				<FormField
 					name="area"
