@@ -128,8 +128,8 @@
 			"quota_exceeded": "The maximum storage quota has been exceeded. Some files could not be uploaded.",
 			"email_used": "This email address is already in use.",
 			"auth_failed": "Authentication failed",
-			"recaptcha_failed": "reCAPTCHA verification failed",
-			"recaptcha_error": "Google reCAPTCHA verification services are currently disabled or unavailable. If security cookies have been disabled, some website features may not work properly.",
+			"captcha_failed": "CAPTCHA verification failed",
+			"captcha_error": "An error occurred while verifying the CAPTCHA. Please try again later.",
 			"server_error": "An error occurred while processing your request by the server.",
 			"internal_error": "Internal server error"
 		}
@@ -244,7 +244,7 @@
 	},
 	"footer": {
 		"rights_reserved": "All rights reserved",
-		"recaptcha_protected": "This site is protected by reCAPTCHA and the Google <a1>Privacy Policy</a1> and <a2>Terms of Service</a2> apply."
+		"captcha_protected": "This site is protected by <a>ALTCHA</a>, a free, open-source and privacy-friendly alternative to reCAPTCHA."
 	},
 	"legal": {
 		"description": "Curious about the terms of use of the site and how we process your personal data? It's over here!"

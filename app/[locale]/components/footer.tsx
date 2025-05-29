@@ -20,6 +20,23 @@ export default async function Footer()
 				© {new Date().getFullYear()} 💾 Simple File Storage.{" "}
 				{messages( "footer.rights_reserved" )}.
 
+				{/* Avertissement de la présence d'un CAPTCHA */}
+				{process.env.NEXT_PUBLIC_CAPTCHA_ENABLED === "true" && (
+					<small className="block text-xs leading-5 max-sm:mt-1">
+						{messages.rich( "footer.captcha_protected", {
+							a: ( chunks ) => (
+								<a
+									rel="noopener noreferrer"
+									href="https://altcha.org/"
+									target="_blank"
+									className="underline decoration-dotted underline-offset-4 dark:hover:text-foreground"
+								>
+									{chunks}
+								</a>
+							)
+						} )}
+					</small>
+				)}
 			</p>
 		</footer>
 	);
