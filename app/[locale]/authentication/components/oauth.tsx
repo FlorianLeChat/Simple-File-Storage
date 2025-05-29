@@ -29,15 +29,8 @@ export default function OAuthForm()
 	} );
 
 	// Méthode passerelle pour l'authentification des utilisateurs.
-	const proxySignInUser = async ( lastState: Record<string, unknown>, formData: FormData ) =>
+	const proxySignInUser = ( lastState: Record<string, unknown>, formData: FormData ) =>
 	{
-		const state = await form.trigger();
-
-		if ( !state )
-		{
-			return;
-		}
-
 		return serverAction( signInAccount, lastState, formData );
 	};
 
