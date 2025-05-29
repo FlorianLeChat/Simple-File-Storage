@@ -43,18 +43,6 @@ import { Button, buttonVariants } from "../../components/ui/button";
 
 export default function User( { session }: Readonly<{ session: Session }> )
 {
-	// Déclaration des variables d'état.
-	const messages = useTranslations( "form" );
-	const [ isLocked, setIsLocked ] = useState( false );
-	const [ passwordType, setPasswordType ] = useState( "text" );
-	const [ updateState, updateAction, isPending ] = useActionState( updateUser, {
-		success: true,
-		reason: ""
-	} );
-
-	// Déclaration des constantes.
-	const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
-
 	// Déclaration du formulaire.
 	const form = useForm<v.InferOutput<typeof schema>>( {
 		resolver: valibotResolver( schema ),
@@ -65,6 +53,31 @@ export default function User( { session }: Readonly<{ session: Session }> )
 			language: useLocale() as "en" | "fr"
 		}
 	} );
+
+	// Méthode passerelle pour l'action de mise à jour des informations utilisateur.
+	const proxyUpdateUser = async ( lastState: Record<string, unknown>, formData: FormData ) =>
+	{
+		const state = await form.trigger();
+
+		if ( !state )
+		{
+			return;
+		}
+
+		return serverAction( updateUser, lastState, formData );
+	};
+
+	// Déclaration des variables d'état.
+	const messages = useTranslations( "form" );
+	const [ isLocked, setIsLocked ] = useState( false );
+	const [ passwordType, setPasswordType ] = useState( "text" );
+	const [ updateState, updateAction, isPending ] = useActionState( proxyUpdateUser, {
+		success: true,
+		reason: ""
+	} );
+
+	// Déclaration des constantes.
+	const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
 
 	// Génère un mot de passe aléatoire.
 	const generateRandomPassword = ( length = 15 ) =>
@@ -128,22 +141,7 @@ export default function User( { session }: Readonly<{ session: Session }> )
 	// Affichage du rendu HTML du composant.
 	return (
 		<Form {...form}>
-			<form
-				action={async ( formData: FormData ) =>
-				{
-					// Vérifications côté client.
-					const state = await form.trigger();
-
-					if ( !state )
-					{
-						return;
-					}
-
-					// Exécution de l'action côté serveur.
-					serverAction( updateAction, formData, messages );
-				}}
-				className="space-y-8"
-			>
+			<form action={updateAction} className="space-y-8">
 				{/* Nom d'utilisateur */}
 				<FormField
 					name="username"

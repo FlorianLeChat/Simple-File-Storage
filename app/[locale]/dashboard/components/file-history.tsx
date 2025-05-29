@@ -70,7 +70,7 @@ export default function FileHistory( {
 
 		// Envoi de la requête au serveur et
 		//  attente de la réponse.
-		const data = await serverAction( restoreVersion, form, formMessages );
+		const data = await serverAction( restoreVersion, {}, form );
 
 		// Fin de l'état de chargement.
 		setIsLoading( false );
