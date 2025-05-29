@@ -24,13 +24,12 @@ import { DropdownMenu,
 	DropdownMenuSeparator } from "./ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
-export default function UserMenu( { session }: { session: Session } )
+export default function UserMenu( { session }: Readonly<{ session: Session }> )
 {
 	// Déclaration des variables d'état.
 	const router = useRouter();
-	const formMessages = useTranslations( "form" );
 	const headerMessages = useTranslations( "header" );
-	const [ isOpen, setOpen ] = useState( false );
+	const [ isOpen, setIsOpen ] = useState( false );
 
 	// Déclaration des constantes.
 	const { email } = session.user;
@@ -57,7 +56,7 @@ export default function UserMenu( { session }: { session: Session } )
 				{
 					case "m":
 						// Ouverture/fermeture du menu.
-						setOpen( ( state ) => !state );
+						setIsOpen( ( state ) => !state );
 						break;
 
 					case "d":
@@ -102,7 +101,7 @@ export default function UserMenu( { session }: { session: Session } )
 
 	// Affichage du rendu HTML du composant.
 	return (
-		<DropdownMenu open={isOpen} onOpenChange={setOpen} modal={false}>
+		<DropdownMenu open={isOpen} onOpenChange={setIsOpen} modal={false}>
 			{/* Bouton d'apparition */}
 			<DropdownMenuTrigger
 				className={merge(
@@ -178,7 +177,7 @@ export default function UserMenu( { session }: { session: Session } )
 				<DropdownMenuItem
 					onClick={() =>
 					{
-						serverAction( signOutAccount, new FormData(), formMessages );
+						serverAction( signOutAccount, {}, new FormData() );
 					}}
 				>
 					{headerMessages( "logout" )}

@@ -25,13 +25,6 @@ import { updateStorage } from "../actions/update-storage";
 
 export default function Storage( { session }: Readonly<{ session: Session }> )
 {
-	// Déclaration des variables d'état.
-	const messages = useTranslations( "form" );
-	const [ updateState, updateAction, isPending ] = useActionState( updateStorage, {
-		success: true,
-		reason: ""
-	} );
-
 	// Déclaration du formulaire.
 	const form = useForm( {
 		defaultValues: {
@@ -39,6 +32,26 @@ export default function Storage( { session }: Readonly<{ session: Session }> )
 			extension: session.user.preferences.extension,
 			versions: session.user.preferences.versions
 		}
+	} );
+
+	// Méthode passerelle pour la mise à jour des paramètres de stockage.
+	const proxyUpdateStorage = async ( lastState: Record<string, unknown>, formData: FormData ) =>
+	{
+		const state = await form.trigger();
+
+		if ( !state )
+		{
+			return;
+		}
+
+		return serverAction( updateStorage, lastState, formData );
+	};
+
+	// Déclaration des variables d'état.
+	const messages = useTranslations( "form" );
+	const [ updateState, updateAction, isPending ] = useActionState( proxyUpdateStorage, {
+		success: true,
+		reason: ""
 	} );
 
 	// Détection de la response du serveur après l'envoi du formulaire.
@@ -85,22 +98,7 @@ export default function Storage( { session }: Readonly<{ session: Session }> )
 	// Affichage du rendu HTML du composant.
 	return (
 		<Form {...form}>
-			<form
-				action={async ( formData: FormData ) =>
-				{
-					// Vérifications côté client.
-					const state = await form.trigger();
-
-					if ( !state )
-					{
-						return;
-					}
-
-					// Exécution de l'action côté serveur.
-					serverAction( updateAction, formData, messages );
-				}}
-				className="space-y-8"
-			>
+			<form action={updateAction} className="space-y-8">
 				{/* Mettre les fichiers en public */}
 				<FormField
 					name="public"

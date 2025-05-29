@@ -33,14 +33,6 @@ export default function Notifications( { session }: Readonly<{ session: Session 
 	// Déclaration des constantes.
 	const notifications = session.user.notification.split( "+" );
 
-	// Déclaration des variables d'état.
-	const messages = useTranslations( "form" );
-	const [ isPush, setIsPush ] = useState( notifications[ 0 ] !== "off" );
-	const [ updateState, updateAction, isPending ] = useActionState( updateNotifications, {
-		success: true,
-		reason: ""
-	} );
-
 	// Déclaration du formulaire.
 	const level = notifications[ 0 ] as "all" | "necessary" | "off";
 	const form = useForm( {
@@ -48,6 +40,27 @@ export default function Notifications( { session }: Readonly<{ session: Session 
 			push: notifications[ 1 ] === "mail",
 			level
 		}
+	} );
+
+	// Méthode passerelle pour la mise à jour des paramètres de notifications.
+	const proxyUpdateNotifications = async ( lastState: Record<string, unknown>, formData: FormData ) =>
+	{
+		const state = await form.trigger();
+
+		if ( !state )
+		{
+			return;
+		}
+
+		return serverAction( updateNotifications, lastState, formData );
+	};
+
+	// Déclaration des variables d'état.
+	const messages = useTranslations( "form" );
+	const [ isPush, setIsPush ] = useState( notifications[ 0 ] !== "off" );
+	const [ updateState, updateAction, isPending ] = useActionState( proxyUpdateNotifications, {
+		success: true,
+		reason: ""
 	} );
 
 	// Détection de la response du serveur après l'envoi du formulaire.
@@ -93,25 +106,7 @@ export default function Notifications( { session }: Readonly<{ session: Session 
 	// Affichage du rendu HTML du composant.
 	return (
 		<Form {...form}>
-			<form
-				action={async ( formData ) =>
-				{
-					// Vérifications côté client.
-					const state = await form.trigger();
-
-					if ( !state )
-					{
-						return;
-					}
-
-					// Récupération des données du formulaire.
-					formData.set( "level", form.getValues( "level" ) );
-
-					// Exécution de l'action côté serveur.
-					serverAction( updateAction, formData, messages );
-				}}
-				className="space-y-8"
-			>
+			<form action={updateAction} className="space-y-8">
 				{/* Activation des notifications par courriel */}
 				<FormField
 					name="push"

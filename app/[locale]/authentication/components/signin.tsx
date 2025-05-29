@@ -32,16 +32,6 @@ import { buttonVariants, Button } from "../../components/ui/button";
 
 export default function SignInForm()
 {
-	// Déclaration des variables d'état.
-	const messages = useTranslations( "form" );
-	const [ isLocked, setIsLocked ] = useState( false );
-	const [ isFocused, setIsFocused ] = useState( false );
-	const [ inputType, setInputType ] = useState( "password" );
-	const [ signInState, signInAction, isPending ] = useActionState( signInAccount, {
-		success: true,
-		reason: ""
-	} );
-
 	// Déclaration du formulaire.
 	const form = useForm<v.InferOutput<typeof schema>>( {
 		resolver: valibotResolver( schema ),
@@ -49,6 +39,29 @@ export default function SignInForm()
 			email: "",
 			password: ""
 		}
+	} );
+
+	// Méthode passerelle pour la connexion des utilisateurs.
+	const proxySignInUser = async ( lastState: Record<string, unknown>, formData: FormData ) =>
+	{
+		const state = await form.trigger();
+
+		if ( !state )
+		{
+			return;
+		}
+
+		return serverAction( signInAccount, lastState, formData );
+	};
+
+	// Déclaration des variables d'état.
+	const messages = useTranslations( "form" );
+	const [ isLocked, setIsLocked ] = useState( false );
+	const [ isFocused, setIsFocused ] = useState( false );
+	const [ inputType, setInputType ] = useState( "password" );
+	const [ signInState, signInAction, isPending ] = useActionState( proxySignInUser, {
+		success: true,
+		reason: ""
 	} );
 
 	// Détection de la response du serveur après l'envoi du formulaire.
@@ -98,19 +111,7 @@ export default function SignInForm()
 	return (
 		<Form {...form}>
 			<form
-				action={async ( formData: FormData ) =>
-				{
-					// Vérifications côté client.
-					const state = await form.trigger();
-
-					if ( !state )
-					{
-						return;
-					}
-
-					// Exécution de l'action côté serveur.
-					serverAction( signInAction, formData, messages );
-				}}
+				action={signInAction}
 				className="space-y-6"
 			>
 				{/* Adresse électronique */}

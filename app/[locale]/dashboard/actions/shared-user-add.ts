@@ -9,7 +9,10 @@ import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
 
-export async function addSharedUser( formData: FormData )
+export async function addSharedUser(
+	_state: Record<string, unknown>,
+	formData: FormData
+)
 {
 	// On récupère d'abord la session de l'utilisateur.
 	const session = await auth();

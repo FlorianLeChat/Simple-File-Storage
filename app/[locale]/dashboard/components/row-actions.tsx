@@ -54,16 +54,16 @@ import { AlertDialog,
 export default function RowActions( {
 	table,
 	row
-}: {
+}: Readonly<{
 	table: Table<FileAttributes>;
 	row: Row<FileAttributes>;
-} )
+}> )
 {
 	// Déclaration des variables d'état.
 	const formMessages = useTranslations( "form" );
 	const modalMessages = useTranslations( "modals" );
 	const dashboardMessages = useTranslations( "dashboard" );
-	const [ isLoading, setLoading ] = useState( false );
+	const [ isLoading, setIsLoading ] = useState( false );
 
 	// Déclaration des constantes.
 	const states = table.options.meta as TableMeta<FileAttributes>;
@@ -83,7 +83,7 @@ export default function RowActions( {
 	const submitMakePublic = async () =>
 	{
 		// Activation de l'état de chargement.
-		setLoading( true );
+		setIsLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -96,14 +96,10 @@ export default function RowActions( {
 
 		// Envoi de la requête au serveur et
 		//  traitement de la réponse.
-		const files = ( await serverAction(
-			changeFileStatus,
-			form,
-			formMessages
-		) ) as string[];
+		const files = ( await serverAction( changeFileStatus, {}, form ) ) as string[];
 
 		// Fin de l'état de chargement.
-		setLoading( false );
+		setIsLoading( false );
 
 		if ( files.length > 0 )
 		{
@@ -153,7 +149,7 @@ export default function RowActions( {
 	const submitMakePrivate = async () =>
 	{
 		// Activation de l'état de chargement.
-		setLoading( true );
+		setIsLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -166,14 +162,10 @@ export default function RowActions( {
 
 		// Envoi de la requête au serveur et
 		//  traitement de la réponse.
-		const files = ( await serverAction(
-			changeFileStatus,
-			form,
-			formMessages
-		) ) as string[];
+		const files = ( await serverAction( changeFileStatus, {}, form ) ) as string[];
 
 		// Fin de l'état de chargement.
-		setLoading( false );
+		setIsLoading( false );
 
 		if ( files.length > 0 )
 		{
@@ -215,7 +207,7 @@ export default function RowActions( {
 	const submitFileRename = async ( name: string ) =>
 	{
 		// Activation de l'état de chargement.
-		setLoading( true );
+		setIsLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -228,14 +220,10 @@ export default function RowActions( {
 
 		// Envoi de la requête au serveur et
 		//  traitement de la réponse.
-		const files = ( await serverAction(
-			renameFile,
-			form,
-			formMessages
-		) ) as string[];
+		const files = ( await serverAction( renameFile, {}, form ) ) as string[];
 
 		// Fin de l'état de chargement.
-		setLoading( false );
+		setIsLoading( false );
 
 		if ( files.length > 0 )
 		{
@@ -277,7 +265,7 @@ export default function RowActions( {
 	const submitRemoveShare = async () =>
 	{
 		// Activation de l'état de chargement.
-		setLoading( true );
+		setIsLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -288,14 +276,10 @@ export default function RowActions( {
 
 		// Envoi de la requête au serveur et
 		//  traitement de la réponse.
-		const files = ( await serverAction(
-			deleteFile,
-			form,
-			formMessages
-		) ) as string[];
+		const files = ( await serverAction( deleteFile, {}, form ) ) as string[];
 
 		// Fin de l'état de chargement.
-		setLoading( false );
+		setIsLoading( false );
 
 		if ( files.length > 0 )
 		{
@@ -335,7 +319,7 @@ export default function RowActions( {
 	const submitRemoveAllShares = async () =>
 	{
 		// Activation de l'état de chargement.
-		setLoading( true );
+		setIsLoading( true );
 
 		// Création d'un formulaire de données.
 		const form = new FormData();
@@ -346,10 +330,10 @@ export default function RowActions( {
 
 		// Envoi de la requête au serveur et
 		//  traitement de la réponse.
-		const state = await serverAction( deleteSharedUser, form, formMessages );
+		const state = await serverAction( deleteSharedUser, {}, form );
 
 		// Fin de l'état de chargement.
-		setLoading( false );
+		setIsLoading( false );
 
 		if ( state )
 		{

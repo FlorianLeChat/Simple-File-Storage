@@ -63,20 +63,6 @@ export default function FileUpload( {
 	states: TableMeta<FileAttributes>;
 }> )
 {
-	// Déclaration des variables d'état.
-	const session = useSession();
-	const formMessages = useTranslations( "form" );
-	const modalMessages = useTranslations( "modals" );
-	const [ key, setKey ] = useState( "" );
-	const [ quota, setQuota ] = useState( 0 );
-	const [ isOpen, setIsOpen ] = useState( false );
-	const [ isEncrypted, setIsEncrypted ] = useState( false );
-	const [ uploadState, uploadAction, isPending ] = useActionState( uploadFiles, {
-		success: true,
-		reason: "",
-		data: []
-	} );
-
 	// Déclaration des constantes.
 	const today = new Date();
 	const locale = useLocale();
@@ -93,6 +79,7 @@ export default function FileUpload( {
 	const { setFiles } = states;
 
 	// Déclaration du formulaire.
+	const [ quota, setQuota ] = useState( 0 );
 	const percent = Number( ( ( quota / maxQuota ) * 100 ).toFixed( 2 ) );
 	const form = useForm<v.InferOutput<typeof fileSchema>>( {
 		resolver: valibotResolver( fileSchema ),
@@ -102,6 +89,43 @@ export default function FileUpload( {
 			encryption: false,
 			compression: false
 		}
+	} );
+
+	// Méthode passerelle pour la mise à jour de l'apparence.
+	const proxyUploadFiles = async ( lastState: Record<string, unknown>, formData: FormData ) =>
+	{
+		const state = await form.trigger();
+
+		if ( !state )
+		{
+			return;
+		}
+
+		// Vérification de l'activation du chiffrement
+		//  renforcé (côté client).
+		if ( formData.get( "encryption" ) === "on" )
+		{
+			await encryptFiles( formData );
+		}
+
+		// Récupération des données manquantes
+		//  du formulaire.
+		formData.set( "expiration", form.getValues( "expiration" ) );
+
+		return serverAction( uploadFiles, lastState, formData );
+	};
+
+	// Déclaration des variables d'état.
+	const session = useSession();
+	const formMessages = useTranslations( "form" );
+	const modalMessages = useTranslations( "modals" );
+	const [ key, setKey ] = useState( "" );
+	const [ isOpen, setIsOpen ] = useState( false );
+	const [ isEncrypted, setIsEncrypted ] = useState( false );
+	const [ uploadState, uploadAction, isPending ] = useActionState( proxyUploadFiles, {
+		success: true,
+		reason: "",
+		data: []
 	} );
 
 	// Chiffrement des fichiers à téléverser.
@@ -232,7 +256,7 @@ export default function FileUpload( {
 			//  des fichiers déjà existants.
 			const uploaded: FileAttributes[] = [];
 
-			data.forEach( ( file ) =>
+			data.forEach( ( file: string ) =>
 			{
 				// Transformation de la chaîne JSON en objet.
 				const json = JSON.parse( file ) as FileAttributes;
@@ -370,35 +394,7 @@ export default function FileUpload( {
 				</DialogHeader>
 
 				<Form {...form}>
-					<form
-						action={async ( formData: FormData ) =>
-						{
-							// Vérifications côté client.
-							const state = await form.trigger();
-
-							if ( !state )
-							{
-								return;
-							}
-
-							// Vérification de l'activation du chiffrement
-							//  renforcé (côté client).
-							if ( formData.get( "encryption" ) === "on" )
-							{
-								await encryptFiles( formData );
-							}
-
-							// Récupération des données manquantes
-							//  du formulaire.
-							formData.set(
-								"expiration",
-								form.getValues( "expiration" )
-							);
-
-							// Exécution de l'action côté serveur.
-							serverAction( uploadAction, formData, formMessages );
-						}}
-					>
+					<form action={uploadAction}>
 						{/* Fichier(s) à téléverser */}
 						<FormField
 							name="upload"

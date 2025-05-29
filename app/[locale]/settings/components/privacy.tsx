@@ -26,20 +26,33 @@ import { deleteUserData } from "../actions/delete-user-data";
 
 export default function Privacy()
 {
-	// Déclaration des variables d'état.
-	const formMessages = useTranslations( "form" );
-	const modalMessages = useTranslations( "modals.share-manager" );
-	const [ deleteState, deleteAction, isPending ] = useActionState( deleteUserData, {
-		success: true,
-		reason: ""
-	} );
-
 	// Déclaration du formulaire.
 	const form = useForm( {
 		defaultValues: {
 			files: false,
 			account: false
 		}
+	} );
+
+	// Méthode passerelle pour la suppression des données utilisateur.
+	const proxyDeleteUserData = async ( lastState: Record<string, unknown>, formData: FormData ) =>
+	{
+		const state = await form.trigger();
+
+		if ( !state )
+		{
+			return;
+		}
+
+		return serverAction( deleteUserData, lastState, formData );
+	};
+
+	// Déclaration des variables d'état.
+	const formMessages = useTranslations( "form" );
+	const modalMessages = useTranslations( "modals.share-manager" );
+	const [ deleteState, deleteAction, isPending ] = useActionState( proxyDeleteUserData, {
+		success: true,
+		reason: ""
 	} );
 
 	// Détection de la response du serveur après l'envoi du formulaire.
@@ -99,22 +112,7 @@ export default function Privacy()
 	// Affichage du rendu HTML du composant.
 	return (
 		<Form {...form}>
-			<form
-				action={async ( formData: FormData ) =>
-				{
-					// Vérifications côté client.
-					const state = await form.trigger();
-
-					if ( !state )
-					{
-						return;
-					}
-
-					// Exécution de l'action côté serveur.
-					serverAction( deleteAction, formData, formMessages );
-				}}
-				className="space-y-8"
-			>
+			<form action={deleteAction} className="space-y-8">
 				{/* Documents légaux */}
 				<FormField
 					name="legal"

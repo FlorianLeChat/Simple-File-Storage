@@ -13,7 +13,10 @@ import * as Sentry from "@sentry/nextjs";
 import { existsSync } from "fs";
 import { rm, readdir } from "fs/promises";
 
-export async function deleteFile( formData: FormData )
+export async function deleteFile(
+	_state: Record<string, unknown>,
+	formData: FormData
+)
 {
 	// On récupère d'abord la session de l'utilisateur.
 	const session = await auth();
