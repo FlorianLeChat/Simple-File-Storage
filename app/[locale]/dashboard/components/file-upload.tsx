@@ -11,7 +11,8 @@ import { merge } from "@/utilities/tailwind";
 import { useForm } from "react-hook-form";
 import serverAction from "@/utilities/server-action";
 import { enGB, fr } from "date-fns/locale";
-import { Loader2,
+import { Link,
+	Loader2,
 	FileArchive,
 	ShieldCheck,
 	UploadCloud,
@@ -85,6 +86,7 @@ export default function FileUpload( {
 		resolver: valibotResolver( fileSchema ),
 		defaultValues: {
 			upload: "",
+			shorten: false,
 			expiration: "",
 			encryption: false,
 			compression: false
@@ -260,13 +262,17 @@ export default function FileUpload( {
 			{
 				// Transformation de la chaîne JSON en objet.
 				const json = JSON.parse( file ) as FileAttributes;
+				const path = json.slug
+					? `https://url.florian-dev.fr/${ json.slug }`
+					: new URL( json.path, window.location.href ).href;
 
 				// Ajout du fichier à la liste des fichiers téléversés.
 				uploaded.push( {
 					uuid: json.uuid,
 					name: json.name,
 					type: json.type,
-					path: new URL( json.path, window.location.href ).href,
+					path,
+					slug: json.slug,
 					owner: json.owner,
 					status: json.status,
 					shares: json.shares,
@@ -600,6 +606,56 @@ export default function FileUpload( {
 												{formMessages(
 													"fields.encryption_trigger"
 												)}
+											</Label>
+										</div>
+
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+
+							{/* Raccourcir le lien d'accès */}
+							<FormField
+								name="shorten"
+								control={form.control}
+								render={( { field } ) => (
+									<FormItem className="mt-4">
+										<FormLabel htmlFor={field.name}>
+											<Link className="mr-2 inline size-6" />
+
+											{formMessages.rich( "fields.shorten_label", {
+												i: ( chunks ) => (
+													<em>{chunks}</em>
+												)
+											} )}
+										</FormLabel>
+
+										<FormDescription>
+											{formMessages.rich( "fields.shorten_description", {
+												b: ( chunks ) => (
+													<strong>
+														{chunks}
+													</strong>
+												)
+											} )}
+										</FormDescription>
+
+										<div className="flex items-center space-x-2">
+											<FormControl>
+												<Switch
+													id={field.name}
+													name={field.name}
+													checked={field.value}
+													disabled={isPending}
+													onCheckedChange={field.onChange}
+												/>
+											</FormControl>
+
+											<Label
+												htmlFor={field.name}
+												className="leading-5"
+											>
+												{formMessages( "fields.shorten_trigger" )}
 											</Label>
 										</div>
 
