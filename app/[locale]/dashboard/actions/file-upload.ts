@@ -263,11 +263,10 @@ export async function uploadFiles(
 				const headerStore = await headers();
 				const protocol = headerStore.get( "x-forwarded-proto" ) ?? "https://";
 				const host = headerStore.get( "x-forwarded-host" ) ?? headerStore.get( "origin" );
+				const url = `${ protocol }${ host }/d/${ fileId }`;
 				const shortenRequest = await fetch( "https://url.florian-dev.fr/api/v1/link", {
 					method: "POST",
-					body: JSON.stringify( {
-						url: `${ protocol }${ host }/d/${ fileId }`
-					} )
+					body: JSON.stringify( { url } )
 				} );
 
 				const shortenResponse = ( await shortenRequest.json() ) as {
@@ -278,7 +277,7 @@ export async function uploadFiles(
 				{
 					// Gestion des erreurs du raccourcisseur.
 					logger.error(
-						{ source: __dirname, fileId, shortenResponse },
+						{ source: __dirname, fileId, url, response: shortenResponse },
 						"Failed to shorten file link"
 					);
 				}
@@ -287,7 +286,7 @@ export async function uploadFiles(
 					// Réponse du raccourcisseur et mise à jour du slug
 					//  du fichier dans la base de données.
 					logger.info(
-						{ source: __dirname, fileId, shortenResponse },
+						{ source: __dirname, fileId, url, response: shortenResponse },
 						"File link shortened"
 					);
 
