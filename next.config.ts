@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin( "./utilities/i18n.ts" );
@@ -25,17 +24,4 @@ const nextConfig: NextConfig = withNextIntl( {
 	}
 } );
 
-const sentryConfig = {
-	org: process.env.SENTRY_ORG,
-	silent: process.env.NEXT_LOGGING === "false",
-	project: process.env.SENTRY_PROJECT,
-	authToken: process.env.SENTRY_AUTH_TOKEN,
-	tunnelRoute: "/monitoring",
-	disableLogger: true,
-	hideSourceMaps: true,
-	widenClientFileUpload: true
-};
-
-export default process.env.SENTRY_ENABLED === "true"
-	? withSentryConfig( nextConfig, sentryConfig )
-	: nextConfig;
+export default nextConfig;

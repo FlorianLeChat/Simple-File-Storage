@@ -10,7 +10,6 @@ import schema from "@/schemas/file-upload";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
 import { headers } from "next/headers";
-import * as Sentry from "@sentry/nextjs";
 import { statSync } from "fs";
 import { join, parse } from "path";
 import { compressFile } from "@/utilities/sharp";
@@ -428,10 +427,8 @@ export async function uploadFiles(
 	catch ( error )
 	{
 		// Si une erreur survient lors du téléversement des fichiers,
-		//  on l'envoie à Sentry et on retourne un message d'erreur.
+		//  on la journalise et on retourne un message d'erreur.
 		logger.error( { source: __dirname, error }, "File upload failed" );
-
-		Sentry.captureException( error );
 
 		return {
 			success: false,
