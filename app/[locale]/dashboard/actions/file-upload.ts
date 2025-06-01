@@ -260,9 +260,9 @@ export async function uploadFiles(
 			if ( result.output.shorten )
 			{
 				const headerStore = await headers();
-				const protocol = headerStore.get( "x-forwarded-proto" ) ?? "https://";
+				const protocol = headerStore.get( "x-forwarded-proto" ) ?? "https";
 				const host = headerStore.get( "x-forwarded-host" ) ?? headerStore.get( "origin" );
-				const url = `${ protocol }${ host }/d/${ fileId }`;
+				const url = `${ protocol }://${ host }/d/${ fileId }`;
 				const shortenRequest = await fetch( "https://url.florian-dev.fr/api/v1/link", {
 					method: "POST",
 					body: JSON.stringify( { url } )
