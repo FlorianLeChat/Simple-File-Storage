@@ -9,7 +9,6 @@ import prisma from "@/utilities/prisma";
 import { join } from "path";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
-import * as Sentry from "@sentry/nextjs";
 import { existsSync } from "fs";
 import { rm, readdir } from "fs/promises";
 
@@ -124,10 +123,8 @@ export async function deleteFile(
 	catch ( error )
 	{
 		// Si une erreur s'est produite lors des opérations avec le
-		//  système de fichiers, on l'envoie tout simplement à Sentry.
+		//  système de fichiers, on la journalise tout simplement.
 		logger.error( { source: __dirname, error }, "File deletion error" );
-
-		Sentry.captureException( error );
 	}
 
 	// On retourne enfin la liste des identifiants des fichiers supprimés

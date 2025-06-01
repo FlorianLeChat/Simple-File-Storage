@@ -2,7 +2,6 @@
 // Route de récupération des fichiers dynamiques de l'application.
 //
 import { logger } from "@/utilities/pino";
-import * as Sentry from "@sentry/nextjs";
 import { readFile } from "fs/promises";
 import path, { sep } from "path";
 import { existsSync } from "fs";
@@ -47,8 +46,6 @@ export async function GET(
 	{
 		// Dans le cas contraire, on renvoie enfin une erreur HTTP 500.
 		logger.error( { source: __dirname, error }, "Error reading public file" );
-
-		Sentry.captureException( error );
 
 		return new NextResponse( null, { status: 500 } );
 	}
