@@ -11,12 +11,6 @@ const schema = v.object( {
 	NEXT_PUBLIC_MAX_QUOTA: v.pipe( v.string(), v.minLength( 1 ) ),
 	NEXT_PUBLIC_ACCEPTED_FILE_TYPES: v.pipe( v.string(), v.minLength( 1 ) ),
 
-	SENTRY_ENABLED: v.picklist( [ "true", "false" ] ),
-	SENTRY_DSN: v.pipe( v.string(), v.url() ),
-	SENTRY_ORG: v.pipe( v.string(), v.minLength( 1 ) ),
-	SENTRY_PROJECT: v.pipe( v.string(), v.minLength( 1 ) ),
-	SENTRY_AUTH_TOKEN: v.pipe( v.string(), v.minLength( 1 ) ),
-
 	NEXT_PUBLIC_ANALYTICS_ENABLED: v.picklist( [ "true", "false" ] ),
 	NEXT_PUBLIC_ANALYTICS_TAG: v.pipe(
 		v.string(),

@@ -8,7 +8,6 @@ import * as v from "valibot";
 import prisma from "@/utilities/prisma";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
-import * as Sentry from "@sentry/nextjs";
 import { join, parse } from "path";
 import { readdir, link } from "fs/promises";
 import { existsSync, statSync } from "fs";
@@ -143,11 +142,9 @@ export async function restoreVersion(
 		catch ( error )
 		{
 			// Si une erreur s'est produite lors de l'opération avec le
-			//  système de fichiers, on l'envoie à Sentry avant de retourner
+			//  système de fichiers, on la journalise avant de retourner
 			//  enfin une valeur vide.
 			logger.error( { source: __dirname, error }, "Error checking quota" );
-
-			Sentry.captureException( error );
 
 			return "";
 		}
@@ -196,11 +193,9 @@ export async function restoreVersion(
 	catch ( error )
 	{
 		// Si une erreur s'est produite lors de l'opération avec le
-		//  système de fichiers, on l'envoie à Sentry avant de retourner
+		//  système de fichiers, on la journalise avant de retourner
 		//  enfin une valeur vide.
 		logger.error( { source: __dirname, error }, "Error restoring version" );
-
-		Sentry.captureException( error );
 
 		return "";
 	}

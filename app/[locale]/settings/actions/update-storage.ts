@@ -9,7 +9,6 @@ import prisma from "@/utilities/prisma";
 import { rm } from "fs/promises";
 import { auth } from "@/utilities/next-auth";
 import { logger } from "@/utilities/pino";
-import * as Sentry from "@sentry/nextjs";
 import { existsSync } from "fs";
 import { join, parse } from "path";
 import { revalidatePath } from "next/cache";
@@ -152,13 +151,11 @@ export async function updateStorage(
 				catch ( error )
 				{
 					// Si une erreur survient dans les opérations du système
-					//  de fichiers, on l'envoie tout simplement à Sentry.
+					//  de fichiers, on la journalise tout simplement.
 					logger.error(
 						{ source: __dirname, error },
 						"Error deleting file versions"
 					);
-
-					Sentry.captureException( error );
 				}
 			} )
 		);
