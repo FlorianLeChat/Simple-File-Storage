@@ -219,7 +219,7 @@ export async function uploadFiles(
 			const expiration = result.output.expiration !== ""
 				? new Date( result.output.expiration )
 				: null;
-			const status = preferences.public ? "public" : "private";
+			const status = preferences.public || result.output.shorten ? "public" : "private";
 			const fileId = !exists
 				? (
 					await prisma.file.create( {
@@ -252,6 +252,44 @@ export async function uploadFiles(
 				} )
 			).id;
 
+			// Une fois la version créée, on ajoute une notification à
+			//  tous les utilisateurs partagés avec le fichier pour les
+			//  prévenir que quelqu'un a téléversé une nouvelle version.
+			if ( exists )
+			{
+				await prisma.notification.createMany( {
+					data: exists.shares
+						.filter( ( share ) => share.user.notification.includes( "necessary" ) || share.user.notification.includes( "all" ) )
+						.map( ( share ) => ( {
+							title: 3,
+							userId: share.userId,
+							message: 3
+						} ) )
+				} );
+
+				logger.debug(
+					{ source: __dirname, file },
+					"Created version notification"
+				);
+			}
+
+			// Après la création de la notification, on créé le dossier de
+			//  sauvegarde avant d'y écrire le fichier téléversé.
+			const fileFolder = join( userFolder, fileId );
+
+			await mkdir( fileFolder, { recursive: true } );
+			await writeFile(
+				join( fileFolder, `${ versionId }${ extension }` ),
+				encrypted
+			);
+
+			revalidatePath( "/" );
+
+			logger.info(
+				{ source: __dirname, file, fileFolder, versionId },
+				"File uploaded"
+			);
+
 			// On raccourcit le lien d'accès au fichier si l'utilisateur
 			//  a choisi de le faire. On utilise pour cela l'API de
 			//  raccourcissement de liens via Raven Url Shortener.
@@ -261,7 +299,7 @@ export async function uploadFiles(
 			{
 				const headerStore = await headers();
 				const protocol = headerStore.get( "x-forwarded-proto" ) ?? "https";
-				const host = headerStore.get( "x-forwarded-host" ) ?? headerStore.get( "origin" );
+				const host = headerStore.get( "x-forwarded-host" ) ?? headerStore.get( "host" );
 				const url = `${ protocol }://${ host }/d/${ fileId }`;
 				const shortenRequest = await fetch( "https://url.florian-dev.fr/api/v1/link", {
 					method: "POST",
@@ -301,44 +339,6 @@ export async function uploadFiles(
 					} );
 				}
 			}
-
-			// Une fois la version créée, on ajoute une notification à
-			//  tous les utilisateurs partagés avec le fichier pour les
-			//  prévenir que quelqu'un a téléversé une nouvelle version.
-			if ( exists )
-			{
-				await prisma.notification.createMany( {
-					data: exists.shares
-						.filter( ( share ) => share.user.notification.includes( "necessary" ) || share.user.notification.includes( "all" ) )
-						.map( ( share ) => ( {
-							title: 3,
-							userId: share.userId,
-							message: 3
-						} ) )
-				} );
-
-				logger.debug(
-					{ source: __dirname, file },
-					"Created version notification"
-				);
-			}
-
-			// Après la création de la notification, on créé le dossier de
-			//  sauvegarde avant d'y écrire le fichier téléversé.
-			const fileFolder = join( userFolder, fileId );
-
-			await mkdir( fileFolder, { recursive: true } );
-			await writeFile(
-				join( fileFolder, `${ versionId }${ extension }` ),
-				encrypted
-			);
-
-			revalidatePath( "/" );
-
-			logger.info(
-				{ source: __dirname, file, fileFolder, versionId },
-				"File uploaded"
-			);
 
 			// Suite à un problème dans React, on doit convertir les
 			//  fichiers sous format JSON pour pouvoir les envoyer
