@@ -33,11 +33,10 @@ export default async function middleware( request: NextRequest )
 		{
 			// On fait une requête à l'API pour récupérer le chemin
 			//  du fichier à partir de son identifiant.
+			const protocol = request.headers.get( "x-forwarded-proto" ) ?? "https";
+			const host = request.headers.get( "x-forwarded-host" ) ?? request.headers.get( "host" );
 			const data = await fetch(
-				new URL(
-					`/api/file/${ identifier }/${ request.nextUrl.search }`,
-					request.url
-				),
+				`${ protocol }://${ host }/api/file/${ identifier }/${ request.nextUrl.search }`,
 				{ headers: request.headers }
 			);
 
@@ -58,10 +57,7 @@ export default async function middleware( request: NextRequest )
 				headers.set( "X-Auth-Secret", process.env.AUTH_SECRET ?? "" );
 
 				const content = await fetch(
-					new URL(
-						`/api/public/files/${ file.userId }/${ file.id }/${ file.versions[ 0 ].id }.${ extension }`,
-						data.url
-					),
+					`${ protocol }://${ host }/api/public/files/${ file.userId }/${ file.id }/${ file.versions[ 0 ].id }.${ extension }`,
 					{ headers }
 				);
 
