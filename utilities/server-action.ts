@@ -5,8 +5,8 @@
 
 "use client";
 
-import { solveChallenge } from "altcha-lib";
 import type { Challenge } from "altcha-lib/types";
+import { solveChallengeWorkers } from "altcha-lib";
 
 export default async function serverAction(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,25 +26,22 @@ export default async function serverAction(
 	const json = ( await response.json() ) as Challenge;
 
 	// Résolution du défi et obtention d'une solution.
-	const solver = solveChallenge(
+	const solution = await solveChallengeWorkers(
+		() => new Worker( new URL( "altcha-lib/worker", import.meta.url ) ),
+		navigator.hardwareConcurrency,
 		json.challenge,
 		json.salt,
 		json.algorithm,
 		json.maxnumber
 	);
 
-	// Attente de la résolution du défi.
-	const answer = await solver.promise;
-
-	if ( !answer?.number )
-	{
-		throw new Error( "CAPTCHA resolution failed" );
-	}
+	console.log( "Solving CAPTCHA challenge" );
+	console.table( solution );
 
 	// Transmission de la charge utile contenant la solution CAPTCHA.
 	const payload = {
 		salt: json.salt,
-		number: answer.number,
+		number: solution?.number ?? 0,
 		algorithm: json.algorithm,
 		challenge: json.challenge,
 		signature: json.signature
