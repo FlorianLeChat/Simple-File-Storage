@@ -2,7 +2,6 @@ import eslint from "@eslint/js";
 import tslint from "typescript-eslint";
 import globals from "globals";
 import jsxA11y from "eslint-plugin-jsx-a11y";
-import tailwind from "eslint-plugin-tailwindcss";
 import stylistic from "@stylistic/eslint-plugin";
 
 export default tslint.config(
@@ -13,7 +12,6 @@ export default tslint.config(
 	tslint.configs.strict,
 	tslint.configs.stylistic,
 	jsxA11y.flatConfigs.recommended,
-	tailwind.configs[ "flat/recommended" ],
 	stylistic.configs.recommended,
 	{
 		// Exceptions dans les règles ESLint
@@ -140,14 +138,6 @@ export default tslint.config(
 			],
 			"@stylistic/computed-property-spacing": [ "error", "always" ],
 			"@stylistic/jsx-one-expression-per-line": "off",
-
-			// Règles pour Tailwind CSS
-			"tailwindcss/no-custom-classname": [
-				"warn",
-				{
-					whitelist: [ "toaster", "cc--darkmode" ]
-				}
-			]
 		}
 	}
 );
