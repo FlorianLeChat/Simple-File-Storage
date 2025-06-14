@@ -3,10 +3,10 @@
 //  Source : https://ui.shadcn.com/docs/components/avatar
 //
 import { merge } from "@/utilities/tailwind";
-import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { forwardRef,
 	type ElementRef,
 	type ComponentPropsWithoutRef } from "react";
+import { Avatar as AvatarPrimitive } from "radix-ui";
 
 const Avatar = forwardRef<
 	ElementRef<typeof AvatarPrimitive.Root>,
@@ -44,7 +44,7 @@ const AvatarFallback = forwardRef<
 	<AvatarPrimitive.Fallback
 		ref={ref}
 		className={merge(
-			"flex h-full w-full items-center justify-center rounded-full bg-muted",
+			"bg-muted flex h-full w-full items-center justify-center rounded-full",
 			className
 		)}
 		{...props}

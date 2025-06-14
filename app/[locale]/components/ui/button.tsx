@@ -2,8 +2,8 @@
 // Composant générique des boutons.
 //  Source : https://ui.shadcn.com/docs/components/button
 //
-import { Slot } from "@radix-ui/react-slot";
 import { merge } from "@/utilities/tailwind";
+import { Slot as SlotPrimitive } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 
@@ -37,7 +37,9 @@ const buttonVariants = cva(
 	}
 );
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants>
+export interface ButtonProps
+	extends ButtonHTMLAttributes<HTMLButtonElement>,
+	VariantProps<typeof buttonVariants>
 {
 	asChild?: boolean;
 }
@@ -45,7 +47,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, Va
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	( { className, variant, size, asChild = false, ...props }, ref ) =>
 	{
-		const Comp = asChild ? Slot : "button";
+		const Comp = asChild ? SlotPrimitive.Slot : "button";
 		return (
 			<Comp
 				className={merge( buttonVariants( { variant, size, className } ) )}
