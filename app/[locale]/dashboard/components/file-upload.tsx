@@ -26,7 +26,7 @@ import { addDays, format } from "date-fns";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { type FileAttributes } from "@/interfaces/File";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState, useCallback, useActionState } from "react";
+import { useEffect, useState, useActionState } from "react";
 
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
@@ -197,24 +197,6 @@ export default function FileUpload( {
 		);
 	};
 
-	// Lance des confettis pour le premier téléversement d'un fichier.
-	//  Source : https://github.com/nextui-org/nextui/blob/1485eca48fce8a0acc42fe40590b828c1a90ff48/apps/docs/components/demos/custom-button.tsx#L11-L36
-	const throwConfettis = useCallback( async () =>
-	{
-		const confetti = ( await import( "canvas-confetti" ) ).default;
-
-		confetti( {
-			origin: {
-				x: 0.5,
-				y: 0.75
-			},
-			spread: 90,
-			zIndex: 10,
-			particleCount: 100,
-			disableForReducedMotion: true
-		} );
-	}, [] );
-
 	// Mise à jour automatique du quota utilisateur.
 	useEffect( () =>
 	{
@@ -290,11 +272,6 @@ export default function FileUpload( {
 			//  doublons avant de mettre à jour la liste des fichiers.
 			setFiles( ( previous ) =>
 			{
-				if ( previous.length === 0 )
-				{
-					throwConfettis();
-				}
-
 				return [
 					...previous.filter( ( value ) => !uploaded.find( ( file ) => file.uuid === value.uuid ) ),
 					...uploaded
@@ -321,7 +298,7 @@ export default function FileUpload( {
 				description: reason
 			} );
 		}
-	}, [ form, setFiles, formMessages, uploadState, throwConfettis ] );
+	}, [ form, setFiles, formMessages, uploadState ] );
 
 	// Affichage de la fenêtre modale de clé de déchiffrement.
 	if ( key && !isOpen )
