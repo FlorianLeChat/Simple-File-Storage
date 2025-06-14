@@ -4,7 +4,6 @@
 //
 import "@valibot/i18n/fr";
 import * as v from "valibot";
-import { Slot } from "@radix-ui/react-slot";
 import { merge } from "@/utilities/tailwind";
 import { useLocale } from "next-intl";
 import { Controller,
@@ -13,7 +12,6 @@ import { Controller,
 	type FieldPath,
 	type FieldValues,
 	type ControllerProps } from "react-hook-form";
-import type * as LabelPrimitive from "@radix-ui/react-label";
 import { useId,
 	useMemo,
 	useContext,
@@ -22,6 +20,7 @@ import { useId,
 	type ElementRef,
 	type HTMLAttributes,
 	type ComponentPropsWithoutRef } from "react";
+import { Slot as SlotPrimitive, type Label as LabelPrimitive } from "radix-ui";
 
 import { Label } from "./label";
 
@@ -33,7 +32,7 @@ interface FormFieldContextValue<
 >
 {
 	name: TName;
-};
+}
 
 const FormFieldContext = createContext<FormFieldContextValue>(
 	{} as FormFieldContextValue
@@ -56,7 +55,7 @@ function FormField<
 interface FormItemContextValue
 {
 	id: string;
-};
+}
 
 const FormItemContext = createContext<FormItemContextValue>(
 	{} as FormItemContextValue
@@ -131,14 +130,15 @@ const FormLabel = forwardRef<
 FormLabel.displayName = "FormLabel";
 
 const FormControl = forwardRef<
-	ElementRef<typeof Slot>,
-	ComponentPropsWithoutRef<typeof Slot>
+	ElementRef<typeof SlotPrimitive.Slot>,
+	ComponentPropsWithoutRef<typeof SlotPrimitive.Slot>
 >( ( { ...props }, ref ) =>
 {
-	const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
+	const { error, formItemId, formDescriptionId, formMessageId }
+		= useFormField();
 
 	return (
-		<Slot
+		<SlotPrimitive.Slot
 			ref={ref}
 			id={formItemId}
 			aria-describedby={
@@ -165,7 +165,7 @@ const FormDescription = forwardRef<
 		<p
 			ref={ref}
 			id={formDescriptionId}
-			className={merge( "text-sm text-muted-foreground", className )}
+			className={merge( "text-muted-foreground text-sm", className )}
 			{...props}
 		/>
 	);
@@ -192,7 +192,7 @@ const FormMessage = forwardRef<
 		<p
 			ref={ref}
 			id={formMessageId}
-			className={merge( "text-sm font-medium text-destructive", className )}
+			className={merge( "text-destructive text-sm font-medium", className )}
 			{...props}
 		>
 			{error?.message}
