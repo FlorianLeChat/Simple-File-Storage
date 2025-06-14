@@ -4,10 +4,10 @@
 //
 import { merge } from "@/utilities/tailwind";
 import { Circle } from "lucide-react";
-import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { forwardRef,
 	type ElementRef,
 	type ComponentPropsWithoutRef } from "react";
+import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 
 const RadioGroup = forwardRef<
 	ElementRef<typeof RadioGroupPrimitive.Root>,
@@ -29,7 +29,7 @@ const RadioGroupItem = forwardRef<
 	<RadioGroupPrimitive.Item
 		ref={ref}
 		className={merge(
-			"aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+			"border-primary text-primary ring-offset-background focus-visible:ring-ring aspect-square h-4 w-4 rounded-full border focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
 			className
 		)}
 		{...props}

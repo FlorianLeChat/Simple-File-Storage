@@ -3,8 +3,8 @@
 //  Source : https://ui.shadcn.com/docs/components/label
 //
 import { merge } from "@/utilities/tailwind";
-import * as LabelPrimitive from "@radix-ui/react-label";
 import { cva, type VariantProps } from "class-variance-authority";
+import { Label as LabelPrimitive } from "radix-ui";
 import { forwardRef,
 	type ElementRef,
 	type ComponentPropsWithoutRef } from "react";
@@ -15,7 +15,8 @@ const labelVariants = cva(
 
 const Label = forwardRef<
 	ElementRef<typeof LabelPrimitive.Root>,
-	ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & VariantProps<typeof labelVariants>
+	ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
+	VariantProps<typeof labelVariants>
 >( ( { className, ...props }, ref ) => (
 	<LabelPrimitive.Root
 		ref={ref}

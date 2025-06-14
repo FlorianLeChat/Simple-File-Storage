@@ -6,10 +6,10 @@
 "use client";
 
 import { merge } from "@/utilities/tailwind";
-import * as SeparatorPrimitive from "@radix-ui/react-separator";
 import { forwardRef,
 	type ElementRef,
 	type ComponentPropsWithoutRef } from "react";
+import { Separator as SeparatorPrimitive } from "radix-ui";
 
 const Separator = forwardRef<
 	ElementRef<typeof SeparatorPrimitive.Root>,
@@ -24,7 +24,7 @@ const Separator = forwardRef<
 			decorative={decorative}
 			orientation={orientation}
 			className={merge(
-				"shrink-0 bg-border",
+				"bg-border shrink-0",
 				orientation === "horizontal"
 					? "h-[1px] w-full"
 					: "h-full w-[1px]",

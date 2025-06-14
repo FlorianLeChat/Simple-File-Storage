@@ -3,10 +3,10 @@
 //  Source : https://ui.shadcn.com/docs/components/progress
 //
 import { merge } from "@/utilities/tailwind";
-import * as ProgressPrimitive from "@radix-ui/react-progress";
 import { forwardRef,
 	type ElementRef,
 	type ComponentPropsWithoutRef } from "react";
+import { Progress as ProgressPrimitive } from "radix-ui";
 
 const Progress = forwardRef<
 	ElementRef<typeof ProgressPrimitive.Root>,
@@ -15,13 +15,13 @@ const Progress = forwardRef<
 	<ProgressPrimitive.Root
 		ref={ref}
 		className={merge(
-			"relative h-4 w-full overflow-hidden rounded-full bg-secondary",
+			"bg-secondary relative h-4 w-full overflow-hidden rounded-full",
 			className
 		)}
 		{...props}
 	>
 		<ProgressPrimitive.Indicator
-			className="size-full flex-1 bg-primary transition-all"
+			className="bg-primary size-full flex-1 transition-all"
 			style={{ transform: `translateX(-${ 100 - ( value ?? 0 ) }%)` }}
 		/>
 	</ProgressPrimitive.Root>
