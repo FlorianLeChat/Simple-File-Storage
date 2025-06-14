@@ -118,7 +118,7 @@ const NavigationMenuIndicator = forwardRef<
 		)}
 		{...props}
 	>
-		<div className="bg-border relative top-[60%] size-2 rotate-45 rounded-tl-sm shadow-md" />
+		<div className="relative top-[60%] size-2 rotate-45 rounded-tl-sm bg-border shadow-md" />
 	</NavigationMenuPrimitive.Indicator>
 ) );
 
