@@ -6,10 +6,9 @@ import Email from "next-auth/providers/nodemailer";
 import bcrypt from "bcrypt";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
-import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import type { Adapter } from "next-auth/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import NextAuth, { type User } from "next-auth";
 
 import prisma from "./prisma";
 import { logger } from "./pino";
@@ -23,7 +22,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 		signOut: "/",
 		verifyRequest: "/authentication?error=ValidationRequired"
 	},
-	adapter: PrismaAdapter( prisma ) as Adapter, // https://github.com/nextauthjs/next-auth/issues/9493#issuecomment-1871601543
+	adapter: PrismaAdapter( prisma ),
 	session: {
 		strategy: process.env.NEXT_PUBLIC_ENV === "production" ? "database" : "jwt"
 	},
@@ -163,11 +162,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 				// On tente de récupérer le compte utilisateur via son adresse
 				//  électronique avant de vérifier si le mot de passe fourni
 				//  correspond à celui enregistré dans la base de données.
-				const exists = await prisma.user.findUnique( {
+				const exists = ( await prisma.user.findUnique( {
 					where: {
 						email: credentials.email as string
 					}
-				} );
+				} ) ) as User | null;
 
 				if ( exists?.password )
 				{
