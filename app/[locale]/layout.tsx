@@ -10,7 +10,6 @@ import "@total-typescript/ts-reset";
 import pick from "lodash/pick";
 import type { Toaster } from "sonner";
 import { lazy,
-	Suspense,
 	type ReactNode,
 	type CSSProperties,
 	type ComponentProps } from "react";
@@ -149,58 +148,49 @@ export default async function Layout( {
 
 			{/* Corps de la page */}
 			<body className="flex min-h-screen flex-col">
-				{/* Écran de chargement de la page */}
-				<Suspense>
-					{/* Utilisation des traductions */}
-					<NextIntlClientProvider
-						locale={locale}
-						messages={pick(
-							messages,
-							"form",
-							"modals",
-							"header",
-							"valibot",
-							"actions",
-							"settings",
-							"dashboard",
-							"navigation",
-							"consentModal",
-							"preferencesModal"
-						)}
-						timeZone={process.env.TZ}
+				{/* Utilisation des traductions */}
+				<NextIntlClientProvider
+					locale={locale}
+					messages={pick(
+						messages,
+						"form",
+						"modals",
+						"header",
+						"valibot",
+						"actions",
+						"settings",
+						"dashboard",
+						"navigation",
+						"consentModal",
+						"preferencesModal"
+					)}
+					timeZone={process.env.TZ}
+				>
+					{/* Vidéo en arrière-plan */}
+					<video
+						loop
+						muted
+						autoPlay
+						className="fixed -z-10 hidden size-full object-none opacity-10 dark:block"
 					>
-						{/* Vidéo en arrière-plan */}
-						<video
-							loop
-							muted
-							autoPlay
-							className="fixed -z-10 hidden size-full object-none opacity-10 dark:block"
-						>
-							<source
-								src="/assets/videos/background.mp4"
-								type="video/mp4"
-							/>
-						</video>
-
-						{/* Composant enfant */}
-						{children}
-
-						{/* Consentement des cookies */}
-						<CookieConsent />
-
-						{/* Composant des notifications */}
-						<Sonner
-							theme={
-								( session && !session?.user.preferences?.default
-									? theme
-									: "system" ) as ToasterProps["theme"]
-							}
+						<source
+							src="/assets/videos/background.mp4"
+							type="video/mp4"
 						/>
+					</video>
 
-						{/* Pied de page */}
-						<Footer />
-					</NextIntlClientProvider>
-				</Suspense>
+					{/* Composant enfant */}
+					{children}
+
+					{/* Consentement des cookies */}
+					<CookieConsent />
+
+					{/* Composant des notifications */}
+					<Sonner theme={( session && !session?.user.preferences?.default ? theme : "system" ) as ToasterProps["theme"]} />
+
+					{/* Pied de page */}
+					<Footer />
+				</NextIntlClientProvider>
 			</body>
 		</html>
 	);
