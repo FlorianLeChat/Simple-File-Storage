@@ -40,7 +40,7 @@ export async function GET(
 	try
 	{
 		// Si c'est le cas, on lit le contenu du fichier et on le renvoie.
-		return new NextResponse( await readFile( filePath ) );
+		return new NextResponse( Buffer.from( await readFile( filePath ) ) );
 	}
 	catch ( error )
 	{
