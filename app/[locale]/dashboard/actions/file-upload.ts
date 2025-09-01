@@ -177,7 +177,7 @@ export async function uploadFiles(
 								name: "AES-GCM"
 							},
 							cipher,
-							compressed
+							Buffer.from( compressed )
 						)
 					)
 				] );
@@ -189,7 +189,7 @@ export async function uploadFiles(
 
 			// On génère une chaîne de hachage unique représentant les
 			//  données du fichier.
-			const digest = await crypto.subtle.digest( "SHA-256", encrypted );
+			const digest = await crypto.subtle.digest( "SHA-256", Buffer.from( encrypted ) );
 			const hash = Array.from( new Uint8Array( digest ) )
 				.map( ( byte ) => byte.toString( 16 ).padStart( 2, "0" ) )
 				.join( "" );
