@@ -84,7 +84,6 @@ export default tslint.config(
 				}
 			],
 			"@stylistic/eol-last": [ "error", "never" ],
-			"@stylistic/jsx-indent": [ "error", "tab" ],
 			"@stylistic/brace-style": [
 				"error",
 				"allman",
