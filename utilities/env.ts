@@ -25,10 +25,6 @@ const schema = v.object( {
 	SMTP_USERNAME: v.pipe( v.string(), v.minLength( 1 ) ),
 	SMTP_PASSWORD: v.pipe( v.string(), v.minLength( 1 ) ),
 
-	DKIM_DOMAIN: v.pipe( v.string(), v.minLength( 1 ) ),
-	DKIM_SELECTOR: v.pipe( v.string(), v.minLength( 1 ) ),
-	DKIM_PRIVATE_KEY: v.pipe( v.string(), v.minLength( 1 ) ),
-
 	AUTH_SECRET: v.pipe( v.string(), v.minLength( 1 ) ),
 
 	NEXT_PUBLIC_AUTH_GOOGLE_ENABLED: v.picklist( [ "true", "false" ] ),
