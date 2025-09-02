@@ -3,7 +3,7 @@
 ## Installation
 
 > [!WARNING]
-> L'installation **sans** Docker nécessite d'avoir une base de données [MySQL](https://www.mysql.com/downloads/) ou [MariaDB](https://mariadb.org/download/) pour la gestion des données du site Internet. Vous devez également être en possession d'un serveur SMTP (si possible avec le protocole DKIM configuré) pour l'envoi des courriels de création/connexion des comptes utilisateurs.
+> L'installation **sans** Docker nécessite d'avoir une base de données [MySQL](https://www.mysql.com/downloads/) ou [MariaDB](https://mariadb.org/download/) pour la gestion des données du site Internet. Vous devez également être en possession d'un serveur SMTP pour l'envoi des courriels de création/connexion des comptes utilisateurs.
 
 ### Développement local
 
@@ -12,7 +12,6 @@
 - Modifier la [variable d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) `NEXT_PUBLIC_ENV` sur `development` ;
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) pour la connexion à la base de données (`DATABASE_...`) ;
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) pour configurer le serveur de messagerie (`SMTP_...`) ;
-- *(Facultatif)* Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) pour activer l'authentification DKIM (`DKIM_...`) ;
 - Générer un *hash* en base64 avec la commande `openssl rand -base64 32` (nécessite [OpenSSL](https://openssl-library.org/source/)) ;
 - Modifier la [variable d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) `AUTH_SECRET` avec la valeur générée à l'étape précédente ;
 - Démarrer le serveur local NextJS avec la commande `npm run dev` ;
@@ -26,7 +25,6 @@
 - Installer les dépendances du projet avec la commande `npm install` ;
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) pour la connexion à la base de données (`DATABASE_...`) ;
 - Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) pour configurer le serveur de messagerie (`SMTP_...`) ;
-- *(Facultatif)* Modifier les [variables d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) pour activer l'authentification DKIM (`DKIM_...`) ;
 - Générer un *hash* en base64 avec la commande `openssl rand -base64 32` (nécessite [OpenSSL](https://openssl-library.org/source/)) ;
 - Modifier la [variable d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) `AUTH_SECRET` avec la valeur générée à l'étape précédente ;
 - Compiler les fichiers statiques du site Internet avec la commande `npm run build` ;
@@ -48,7 +46,7 @@
 ## Setup
 
 > [!WARNING]
-> Installation **without** Docker requires having a [MySQL](https://www.mysql.com/downloads/) or [MariaDB](https://mariadb.org/download/) database for managing website data. You must also have access to an SMTP server (preferably with the DKIM protocol configured) for sending emails related to user account creation/login.
+> Installation **without** Docker requires having a [MySQL](https://www.mysql.com/downloads/) or [MariaDB](https://mariadb.org/download/) database for managing website data. You must also have access to an SMTP server for sending emails related to user account creation/login.
 
 ### Local development
 
@@ -57,7 +55,6 @@
 - Set `NEXT_PUBLIC_ENV` [environment variable](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) to `development` ;
 - Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) for database connection (`DATABASE_...`) ;
 - Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) to configure the mail server (`SMTP_...`) ;
-- *(Optional)* Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) to enable DKIM authentication (`DKIM_...`) ;
 - Generate a base64 hash using `openssl rand -base64 32` (requires [OpenSSL](https://openssl-library.org/source/)) ;
 - Set `AUTH_SECRET` [environment variable](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) with the value generated in the previous step ;
 - Start NextJS local server using `npm run dev` ;
@@ -71,7 +68,6 @@
 - Install project dependencies using `npm install` ;
 - Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) for database connection (`DATABASE_...`) ;
 - Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) to configure the mail server (`SMTP_...`) ;
-- *(Optional)* Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) to enable DKIM authentication (`DKIM_...`) ;
 - Generate a base64 hash using using `openssl rand -base64 32` (requires [OpenSSL](https://openssl-library.org/source/)) ;
 - Set `AUTH_SECRET` [environment variable](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) with the value generated in the previous step ;
 - Build static website files using `npm run build` ;
