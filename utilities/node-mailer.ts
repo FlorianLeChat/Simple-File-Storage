@@ -67,11 +67,6 @@ export const transport = createTransport( {
 	auth: {
 		user: process.env.SMTP_USERNAME,
 		pass: process.env.SMTP_PASSWORD
-	},
-	dkim: {
-		domainName: process.env.DKIM_DOMAIN ?? "",
-		privateKey: process.env.DKIM_PRIVATE_KEY ?? "",
-		keySelector: process.env.DKIM_SELECTOR ?? ""
 	}
 } );
 
