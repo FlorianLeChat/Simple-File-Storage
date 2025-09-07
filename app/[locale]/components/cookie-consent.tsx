@@ -4,10 +4,9 @@
 
 "use client";
 
+import { useEffect } from "react";
 import { useMessages } from "next-intl";
 import { usePathname } from "next/navigation";
-import { GoogleTagManager } from "@next/third-parties/google";
-import { useEffect, useState } from "react";
 import { run,
 	type ConsentModalOptions,
 	type PreferencesModalOptions } from "vanilla-cookieconsent";
@@ -21,21 +20,11 @@ export default function CookieConsent()
 		consentModal: ConsentModalOptions;
 		preferencesModal: PreferencesModalOptions;
 	};
-	const [ analytics, setAnalytics ] = useState( false );
 
 	// Filtrage des catégories de cookies en fonction des
 	//  paramètres du site Internet.
-	messages.preferencesModal.sections = messages.preferencesModal.sections.filter( ( section ) =>
+	messages.preferencesModal.sections = messages.preferencesModal.sections.filter( () =>
 	{
-		if (
-			section.linkedCategory === "analytics"
-			&& process.env.NEXT_PUBLIC_ANALYTICS_ENABLED !== "true"
-		)
-		{
-			// Google Analytics est désactivé.
-			return false;
-		}
-
 		// Autres catégories de cookies.
 		return true;
 	} );
@@ -74,15 +63,6 @@ export default function CookieConsent()
 				necessary: {
 					enabled: true,
 					readOnly: true
-				},
-				analytics: {
-					autoClear: {
-						cookies: [
-							{
-								name: /^(_ga|_gid)/
-							}
-						]
-					}
 				}
 			},
 
@@ -101,28 +81,7 @@ export default function CookieConsent()
 			onChange: () =>
 			{
 				window.location.reload();
-			},
-
-			// Exécution des actions de consentement.
-			onConsent: ( { cookie } ) =>
-			{
-				// Google Analytics.
-				if ( cookie.categories.includes( "analytics" ) )
-				{
-					setAnalytics(
-						process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true"
-					);
-				}
 			}
 		} );
 	}, [ pathname, messages ] );
-
-	// Affichage conditionnel du rendu HTML du composant.
-	return (
-		analytics && (
-			<GoogleTagManager
-				gtmId={process.env.NEXT_PUBLIC_ANALYTICS_TAG ?? ""}
-			/>
-		)
-	);
 }
