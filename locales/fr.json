@@ -403,12 +403,6 @@
 					},
 					"body": [
 						{
-							"name": "NEXT_COOKIE",
-							"domain": "Cookie Consent",
-							"description": "Cookie mis en place par <a href=\"https://cookieconsent.orestbida.com/\" target=\"_blank\">Cookie Consent</a>.",
-							"expiration": "Expire après 6 mois."
-						},
-						{
 							"name": "NEXT_LOCALE",
 							"domain": "Next Intl",
 							"description": "Cookie mis en place par <a href=\"https://next-intl-docs.vercel.app/\" target=\"_blank\">Next Intl</a>.",

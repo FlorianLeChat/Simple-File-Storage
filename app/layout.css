@@ -676,3 +676,10 @@
 		avec le reste des couleurs secondaires */
 	@apply stroke-primary-foreground;
 }
+
+#cc-main .pm__footer
+{
+	/* Il n'y a plus de cookie facultatif où le consentement est demandé,
+		donc on masque les boutons d'acceptation/refus */
+	@apply hidden !important;
+}

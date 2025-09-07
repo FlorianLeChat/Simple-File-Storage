@@ -21,14 +21,6 @@ export default function CookieConsent()
 		preferencesModal: PreferencesModalOptions;
 	};
 
-	// Filtrage des catégories de cookies en fonction des
-	//  paramètres du site Internet.
-	messages.preferencesModal.sections = messages.preferencesModal.sections.filter( () =>
-	{
-		// Autres catégories de cookies.
-		return true;
-	} );
-
 	// Affichage du consentement des cookies.
 	//  Source : https://cookieconsent.orestbida.com/reference/api-reference.html
 	useEffect( () =>
@@ -42,13 +34,7 @@ export default function CookieConsent()
 			hideFromBots: process.env.NEXT_PUBLIC_ENV === "production",
 
 			// Activation automatique de la fenêtre de consentement.
-			autoShow: process.env.NEXT_PUBLIC_ENV === "production" && !pathname.startsWith( "/legal" ),
-
-			// Paramètres internes des cookies.
-			cookie: {
-				name: "NEXT_COOKIE",
-				path: "/"
-			},
+			autoShow: false,
 
 			// Paramètres de l'interface utilisateur.
 			guiOptions: {
@@ -75,13 +61,10 @@ export default function CookieConsent()
 						preferencesModal: messages.preferencesModal
 					}
 				}
-			},
-
-			// Exécution des actions de changement.
-			onChange: () =>
-			{
-				window.location.reload();
 			}
 		} );
 	}, [ pathname, messages ] );
+
+	// Le composant n'affiche rien.
+	return null;
 }
