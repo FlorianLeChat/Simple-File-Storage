@@ -11,13 +11,6 @@ const schema = v.object( {
 	NEXT_PUBLIC_MAX_QUOTA: v.pipe( v.string(), v.minLength( 1 ) ),
 	NEXT_PUBLIC_ACCEPTED_FILE_TYPES: v.pipe( v.string(), v.minLength( 1 ) ),
 
-	NEXT_PUBLIC_ANALYTICS_ENABLED: v.picklist( [ "true", "false" ] ),
-	NEXT_PUBLIC_ANALYTICS_TAG: v.pipe(
-		v.string(),
-		v.length( 12 ),
-		v.startsWith( "G-" )
-	),
-
 	DATABASE_URL: v.pipe( v.string(), v.url() ),
 
 	SMTP_HOST: v.pipe( v.string(), v.minLength( 1 ) ),

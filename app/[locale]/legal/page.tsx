@@ -67,21 +67,7 @@ export default async function Page( {
 				</p>
 
 				<p>
-					<strong>Premièrement</strong>, l&lsquo;utilisation de Google
-					Analytics est restreinte au strict nécessaire et requiert
-					explicitement votre consentement. Vous pouvez désactiver
-					Google Analytics sans affecter le fonctionnement du site,
-					celui-ci est utilisé pour obtenir des statistiques de
-					fréquentation. Notez que les scripts de Google ne sont pas
-					chargés si vous refusez leur utilisation. Si vous les
-					acceptez, ces scripts sont alors chargés depuis les serveurs
-					de Google et soumis à leur politique de confidentialité
-					ainsi qu&lsquo;à leurs conditions générales
-					d&lsquo;utilisation.
-				</p>
-
-				<p>
-					<strong>Deuxièmement</strong>, les mots de passe, données
+					<strong>D'abord</strong>, les mots de passe, données
 					sensibles, fichiers téléversés sont hachés, chiffrés et
 					salés conformément aux normes de sécurité les plus récentes
 					et aux bonnes pratiques avant d&lsquo;être enregistrés dans
@@ -215,18 +201,7 @@ export default async function Page( {
 			</p>
 
 			<p>
-				<strong>Firstly</strong>, the use of Google Analytics is
-				restricted to what is strictly necessary and explicitly requires
-				your consent. You can disable Google Analytics without affecting
-				the functionality of the site, as it is used to obtain traffic
-				statistics. Please note that Google’s scripts are not loaded if
-				you refuse their use. If you accept them, these scripts are then
-				loaded from Google’s servers and are subject to their privacy
-				policy as well as their terms of use.
-			</p>
-
-			<p>
-				<strong>Secondly</strong>, passwords, sensitive data, and
+				<strong>Firstly</strong>, passwords, sensitive data, and
 				uploaded files are hashed, encrypted, and salted in accordance
 				with the latest security standards and best practices before
 				being stored in the database. We do everything possible to
