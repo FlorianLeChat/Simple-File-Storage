@@ -3,7 +3,7 @@ name: simple-file-storage
 services:
     # https://hub.docker.com/_/mariadb
     mariadb:
-        image: mariadb:latest
+        image: mariadb:12
         restart: always
         volumes:
             - ./docker/services/database:/var/lib/mysql
@@ -25,7 +25,7 @@ services:
 
     # https://hub.docker.com/_/phpmyadmin
     phpmyadmin:
-        image: phpmyadmin:latest
+        image: phpmyadmin:5-apache
         restart: always
         depends_on:
             mariadb:
@@ -44,7 +44,7 @@ services:
 
     # https://hub.docker.com/_/varnish
     varnish:
-        image: varnish:alpine
+        image: varnish:8-alpine
         volumes:
             - ./docker/configuration/default.vcl:/etc/varnish/default.vcl:ro
         depends_on:
