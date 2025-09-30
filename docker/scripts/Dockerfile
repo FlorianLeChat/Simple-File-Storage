@@ -5,7 +5,7 @@
 FROM node:24-slim
 
 # Install system dependencies
-RUN apt update && apt install -y openssl supercronic tzdata wget && apt clean
+RUN apt update && apt install -y cron openssl tzdata wget && apt clean
 
 # Set the working directory to the website files
 WORKDIR /usr/src/app
