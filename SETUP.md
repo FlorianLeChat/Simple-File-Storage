@@ -17,7 +17,7 @@
 - Démarrer le serveur local NextJS avec la commande `npm run dev` ;
 - *(Facultatif)* Compiler les scripts destinés aux tâches planifiées avec la commande `npx tsc --skipLibCheck scripts/expired-files.ts scripts/outdated-notifications.ts` ;
 - *(Facultatif)* Configurer une tâche planifiée pour exécuter la commande `node scripts/expired-files.js` pour la [suppression périodique des fichiers expirés](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/expired-files.ts) ;
-- *(Facultatif)* Configurer une tâche planifiée pour exécuter la commande `node scripts/outdated-notifications` pour la [suppression périodique des anciennes notifications](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/outdated-notifications.ts).
+- *(Facultatif)* Configurer une tâche planifiée pour exécuter la commande `node scripts/outdated-notifications.js` pour la [suppression périodique des anciennes notifications](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/outdated-notifications.ts).
 
 ### Déploiement en production
 
@@ -33,7 +33,7 @@
 - *(Facultatif)* Utiliser [Varnish](https://varnish-cache.org/) comme serveur de cache HTTP pour atténuer les effets des fortes charges ([configuration intégrée](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/docker/configuration/default.vcl)) ;
 - Compiler les scripts destinés aux tâches planifiées avec la commande `npx tsc --skipLibCheck scripts/expired-files.ts scripts/outdated-notifications.ts` ;
 - Configurer une tâche planifiée pour exécuter la commande `node scripts/expired-files.js` pour la [suppression périodique des fichiers expirés](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/expired-files.ts) ;
-- Configurer une tâche planifiée pour exécuter la commande `node scripts/outdated-notifications` pour la [suppression périodique des anciennes notifications](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/outdated-notifications.ts).
+- Configurer une tâche planifiée pour exécuter la commande `node scripts/outdated-notifications.js` pour la [suppression périodique des anciennes notifications](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/outdated-notifications.ts).
 
 > [!TIP]
 > Pour tester le projet, vous *pouvez* également utiliser [Docker](https://www.docker.com/). Une fois installé, il suffit de lancer l'image Docker de production à l'aide de la commande `docker compose up --detach --build`. Le site devrait être accessible à l'adresse suivante : http://localhost/. 🐳
@@ -60,7 +60,7 @@
 - Start NextJS local server using `npm run dev` ;
 - *(Optional)* Compile scripts for scheduled tasks using `npx tsc --skipLibCheck scripts/expired-files.ts scripts/outdated-notifications.ts` ;
 - *(Optional)* Set up a scheduled task to run `node scripts/expired-files.js` command for [periodic deletion of expired files](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/expired-files.ts) ;
-- *(Optional)* Set up a scheduled task to run `node scripts/outdated-notifications` command for [periodic deletion of outdated notifications](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/outdated-notifications.ts).
+- *(Optional)* Set up a scheduled task to run `node scripts/outdated-notifications.js` command for [periodic deletion of outdated notifications](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/outdated-notifications.ts).
 
 ### Production deployment
 
@@ -76,7 +76,7 @@
 - *(Optional)* Use [Varnish](https://varnish-cache.org/) as an HTTP cache server to mitigate effects of heavy loads ([built-in configuration](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/docker/configuration/default.vcl)) ;
 - Compile scripts for scheduled tasks using `npx tsc --skipLibCheck scripts/expired-files.ts scripts/outdated-notifications.ts` ;
 - Set up a scheduled task to run `node scripts/expired-files.js` command for [periodic deletion of expired files](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/expired-files.ts) ;
-- Set up a scheduled task to run `node scripts/outdated-notifications` command for [periodic deletion of outdated notifications](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/outdated-notifications.ts).
+- Set up a scheduled task to run `node scripts/outdated-notifications.js` command for [periodic deletion of outdated notifications](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/outdated-notifications.ts).
 
 > [!TIP]
 > To try the project, you *can* also use [Docker](https://www.docker.com/) installed. Once installed, simply start the production Docker image with `docker compose up --detach --build` command. The website should be available at http://localhost/. 🐳

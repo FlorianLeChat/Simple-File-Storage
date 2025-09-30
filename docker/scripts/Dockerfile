@@ -28,7 +28,7 @@ RUN --mount=type=cache,target=.npm \
 # Add some cronjobs for automated tasks
 RUN npx tsc --skipLibCheck scripts/create-fake-accounts.ts scripts/expired-files.ts scripts/outdated-notifications.ts && \
 	echo "*/5 * * * * node /usr/src/app/scripts/expired-files.js > /dev/null 2>&1" >> /var/spool/cron/crontabs/node && \
-	echo "*/5 * * * * node /usr/src/app/scripts/outdated-notifications > /dev/null 2>&1" >> /var/spool/cron/crontabs/node && \
+	echo "*/5 * * * * node /usr/src/app/scripts/outdated-notifications.js > /dev/null 2>&1" >> /var/spool/cron/crontabs/node && \
 	echo "0 0 * * * /usr/src/app/docker/scripts/logrotate.sh > /dev/null 2>&1" >> /var/spool/cron/crontabs/node
 
 # Use non-root user
