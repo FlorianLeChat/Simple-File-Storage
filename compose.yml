@@ -45,7 +45,7 @@ services:
 
     # https://hub.docker.com/_/varnish
     varnish:
-        image: varnish:8
+        image: varnish:8-alpine
         volumes:
             - ./docker/configuration/default.vcl:/etc/varnish/default.vcl:ro
         depends_on:
