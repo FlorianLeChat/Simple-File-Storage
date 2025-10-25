@@ -2,6 +2,23 @@
 
 ![Logo](https://github.com/FlorianLeChat/Simple-File-Storage/assets/26360935/a0124415-7085-4660-a5f1-9c2ce3788fee)
 
+![HTML](https://img.shields.io/badge/HTML-E34F26?logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+
+![Next.js](https://img.shields.io/badge/Next.js-black?logo=nextdotjs&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![Lucide](https://img.shields.io/badge/Lucide-black?logo=lucide&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
+![Playwright](https://custom-icon-badges.demolab.com/badge/Playwright-2EAD33?logo=playwright&logoColor=white)
+![i18n](https://img.shields.io/badge/i18n-26A69A?logo=googletranslate&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-F7B93E?logo=prettier&logoColor=black)
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3?logo=eslint&logoColor=white)
+![Valibot](https://img.shields.io/badge/Valibot-15B392?logo=v&logoColor=white)
+![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-black?logo=shadcnui&logoColor=white)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?logo=framer&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)
+
 ## In French
 
 Débuté en septembre 2023 et après 8 mois de développement intensif, je suis fier de présenter un projet qui me tient particulièrement à cœur. Ce projet est un
