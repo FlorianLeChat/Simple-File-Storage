@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
+import type { Adapter } from "next-auth/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth, { type User } from "next-auth";
 
@@ -15,14 +16,14 @@ import { logger } from "./pino";
 import { getGravatarUrl } from "./gravatar";
 import sendVerificationRequest from "./node-mailer";
 
-export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
+export const { handlers, auth, signIn, signOut } = NextAuth( {
 	pages: {
 		error: "/",
 		signIn: "/authentication",
 		signOut: "/",
 		verifyRequest: "/authentication?error=ValidationRequired"
 	},
-	adapter: PrismaAdapter( prisma ),
+	adapter: PrismaAdapter( prisma ) as Adapter, // https://github.com/nextauthjs/next-auth/issues/9493#issuecomment-1871601543
 	session: {
 		strategy: process.env.NEXT_PUBLIC_ENV === "production" ? "database" : "jwt"
 	},
@@ -197,4 +198,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth( () => ( {
 			}
 		} )
 	]
-} ) );
+} );
