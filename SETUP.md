@@ -28,7 +28,7 @@
 - Générer un *hash* en base64 avec la commande `openssl rand -base64 32` (nécessite [OpenSSL](https://openssl-library.org/source/)) ;
 - Modifier la [variable d'environnement](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) `AUTH_SECRET` avec la valeur générée à l'étape précédente ;
 - Compiler les fichiers statiques du site Internet avec la commande `npm run build` ;
-- Supprimer les dépendances de développement avec la commande `npm prune --production` ;
+- Supprimer les dépendances de développement avec la commande `npm prune --omit=dev` ;
 - Démarrer le serveur local NodeJS avec la commande `npm run start` ;
 - *(Facultatif)* Utiliser [Varnish](https://varnish-cache.org/) comme serveur de cache HTTP pour atténuer les effets des fortes charges ([configuration intégrée](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/docker/configuration/default.vcl)) ;
 - Compiler les scripts destinés aux tâches planifiées avec la commande `npx tsc --skipLibCheck scripts/expired-files.ts scripts/outdated-notifications.ts` ;
@@ -71,7 +71,7 @@
 - Generate a base64 hash using using `openssl rand -base64 32` (requires [OpenSSL](https://openssl-library.org/source/)) ;
 - Set `AUTH_SECRET` [environment variable](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) with the value generated in the previous step ;
 - Build static website files using `npm run build` ;
-- Remove development dependencies using `npm prune --production` ;
+- Remove development dependencies using `npm prune --omit=dev` ;
 - Start NodeJS local server using `npm run start` ;
 - *(Optional)* Use [Varnish](https://varnish-cache.org/) as an HTTP cache server to mitigate effects of heavy loads ([built-in configuration](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/docker/configuration/default.vcl)) ;
 - Compile scripts for scheduled tasks using `npx tsc --skipLibCheck scripts/expired-files.ts scripts/outdated-notifications.ts` ;

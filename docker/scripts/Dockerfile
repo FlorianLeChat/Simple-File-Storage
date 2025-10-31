@@ -35,5 +35,5 @@ RUN npx tsc --skipLibCheck scripts/create-fake-accounts.ts scripts/expired-files
 USER node
 
 # Prepare project files and configuration to be built
-RUN npm run build && npm prune --production && \
+RUN npm run build && npm prune --omit=dev && \
 	chmod +x ./docker/scripts/entrypoint.sh ./docker/scripts/logrotate.sh
