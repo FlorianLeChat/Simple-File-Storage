@@ -17,7 +17,7 @@ type FileWithVersions = Prisma.FileGetPayload<{
 	};
 }>;
 
-export default async function middleware( request: NextRequest )
+export default async function proxy( request: NextRequest )
 {
 	// On vérifie d'abord si la requête courante est de type GET
 	//  et si elle cherche à accéder à un fichier utilisateur.
