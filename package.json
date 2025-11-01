@@ -88,6 +88,9 @@
     "@total-typescript/ts-reset": "~0.6",
     "prettier-plugin-tailwindcss": "~0.7"
   },
+  "overrides": {
+    "nodemailer": "~7.0"
+  },
   "engines": {
     "node": ">=20.0",
     "npm": ">=9.6"
