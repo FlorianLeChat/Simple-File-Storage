@@ -38,7 +38,7 @@ services:
             APACHE_PORT: 8080
             PMA_PASSWORD: ${DATABASE_PASSWORD}
         healthcheck:
-            test: curl -f http://localhost
+            test: curl -f http://localhost:8080/
             retries: 3
             timeout: 5s
         expose:
@@ -58,8 +58,6 @@ services:
             test: wget -O - http://localhost/
             retries: 3
             timeout: 5s
-        expose:
-            - "80"
 
     # https://github.com/FlorianLeChat/Simple-File-Storage
     node:
@@ -75,7 +73,7 @@ services:
         environment:
             TZ: ${TZ}
         healthcheck:
-            test: wget -O - http://localhost:3000
+            test: wget -O - http://localhost:3000/
             retries: 3
             timeout: 5s
         build:
