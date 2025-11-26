@@ -31,7 +31,7 @@
     "sharp": "~0.34",
     "bcrypt": "~6.0",
     "lodash": "~4.17",
-    "valibot": "~1.1",
+    "valibot": "~1.2",
     "next-intl": "~4.4",
     "file-type": "~21.0",
     "next-auth": "5.0.0-beta.30",
