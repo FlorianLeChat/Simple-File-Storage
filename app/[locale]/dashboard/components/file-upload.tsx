@@ -746,7 +746,7 @@ export default function FileUpload( {
 													mode="single"
 													locale={dateFormat}
 													selected={
-														new Date( field.value )
+														new Date( field.value ?? "now" )
 													}
 													disabled={( date ) => date > oneYear || date < today}
 													onSelect={( value ) => field.onChange(

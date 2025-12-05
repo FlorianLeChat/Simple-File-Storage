@@ -162,7 +162,7 @@ export default function SignInForm()
 									<Input
 										{...field}
 										type={inputType}
-										onBlur={() => setIsFocused( field.value?.length > 0 )}
+										onBlur={() => setIsFocused( ( field.value?.length ?? 0 ) > 0 )}
 										onKeyUp={( event ) => setIsLocked(
 											event.getModifierState(
 												"CapsLock"
