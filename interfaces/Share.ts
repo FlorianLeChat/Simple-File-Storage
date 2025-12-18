@@ -8,16 +8,16 @@ export interface ShareAttributes
 	// Utilisateur en partage.
 	user: {
 		// Identifiant unique.
-		uuid: User["id"];
+		uuid: User[ "id" ];
 
 		// Nom d'affichage.
-		name: User["name"];
+		name: User[ "name" ];
 
 		// Adresse électronique.
-		email: User["email"];
+		email: User[ "email" ];
 
 		// Image de profil.
-		image: User["image"];
+		image: User[ "image" ];
 	};
 
 	// Type de partage du fichier avec l'utilisateur.

@@ -50,9 +50,9 @@ export default function Appearance( { session }: Readonly<{ session: Session }> 
 		resolver: valibotResolver( schema ),
 		defaultValues: {
 			font: session.user.preferences
-				.font as ( typeof fonts )[number]["value"],
+				.font as ( typeof fonts[ number ][ "value" ] ),
 			color: session.user.preferences
-				.color as ( typeof colors )[number]["name"],
+				.color as ( typeof colors[ number ][ "name" ] ),
 			theme: session.user.preferences.theme as "light" | "dark"
 		}
 	} );

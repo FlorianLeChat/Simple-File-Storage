@@ -186,7 +186,7 @@ export default async function Layout( {
 					<CookieConsent />
 
 					{/* Composant des notifications */}
-					<Sonner theme={( session && !session?.user.preferences?.default ? theme : "system" ) as ToasterProps["theme"]} />
+					<Sonner theme={( session && !session?.user.preferences?.default ? theme : "system" ) as ToasterProps[ "theme" ]} />
 
 					{/* Pied de page */}
 					<Footer />
