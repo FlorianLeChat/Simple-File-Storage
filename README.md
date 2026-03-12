@@ -1,23 +1,23 @@
 # 💾 Simple File Storage
 
-![Logo](https://github.com/FlorianLeChat/Simple-File-Storage/assets/26360935/a0124415-7085-4660-a5f1-9c2ce3788fee)
+![Logo](.gitlab/images/logo.png)
 
-![HTML](https://img.shields.io/badge/HTML-E34F26?logo=html5&logoColor=white)
-![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![HTML](.gitlab/badges/html.svg)
+![CSS](.gitlab/badges/css.svg)
+![TypeScript](.gitlab/badges/typescript.svg)
 
-![Next.js](https://img.shields.io/badge/Next.js-black?logo=nextdotjs&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
-![Lucide](https://img.shields.io/badge/Lucide-black?logo=lucide&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
-![Playwright](https://custom-icon-badges.demolab.com/badge/Playwright-2EAD33?logo=playwright&logoColor=white)
-![i18n](https://img.shields.io/badge/i18n-26A69A?logo=googletranslate&logoColor=white)
-![Prettier](https://img.shields.io/badge/Prettier-F7B93E?logo=prettier&logoColor=black)
-![ESLint](https://img.shields.io/badge/ESLint-4B32C3?logo=eslint&logoColor=white)
-![Valibot](https://img.shields.io/badge/Valibot-15B392?logo=v&logoColor=white)
-![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-black?logo=shadcnui&logoColor=white)
-![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?logo=framer&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)
+![Next.js](.gitlab/badges/nextjs.svg)
+![TailwindCSS](.gitlab/badges/tailwindcss.svg)
+![Lucide](.gitlab/badges/lucide.svg)
+![Docker](.gitlab/badges/docker.svg)
+![Playwright](.gitlab/badges/playwright.svg)
+![i18n](.gitlab/badges/i18n.svg)
+![Prettier](.gitlab/badges/prettier.svg)
+![ESLint](.gitlab/badges/eslint.svg)
+![Valibot](.gitlab/badges/valibot.svg)
+![shadcn/ui](.gitlab/badges/shadcn-ui.svg)
+![Framer Motion](.gitlab/badges/framer-motion.svg)
+![Prisma](.gitlab/badges/prisma.svg)
 
 ## In French
 
@@ -52,4 +52,4 @@ In terms of features, this project allows you to store files on a remote server,
 > [!IMPORTANT]
 > The whole code of this project is commented in my native language (in French) and will not be translated in English for easier programming.
 
-![image](https://github.com/FlorianLeChat/Simple-File-Storage/assets/26360935/f751419f-cf82-48f9-90cd-c1975768fe26)
+![image](.gitlab/images/simple-file-storage.png)
