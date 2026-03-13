@@ -19,6 +19,7 @@
 		"start": "next start",
 		"pretty": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
 		"prepare": "husky",
+		"commitlint": "commitlint --edit",
 		"db:migrate": "prisma db push --skip-generate",
 		"db:generate": "prisma generate",
 		"lint-staged": "lint-staged",
@@ -72,6 +73,7 @@
 		"framer-motion": "~12.23",
 		"@valibot/i18n": "~1.0",
 		"tailwind-merge": "~3.4",
+		"@commitlint/cli": "~20.4",
 		"react-hook-form": "~7.69",
 		"@faker-js/faker": "~10.1",
 		"@playwright/test": "~1.57",
@@ -87,7 +89,8 @@
 		"@stylistic/eslint-plugin": "~5.6",
 		"eslint-plugin-tailwindcss": "~3.18",
 		"@total-typescript/ts-reset": "~0.6",
-		"prettier-plugin-tailwindcss": "~0.7"
+		"prettier-plugin-tailwindcss": "~0.7",
+		"@commitlint/config-conventional": "~20.4"
 	},
 	"overrides": {
 		"nodemailer": "~7.0"
