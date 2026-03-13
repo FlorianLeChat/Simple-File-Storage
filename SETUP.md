@@ -3,7 +3,7 @@
 ## Installation
 
 > [!WARNING]
-> L'installation **sans** Docker nécessite d'avoir une base de données [MySQL](https://www.mysql.com/downloads/) ou [MariaDB](https://mariadb.org/download/) pour la gestion des données du site Internet. Vous devez également être en possession d'un serveur SMTP pour l'envoi des courriels de création/connexion des comptes utilisateurs.
+> L'installation **sans** Docker nécessite d'avoir une base de données [MySQL](https://www.mysql.com/downloads/) ou [MariaDB](https://mariadb.org/download/) pour la gestion des données du site Internet. Vous devez également être en possession d'un serveur SMTP pour l'envoi des courriels de création/connexion des comptes utilisateurs. 🏠
 
 ### Développement local
 
@@ -35,18 +35,15 @@
 - Configurer une tâche planifiée pour exécuter la commande `node scripts/expired-files.js` pour la [suppression périodique des fichiers expirés](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/expired-files.ts) ;
 - Configurer une tâche planifiée pour exécuter la commande `node scripts/outdated-notifications.js` pour la [suppression périodique des anciennes notifications](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/outdated-notifications.ts).
 
-> [!TIP]
-> Pour tester le projet, vous *pouvez* également utiliser [Docker](https://www.docker.com/). Une fois installé, il suffit de lancer l'image Docker de production à l'aide de la commande `docker compose up --detach --build`. Le site devrait être accessible à l'adresse suivante : http://localhost/. 🐳
-
 > [!CAUTION]
-> L'image Docker *peut* également être déployée en production, mais cela **nécessite des connaissances approfondies pour déployer, optimiser et sécuriser correctement votre installation**, afin d'éviter toute conséquence indésirable. ⚠️
+> Le déploiement en environnement de production (**avec ou sans Docker**) **nécessite des connaissances approfondies pour déployer, optimiser et sécuriser correctement votre installation** afin d'éviter toute conséquence indésirable. ⚠️
 
 # In English
 
 ## Setup
 
 > [!WARNING]
-> Installation **without** Docker requires having a [MySQL](https://www.mysql.com/downloads/) or [MariaDB](https://mariadb.org/download/) database for managing website data. You must also have access to an SMTP server for sending emails related to user account creation/login.
+> Installation **without** Docker requires having a [MySQL](https://www.mysql.com/downloads/) or [MariaDB](https://mariadb.org/download/) database for managing website data. You must also have access to an SMTP server for sending emails related to user account creation/login. 🏠
 
 ### Local development
 
@@ -68,7 +65,7 @@
 - Install project dependencies using `npm install` ;
 - Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) for database connection (`DATABASE_...`) ;
 - Set [environment variables](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) to configure the mail server (`SMTP_...`) ;
-- Generate a base64 hash using using `openssl rand -base64 32` (requires [OpenSSL](https://openssl-library.org/source/)) ;
+- Generate a base64 hash using `openssl rand -base64 32` (requires [OpenSSL](https://openssl-library.org/source/)) ;
 - Set `AUTH_SECRET` [environment variable](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/.env) with the value generated in the previous step ;
 - Build static website files using `npm run build` ;
 - Remove development dependencies using `npm prune --omit=dev` ;
@@ -78,8 +75,5 @@
 - Set up a scheduled task to run `node scripts/expired-files.js` command for [periodic deletion of expired files](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/expired-files.ts) ;
 - Set up a scheduled task to run `node scripts/outdated-notifications.js` command for [periodic deletion of outdated notifications](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/scripts/outdated-notifications.ts).
 
-> [!TIP]
-> To try the project, you *can* also use [Docker](https://www.docker.com/) installed. Once installed, simply start the production Docker image with `docker compose up --detach --build` command. The website should be available at http://localhost/. 🐳
-
 > [!CAUTION]
-> The Docker image *can* also be deployed in production, but **this requires advanced knowledge to properly deploy, optimize, and secure your installation**, in order to avoid any unwanted consequences. ⚠️
+> Deploying in a production environment (**with or without Docker**) **requires advanced knowledge to properly deploy, optimize, and secure your installation** in order to avoid any unwanted consequences. ⚠️
