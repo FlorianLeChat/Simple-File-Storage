@@ -1,7 +1,6 @@
 **/.git*
 **/.husky
 **/.next
-**/docker/services
 **/node_modules
 **/tests
 **/*.md

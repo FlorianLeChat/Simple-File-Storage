@@ -10,7 +10,7 @@ import { readdir, rm } from "fs/promises";
 import { PrismaClient } from "@prisma/client";
 
 // Configuration des variables d'environnement.
-dotenv.config( { path: join( process.cwd(), ".env.local" ), override: true } );
+dotenv.config();
 
 // Exécution de la fonction asynchrone.
 const script = async () =>
