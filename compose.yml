@@ -53,7 +53,7 @@ services:
 
     server:
         user: "${UID:-1000}:${GID:-1000}"
-        image: registry.florian-dev.fr/floriantrayon/simple-file-storage:${VERSION:-latest}
+        image: registry.florian-dev.fr:443/floriantrayon/simple-file-storage:${VERSION:-latest}
         restart: unless-stopped
         command: bash -c "npm run db:migrate || true; npm run start"
         volumes:
