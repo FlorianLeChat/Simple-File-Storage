@@ -3,12 +3,11 @@
 //
 
 // Importation des dépendances.
-import { join } from "path";
 import * as dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 
 // Configuration des variables d'environnement.
-dotenv.config( { path: join( process.cwd(), ".env.local" ), override: true } );
+dotenv.config();
 
 // Nombre maximal de notifications que l'utilisateur peut avoir.
 const MAX_NOTIFICATIONS = 50;
