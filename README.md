@@ -31,10 +31,10 @@ gestionnaire de fichiers simple et efficace, permettant de stocker des fichiers 
 
 Ce projet a été conçu initialement dans le but d'exploiter les dernières technologies et outils à la mode dans l'écosystème JavaScript. Malgré tout, je suis assez déçu de leur utilisation et de leur performance durant la période de développement, je ne compte plus le nombre de problèmes que j'ai pu rencontrer avec les dernières versions de [NextJS](https://nextjs.org/), [Prisma](https://www.prisma.io/) ou encore [Next Auth](https://authjs.dev/). C'est pourquoi, je vous déconseille d'utiliser ces technologies pour un projet de production, préférez des technologies plus stables et éprouvées quitte à sortir de l'écosystème JavaScript (comme [Symfony](https://symfony.com/)).
 
-Au niveau des fonctionnalités, ce projet vous permet de stocker des fichiers sur un serveur distant, de les télécharger, de les supprimer et de les partager. Vous pouvez également créer un compte utilisateur pour accéder à vos fichiers depuis n'importe où. Ce projet est également responsive et s'adapte à tous les écrans. De plus, il offre de nombreuses options de personnalisation pour les utilisateurs et il est respectueux des normes de confidentialité liées au RGPD.
+Au niveau des fonctionnalités, ce projet vous permet de stocker des fichiers sur un serveur distant, de les télécharger, de les supprimer et de les partager. Vous pouvez également créer un compte utilisateur pour accéder à vos fichiers depuis n'importe où. Ce projet est aussi responsive et s'adapte à tous les écrans. De plus, il offre de nombreuses options de personnalisation pour les utilisateurs et il est respectueux des normes de confidentialité liées au RGPD.
 
 > [!TIP]
-> Voir le fichier [SETUP.md](https://github.com/FlorianLeChat/Simple-File-Storage/blob/master/SETUP.md) pour consulter les instructions d'installation. 🛠️
+> Voir le fichier [SETUP.md](SETUP.md) pour consulter les instructions d'installation. 🛠️
 
 > [!NOTE]
 > Tout ou partie du code peut contenir des commentaires dans ma langue natale (le français) afin de faciliter le développement. 🌐
@@ -52,10 +52,10 @@ This project was initially designed to exploit the latest technologies and trend
 
 In terms of features, this project allows you to store files on a remote server, download them, delete them and share them. You can also create a user account to access your files from anywhere. This project is also responsive and adapts to all screens. In addition, it offers many customization options for users and is respectful of privacy standards related to the GDPR.
 
-> [!NOTE]
-> All or part of the code may contain comments in my native language (French) to ease development. 🌐
-
 > [!TIP]
 > See the [SETUP.md](SETUP.md) file for setup instructions. 🛠️
+
+> [!NOTE]
+> All or part of the code may contain comments in my native language (French) to ease development. 🌐
 
 ![image](.gitlab/images/simple-file-storage.png)
