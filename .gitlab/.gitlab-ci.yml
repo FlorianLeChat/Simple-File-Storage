@@ -1,5 +1,4 @@
 stages:
-    - cache
     - lint
     - build
     - deploy
@@ -10,20 +9,13 @@ cache:
             - package-lock.json
     paths:
         - .npm
-
-cache:npm:
-    image: node:20-alpine
-    stage: cache
-    cache:
-        policy: push
-    script:
-        - npm ci --cache .npm --prefer-offline
+    policy: pull-push
 
 lint:eslint:
-    image: node:20-alpine
     stage: lint
-    cache:
-        policy: pull
+    image: node:20-alpine
+    before_script:
+        - npm ci --cache .npm --prefer-offline
     script:
         - npm run lint
     artifacts:
