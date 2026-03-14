@@ -31,7 +31,7 @@ services:
         image: varnish:8-alpine
         restart: unless-stopped
         volumes:
-            - ./docker/configuration/varnish.vcl:/etc/varnish/default.vcl:ro
+            - ./varnish.vcl:/etc/varnish/default.vcl:ro
         depends_on:
             server:
                 condition: service_healthy
@@ -58,9 +58,11 @@ services:
         command: bash -c "npm run db:migrate || true; npm run start"
         volumes:
             - ./logs:/usr/src/app/logs
-            - ./public/files:/usr/src/app/public/files
+            - ./files:/usr/src/app/public/files
         env_file:
             - .env
+        environment:
+            PORT: 3000
         depends_on:
             database:
                 condition: service_healthy
