@@ -4,25 +4,26 @@ stages:
     - build
     - deploy
 
+cache:
+    key:
+        files:
+            - package-lock.json
+    paths:
+        - .npm
+
 cache:npm:
     image: node:20-alpine
     stage: cache
     cache:
-        key:
-            files:
-                - package-lock.json
-        paths:
-            - .npm
+        policy: push
     script:
-        - npm ci
-    artifacts:
-        paths:
-            - node_modules
-        expire_in: 1 hour
+        - npm ci --cache .npm --prefer-offline
 
 lint:eslint:
     image: node:20-alpine
     stage: lint
+    cache:
+        policy: pull
     script:
         - npm run lint
     artifacts:
@@ -86,3 +87,6 @@ deploy:ansible:
         - echo $ANSIBLE_VAULT_PASSWORD > .vault_password.txt
     script:
         - ansible-playbook -i .gitlab/ansible/hosts.yml --vault-password-file .vault_password.txt .gitlab/ansible/deploy.yml
+    dependencies:
+        - build:project
+        - build:docker
