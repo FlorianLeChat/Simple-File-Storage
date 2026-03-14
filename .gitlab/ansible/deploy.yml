@@ -37,12 +37,23 @@
         -   name: Synchronisation des fichiers avec suppression des fichiers obsolètes
             command: rsync -a --delete "{{ application_path }}_temp/" "{{ application_path }}/"
 
-        -   name: Application des permissions sur le répertoire d'installation
+        -   name: Création des répertoires montés dans Docker
             file:
-                path: "{{ application_path }}"
+                path: "{{ item }}"
+                state: directory
+                mode: "0700"
                 owner: debian
                 group: debian
-                state: directory
+            loop:
+                - "{{ application_path }}/logs"
+                - "{{ application_path }}/files"
+
+        -   name: Application des permissions sur les fichiers de variables d'environnement
+            file:
+                path: "{{ application_path }}/.env"
+                mode: "0400"
+                owner: debian
+                group: debian
 
         -   name: Suppression du répertoire temporaire
             file:
@@ -53,18 +64,7 @@
             community.docker.docker_compose_v2:
                 renew_anon_volumes: true
                 remove_orphans: true
-                remove_volumes: true
-                remove_images: all
                 project_src: "{{ application_path }}"
                 recreate: always
                 build: never
                 pull: always
-
-        -   name: Application des permissions sur les fichiers de variables d'environnement
-            file:
-                path: "{{ item }}"
-                mode: "0400"
-                owner: debian
-                group: debian
-            loop:
-                - "{{ application_path }}/.env"

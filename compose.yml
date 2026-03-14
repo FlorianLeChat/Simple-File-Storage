@@ -58,7 +58,7 @@ services:
         command: bash -c "npm run db:migrate || true; npm run start"
         volumes:
             - ./logs:/usr/src/app/logs
-            - ./public/files:/usr/src/app/public/files
+            - ./files:/usr/src/app/public/files
         env_file:
             - .env
         environment:
