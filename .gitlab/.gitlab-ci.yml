@@ -1,5 +1,6 @@
 stages:
     - build
+    - deploy
 
 build:project:
     stage: build
@@ -19,6 +20,7 @@ build:project:
     artifacts:
         paths:
             - .env
+            - .gitlab/ansible/
             - compose.yml
             - project.zip
         access: none
@@ -38,3 +40,19 @@ build:docker:
         - docker compose pull --ignore-buildable --ignore-pull-failures
         - docker compose build
         - docker compose push
+
+deploy:ansible:
+    stage: deploy
+    image: alpine:3
+    variables:
+        GIT_STRATEGY: none
+    before_script:
+        - apk add --no-cache openssl openssh-client ansible
+        - eval $(ssh-agent -s)
+        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+        - mkdir -p ~/.ssh
+        - chmod 700 ~/.ssh
+        - ssh-keyscan -H 192.168.1.22 >> ~/.ssh/known_hosts
+        - echo $ANSIBLE_VAULT_PASSWORD > .vault_password.txt
+    script:
+        - ansible-playbook -i .gitlab/ansible/hosts.yml --vault-password-file .vault_password.txt .gitlab/ansible/deploy.yml
