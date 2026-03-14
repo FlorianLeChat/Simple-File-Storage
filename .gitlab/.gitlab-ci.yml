@@ -1,6 +1,35 @@
 stages:
+    - cache
+    - lint
     - build
     - deploy
+
+cache:npm:
+    image: node:20-alpine
+    stage: cache
+    cache:
+        key:
+            files:
+                - package-lock.json
+        paths:
+            - .npm
+    script:
+        - npm ci
+    artifacts:
+        paths:
+            - node_modules
+        expire_in: 1 hour
+
+lint:eslint:
+    image: node:20-alpine
+    stage: lint
+    script:
+        - npm run lint
+    artifacts:
+        when: always
+        reports:
+            codequality: gl-codequality.json
+        expire_in: 1 hour
 
 build:project:
     stage: build

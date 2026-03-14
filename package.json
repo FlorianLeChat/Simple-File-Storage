@@ -14,7 +14,7 @@
 	"scripts": {
 		"dev": "next dev",
 		"test": "playwright test",
-		"lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
+		"lint": "eslint . --format gitlab --ext .js,.jsx,.ts,.tsx",
 		"build": "next build",
 		"start": "next start",
 		"pretty": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
@@ -85,6 +85,7 @@
 		"vanilla-cookieconsent": "~3.1",
 		"@tanstack/react-table": "~8.21",
 		"eslint-plugin-jsx-a11y": "~6.10",
+		"eslint-formatter-gitlab": "~7.0",
 		"class-variance-authority": "~0.7.1",
 		"@stylistic/eslint-plugin": "~5.6",
 		"eslint-plugin-tailwindcss": "~3.18",
