@@ -61,6 +61,8 @@ services:
             - ./public/files:/usr/src/app/public/files
         env_file:
             - .env
+        environment:
+            PORT: 3000
         depends_on:
             database:
                 condition: service_healthy
