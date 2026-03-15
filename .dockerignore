@@ -1,9 +1,13 @@
 **/.git*
 **/.husky
 **/.next
+**/logs
 **/node_modules
 **/tests
 **/*.md
+**/*.zip
+**/*.vcl
+**/*.config.*
 **/.dockerignore
 **/.editorconfig
 **/.gitattributes
@@ -13,3 +17,4 @@
 **/CODEOWNERS
 **/LICENSE
 **/next-env.d.ts
+!next.config.ts
