@@ -18,3 +18,5 @@
 **/LICENSE
 **/next-env.d.ts
 !next.config.ts
+!postcss.config.js
+!tailwind.config.ts

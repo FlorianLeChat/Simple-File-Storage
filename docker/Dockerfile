@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:24-slim AS base
+FROM node:20-slim AS base
 
 WORKDIR /usr/src/app
 
@@ -19,7 +19,7 @@ RUN npm run db:generate && npm run build && npx tsc --skipLibCheck \
     scripts/outdated-notifications.ts && \
     npm prune --omit=dev
 
-FROM node:24-slim AS production
+FROM node:20-slim AS production
 
 RUN apt update && \
 	apt install -y cron openssl tzdata wget && \
