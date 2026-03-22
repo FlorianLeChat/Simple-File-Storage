@@ -4,6 +4,8 @@
 
 > [!WARNING]
 > L'installation **sans** Docker nécessite d'avoir une base de données [MySQL](https://www.mysql.com/downloads/) ou [MariaDB](https://mariadb.org/download/) pour la gestion des données du site Internet. Vous devez également être en possession d'un serveur SMTP pour l'envoi des courriels de création/connexion des comptes utilisateurs. 🏠
+> 
+> Le déploiement en environnement de production **sans Docker** nécessite un serveur Web déjà configuré comme [Nginx](https://nginx.org/en/), [Apache](https://httpd.apache.org/) ou [Caddy](https://caddyserver.com/). 🐛
 
 ### Développement local
 
@@ -44,6 +46,8 @@
 
 > [!WARNING]
 > Installation **without** Docker requires having a [MySQL](https://www.mysql.com/downloads/) or [MariaDB](https://mariadb.org/download/) database for managing website data. You must also have access to an SMTP server for sending emails related to user account creation/login. 🏠
+> 
+> Deployment in a production environment (**with or without Docker**) requires a pre-configured web server such as [Nginx](https://nginx.org/en/), [Apache](https://httpd.apache.org/), or [Caddy](https://caddyserver.com/). 🐛
 
 ### Local development
 

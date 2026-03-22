@@ -81,4 +81,3 @@ deploy:ansible:
         - ansible-playbook -i .gitlab/ansible/hosts.yml --vault-password-file .vault_password.txt .gitlab/ansible/deploy.yml
     dependencies:
         - build:project
-        - build:docker
