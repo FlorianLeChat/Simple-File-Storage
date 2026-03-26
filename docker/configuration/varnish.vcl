@@ -6,66 +6,59 @@ backend default {
 }
 
 sub vcl_recv {
-	# https://www.varnish-software.com/developers/tutorials/varnish-builtin-vcl/#dont-allow-pri-requests
 	if (req.method == "PRI") {
 		return (synth(405));
 	}
 
-	# https://www.varnish-software.com/developers/tutorials/varnish-builtin-vcl/#enforce-the-host-header
 	if (!req.http.host && req.esi_level == 0 && req.proto ~ "^(?i)HTTP/1.1") {
 		return (synth(400));
 	}
 
-	# https://varnish-cache.org/docs/4.0/users-guide/increasing-your-hitrate.html#cookies-from-the-client
-	if (req.http.Cookie) {
-		set req.http.Cookie = ";" + req.http.Cookie;
-		set req.http.Cookie = regsuball(req.http.Cookie, "; +", ";");
-		set req.http.Cookie = regsuball(req.http.Cookie, ";(NEXT_LOCALE|authjs\.[^;]*|__Host-authjs\.[^;]*|__Secure-authjs\.[^;]*)=", "; \1=");
-		set req.http.Cookie = regsuball(req.http.Cookie, ";[^ ][^;]*", "");
-		set req.http.Cookie = regsuball(req.http.Cookie, "^[; ]+|[; ]+$", "");
-
-		if (req.http.Cookie == "") {
-			unset req.http.Cookie;
-		}
+	if (req.http.Upgrade ~ "(?i)websocket") {
+		return (pipe);
 	}
 
-	# https://symfony.com/doc/current/http_cache/varnish.html#routing-and-x-forwarded-headers
+	if (req.url ~ "^/_next" || req.url ~ "^/assets") {
+		unset req.http.Cookie;
+		return (hash);
+	}
+
+	if (req.method != "GET" && req.method != "HEAD") {
+		return (pass);
+	}
+
+	if (req.http.Authorization) {
+		return (pass);
+	}
+
+	if (req.http.Cookie ~ "(^|; )(authjs\.|__Host-authjs\.|__Secure-authjs\.)") {
+		return (pass);
+	}
+
+	if (req.http.Cookie ~ "NEXT_LOCALE=") {
+		set req.http.Cookie = regsub(req.http.Cookie, ".*NEXT_LOCALE=([^;]*).*", "NEXT_LOCALE=\1");
+	} else {
+		unset req.http.Cookie;
+	}
+
 	if (req.http.X-Forwarded-Proto == "https") {
 		set req.http.X-Forwarded-Port = "443";
 	} else {
 		set req.http.X-Forwarded-Port = "80";
 	}
 
-	# https://www.varnish-software.com/developers/tutorials/varnish-builtin-vcl/#invalid-request-methods
-	if (req.method != "GET" &&
-		req.method != "HEAD" &&
-		req.method != "PUT" &&
-		req.method != "POST" &&
-		req.method != "TRACE" &&
-		req.method != "OPTIONS" &&
-		req.method != "CONNECT" &&
-		req.method != "DELETE") {
-		return (pipe);
-	}
+	return (hash);
+}
 
-	# https://www.varnish-software.com/developers/tutorials/varnish-builtin-vcl/#authorization-headers-and-cookies-are-not-cacheable
-	if (req.http.Authorization) {
-		return (pass);
+sub vcl_hash {
+	if (req.http.Cookie ~ "NEXT_LOCALE=") {
+		hash_data(regsub(req.http.Cookie, ".*NEXT_LOCALE=([^;]*).*", "\1"));
 	}
-
-	# https://www.varnish-software.com/developers/tutorials/varnish-builtin-vcl/#uncacheable-request-methods
-	if (req.method != "GET" && req.method != "HEAD") {
-		return (pass);
-	}
-
-	if (req.url ~ "/assets" || req.url ~ "/_next") {
-		return (hash);
-	}
-
-	return (pass);
 }
 
 sub vcl_deliver {
+    unset resp.http.X-Varnish;
+
 	if (obj.hits > 0) {
 		set resp.http.X-Cache = "HIT";
 	} else {
@@ -75,4 +68,11 @@ sub vcl_deliver {
 	set resp.http.X-Cache-Hits = obj.hits;
 
 	return (deliver);
+}
+
+sub vcl_backend_response {
+	if (beresp.http.Set-Cookie) {
+		set beresp.uncacheable = true;
+		return (deliver);
+	}
 }
