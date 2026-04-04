@@ -8,8 +8,6 @@ services:
         command: --collation-server=utf8mb4_unicode_ci
         volumes:
             - mariadb_data:/var/lib/mysql
-        env_file:
-            - .env
         environment:
             TZ: ${TZ}
             MARIADB_DATABASE: ${DATABASE_NAME}
@@ -72,8 +70,6 @@ services:
             - ./files:/usr/src/app/public/files
         cap_drop:
             - ALL
-        env_file:
-            - .env
         environment:
             PORT: 3000
         depends_on:
