@@ -1,11 +1,11 @@
 //
 // Génération des métadonnées du site Internet à partir de l'API GitHub.
 //
-import { join } from "path";
+import { join } from "node:path";
 import { logger } from "@/utilities/pino";
-import { existsSync } from "fs";
+import { existsSync } from "node:fs";
 import type { Metadata } from "next";
-import { mkdir, readFile, writeFile } from "fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 const fetchWithCache = async ( url: string ) =>
 {
@@ -50,7 +50,7 @@ export async function fetchMetadata(): Promise<Metadata & { source: string }>
 	const title = repository.name.replaceAll( "-", " " );
 	const url = process.env.NEXT_PUBLIC_ENV === "production"
 		? repository.homepage
-		: "http://localhost:3000";
+		: `http://localhost:${ process.env.PORT ?? 3000 }`;
 
 	// On retourne également les métadonnées récupérées récemment
 	//  avant de les enregistrer dans un fichier JSON.
@@ -67,34 +67,34 @@ export async function fetchMetadata(): Promise<Metadata & { source: string }>
 		icons: {
 			icon: [
 				{
-					url: `${ url }/assets/favicons/16x16.webp`,
+					url: "assets/favicons/16x16.webp",
 					type: "image/webp",
 					sizes: "16x16"
 				},
 				{
-					url: `${ url }/assets/favicons/32x32.webp`,
+					url: "assets/favicons/32x32.webp",
 					type: "image/webp",
 					sizes: "32x32"
 				},
 				{
-					url: `${ url }/assets/favicons/48x48.webp`,
+					url: "assets/favicons/48x48.webp",
 					type: "image/webp",
 					sizes: "48x48"
 				},
 				{
-					url: `${ url }/assets/favicons/192x192.webp`,
+					url: "assets/favicons/192x192.webp",
 					type: "image/webp",
 					sizes: "192x192"
 				},
 				{
-					url: `${ url }/assets/favicons/512x512.webp`,
+					url: "assets/favicons/512x512.webp",
 					type: "image/webp",
 					sizes: "512x512"
 				}
 			],
 			apple: [
 				{
-					url: `${ url }/assets/favicons/180x180.webp`,
+					url: "assets/favicons/180x180.webp",
 					type: "image/webp",
 					sizes: "180x180"
 				}
