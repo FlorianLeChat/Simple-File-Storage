@@ -1,2 +1,3 @@
 cspell locales/** --no-summary --no-progress --no-must-find-files
+prisma generate
 npm run build
