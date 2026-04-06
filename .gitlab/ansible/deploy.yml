@@ -64,6 +64,7 @@
             community.docker.docker_compose_v2:
                 renew_anon_volumes: true
                 remove_orphans: true
+                remove_images: all
                 project_src: "{{ application_path }}"
                 recreate: always
                 build: never
