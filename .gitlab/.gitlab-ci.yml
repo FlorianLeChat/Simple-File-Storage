@@ -34,6 +34,13 @@ test:e2e:
     timeout: 30 minutes
     before_script:
         - npm ci --cache .npm --prefer-offline
+        - sed -i 's/provider = "mysql"/provider = "sqlite"/g' prisma/schema.prisma
+        - sed -i 's/@db\.Text//g' prisma/schema.prisma
+        - sed -i 's#^DATABASE_URL=.*#DATABASE_URL="file:data.db"#' .env
+        - sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env
+        - npm run migrate
+        - npx tsc --skipLibCheck scripts/create-fake-accounts.ts
+        - node scripts/create-fake-accounts.js
         - mv $ENV_FILE .env
         - npm run build
         - npx playwright install --with-deps
