@@ -42,7 +42,6 @@ test:e2e:
         - npm run db:migrate
         - npx tsc --skipLibCheck scripts/create-fake-accounts.ts
         - node scripts/create-fake-accounts.js
-        - mv $ENV_FILE .env
         - npm run build
         - npx playwright install --with-deps
     script:
