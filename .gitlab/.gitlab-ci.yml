@@ -34,6 +34,7 @@ test:e2e:
     timeout: 30 minutes
     before_script:
         - npm ci --cache .npm --prefer-offline
+        - sed -i 's/production/development/g' .env
         - sed -i 's/provider = "mysql"/provider = "sqlite"/g' prisma/schema.prisma
         - sed -i 's/@db\.Text//g' prisma/schema.prisma
         - sed -i 's#^DATABASE_URL=.*#DATABASE_URL="file:data.db"#' .env
