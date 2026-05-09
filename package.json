@@ -17,7 +17,7 @@
         "lint": "eslint . --format gitlab --ext .js,.jsx,.ts,.tsx",
         "build": "next build",
         "start": "next start",
-        "pretty": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
+        "format": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
         "prepare": "husky",
         "commitlint": "commitlint --edit",
         "db:migrate": "prisma db push --skip-generate",

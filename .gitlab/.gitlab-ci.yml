@@ -1,5 +1,6 @@
 stages:
     - lint
+    - test
     - build
     - analyze
     - deploy
@@ -26,6 +27,36 @@ lint:eslint:
             codequality: gl-codequality.json
         expire_in: 1 hour
 
+
+test:e2e:
+    image: node:22
+    stage: test
+    timeout: 15 minutes
+    before_script:
+        - npm ci --cache .npm --prefer-offline
+        - sed -i 's/production/development/g' .env
+        - sed -i 's/provider = "mysql"/provider = "sqlite"/g' prisma/schema.prisma
+        - sed -i 's/@db\.Text//g' prisma/schema.prisma
+        - sed -i 's#^DATABASE_URL=.*#DATABASE_URL="file:data.db"#' .env
+        - sed -i "s#AUTH_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#AUTH_SECRET=$(openssl rand -base64 32)#g" .env
+        - npm run db:generate
+        - npm run db:migrate
+        - npx tsc --skipLibCheck scripts/create-fake-accounts.ts
+        - node scripts/create-fake-accounts.js
+        - npm run build
+        - npx playwright install --with-deps
+    script:
+        - npm run test
+    artifacts:
+        when: always
+        paths:
+            - test-results/
+        access: developer
+        reports:
+            junit: playwright-report.xml
+        expire_in: 1 hour
+    dependencies: []
+
 build:project:
     stage: build
     image: alpine:3
@@ -51,6 +82,7 @@ build:project:
             - project.zip
         access: none
         expire_in: 1 hour
+    dependencies: []
 
 build:docker:
     stage: build
