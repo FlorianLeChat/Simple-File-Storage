@@ -19,7 +19,7 @@ services:
         security_opt:
             - no-new-privileges=true
         healthcheck:
-            test: healthcheck.sh --su-mysql --connect --innodb_initialized
+            test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
             retries: 3
             timeout: 5s
             start_period: 30s
@@ -46,7 +46,7 @@ services:
         security_opt:
             - no-new-privileges=true
         healthcheck:
-            test: wget -O - http://localhost/
+            test: ["CMD", "wget", "--quiet", "--spider", "http://localhost/"]
             retries: 3
             timeout: 5s
             start_period: 30s
@@ -78,7 +78,7 @@ services:
         security_opt:
             - no-new-privileges=true
         healthcheck:
-            test: wget -O - http://localhost:3000/
+            test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:3000/"]
             retries: 3
             timeout: 5s
             start_period: 30s
