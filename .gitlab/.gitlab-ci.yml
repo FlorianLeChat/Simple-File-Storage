@@ -27,7 +27,6 @@ lint:eslint:
             codequality: gl-codequality.json
         expire_in: 1 hour
 
-
 test:e2e:
     image: node:22
     stage: test
@@ -90,7 +89,7 @@ build:docker:
     needs:
         - build:project
     services:
-        - docker:29-dind
+        - docker:29-dind-rootless
     variables:
         DOCKER_TLS_CERTDIR: "/certs"
     script:
