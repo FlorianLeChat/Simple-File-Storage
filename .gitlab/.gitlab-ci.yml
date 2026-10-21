@@ -85,17 +85,19 @@ build:project:
 
 build:docker:
     stage: build
-    image: docker:29
+    image: docker:29.5
     needs:
         - build:project
     services:
-        - docker:29-dind-rootless
+        - docker:29.5.0-dind-rootless
     variables:
         DOCKER_TLS_CERTDIR: "/certs"
     script:
         - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
         - docker compose build
         - docker compose push
+    dependencies:
+        - build:project
 
 analyze:sast:
     stage: analyze
