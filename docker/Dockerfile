@@ -4,12 +4,13 @@ FROM node:22-slim AS base
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-
 RUN apt-get update && \
     apt-get install -y --no-install-recommends cron openssl tzdata wget && \
-    rm -rf /var/lib/apt/lists/* && \
-    npm ci
+    rm -rf /var/lib/apt/lists/*
+
+COPY package*.json ./
+
+RUN --mount=type=cache,target=/root/.npm npm ci
 
 COPY . .
 
