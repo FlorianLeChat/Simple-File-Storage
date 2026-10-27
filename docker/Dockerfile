@@ -6,9 +6,9 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN apt update && \
-    apt install -y cron openssl tzdata wget && \
-    apt clean && rm -rf /var/lib/apt/lists/* && \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends cron openssl tzdata wget && \
+    rm -rf /var/lib/apt/lists/* && \
     npm ci
 
 COPY . .
