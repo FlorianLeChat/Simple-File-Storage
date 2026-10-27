@@ -5,7 +5,7 @@ FROM node:22-slim AS base
 WORKDIR /usr/src/app
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends cron openssl tzdata wget && \
+    apt-get install -y --no-install-recommends openssl && \
     rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
@@ -20,9 +20,13 @@ RUN npm run db:generate && npm run build && npx tsc --skipLibCheck \
     scripts/outdated-notifications.ts && \
     npm prune --omit=dev
 
-FROM base AS production
+FROM node:22-slim AS production
 
 WORKDIR /usr/src/app
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends cron openssl tzdata wget && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=base --chown=node:node /usr/src/app ./
 
